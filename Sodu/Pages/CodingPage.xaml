@@ -1,0 +1,13 @@
+﻿<Page
+    x:Class="Sodu.Pages.CodingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Image Source="/Images/coding.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform"  Height="200" Width="300"></Image>
+    </Grid>
+</Page>

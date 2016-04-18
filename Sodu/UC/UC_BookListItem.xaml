@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="Sodu.UC.UC_BookListItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.UC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Height="55"
+   x:Name="root"
+    xmlns:converter ="using:Sodu.Converter"
+    HorizontalAlignment="Stretch"
+    d:DesignWidth="500"
+    Background="Transparent"
+     >
+    <UserControl.Resources>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converter:BookNameForgroundConverter x:Key="BookNameForgroundConverter"/>
+    </UserControl.Resources>
+    <Grid HorizontalAlignment="Stretch" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="AUTO"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="grid" Margin="0,3,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"  x:Name="gridOfCheckBox" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="25" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IfBookshelf,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}" FontSize="18" Text="{Binding  BookName}"></TextBlock>
+            <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}" FontSize="18"  Text="{Binding UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
+            <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" FontSize="16" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
+                <Run x:Name="txtChapterName" Text="{Binding ChapterName}"></Run>
+                <Run x:Name="txtUnreadData" Foreground="Blue" Text="{Binding UnReadCountData}"></Run>
+            </TextBlock>
+        </Grid>
+        <Line x:Name="line"  Grid.Row="1" StrokeDashArray="4" Style="{StaticResource LineStyle}" X1="0" X2="{Binding ElementName=grid,Path=ActualWidth}"  />
+    </Grid>
+</UserControl>
