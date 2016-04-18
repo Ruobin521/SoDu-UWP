@@ -96,6 +96,25 @@ namespace Sodu.Schema
             get;
             set;
         }
+
+        
+        /// <summary>
+        /// 网址
+        /// </summary>
+        public string lyWebUrl
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 网站名称
+        /// </summary>
+        public string WebName
+        {
+            get;
+            set;
+        }
     }
 
 }
