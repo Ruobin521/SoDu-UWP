@@ -49,7 +49,7 @@
         <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
             <!--<AppBarSeparator/>-->
-            <AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>
+            <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
             <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="60"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="60"  Command="{Binding PrePageCommand}"/>
             <AppBarButton Icon="Next" Label="下一页"  Width="60"  Command="{Binding  RequestCommand }"/>

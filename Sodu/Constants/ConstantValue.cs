@@ -30,22 +30,22 @@ namespace Sodu.Constants
 
 
 
-        private static string m_SettingFilePath;
-        public static string SettingFilePath
-        {
-            get
-            {
-                if (m_SettingFilePath == null)
-                {
-                    //m_SettingFilePath = string.Empty;
-                    //StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
-                    //StorageFolder SettingFolder = local.CreateFolderAsync("SoDuSetting", CreationCollisionOption.OpenIfExists).GetResults();
-                    //m_SettingFilePath = SettingFolder.Path + "\\Setting.xml";
-                    m_SettingFilePath = "Setting.xml";
-                }
-                return m_SettingFilePath;
-            }
-        }
+        //private static string m_SettingFilePath;
+        //public static string SettingFilePath
+        //{
+        //    get
+        //    {
+        //        if (m_SettingFilePath == null)
+        //        {
+        //            //m_SettingFilePath = string.Empty;
+        //            //StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
+        //            //StorageFolder SettingFolder = local.CreateFolderAsync("SoDuSetting", CreationCollisionOption.OpenIfExists).GetResults();
+        //            //m_SettingFilePath = SettingFolder.Path + "\\Setting.xml";
+        //            m_SettingFilePath = "Setting.xml";
+        //        }
+        //        return m_SettingFilePath;
+        //    }
+        //}
 
         public static ObservableCollection<MenuModel> UnloadMenuList = new ObservableCollection<MenuModel>()
         {

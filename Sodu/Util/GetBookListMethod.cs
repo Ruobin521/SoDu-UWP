@@ -14,45 +14,76 @@ namespace Sodu.Util
         public static ObservableCollection<BookEntity>[] GetHomePageBookList(string html)
         {
             ObservableCollection<BookEntity>[] listArray = new ObservableCollection<BookEntity>[3];
-            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-
-            string html0 = html;
-            string html1 = html;
-            string html2 = html;
-
-
-            //曾经看过的小说
-            ObservableCollection<BookEntity> lookedList = new ObservableCollection<BookEntity>();
-            Match readedMatch0 = Regex.Match(html0, "<form name=\"form1\".*?</form>");
-
-            if (readedMatch0 != null && !string.IsNullOrEmpty(readedMatch0.ToString()))
+            try
             {
-                lookedList = CommonGetEntityList(readedMatch0.ToString(), false);
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+
+                string html0 = html;
+                string html1 = html;
+                string html2 = html;
+
+                ObservableCollection<BookEntity> lookedList = null;
+                try
+                {
+                    //曾经看过的小说
+                    Match readedMatch0 = Regex.Match(html0, "<form name=\"form1\".*?</form>");
+
+                    if (readedMatch0 != null && !string.IsNullOrEmpty(readedMatch0.ToString()))
+                    {
+                        lookedList = CommonGetEntityList(readedMatch0.ToString(), false);
+                    }
+                }
+                catch (Exception)
+                {
+                    lookedList = null;
+                }
+
+
+                //个人书架
+                ObservableCollection<BookEntity> personalList = null;
+                try
+                {
+                    Match readedMatch = Regex.Match(html1, "<form name=\"form2\".*?</form>");
+
+                    if (readedMatch != null && !string.IsNullOrEmpty(readedMatch.ToString()))
+                    {
+                        personalList = CommonGetEntityList(readedMatch.ToString(), true);
+                    }
+                }
+                catch (Exception)
+                {
+                    personalList = null;
+                }
+
+
+                try
+                {
+
+                }
+                catch (Exception)
+                {
+
+                }
+
+                //更新列表
+                html2 = html2.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                Match t_string = Regex.Match(html2, "<form name=\"form2\".*?</form>");
+
+                if (t_string != null && !string.IsNullOrWhiteSpace(t_string.ToString()))
+                {
+                    html2 = html2.Replace(t_string.ToString(), "");
+                }
+                ObservableCollection<BookEntity> updateList = CommonGetEntityList(html2);
+
+                listArray[0] = lookedList;
+                listArray[1] = personalList;
+                listArray[2] = updateList;
+            }
+            catch (Exception)
+            {
+                listArray = null;
             }
 
-            //个人书架
-            ObservableCollection<BookEntity> personalList = new ObservableCollection<BookEntity>();
-            Match readedMatch = Regex.Match(html1, "<form name=\"form2\".*?</form>");
-
-            if (readedMatch != null && !string.IsNullOrEmpty(readedMatch.ToString()))
-            {
-                personalList = CommonGetEntityList(readedMatch.ToString(), true);
-            }
-
-
-            //更新列表
-            html2 = html2.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match t_string = Regex.Match(html2, "<form name=\"form2\".*?</form>");
-
-            if (t_string != null && !string.IsNullOrWhiteSpace(t_string.ToString()))
-            {
-                html2 = html2.Replace(t_string.ToString(), "");
-            }
-            ObservableCollection<BookEntity> updateList = CommonGetEntityList(html2);
-
-            listArray[0] = lookedList;
-            listArray[1] = personalList;
-            listArray[2] = updateList;
             return listArray;
         }
 

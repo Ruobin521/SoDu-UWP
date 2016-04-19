@@ -117,6 +117,16 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
+
+        public bool BackpressedHandler()
+        {
+            if (IsEditing)
+            {
+                OnEditCommand();
+                return true;
+            }
+            return false;
+        }
         public async void RefreshData(object obj = null, bool IsRefresh = true)
         {
             string html = string.Empty;
@@ -133,7 +143,7 @@ namespace Sodu.ViewModel
                 //}
                 // ViewModelInstance.Instance.NeedSelfShelfRefresh = false;
                 IsLoading = true;
-                html = await HttpHelper.HttpClientGetRequest(PageUrl.BookShelfPage);
+                html = await HttpHelper.HttpClientGetRequest(PageUrl.HomePage);
 
                 if (string.IsNullOrEmpty(html))
                 {
@@ -171,21 +181,27 @@ namespace Sodu.ViewModel
         {
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
+                //ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
+                ObservableCollection<BookEntity>[] ArrayList = GetBookListMethod.GetHomePageBookList(html);
 
-                if (list == null)
+                if (ArrayList == null)
                 {
                     return;
                 }
                 else
                 {
                     this.ShelfBookList.Clear();
-                    foreach (var item in list)
+                    if (ArrayList[1].Count > 0)
                     {
-                        this.ShelfBookList.Add(item);
-                        await Task.Delay(1);
+                        foreach (var item in ArrayList[1])
+                        {
+                            this.ShelfBookList.Add(item);
+                            await Task.Delay(1);
+                        }
                     }
+                    ViewModelInstance.Instance.HomePageViewModelInstance.UpdateBookList = ArrayList[2];
                 }
+
             }
         }
 
@@ -200,6 +216,7 @@ namespace Sodu.ViewModel
                     postData = postData + "bookid=" + item.BookID + "&";
                 }
                 postData = postData + "hello=%CF%C2%BC%DC";
+                IsLoading = true;
                 html = await HttpHelper.HttpClientPostRequest(PageUrl.RemoveBooktPage, postData);
                 if (html.Contains("永久书架小说下架成功"))
                 {
@@ -233,33 +250,37 @@ namespace Sodu.ViewModel
             get
             {
                 return new RelayCommand<object>(
-               async (obj) =>
+                 (obj) =>
                     {
 
                         if (IsLoading) return;
-                        if (!IsEditing)
-                        {
-                            foreach (var item in ShelfBookList)
-                            {
-                                item.IfBookshelf = true;
-
-                                await Task.Delay(1);
-                            }
-                            IsEditing = true;
-                        }
-                        else
-                        {
-                            foreach (var item in ShelfBookList)
-                            {
-                                item.IfBookshelf = false;
-                                item.IsSelected = false;
-                                await Task.Delay(1);
-                            }
-                            IsEditing = false;
-                        }
-
+                        OnEditCommand();
                     }
                     );
+            }
+        }
+
+        private async void OnEditCommand()
+        {
+            if (!IsEditing)
+            {
+                foreach (var item in ShelfBookList)
+                {
+                    item.IfBookshelf = true;
+
+                    await Task.Delay(1);
+                }
+                IsEditing = true;
+            }
+            else
+            {
+                foreach (var item in ShelfBookList)
+                {
+                    item.IfBookshelf = false;
+                    item.IsSelected = false;
+                    await Task.Delay(1);
+                }
+                IsEditing = false;
             }
         }
 

@@ -155,28 +155,39 @@ namespace Sodu.ViewModel
 
         public async Task<bool> SetBookList(string html)
         {
+            bool result = false;
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> arrary = GetBookListMethod.GetUpdatePageBookList(html);
-                if (arrary == null)
+
+                ObservableCollection<BookEntity>[] arraryList = GetBookListMethod.GetHomePageBookList(html);
+                if (arraryList == null)
                 {
                     return false;
                 }
                 else
                 {
-                    CommonMethod.ShowMessage("已获取" + arrary.Count + "条数据");
+                    if (arraryList[2] != null)
+                    {
+                        CommonMethod.ShowMessage("已获取" + arraryList[2].Count + "条数据");
+                    }
                     this.UpdateBookList.Clear();
-                    foreach (var item in arrary)
+                    foreach (var item in arraryList[2])
                     {
                         this.UpdateBookList.Add(item);
                         await Task.Delay(1);
+                    }
+                    result = true;
+
+                    if (ViewModelInstance.Instance.IsLogin && arraryList[1] != null && arraryList[1].Count > 0)
+                    {
+                        ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList = arraryList[1];
                     }
                     return true;
                 }
             }
             else
             {
-                return false;
+                return result;
             }
         }
 

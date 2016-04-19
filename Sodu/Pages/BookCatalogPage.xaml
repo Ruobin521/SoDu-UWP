@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding CatalogList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding CatalogList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -52,7 +52,7 @@
             </control:PullToRefreshListView.RefreshIndicatorContent>-->
             <Interactivity:Interaction.Behaviors >
                 <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
+                    <Core:InvokeCommandAction Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
                 </Core:EventTriggerBehavior>
             </Interactivity:Interaction.Behaviors>
         </ListView>
@@ -60,7 +60,9 @@
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
             <!--<AppBarSeparator/>-->
-            <AppBarButton Icon="Back" Label="返回"    Command="{Binding GoBackCommand}"/>
+            <!--<AppBarButton Icon="Back" Label="返回"    Command="{Binding GoBackCommand}"/>-->
+            <AppBarButton Icon="Upload" Label="回到顶部"   Click="AppBarButton_Click"/>
+            <AppBarButton Icon="Download" Label="转到底部"    Click="AppBarButton_Click_1"/>
             <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Command="{Binding RefreshCommand}"/>
             <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>

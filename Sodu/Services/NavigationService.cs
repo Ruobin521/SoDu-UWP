@@ -37,6 +37,8 @@ namespace Sodu.Services
             }
         }
 
+
+
         public static void CancleHttpRequest()
         {
             Page page = ContentFrame.Content as Page;
@@ -66,6 +68,7 @@ namespace Sodu.Services
                 }
             }
         }
+
 
         public static void GoBack(object sender, BackPressedEventArgs e)
         {

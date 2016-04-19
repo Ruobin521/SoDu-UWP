@@ -185,9 +185,17 @@ namespace Sodu.ViewModel
         {
             try
             {
-                /////暂时默认没有自动登陆
-                this.CurrentMenuList = this.UnloadMenuList;
 
+                if (ViewModelInstance.Instance.IsLogin)
+                {
+                    /////暂时默认没有自动登陆
+                    this.CurrentMenuList = this.UnloadMenuList;
+                }
+                else
+                {
+                    /////暂时默认没有自动登陆
+                    this.CurrentMenuList = this.LoadMenuList;
+                }
 
                 //    //if (ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin)
                 //    //{
@@ -309,9 +317,9 @@ namespace Sodu.ViewModel
 
             if (entity != null)
             {
-                MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdataChapterPage) };
+                MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
                 ViewModelInstance.Instance.EverReadBookPageViewModelInstance.AddToHistoryList(entity);
-              
+
                 NavigateToPage(menu, entity);
             }
             else

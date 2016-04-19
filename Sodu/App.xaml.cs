@@ -23,6 +23,9 @@ using Windows.Phone.UI.Input;
 using Sodu.Services;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using System.Threading.Tasks;
+using Windows.Web.Http.Filters;
+using Windows.Web.Http;
 
 namespace Sodu
 {
@@ -108,13 +111,77 @@ namespace Sodu
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
 
-
-            //  IninAppCacheData();
+            await ReadSettingData();
+            // IninAppCacheData();
 
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
             {
                 Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
             }
+        }
+
+
+        public async Task<bool> ReadSettingData()
+        {
+            //获取设置数据
+            SettingPageViewModel appSetingViewModel = null;
+            try
+            {
+
+                string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
+                StorageFile file = null;
+                try
+                {
+                    file = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
+                    await file.DeleteAsync();
+                    file = null;
+                }
+                catch (Exception)
+                {
+                    file = null;
+                }
+
+                if (file == null)
+                {
+                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = true, TextFontSzie = 22, UserName = "918201" };
+                    await SerializeHelper.WriteAsync(appSetingViewModel, fileName);
+                }
+                else
+                {
+                    appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(fileName);
+                }
+                ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
+
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
+                foreach (var cookieItem in cookieCollection)
+                {
+                    if (cookieItem.Name == "loginname")
+                    {
+                        // cookie = new HttpCookie(cookieItem.Name, cookieItem.Path, "/");
+                        // cookie.Value = cookieItem.Value;
+                        if (cookieItem.Value.Contains(appSetingViewModel.UserName))
+                        {
+                            if (appSetingViewModel.IfAutoLogin)
+                            {
+                                ViewModelInstance.Instance.IsLogin = true;
+                            }
+                            else
+                            {
+                                ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
+                                cookieItem.Expires = null;
+                                filter.CookieManager.SetCookie(cookieItem, false);
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                //  
+            }
+            return true;
         }
 
 
@@ -185,6 +252,26 @@ namespace Sodu
             if (e != null)
             {
                 e.Handled = true;
+            }
+            if (NavigationService.ContentFrame != null)
+            {
+                Page page = NavigationService.ContentFrame.Content as Page;
+                if (page != null)
+                {
+                    IViewModel viewModel = page.DataContext as IViewModel;
+                    if (viewModel == ViewModelInstance.Instance.MyBookShelfViewModelInstance)
+                    {
+                        if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.BackpressedHandler())
+                        {
+                            return;
+                        }
+                        else
+                        {
+                            NavigationService.GoBack(sender, e);
+                            return;
+                        }
+                    }
+                }
             }
             NavigationService.GoBack(sender, e);
         }

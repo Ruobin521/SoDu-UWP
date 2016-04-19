@@ -26,5 +26,15 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
         }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.listview.ScrollIntoView(this.listview.Items[0]);
+        }
+
+        private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.listview.ScrollIntoView(this.listview.Items[this.listview.Items.Count - 1]);
+        }
     }
 }

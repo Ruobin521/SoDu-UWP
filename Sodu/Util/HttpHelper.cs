@@ -158,11 +158,6 @@ namespace Sodu.Util
             string html = string.Empty;
             try
             {
-                await Window.Current.Content.Dispatcher.RunIdleAsync((e) =>
-                {
-                    CommonMethod.StartLoading2();
-                });
-
                 HttpClient httpclient = new HttpClient();
                 HttpStringContent httpStringContent = new HttpStringContent(postData);
                 //就这个问题让我找了好几个小时
@@ -191,13 +186,6 @@ namespace Sodu.Util
             {
                 html = null;
             }
-            finally
-            {
-                await Window.Current.Content.Dispatcher.RunIdleAsync((e) =>
-                {
-                    CommonMethod.StopLoading2();
-                });
-            }
             return html;
         }
 
@@ -207,10 +195,7 @@ namespace Sodu.Util
             string html = string.Empty;
             try
             {
-                await Window.Current.Content.Dispatcher.RunIdleAsync((e) =>
-                {
-                    CommonMethod.StartLoading2();
-                });
+
                 CancellationTokenSource cts = new CancellationTokenSource();
                 HttpClient httpclient = new HttpClient();
                 HttpStringContent httpStringContent = new HttpStringContent(postData);
@@ -240,13 +225,6 @@ namespace Sodu.Util
             {
                 html = "";
             }
-            finally
-            {
-                await Window.Current.Content.Dispatcher.RunIdleAsync((e) =>
-                {
-                    CommonMethod.StartLoading2();
-                });
-            }
             return html;
         }
         public void SetCookie(string url, bool ifAutoLogin)
@@ -275,7 +253,6 @@ namespace Sodu.Util
             if (Cts.Token.CanBeCanceled)
             {
                 this.Cts.Cancel();
-                CommonMethod.StopLoading2();
             }
         }
     }

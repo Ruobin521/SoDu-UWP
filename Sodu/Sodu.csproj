@@ -133,11 +133,8 @@
     <Compile Include="Pages\SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\TextContentPage.xaml.cs">
-      <DependentUpon>TextContentPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\UpdataChapterPage.xaml.cs">
-      <DependentUpon>UpdataChapterPage.xaml</DependentUpon>
+    <Compile Include="Pages\UpdateChapterPage.xaml.cs">
+      <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Schema\DatabaseSchema.cs" />
     <Compile Include="Services\AnalysisContentHtmlService.cs" />
@@ -282,11 +279,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\TextContentPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\UpdataChapterPage.xaml">
+    <Page Include="Pages\UpdateChapterPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

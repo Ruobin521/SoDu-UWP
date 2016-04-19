@@ -28,7 +28,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private bool m_IfAutoLogin;
+        private bool m_IfAutoLogin = true;
         /// <summary>
         /// 是否自动登陆
         /// </summary>
@@ -46,24 +46,16 @@ namespace Sodu.ViewModel
 
         }
 
-
-        private SoduCookie m_UserCookie;
+        private string m_UserName;
         /// <summary>
-        /// 用户自动登录时的cookie
+        /// 自动登录的用户名
         /// </summary>
-        public SoduCookie UserCookie
+        public string UserName
         {
-            get
-            {
-                return m_UserCookie;
-            }
+            get { return m_UserName; }
             set
             {
-                if (m_UserCookie != value)
-                {
-                    SetProperty(ref m_UserCookie, value);
-
-                }
+                SetProperty(ref m_UserName, value);
             }
         }
 

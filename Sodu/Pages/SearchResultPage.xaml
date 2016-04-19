@@ -50,7 +50,7 @@
         <CommandBar  Grid.Row="3"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
             <!--<AppBarSeparator/>-->
-            <AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>
+            <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
             <AppBarButton Icon="Refresh" Label="刷新"  Width="60"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="60"  Command="{Binding PrePageCommand}"/>
             <AppBarButton Icon="Next" Label="下一页"  Width="60"  Command="{Binding  RequestCommand }"/>
@@ -66,7 +66,7 @@
                 <Border  Height="{Binding ElementName=menu,Path=ActualHeight}"  Width="Auto"  Padding="3">
                     <TextBlock  FontSize="18"     VerticalAlignment="Center">
                     <Run  Text=" 第"></Run>
-                    <Run Text="{Binding   CurrentPageIndex}"></Run>3we
+                    <Run Text="{Binding   CurrentPageIndex}"></Run> 
                     <Run  Text=" 页"></Run>
                     </TextBlock>
                 </Border>

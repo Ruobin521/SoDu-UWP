@@ -7,7 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"    >
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
+        <!--<Border Grid.Row="1" Visibility="{Binding IsShow,Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="还没有阅读记录" FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,10"/>
+        </Border>-->
+
+
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
+            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
+        </CommandBar>
     </Grid>
+
 </Page>

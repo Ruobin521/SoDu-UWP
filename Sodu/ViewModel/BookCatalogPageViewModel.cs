@@ -109,7 +109,17 @@ namespace Sodu.ViewModel
                     return;
                 }
                 this.BaseUrl = para[0].ToString();
-                this.CurrentBookEntity = para[1] as BookEntity;
+                BookEntity temp = para[1] as BookEntity;
+                this.CurrentBookEntity = new BookEntity()
+                {
+                    BookID = temp.BookID,
+                    BookName = temp.BookName,
+                    ChapterName = temp.ChapterName,
+                    ChapterUrl = temp.ChapterUrl,
+                    ContentsUrl = temp.ContentsUrl,
+                    LyUrl = temp.LyUrl,
+                    UpdateTime = temp.UpdateTime,
+                };
 
                 this.ContentTitle = CurrentBookEntity.BookName;
 
@@ -174,12 +184,6 @@ namespace Sodu.ViewModel
         }
 
 
-        public IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> items,
-                                                      int numOfParts)
-        {
-            int i = 0;
-            return items.GroupBy(x => i++ % numOfParts);
-        }
         /// <summary>
         /// 选中目录
         /// </summary>
@@ -193,11 +197,21 @@ namespace Sodu.ViewModel
 
                     if (str != null)
                     {
-                        BookCatalog catalog = str as BookCatalog;
-                        CurrentBookEntity.ChapterUrl = BaseUrl + "/" + catalog.CatalogUrl;
-                        CurrentBookEntity.ChapterName = catalog.CatalogName;
-                        MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
-                        NavigationService.NavigateTo(menu, CurrentBookEntity);
+                        try
+                        {
+                            BookCatalog catalog = str as BookCatalog;
+                            if (catalog == null) return;
+                            string url = BaseUrl + "/" + catalog.CatalogUrl;
+                            CurrentBookEntity.ChapterUrl = BaseUrl + "/" + catalog.CatalogUrl;
+                            CurrentBookEntity.ChapterName = catalog.CatalogName;
+                            MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
+                            NavigationService.NavigateTo(menu, CurrentBookEntity);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
                     }
                 });
             }

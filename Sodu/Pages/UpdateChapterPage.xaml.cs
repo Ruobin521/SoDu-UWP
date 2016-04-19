@@ -20,9 +20,9 @@ namespace Sodu.Pages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class TextContentPage : Page
+    public sealed partial class UpdateChapterPage : Page
     {
-        public TextContentPage()
+        public UpdateChapterPage()
         {
             this.InitializeComponent();
         }

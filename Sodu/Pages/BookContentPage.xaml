@@ -31,7 +31,7 @@
         </ScrollViewer>
 
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
-            <AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />
+            <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
             <AppBarButton Icon="{Binding RefreshIcon}" x:Name="refreshBtn" Label="刷新" Width="50"    Command="{Binding  RefreshCommand}"/>
             <AppBarButton Icon="Bullets" Label="目录"  Visibility="{Binding IsCatalogMenuShow,Converter={StaticResource BooleanToVisibilityConverter}}" Width="50"  Command="{Binding CatalogCommand}"/>
             <CommandBar.SecondaryCommands>
