@@ -6,6 +6,7 @@ using Sodu.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -122,8 +123,6 @@ namespace Sodu.ViewModel
                 };
 
                 this.ContentTitle = CurrentBookEntity.BookName;
-
-                IsLoading = true;
                 bool result = await SetData(BaseUrl);
 
                 if (!result)
@@ -135,11 +134,6 @@ namespace Sodu.ViewModel
             {
                 Services.CommonMethod.ShowMessage("未能获取到目录数据，请重新尝试");
             }
-            finally
-            {
-                IsLoading = false;
-            }
-
         }
 
 
@@ -147,6 +141,7 @@ namespace Sodu.ViewModel
         {
             try
             {
+                IsLoading = true;
                 string html = await http.HttpClientGetRequest(url, true);
                 bool result = await SetCatalogList(html, CurrentBookEntity.LyUrl);
                 return result;
@@ -156,7 +151,10 @@ namespace Sodu.ViewModel
                 Services.CommonMethod.ShowMessage("未能获取到目录数据，请重新尝试");
                 return false;
             }
-            return false;
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async Task<bool> SetCatalogList(string html, string webname)
@@ -176,6 +174,7 @@ namespace Sodu.ViewModel
 
                 foreach (var item in result)
                 {
+                    item.CatalogUrl = Path.Combine(BaseUrl, item.CatalogUrl);
                     this.CatalogList.Add(item);
                 }
                 return true;
@@ -217,7 +216,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        ///跳转到相应页数
+
         /// </summary>
         public RelayCommand<object> RefreshCommand
         {
@@ -252,5 +251,21 @@ namespace Sodu.ViewModel
             }
         }
 
+
+
+
+        /// </summary>
+        public RelayCommand<object> DwonLoadhCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(OnDwonLoadhCommandd);
+            }
+        }
+
+        private void OnDwonLoadhCommandd(object obj)
+        {
+            Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
+        }
     }
 }

@@ -262,6 +262,7 @@ namespace Sodu.ViewModel
 
         private async void OnEditCommand()
         {
+            if (this.ShelfBookList == null || this.ShelfBookList.Count < 1) return;
             if (!IsEditing)
             {
                 foreach (var item in ShelfBookList)

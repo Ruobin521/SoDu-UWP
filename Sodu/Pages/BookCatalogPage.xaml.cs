@@ -29,12 +29,21 @@ namespace Sodu.Pages
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            this.listview.ScrollIntoView(this.listview.Items[0]);
+            if (this.listview.Items != null && this.listview.Items.Count > 0)
+            {
+                if (this.direction.Label.Equals("回到顶部"))
+                {
+                    this.listview.ScrollIntoView(this.listview.Items[0]);
+                    this.direction.Label = "转到底部";
+                }
+
+                else if (this.direction.Label.Equals("转到底部"))
+                {
+                    this.listview.ScrollIntoView(this.listview.Items[this.listview.Items.Count - 1]);
+                    this.direction.Label = "回到顶部";
+                }
+            }
         }
 
-        private void AppBarButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.listview.ScrollIntoView(this.listview.Items[this.listview.Items.Count - 1]);
-        }
     }
 }
