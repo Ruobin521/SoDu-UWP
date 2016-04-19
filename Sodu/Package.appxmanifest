@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="0a1d77c4-aea6-492d-ba45-c64b0a8ee9a8" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Sodu</DisplayName>
-    <PublisherDisplayName>ruobin</PublisherDisplayName>
+    <PublisherDisplayName>Ruobin</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>

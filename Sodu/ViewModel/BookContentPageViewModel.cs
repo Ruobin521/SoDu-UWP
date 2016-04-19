@@ -5,8 +5,10 @@ using Sodu.Services;
 using Sodu.Util;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
@@ -87,6 +89,19 @@ namespace Sodu.ViewModel
         }
 
 
+        public bool m_DirectionArrowShow;
+        public bool DirectionArrowShow
+        {
+            get
+            {
+                return m_DirectionArrowShow;
+            }
+            set
+            {
+                SetProperty(ref m_DirectionArrowShow, value);
+            }
+        }
+
 
 
         public int m_FontSize;
@@ -104,6 +119,37 @@ namespace Sodu.ViewModel
             }
         }
 
+        private ObservableCollection<BookCatalog> m_CatalogList;
+        /// <summary>
+        /// 目录集合
+        /// </summary>
+        public ObservableCollection<BookCatalog> CatalogList
+        {
+            get
+            {
+                return m_CatalogList;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_CatalogList, value);
+            }
+        }
+
+        private BookCatalog m_CurrentCatalog;
+        /// <summary>
+        /// 当前选中的
+        /// </summary>
+        public BookCatalog CurrentCatalog
+        {
+            get
+            {
+                return m_CurrentCatalog;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_CurrentCatalog, value);
+            }
+        }
 
         public BookEntity CurrentBookEntity { get; set; }
 
@@ -129,20 +175,74 @@ namespace Sodu.ViewModel
                 Services.CommonMethod.ShowMessage("传递数据有误，请重新操作");
                 return;
             }
+            this.TextContent = string.Empty;
+
+            string type = (obj as object[])[0].ToString();
+            BookEntity entity = (obj as object[])[1] as BookEntity;
+
+            if (entity == null) return;
 
             this.TextContent = string.Empty;
-            BookEntity entity = obj as BookEntity;
             this.CurrentBookEntity = entity;
-            ContentTitle = entity.ChapterName;
-            string url = null;
-            if (!entity.ChapterUrl.StartsWith("http"))
+            ContentTitle = CurrentBookEntity.ChapterName;
+            try
             {
-                url = Constants.PageUrl.HomePage + entity.ChapterUrl;
+                string url = null;
+                IsLoading = true;
+                if (type.Equals("0"))
+                {
+                    url = Constants.PageUrl.HomePage + entity.ChapterUrl;
+                    bool result = await SetContentString(url, CurrentBookEntity);
+                    if (result)
+                    {
+                        Services.CommonMethod.ShowMessage("未能解析到正文内容。");
+                    }
+                }
+                else
+                {
+                    this.CatalogList = (obj as object[])[2] as ObservableCollection<BookCatalog>;
+                    CurrentCatalog = (obj as object[])[3] as BookCatalog;
+                    url = entity.ChapterUrl;
+                    this.DirectionArrowShow = true;
+                    if (CurrentBookEntity == null || CatalogList == null || CatalogList.Count < 1 || CurrentCatalog == null)
+                    {
+                        return;
+                    }
+
+                    Schema.BookCatalog catalog = GetCatafromDatabase(this.CurrentCatalog);
+                    if (catalog != null)
+                    {
+
+                    }
+                    else
+                    {
+                        bool result = await SetContentString(url, CurrentBookEntity);
+                        if (result)
+                        {
+                            Services.CommonMethod.ShowMessage("未能解析到正文内容。");
+                        }
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                url = entity.ChapterUrl;
+                Services.CommonMethod.ShowMessage("未能获取章节正文。");
             }
+            finally
+            {
+                IsLoading = false;
+            }
+
+        }
+        private Schema.BookCatalog GetCatafromDatabase(BookCatalog catalog)
+        {
+
+            return null;
+        }
+
+
+        private async Task<bool> SetContentString(string url, BookEntity entity)
+        {
             try
             {
                 IsLoading = true;
@@ -166,24 +266,26 @@ namespace Sodu.ViewModel
                     if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
                     {
                         Services.CommonMethod.ShowMessage("未能解析到正文内容。");
-                        return;
+                        return false;
                     }
                     this.TextContent = html;
+                    return true;
                 }
                 else
                 {
-
+                    html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                    this.TextContent = Regex.Replace(html, "<.*?>", "");
+                    return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Services.CommonMethod.ShowMessage("未能获取章节正文。");
+                return false;
             }
             finally
             {
                 IsLoading = false;
             }
-
         }
 
         /// <summary>
@@ -204,6 +306,7 @@ namespace Sodu.ViewModel
                 });
             }
         }
+
 
 
         /// <summary>
@@ -299,5 +402,74 @@ namespace Sodu.ViewModel
             }
         }
 
+        /// <summary>
+        /// 切换章节
+        /// </summary>
+        public ICommand SwitchCatalogCommand
+        {
+            get
+            {
+                return new RelayCommand<bool>(async (str) =>
+               {
+                   //上一章
+                   if (str.ToString().Equals("0"))
+                   {
+                       if (this.CatalogList.IndexOf(this.CurrentCatalog) == 0)
+                       {
+                           Services.CommonMethod.ShowMessage("已经是第一章。");
+                           return;
+                       }
+                       if (this.CatalogList.Count < 2)
+                       {
+                           return;
+                       }
+
+                       this.CurrentCatalog = this.CatalogList[this.CatalogList.IndexOf(this.CurrentCatalog) - 1];
+
+                       Schema.BookCatalog catalog = GetCatafromDatabase(CurrentCatalog);
+                       if (catalog != null)
+                       {
+
+                       }
+                       else
+                       {
+                           bool result = await SetContentString(CurrentCatalog.CatalogUrl, CurrentBookEntity);
+                           if (result)
+                           {
+                               Services.CommonMethod.ShowMessage("未能解析到正文内容。");
+                           }
+                       }
+                   }
+
+                   //下一章
+                   else if (str.ToString().Equals("01"))
+                   {
+                       if (this.CatalogList.IndexOf(this.CurrentCatalog) == this.CatalogList.Count - 1)
+                       {
+                           Services.CommonMethod.ShowMessage("已经是最后一章。");
+                           return;
+                       }
+                       if (this.CatalogList.Count < 2)
+                       {
+                           return;
+                       }
+                       this.CurrentCatalog = this.CatalogList[this.CatalogList.IndexOf(this.CurrentCatalog) + 1];
+                       Schema.BookCatalog catalog = GetCatafromDatabase(CurrentCatalog);
+                       if (catalog != null)
+                       {
+
+                       }
+                       else
+                       {
+                           bool result = await SetContentString(CurrentCatalog.CatalogUrl, CurrentBookEntity);
+                           if (result)
+                           {
+                               Services.CommonMethod.ShowMessage("未能解析到正文内容。");
+                           }
+                       }
+                   }
+               });
+            }
+        }
     }
 }

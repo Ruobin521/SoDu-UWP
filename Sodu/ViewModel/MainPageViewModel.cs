@@ -347,7 +347,8 @@ namespace Sodu.ViewModel
             {
                 if (entity.LyUrl.Equals("起点中文网")) return;
                 MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
-                NavigateToPage(menu, entity);
+                //0 表示从更新列表跳转 1 表示从目录跳转
+                NavigateToPage(menu, new object[] { "0", entity });
             }
             else
             {

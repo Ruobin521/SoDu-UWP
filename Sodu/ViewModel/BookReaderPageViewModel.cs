@@ -1,4 +1,5 @@
 ﻿using Sodu.Model;
+using Sodu.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,9 @@ namespace Sodu.ViewModel
 {
     public class BookReaderPageViewModel : BaseViewModel, IViewModel
     {
+
+        public BookEntity CurrentBookEntity { get; set; }
+
         public string ContentTitle
         {
             get; set;
@@ -18,6 +22,36 @@ namespace Sodu.ViewModel
         public bool IsLoading
         {
             get; set;
+        }
+
+
+        public string m_TextContent;
+        public string TextContent
+        {
+            get
+            {
+                return m_TextContent;
+            }
+            set
+            {
+                SetProperty(ref m_TextContent, value);
+            }
+        }
+
+
+        public int m_FontSize;
+        public int ContentFontSzie
+        {
+            get
+            {
+                return m_FontSize;
+            }
+            set
+            {
+
+
+                SetProperty(ref m_FontSize, value);
+            }
         }
 
 
@@ -53,6 +87,12 @@ namespace Sodu.ViewModel
             }
         }
 
+        public HttpHelper http = new HttpHelper();
+
+        public BookReaderPageViewModel()
+        {
+            this.ContentFontSzie = ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
+        }
 
         public void SetCurrentCatalogIndex()
         {
@@ -64,9 +104,62 @@ namespace Sodu.ViewModel
             //  throw new NotImplementedException();
         }
 
-        public void RefreshData(object obj = null, bool IsRefresh = true)
+        public async void RefreshData(object obj = null, bool IsRefresh = true)
         {
+
+            if (obj == null) return;
+
+            CurrentBookEntity = (obj as object[])[0] as BookEntity;
+            this.CatalogList = (obj as object[])[1] as ObservableCollection<BookCatalog>;
+            CurrentCatalog = (obj as object[])[2] as BookCatalog;
+
+            if (CurrentBookEntity == null || CatalogList == null || CatalogList.Count < 1 || CurrentCatalog == null)
+            {
+                return;
+            }
+
+            Schema.BookCatalog catalog = GetCatafromDatabase();
+            if (catalog != null)
+            {
+
+            }
+            else
+            {
+                string html = await http.HttpClientGetRequest(CurrentBookEntity.ChapterUrl, false);
+                if (string.IsNullOrEmpty(html))
+                {
+                    throw new Exception();
+                }
+                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(CurrentBookEntity.LyUrl))
+                {
+                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, CurrentBookEntity.LyUrl);
+                    if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
+                    {
+                        Services.CommonMethod.ShowMessage("未能解析到正文内容。");
+                        return;
+                    }
+                    this.TextContent = html;
+                }
+                else
+                {
+
+                }
+            }
+
+            //new object[] { CurrentBookEntity, this.CatalogList, catalog }
+
+
+
+
             //throw new NotImplementedException();
+        }
+
+
+
+        private Schema.BookCatalog GetCatafromDatabase()
+        {
+
+            return null;
         }
     }
 }

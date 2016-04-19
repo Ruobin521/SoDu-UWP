@@ -205,7 +205,7 @@ namespace Sodu.ViewModel
                             CurrentBookEntity.ChapterUrl = BaseUrl + "/" + catalog.CatalogUrl;
                             CurrentBookEntity.ChapterName = catalog.CatalogName;
                             MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
-                            NavigationService.NavigateTo(menu, CurrentBookEntity);
+                            NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
                         }
                         catch (Exception)
                         {

@@ -33,6 +33,8 @@
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
             <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
             <AppBarButton Icon="{Binding RefreshIcon}" x:Name="refreshBtn" Label="刷新" Width="50"    Command="{Binding  RefreshCommand}"/>
+            <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding DirectionArrowShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
+            <AppBarButton Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding DirectionArrowShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Bullets" Label="目录"  Visibility="{Binding IsCatalogMenuShow,Converter={StaticResource BooleanToVisibilityConverter}}" Width="50"  Command="{Binding CatalogCommand}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="FontIncrease" Label="字体+"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"      Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Stretch"/>
