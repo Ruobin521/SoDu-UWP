@@ -80,7 +80,7 @@ namespace Sodu.Services
             {
                 CancleHttpRequest();
 
-               // _ContentFrame.Navigated -= _ContentFrame_Navigated;
+                // _ContentFrame.Navigated -= _ContentFrame_Navigated;
                 ContentFrame.GoBack();
                 //_ContentFrame.Navigated += _ContentFrame_Navigated;
             }
@@ -98,18 +98,18 @@ namespace Sodu.Services
         }
         private static bool CheckIfShutDown()
         {
-            if (BackKeyPressCount == 0)
+            if (FirstTime == DateTime.MinValue)
             {
-                BackKeyPressCount = 1;
                 FirstTime = DateTime.Now;
                 return false;
             }
-            else if (BackKeyPressCount == 1)
+
+            else if (FirstTime != DateTime.MinValue)
             {
                 SecondTime = DateTime.Now;
                 if ((SecondTime - FirstTime).TotalSeconds > 2.5)
                 {
-                    BackKeyPressCount = 0;
+                    FirstTime = DateTime.Now;
                     return false;
                 }
                 else if ((SecondTime - FirstTime).TotalSeconds <= 2.5)

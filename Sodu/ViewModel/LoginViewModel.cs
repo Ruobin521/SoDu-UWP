@@ -150,7 +150,7 @@ namespace Sodu.ViewModel
                     if (string.IsNullOrEmpty(this.UserName) || string.IsNullOrEmpty(this.Password))
                     {
 #if DEBUG
-                        postdata = "username=918201&password=8166450&B1=%B5%C7%C2%BC&postcheck=true";
+                        postdata = "username=918201&userpass=8166450";
 #endif
 
 #if  !DEBUG
@@ -159,10 +159,10 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
-                        postdata = "username=" + this.UserName + "&password=" + this.Password + "&B1=%B5%C7%C2%BC&postcheck=true";
+                        postdata = "username=" + this.UserName + "&userpass=" + this.Password;
                     }
 
-                    html = await HttpHelper.HttpClientPostLoginRequest(PageUrl.LoginPostPage, postdata, IsAutoLogin);
+                    html = await HttpHelper.WebRequestPost(PageUrl.LoginPostPage, postdata);
 
                 }
                 catch (Exception ex)
@@ -174,19 +174,14 @@ namespace Sodu.ViewModel
                     IsLoading = false;
                 }
 
-                if (html.Contains("登录成功"))
+                if (html.Contains("{\"success\":true}"))
                 {
                     ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                 }
-                else if (html.Contains("用户名或密码错误，请重新登录!"))
-                {
-                    await new MessageDialog("账号或密码错误，请重新输入。").ShowAsync();
-                }
                 else
                 {
-                    await new MessageDialog("未知错误，请重新登陆。").ShowAsync();
+                    CommonMethod.ShowMessage("账号或密码错误，请重新输入。");
                 }
-
             }
         }
 

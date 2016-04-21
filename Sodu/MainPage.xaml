@@ -196,6 +196,11 @@
                                 </AppBarButton.Icon>
                             </AppBarButton>
                             <Border Height="1" Background="Gray"></Border>
+                            <AppBarButton  Icon="Clock"   Label="阅读记录" 
+                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
+                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding ReadHistoryCommand}" Style="{StaticResource AppBarButtonStyle1}">
+
+                            </AppBarButton>
                             <AppBarButton  Icon="Library"   Label="本地图书" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding LocalBooksCommand}" Style="{StaticResource AppBarButtonStyle1}">

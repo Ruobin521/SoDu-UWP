@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
@@ -26,6 +27,31 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref this.m_PageIndex, value);
+            }
+        }
+        private int m_PageCount;
+        public int PageCount
+        {
+            get
+            {
+                return m_PageCount;
+            }
+            set
+            {
+                SetProperty(ref this.m_PageCount, value);
+            }
+        }
+
+        public bool m_IsAddBtnShow;
+        public bool IsAddBtnShow
+        {
+            get
+            {
+                return m_IsAddBtnShow;
+            }
+            set
+            {
+                SetProperty(ref m_IsAddBtnShow, value);
             }
         }
 
@@ -101,21 +127,11 @@ namespace Sodu.ViewModel
         {
             try
             {
-
                 if (obj == null || (obj as BookEntity) == null || (obj == null && this.ChapterList.Count > 0))
                 {
                     return;
                 }
-
                 if (CurrentEntity == obj as BookEntity)
-                {
-                    return;
-                }
-
-                string html = string.Empty;
-
-                //  如果正在加载，或者提示不需要刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh)
                 {
                     return;
                 }
@@ -124,10 +140,25 @@ namespace Sodu.ViewModel
                 {
                     this.ChapterList.Clear();
                 }
-                // IsLoading = true;
+                else
+                {
+                    this.ChapterList = new ObservableCollection<BookEntity>();
+                }
+                string html = string.Empty;
+                PageCount = 0;
+                PageIndex = 1;
                 CurrentEntity = (obj as BookEntity);
                 CurrentPageUrl = (obj as BookEntity).CatalogUrl;
                 ContentTitle = (obj as BookEntity).BookName;
+
+                if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
+                {
+                    IsAddBtnShow = true;
+                }
+                else
+                {
+                    IsAddBtnShow = false;
+                }
 
                 bool result = await LoadPageDataByIndex(1);
             }
@@ -153,23 +184,29 @@ namespace Sodu.ViewModel
             IsLoading = true;
             try
             {
-                if (PageIndex == 1)
+                if (nextPageIndex == 1)
                 {
                     html = await HttpHelper.WebRequestGet(CurrentPageUrl, true);
 
                 }
                 else
                 {
-                    html = await HttpHelper.WebRequestGet(CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + PageIndex), true);
+                    html = await HttpHelper.WebRequestGet(CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + nextPageIndex), true);
                 }
                 if (string.IsNullOrEmpty(html))
                 {
                     throw new Exception();
                 }
-                CommonMethod.ShowMessage("第" + PageIndex + "页，共20页");
-                bool result = await SetBookList(html);
-                PageIndex = nextPageIndex;
-                return true;
+                if (PageCount == 0)
+                {
+                    Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
+                    if (match != null)
+                    {
+                        PageCount = Convert.ToInt32(match.ToString().Trim());
+                    }
+                }
+                bool result = await SetBookList(html, nextPageIndex);
+                return result;
             }
             catch (Exception ex)
             {
@@ -183,7 +220,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async Task<bool> SetBookList(string html)
+        public async Task<bool> SetBookList(string html, int pageIndex)
         {
             if (!string.IsNullOrEmpty(html))
             {
@@ -203,7 +240,8 @@ namespace Sodu.ViewModel
                     {
                         this.ChapterList = new ObservableCollection<BookEntity>();
                     }
-
+                    this.PageIndex = pageIndex;
+                    CommonMethod.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
                     foreach (var item in arrary)
                     {
                         item.BookName = this.ContentTitle;
@@ -215,6 +253,79 @@ namespace Sodu.ViewModel
             }
 
             return false;
+        }
+
+
+
+        /// </summary>
+        public RelayCommand<object> AddToShelfCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(async (obj) =>
+                {
+                    try
+                    {
+                        IsLoading = true;
+                        if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
+                        {
+                            string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, CurrentEntity.BookID));
+                            if (html.Contains("{\"success\":true}"))
+                            {
+                                ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(CurrentEntity);
+                                IsAddBtnShow = false;
+                                CommonMethod.ShowMessage("收藏成功");
+                            }
+                        }
+                        else
+                        {
+                            CommonMethod.ShowMessage("您已收藏过本书");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        CommonMethod.ShowMessage("收藏失败，请重新操作");
+                    }
+                    finally
+                    {
+                        IsLoading = false;
+                    }
+                });
+            }
+        }
+
+        public RelayCommand<object> FirstPageCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(async (obj) =>
+               {
+                   if (IsLoading) return;
+                   if (PageIndex == 1)
+                   {
+                       CommonMethod.ShowMessage("已经是第一页");
+                       return;
+                   }
+                   await LoadPageDataByIndex(1);
+               });
+            }
+        }
+
+        public RelayCommand<object> LastPageCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(async (obj) =>
+                {
+                    if (IsLoading) return;
+                    if (PageIndex == PageCount)
+                    {
+                        CommonMethod.ShowMessage("已经是最后一页");
+                        return;
+                    }
+                    await LoadPageDataByIndex(PageCount);
+                });
+            }
         }
 
         #region  上拉刷新,下拉加载
@@ -270,7 +381,7 @@ namespace Sodu.ViewModel
         {
             if (IsLoading) return;
 
-            if (PageIndex == 20)
+            if (PageIndex == PageCount)
             {
                 CommonMethod.ShowMessage("已经是最后一页");
                 return;

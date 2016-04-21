@@ -52,7 +52,7 @@ namespace Sodu.Constants
             new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
             new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
-            new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
+            //new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
             new MenuModel() { MenuName= "搜索",MenuIcon="",MenuType=typeof(SearchResultPage)},
             new MenuModel() { MenuName= "注册",MenuIcon="",MenuType=typeof(RegisterPage)},
             new MenuModel() { MenuName= "登陆",MenuIcon="",MenuType=typeof(LoginPage)},
@@ -62,9 +62,10 @@ namespace Sodu.Constants
         public static ObservableCollection<MenuModel> LoadMenuList = new ObservableCollection<MenuModel>()
         {
             new MenuModel() { MenuName= "个人书架",MenuIcon="",MenuType=typeof(MyBookShelfPage)},
-            new MenuModel() { MenuName= "更新列表",MenuIcon="",MenuType=typeof(HomePage) },
+              new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
+            new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
-            new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
+            //new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
             new MenuModel() { MenuName= "搜索",MenuIcon="",MenuType=typeof(SearchResultPage)},
         };
     }
@@ -81,12 +82,14 @@ namespace Sodu.Constants
         /// <summary>
         /// 登录页
         /// </summary>
-        public const string LoginPostPage = "http://www.soduso.com/checklogin.ashx";
+        //public const string LoginPostPage = "http://www.soduso.com/checklogin.ashx";
+        public const string LoginPostPage = "http://www.sodu.cc/handler/login.html";
 
         /// <summary>
         /// 注销页面
         /// </summary>
-        public const string LogoutPage = " http://www.soduso.com/logout.ashx";
+        //public const string LogoutPage = "http://www.soduso.com/logout.ashx";
+        public const string LogoutPage = "http://www.sodu.cc/logout.html?callback=http://www.sodu.cc/home.html";
 
         //注册页面
         public const string RegisterPage = "http://www.soduso.com/register.aspx";
@@ -104,7 +107,8 @@ namespace Sodu.Constants
         /// <summary>
         /// 我的书架
         /// </summary>
-        public const string BookShelfPage = "http://www.soduso.com/myshujia.aspx";
+        //public const string BookShelfPage = "http://www.soduso.com/myshujia.aspx";
+        public const string BookShelfPage = "http://www.sodu.cc/home.html";
 
         /// <summary>
         /// 搜索地址
@@ -132,7 +136,10 @@ namespace Sodu.Constants
         // <summary>
         /// 移除书架
         /// </summary>
-        public const string RemoveBooktPage = "http://www.soduso.com/shujia.aspx?action=yongjiudel";
+        //public const string RemoveBooktPage = "http://www.soduso.com/shujia.aspx?action=yongjiudel";
+
+        ///添加至书架
+        public const string AddToShelfPage = "http://www.sodu.cc/handler/home.html?bid={0}";
 
     }
 

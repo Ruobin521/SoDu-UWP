@@ -145,7 +145,7 @@ namespace Sodu
                 if (file == null)
                 {
                     ///初始化设置默认值
-                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = false, TextFontSzie = 20, UserName = null };
+                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = false, TextFontSzie = 20, IfAutAddToShelf = true, UserName = null };
                     await SerializeHelper.WriteAsync(appSetingViewModel, fileName);
                     return true;
                 }

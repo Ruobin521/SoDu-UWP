@@ -101,7 +101,6 @@ namespace Sodu.Util
         {
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
 
-            //个人书架
             ObservableCollection<BookEntity> t_list = new ObservableCollection<BookEntity>();
 
             MatchCollection matches = Regex.Matches(html, "<div class=\"main-html\".*?<div style=\"width:88px;float:left;\">.*?</div>");
@@ -123,7 +122,7 @@ namespace Sodu.Util
 
                     t_entity.BookName = Regex.Match(match.ToString(), "(?<=addToFav\\(.*?').*?(?=')").ToString();
                     t_entity.CatalogUrl = Regex.Match(matches[i].ToString(), "(?<=<a href=\").*?(?=\">.*?</a>)").ToString();
-                    t_entity.BookID = Regex.Match(match.ToString(), "(?<=id=\").*?(?=\")").ToString();
+                    t_entity.BookID = Regex.Match(match.ToString(), "(?<=id=\").*?(?=\")").ToString().Replace("a", "");
                     t_entity.ChapterName = Regex.Match(matches[i].ToString(), "(?<=<a href.*?>).*?(?=</a>)", RegexOptions.RightToLeft).ToString();
 
                     Match match2 = Regex.Match(matches[i].ToString(), "(<div.*?>).*?(?=</div>)", RegexOptions.RightToLeft);
@@ -157,12 +156,39 @@ namespace Sodu.Util
         public static ObservableCollection<BookEntity> GetBookShelftListFromHtml(string html)
         {
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match t_string = Regex.Match(html, "<form name=\"form2\".*?</form>");
-            //个人书架
-            ObservableCollection<BookEntity> personalList = new ObservableCollection<BookEntity>();
-            personalList = CommonGetEntityList(html);
 
-            return personalList;
+            //个人书架
+            ObservableCollection<BookEntity> t_list = new ObservableCollection<BookEntity>();
+
+            MatchCollection matches = Regex.Matches(html, "<div class=\"main-html\".*?class=\"clearSc\".*?</div>");
+            if (matches.Count == 0)
+            {
+                t_list = null;
+                return t_list;
+            }
+
+            BookEntity t_entity;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                if (matches[i] == null) continue;
+                t_entity = new BookEntity();
+                try
+                {
+                    MatchCollection divmatches = Regex.Matches(matches[i].ToString(), "<div.*?</div>");
+                    t_entity.BookName = Regex.Replace(divmatches[0].ToString(), "<.*?>", "").ToString();
+                    t_entity.ChapterName = Regex.Replace(divmatches[1].ToString(), "<.*?>", "").ToString();
+                    t_entity.UpdateTime = Regex.Replace(divmatches[2].ToString(), "<.*?>", "");
+                    t_entity.CatalogUrl = Regex.Match(divmatches[0].ToString(), "(?<=<a href=\").*?(?=\")").ToString();
+                    t_entity.BookID = Regex.Match(divmatches[3].ToString(), "(?<=id=).*?(?=\")").ToString();
+                    t_list.Add(t_entity);
+                }
+                catch
+                {
+                    t_list = null;
+                    return t_list;
+                }
+            }
+            return t_list;
         }
         public static ObservableCollection<BookEntity> GetSearchResultkListFromHtml(string html)
         {
@@ -199,7 +225,7 @@ namespace Sodu.Util
                     Match match = Regex.Match(matches[i].ToString(), "<div style=\"width:482px;float:left;\">.*?</div>");
                     t_entity.BookName = Regex.Match(match.ToString(), "(?<=alt=\").*?(?=\")").ToString();
                     t_entity.CatalogUrl = Regex.Match(match.ToString(), "(?<=<a href=\").*?(?=\")").ToString();
-                    t_entity.BookID = Regex.Match(matches[i].ToString(), "(?<=class=\"bookset\".*?id=\").*?(?=\")").ToString();
+                    t_entity.BookID = Regex.Match(matches[i].ToString(), "(?<=.*?id=\").*?(?=\")").ToString();
                     t_entity.ChapterName = Regex.Replace(match.ToString(), "<.*?>", "");
                     Match match2 = Regex.Match(matches[i].ToString(), "(?<=<.*?class=xt1>).*?(?=</div>)");
                     t_entity.UpdateTime = match2.ToString();

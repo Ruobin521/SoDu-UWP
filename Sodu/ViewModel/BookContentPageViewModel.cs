@@ -116,6 +116,8 @@ namespace Sodu.ViewModel
         }
 
 
+
+
         public int m_FontSize;
         public int ContentFontSzie
         {
@@ -184,12 +186,15 @@ namespace Sodu.ViewModel
         {
             try
             {
+                this.TextContent = string.Empty;
+                this.ContentTitle = string.Empty;
+                this.IsCatalogMenuShow = false;
+                this.DirectionArrowShow = false;
+
                 if (obj == null && (obj as BookEntity) != null)
                 {
                     throw new Exception();
                 }
-                this.TextContent = string.Empty;
-                this.ContentTitle = string.Empty;
 
                 ReadingMode = (obj as object[])[0].ToString();
                 BookEntity entity = (obj as object[])[1] as BookEntity;
@@ -275,7 +280,7 @@ namespace Sodu.ViewModel
         {
             try
             {
-                string html = await http.WebRequestGet(url, true);
+                string html = await http.WebRequestGet(url, false);
                 if (string.IsNullOrEmpty(html))
                 {
                     throw new Exception();

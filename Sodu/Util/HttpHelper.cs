@@ -23,22 +23,6 @@ namespace Sodu.Util
     public delegate void HandleResult(string result);
     public class HttpHelper
     {
-        /// <summary>
-        /// 异步控制
-        /// </summary>
-        //    public  ManualResetEvent allDone = new ManualResetEvent(false);
-        private static CookieContainer m_CurrBaseCookie;
-        public static CookieContainer CurrBaseCookie
-        {
-            get
-            {
-                return m_CurrBaseCookie;
-            }
-            set
-            {
-                m_CurrBaseCookie = value;
-            }
-        }
 
         public CancellationTokenSource Cts = new CancellationTokenSource();
 
@@ -51,6 +35,7 @@ namespace Sodu.Util
 
         public HttpHelper()
         {
+
         }
 
 
@@ -102,6 +87,60 @@ namespace Sodu.Util
             return html;
 
         }
+
+        public async Task<string> WebRequestPost(string url, string postData)
+        {
+            HttpWebRequest request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+            request.Method = "POST";    //设置请求方式为GET
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+
+
+            using (Stream str = await request.GetRequestStreamAsync())
+            {
+                string content = postData;
+                byte[] data = Encoding.UTF8.GetBytes(content);
+                str.Write(data, 0, data.Length);
+            }
+            var response = await request.GetResponseAsync();
+            Stream stream = null;
+            if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+            {
+                stream = response.Headers[HttpRequestHeader.ContentEncoding].Equals("gzip",
+                               StringComparison.CurrentCultureIgnoreCase) ? new GZipStream(response.GetResponseStream(), CompressionMode.Decompress) : response.GetResponseStream();
+            }
+            else
+            {
+                stream = response.GetResponseStream();
+            }
+            var ms = new MemoryStream();
+            var buffer = new byte[1024];
+            while (true)
+            {
+                if (stream == null) continue;
+                var sz = stream.Read(buffer, 0, 1024);
+                if (sz == 0) break;
+                ms.Write(buffer, 0, sz);
+            }
+            var bytes = ms.ToArray();
+            string html = string.Empty;
+            //var html = /*Encoding.UTF8.GetString(bytes);*///GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]).GetString(bytes);  t
+            try
+            {
+                var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
+                html = encoding.GetString(bytes);
+                await stream.FlushAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return html;
+
+        }
+
 
         public Encoding GetEncoding(byte[] bytes, string charSet)
         {

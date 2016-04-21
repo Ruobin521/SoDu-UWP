@@ -48,7 +48,7 @@ namespace Sodu.ViewModel
         }
 
 
-        private string _ContentTitle = "最新更新";
+        private string _ContentTitle = "推荐阅读";
         public string ContentTitle
         {
             get

@@ -301,6 +301,21 @@ namespace Sodu.ViewModel
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
                 ViewModelInstance.Instance.EverReadBookPageViewModelInstance.AddToHistoryList(entity);
 
+                if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
+                {
+                    Task.Run(async () =>
+                   {
+                       if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                       {
+                           string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, entity.BookID));
+                           if (html.Contains("{\"success\":true}"))
+                           {
+                               ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(entity);
+                           }
+                       }
+
+                   });
+                }
                 NavigateToPage(menu, entity);
             }
             else
@@ -353,7 +368,7 @@ namespace Sodu.ViewModel
                         IsLeftPanelOpen = false;
                         HttpHelper http = new HttpHelper();
                         string html = await http.WebRequestGet(PageUrl.LogoutPage);
-                        if (html != null && html.Contains("您已经成功退出网站"))
+                        if (html != null && html.Contains("to delete public domains' cookies"))
                         {
                             ChangeLoginState(false);
                         }
@@ -364,7 +379,7 @@ namespace Sodu.ViewModel
                     }
                     catch (Exception ex)
                     {
-                        CommonMethod.ShowMessage("操作失败，请重新尝试");
+                        CommonMethod.ShowMessage("注销失败，请重新操作");
                     }
                 });
             }
@@ -411,7 +426,7 @@ namespace Sodu.ViewModel
         }
 
         /// <summary>
-        /// 设置
+        /// 本地图书
         /// </summary>
         public ICommand LocalBooksCommand
         {
@@ -425,6 +440,23 @@ namespace Sodu.ViewModel
                     });
             }
         }
+
+        /// <summary>
+        /// 阅读记录
+        /// </summary>
+        public ICommand ReadHistoryCommand
+        {
+            get
+            {
+                return new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          MenuModel menu = new MenuModel() { MenuName = "阅读记录", MenuType = typeof(EverReadPage) };
+                          NavigateToPage(menu, null);
+                      });
+            }
+        }
+
 
         #endregion
     }

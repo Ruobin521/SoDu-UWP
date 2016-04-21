@@ -46,6 +46,24 @@ namespace Sodu.ViewModel
 
         }
 
+        private bool m_IfAutAddToShelf;
+        /// <summary>
+        /// 是否自动添加点击的小说到个人收藏
+        /// </summary>
+        public bool IfAutAddToShelf
+        {
+
+            get
+            {
+                return m_IfAutAddToShelf;
+            }
+            set
+            {
+                SetProperty(ref m_IfAutAddToShelf, value);
+            }
+
+        }
+
         private string m_UserName;
         /// <summary>
         /// 自动登录的用户名

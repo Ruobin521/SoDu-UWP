@@ -129,6 +129,10 @@ namespace Sodu.ViewModel
                 {
                     return;
                 }
+                if (this.BookList != null)
+                {
+                    this.BookList.Clear();
+                }
 
                 IsLoading = true;
                 int pageindex;
@@ -215,6 +219,11 @@ namespace Sodu.ViewModel
                 return new RelayCommand<object>((obj) =>
                 {
                     if (IsLoading) return;
+                    if (PageIndex == 1)
+                    {
+                        CommonMethod.ShowMessage("已经是第一页");
+                        return;
+                    }
                     RefreshData(1);
                 });
             }
@@ -227,6 +236,11 @@ namespace Sodu.ViewModel
                 return new RelayCommand<object>((obj) =>
                 {
                     if (IsLoading) return;
+                    if (PageIndex == PageCount)
+                    {
+                        CommonMethod.ShowMessage("已经是最后一页");
+                        return;
+                    }
                     RefreshData(PageCount);
                 });
             }

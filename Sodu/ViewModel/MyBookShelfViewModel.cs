@@ -137,25 +137,18 @@ namespace Sodu.ViewModel
                 {
                     return;
                 }
-                //if (!ViewModelInstance.Instance.NeedSelfShelfRefresh)
-                //{
-                //    return;
-                //}
-                // ViewModelInstance.Instance.NeedSelfShelfRefresh = false;
+
                 IsLoading = true;
-                html = await HttpHelper.WebRequestGet(PageUrl.HomePage);
+                html = await HttpHelper.WebRequestGet(PageUrl.BookShelfPage);
 
                 if (string.IsNullOrEmpty(html))
                 {
                     return;
                 }
-                if (html.Contains("注销") && html.Contains("站长留言") && html.Contains("我的永久书架"))
+                if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
                 {
                     SetBookList(html);
-                    if (this.ShelfBookList == null || this.ShelfBookList.Count < 1)
-                    {
-                        this.IsShow = true;
-                    }
+
                 }
                 else if (html.Contains("您还没有登录"))
                 {
@@ -181,23 +174,34 @@ namespace Sodu.ViewModel
         {
             if (!string.IsNullOrEmpty(html))
             {
-                //ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
-                ObservableCollection<BookEntity>[] ArrayList = GetBookListMethod.GetHomePageBookList(html);
+                ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
 
-                if (ArrayList == null)
+                if (list == null)
                 {
                     return;
                 }
                 else
                 {
-                    this.ShelfBookList.Clear();
-                    if (ArrayList[1].Count > 0)
+                    if (this.ShelfBookList != null)
                     {
-                        foreach (var item in ArrayList[1])
+                        this.ShelfBookList.Clear();
+                    }
+                    else
+                    {
+                        this.ShelfBookList = new ObservableCollection<BookEntity>();
+                    }
+                    if (list.Count > 0)
+                    {
+                        foreach (var item in list)
                         {
                             this.ShelfBookList.Add(item);
                             await Task.Delay(1);
                         }
+                    }
+
+                    if (this.ShelfBookList == null || this.ShelfBookList.Count < 1)
+                    {
+                        this.IsShow = true;
                     }
                     //ViewModelInstance.Instance.HomePageViewModelInstance = ArrayList[2];
                 }
@@ -210,26 +214,24 @@ namespace Sodu.ViewModel
             string html = string.Empty;
             try
             {
-                string postData = "";
+                IsLoading = true;
+
                 foreach (var item in removeBookList)
                 {
-                    postData = postData + "bookid=" + item.BookID + "&";
-                }
-                postData = postData + "hello=%CF%C2%BC%DC";
-                IsLoading = true;
-                html = await HttpHelper.HttpClientPostRequest(PageUrl.RemoveBooktPage, postData);
-                if (html.Contains("永久书架小说下架成功"))
-                {
-                    foreach (var item in removeBookList)
+                    string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
+                    html = await HttpHelper.WebRequestGet(url);
+                    if (html.Contains("取消收藏成功"))
                     {
                         ShelfBookList.Remove(item);
+                        //CommonMethod.ShowMessage(item.BookName + " 取消收藏成功");
                     }
-                    CommonMethod.ShowMessage(removeBookList.Count + "本小说成功被移除");
+                    else
+                    {
+                        CommonMethod.ShowMessage(item.BookName + "取消收藏失败，请重新操作");
+                    }
                 }
-                else/* if (html.Contains("您还没有登录"))*/
-                {
-                    throw new Exception();
-                }
+                CommonMethod.ShowMessage("操作成功");
+                removeBookList.Clear();
             }
             catch (Exception ex)
             {
@@ -238,6 +240,7 @@ namespace Sodu.ViewModel
             finally
             {
                 IsLoading = false;
+                OnEditCommand();
             }
         }
 
@@ -262,16 +265,27 @@ namespace Sodu.ViewModel
 
         private async void OnEditCommand()
         {
+            if (IsLoading) return;
+
             if (this.ShelfBookList == null || this.ShelfBookList.Count < 1) return;
             if (!IsEditing)
             {
+                IsEditing = true;
                 foreach (var item in ShelfBookList)
                 {
                     item.IfBookshelf = true;
+                    //try
+                    //{
+                    //    if (ShelfBookList.IndexOf(item) % 5 == 0)
+                    //    {
+                    //        await Task.Delay(1);
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
 
-                    await Task.Delay(1);
+                    //}
                 }
-                IsEditing = true;
             }
             else
             {
@@ -331,7 +345,7 @@ namespace Sodu.ViewModel
 
             if (!IsEditing)
             {
-                var msgDialog = new Windows.UI.Popups.MessageDialog(" \n请点击编辑按钮，并选择需要下架的小说。") { Title = "下架小说" };
+                var msgDialog = new Windows.UI.Popups.MessageDialog(" \n请点击编辑按钮，并选择需要取消收藏的小说。") { Title = "取消收藏" };
                 msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
                 {
                     return;
@@ -351,7 +365,7 @@ namespace Sodu.ViewModel
 
             if (removeList.Count > 0)
             {
-                var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定下架" + removeList.Count + "本小说？") { Title = "下架小说" };
+                var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消收藏" + removeList.Count + "本小说？") { Title = "取消收藏" };
                 msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
                 {
                     RemoveBook(removeList);
