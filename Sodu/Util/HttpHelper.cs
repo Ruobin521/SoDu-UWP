@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
@@ -38,8 +40,6 @@ namespace Sodu.Util
             }
         }
 
-
-        //取消网络请求
         public CancellationTokenSource Cts = new CancellationTokenSource();
 
         Encoding DefauleEncoding = Encoding.GetEncoding("gb2312");
@@ -53,44 +53,71 @@ namespace Sodu.Util
         {
         }
 
-        public string HttpGetRequest(string Url)
-        {
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(Url);
-            webRequest.Method = "Get";
-            webRequest.Headers[HttpRequestHeader.IfModifiedSince] = DateTime.Now.ToString();
-            webRequest.CookieContainer = CurrBaseCookie;
-            webRequest.BeginGetResponse(new AsyncCallback(GetHandleResponse), webRequest);
 
-            //allDone.Reset();
-            //allDone.WaitOne();
-
-            return Html;
-        }
-        public void GetHandleResponse(IAsyncResult asyncResult)
+        public async Task<string> WebRequestGet(string url, bool isAddTime = false)
         {
-            HttpWebRequest httpRequest = null;
-            HttpWebResponse httpResponse = null;
+            if (isAddTime)
+            {
+                url = url + "?time=" + GetTimeStamp();
+            }
+            WebRequest request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+            request.Method = "GET";    //设置请求方式为GET
+            request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+
+            var response = await request.GetResponseAsync();
+            Stream stream = null;
+            if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+            {
+                stream = response.Headers[HttpRequestHeader.ContentEncoding].Equals("gzip",
+                               StringComparison.CurrentCultureIgnoreCase) ? new GZipStream(response.GetResponseStream(), CompressionMode.Decompress) : response.GetResponseStream();
+            }
+            else
+            {
+                stream = response.GetResponseStream();
+            }
+            var ms = new MemoryStream();
+            var buffer = new byte[1024];
+            while (true)
+            {
+                if (stream == null) continue;
+                var sz = stream.Read(buffer, 0, 1024);
+                if (sz == 0) break;
+                ms.Write(buffer, 0, sz);
+            }
+            var bytes = ms.ToArray();
+            string html = string.Empty;
+            //var html = /*Encoding.UTF8.GetString(bytes);*///GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]).GetString(bytes);  t
             try
             {
-                httpRequest = (HttpWebRequest)asyncResult.AsyncState;
-                httpResponse = (HttpWebResponse)httpRequest.EndGetResponse(asyncResult);
+                var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
+                html = encoding.GetString(bytes);
+                await stream.FlushAsync();
+            }
+            catch (Exception ex)
+            {
 
-                using (var reader = new StreamReader(httpResponse.GetResponseStream(), DefauleEncoding))
-                {
-                    Html = reader.ReadToEnd();
-                    reader.Dispose();
-                }
             }
-            catch
-            {
-                Html = "";
-            }
-            finally
-            {
-                if (httpRequest != null) httpRequest.Abort();
-                if (httpResponse != null) httpResponse.Dispose();
-                //  allDone.Set();
-            }
+
+            return html;
+
+        }
+
+        public Encoding GetEncoding(byte[] bytes, string charSet)
+        {
+            var html = Encoding.UTF8.GetString(bytes);
+            //  var regCharset = new Regex(@".*?/.*?;.*?=.*?");
+            string strCharSet =
+           Regex.Match(html, @"<meta.*?charset=""?([a-z0-9-]+)\b", RegexOptions.IgnoreCase)
+           .Groups[1].Value;
+            //if (regCharset.IsMatch(html))
+            //{
+            //    //text/html; charset=utf-8
+            //    string encodingName = Regex.Match(regCharset.Match(html).ToString(), "(?<=.*?charset=).*$").ToString().ToUpper();
+            //    return Encoding.GetEncoding(encodingName);
+            //}
+
+            return !string.IsNullOrEmpty(strCharSet) ? Encoding.GetEncoding(strCharSet) : Encoding.UTF8;
         }
         /// <summary>
         /// Http Get Request
@@ -98,7 +125,7 @@ namespace Sodu.Util
         /// <param name="Url"></param>
         /// <param name="encode"></param>
         /// <returns></returns>
-        public async Task<string> HttpClientGetRequest(string url, bool isAddTime = true, HttpCookie cookie = null, Encoding encode = null)
+        public async Task<string> HttpClientGetRequest2(string url, bool isAddTime = true, HttpCookie cookie = null, Encoding encode = null)
         {
             string html = string.Empty;
             try
@@ -106,27 +133,29 @@ namespace Sodu.Util
                 Cts = new CancellationTokenSource();
                 Cts.CancelAfter(TimeSpan.FromSeconds(15));
 
-                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                HttpClient httpclient = new HttpClient(filter);
+                // HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                HttpClient httpclient = new HttpClient();
                 //filter.CacheControl.ReadBehavior = HttpCacheReadBehavior.MostRecent;
-                filter.UseProxy = false;
+                // filter.UseProxy = false;
 
                 if (isAddTime)
                 {
                     url = url + "?time=" + GetTimeStamp();
                 }
-                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
+                //  HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
                 try
                 {
                     HttpResponseMessage response = await httpclient.GetAsync(new Uri(url)).AsTask(Cts.Token);
                     Cts.Token.ThrowIfCancellationRequested();
-                    using (Stream responseStream = (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead())
+                    using (GZipStream stream = new GZipStream(
+
+                  (await response.Content.ReadAsInputStreamAsync()).AsStreamForRead(), CompressionMode.Decompress))
                     {
-                        using (var reader = new StreamReader(responseStream, encode == null ? DefauleEncoding : encode))
+                        using (StreamReader reader = new StreamReader(stream))
                         {
                             html = reader.ReadToEnd();
                             reader.Dispose();
-                            responseStream.Dispose();
+                            stream.Dispose();
                         }
 
                     }

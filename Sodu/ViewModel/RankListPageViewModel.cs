@@ -78,7 +78,18 @@ namespace Sodu.ViewModel
             }
         }
 
-
+        private int m_PageCount = 8;
+        public int PageCount
+        {
+            get
+            {
+                return m_PageCount;
+            }
+            set
+            {
+                SetProperty(ref this.m_PageCount, value);
+            }
+        }
         private ObservableCollection<BookEntity> m_BookList = new ObservableCollection<BookEntity>();
         public ObservableCollection<BookEntity> BookList
         {
@@ -120,15 +131,29 @@ namespace Sodu.ViewModel
                 }
 
                 IsLoading = true;
-                html = await http.HttpClientGetRequest(string.Format(PageUrl.BookRankListPage, Convert.ToInt32(obj)));
-                if (!string.IsNullOrEmpty(html))
+                int pageindex;
+                if (obj == null)
                 {
-                    if (obj != null)
-                    {
-                        this.PageIndex = Convert.ToInt32(obj);
-                    }
+                    pageindex = 1;
                 }
-                bool result = await SetBookList(html);
+                else
+                {
+                    pageindex = Convert.ToInt32(obj);
+
+                }
+                string url = string.Empty;
+
+                if (pageindex == 1)
+                {
+                    url = PageUrl.BookRankListPage;
+                }
+                else
+                {
+                    url = string.Format(PageUrl.BookRankListPage2, pageindex);
+                }
+                html = await http.WebRequestGet(url);
+
+                bool result = await SetBookList(html, pageindex);
                 if (!result)
                 {
                     throw new Exception();
@@ -145,11 +170,11 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async Task<bool> SetBookList(string html)
+        public async Task<bool> SetBookList(string html, int pageIndex)
         {
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> arrary = GetBookListMethod.GetUpdatePageBookList(html);
+                ObservableCollection<BookEntity> arrary = GetBookListMethod.GetRankListFromHtml(html);
                 if (arrary == null)
                 {
                     return false;
@@ -161,7 +186,7 @@ namespace Sodu.ViewModel
                     // this.BookList.Clear();
                     //}
                     CommonMethod.ShowMessage("已加载" + PageIndex + "页，共8页");
-
+                    this.PageIndex = pageIndex;
                     if (this.BookList == null)
                     {
                         this.BookList = new ObservableCollection<BookEntity>();
@@ -183,6 +208,29 @@ namespace Sodu.ViewModel
             return false;
         }
 
+        public RelayCommand<object> FirstPageCommand
+        {
+            get
+            {
+                return new RelayCommand<object>((obj) =>
+                {
+                    if (IsLoading) return;
+                    RefreshData(1);
+                });
+            }
+        }
+
+        public RelayCommand<object> LastPageCommand
+        {
+            get
+            {
+                return new RelayCommand<object>((obj) =>
+                {
+                    if (IsLoading) return;
+                    RefreshData(PageCount);
+                });
+            }
+        }
         #region  上拉刷新,下拉加载
 
         ///跳转到相应页数
@@ -207,6 +255,7 @@ namespace Sodu.ViewModel
             }
         }
 
+
         /// <summary>
         ///跳转到相应页数
         /// </summary>
@@ -221,7 +270,11 @@ namespace Sodu.ViewModel
         private void OnRequestCommand(object obj)
         {
             if (IsLoading) return;
-            if (PageIndex == 8) return;
+            if (PageIndex == PageCount)
+            {
+                CommonMethod.ShowMessage("已经是最后一页");
+                return;
+            }
             RefreshData(PageIndex + 1);
         }
 
@@ -237,7 +290,11 @@ namespace Sodu.ViewModel
         private void OnPrePageCommandd(object obj)
         {
             if (IsLoading) return;
-            if (PageIndex == 1) return;
+            if (PageIndex == 1)
+            {
+                CommonMethod.ShowMessage("已经是第一页");
+                return;
+            }
             RefreshData(PageIndex - 1);
         }
 

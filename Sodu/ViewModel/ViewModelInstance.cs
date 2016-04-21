@@ -100,6 +100,23 @@ namespace Sodu.ViewModel
             }
         }
 
+        private HotPageViewModel m_HotPageViewModelInstance;
+        public HotPageViewModel HotPageViewModelInstance
+        {
+            get
+            {
+                if (m_HotPageViewModelInstance == null)
+                {
+                    m_HotPageViewModelInstance = new HotPageViewModel();
+                }
+                return m_HotPageViewModelInstance;
+            }
+            set
+            {
+                SetProperty(ref this.m_HotPageViewModelInstance, value);
+            }
+        }
+
         private RankListPageViewModel m_RankListPageViewModelInstance;
         public RankListPageViewModel RankListPageViewModelInstance
         {

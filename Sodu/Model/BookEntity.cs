@@ -29,7 +29,7 @@ namespace Sodu.Model
         ///未读提示
         /// </summary>
         public string UnReadCountData { get; set; }
-        /// <summary>
+        /// <summary>   
         ///更新时间
         /// </summary>
         public string UpdateTime { get; set; }
@@ -40,12 +40,12 @@ namespace Sodu.Model
         /// <summary>
         ///目录地址
         /// </summary>
-        public string ContentsUrl { get; set; }
+        public string CatalogUrl { get; set; }
 
         /// <summary>
         ///来源网站
         /// </summary>
-        public string LyUrl { get; set; }
+        public string LyWeb { get; set; }
 
 
 

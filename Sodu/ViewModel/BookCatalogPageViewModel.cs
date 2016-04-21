@@ -117,8 +117,8 @@ namespace Sodu.ViewModel
                     BookName = temp.BookName,
                     ChapterName = temp.ChapterName,
                     ChapterUrl = temp.ChapterUrl,
-                    ContentsUrl = temp.ContentsUrl,
-                    LyUrl = temp.LyUrl,
+                    CatalogUrl = temp.CatalogUrl,
+                    LyWeb = temp.LyWeb,
                     UpdateTime = temp.UpdateTime,
                 };
 
@@ -142,8 +142,8 @@ namespace Sodu.ViewModel
             try
             {
                 IsLoading = true;
-                string html = await http.HttpClientGetRequest(url, true);
-                bool result = await SetCatalogList(html, CurrentBookEntity.LyUrl);
+                string html = await http.WebRequestGet(url, true);
+                bool result = await SetCatalogList(html, CurrentBookEntity.LyWeb);
                 return result;
             }
             catch (Exception)

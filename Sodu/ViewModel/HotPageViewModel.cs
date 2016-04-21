@@ -4,22 +4,19 @@ using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace Sodu.ViewModel
 {
-    public class HomePageViewModel : BaseViewModel, IViewModel
+    //class HotPageViewModel
+    //{
+    //}
+    public class HotPageViewModel : BaseViewModel, IViewModel
     {
         private int m_PageIndex = 1;
         public int PageIndex
@@ -96,7 +93,7 @@ namespace Sodu.ViewModel
                 }
             }
         }
-        public HomePageViewModel()
+        public HotPageViewModel()
         {
         }
 
@@ -166,19 +163,21 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    if (arraryList[1] != null)
+                    if (arraryList[2] != null)
                     {
-                        CommonMethod.ShowMessage("已获取" + arraryList[1].Count + "条数据");
+                        CommonMethod.ShowMessage("已获取" + arraryList[2].Count + "条数据");
                     }
                     this.BookList.Clear();
-                    foreach (var item in arraryList[1])
+                    foreach (var item in arraryList[2])
                     {
                         this.BookList.Add(item);
                         await Task.Delay(1);
                     }
                     result = true;
 
-                    ViewModelInstance.Instance.HotPageViewModelInstance.BookList = arraryList[2];
+
+                    ViewModelInstance.Instance.HomePageViewModelInstance.BookList = arraryList[1];
+
                     return result;
                 }
             }

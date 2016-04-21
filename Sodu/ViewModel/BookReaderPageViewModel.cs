@@ -125,14 +125,14 @@ namespace Sodu.ViewModel
             }
             else
             {
-                string html = await http.HttpClientGetRequest(CurrentBookEntity.ChapterUrl, false);
+                string html = await http.WebRequestGet(CurrentBookEntity.ChapterUrl, false);
                 if (string.IsNullOrEmpty(html))
                 {
                     throw new Exception();
                 }
-                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(CurrentBookEntity.LyUrl))
+                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(CurrentBookEntity.LyWeb))
                 {
-                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, CurrentBookEntity.LyUrl);
+                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, CurrentBookEntity.LyWeb);
                     if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
                     {
                         Services.CommonMethod.ShowMessage("未能解析到正文内容。");

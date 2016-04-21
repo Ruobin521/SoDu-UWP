@@ -186,33 +186,14 @@ namespace Sodu.ViewModel
             try
             {
 
-                if (ViewModelInstance.Instance.IsLogin)
+                if (!ViewModelInstance.Instance.IsLogin)
                 {
-                    /////暂时默认没有自动登陆
                     this.CurrentMenuList = this.UnloadMenuList;
                 }
                 else
                 {
-                    /////暂时默认没有自动登陆
                     this.CurrentMenuList = this.LoadMenuList;
                 }
-
-                //    //if (ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin)
-                //    //{
-                //    //    if (this.CurrentMenuList != this.LoadMenuList)
-                //    //    {
-                //    //        this.CurrentMenuList = this.LoadMenuList;
-                //    //    }
-                //    //}
-                //    //else
-                //    //{
-                //    this.CurrentMenuList = this.UnloadMenuList;
-                //    //}
-
-                //    //if (this.CurrentMenuList != null && this.CurrentMenuList.Count > 0)
-                //    //{
-                //    //    this.CurrentMenu = this.CurrentMenuList[0];
-                //    //}
             }
             catch (Exception ex)
             {
@@ -345,7 +326,7 @@ namespace Sodu.ViewModel
 
             if (entity != null)
             {
-                if (entity.LyUrl.Equals("起点中文网")) return;
+                if (entity.LyWeb.Equals("起点中文网")) return;
                 MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
                 //0 表示从更新列表跳转 1 表示从目录跳转
                 NavigateToPage(menu, new object[] { "0", entity });
@@ -371,7 +352,7 @@ namespace Sodu.ViewModel
                     {
                         IsLeftPanelOpen = false;
                         HttpHelper http = new HttpHelper();
-                        string html = await http.HttpClientGetRequest(PageUrl.LogoutPage);
+                        string html = await http.WebRequestGet(PageUrl.LogoutPage);
                         if (html != null && html.Contains("您已经成功退出网站"))
                         {
                             ChangeLoginState(false);

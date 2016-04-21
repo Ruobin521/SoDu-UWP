@@ -217,7 +217,8 @@ namespace Sodu.ViewModel
                 string url = null;
                 if (ReadingMode.Equals("0"))
                 {
-                    url = Constants.PageUrl.HomePage + CurrentBookEntity.ChapterUrl;
+                    DirectionArrowShow = false;
+                    url = CurrentBookEntity.ChapterUrl;
                     this.ContentTitle = CurrentBookEntity.ChapterName;
                     bool result = await SetContentString(url, CurrentBookEntity);
                     if (!result)
@@ -274,14 +275,14 @@ namespace Sodu.ViewModel
         {
             try
             {
-                string html = await http.HttpClientGetRequest(url, false);
+                string html = await http.WebRequestGet(url, true);
                 if (string.IsNullOrEmpty(html))
                 {
                     throw new Exception();
                 }
-                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(entity.LyUrl))
+                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(entity.LyWeb))
                 {
-                    CatalogUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogUrl(html, entity.LyUrl);
+                    CatalogUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogUrl(html, entity.LyWeb);
                     if (string.IsNullOrEmpty(CatalogUrl))
                     {
                         IsCatalogMenuShow = false;
@@ -290,7 +291,7 @@ namespace Sodu.ViewModel
                     {
                         IsCatalogMenuShow = true;
                     }
-                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, entity.LyUrl);
+                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, entity.LyWeb);
                     if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
                     {
                         Services.CommonMethod.ShowMessage("未能解析到正文内容。");
@@ -302,12 +303,12 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-                    this.TextContent = Regex.Replace(html, "<.*?>", "");
+                    html = Services.AnalysisContentHtmlService.ReplaceSymbol(html);
+                    this.TextContent = html;
                     return true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

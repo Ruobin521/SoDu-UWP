@@ -28,6 +28,19 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_PageIndex, value);
             }
         }
+
+        private BookEntity m_CurrentEntity;
+        public BookEntity CurrentEntity
+        {
+            get
+            {
+                return m_CurrentEntity;
+            }
+            set
+            {
+                SetProperty(ref this.m_CurrentEntity, value);
+            }
+        }
         private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
         public IconElement RefreshIcon
         {
@@ -88,13 +101,18 @@ namespace Sodu.ViewModel
         {
             try
             {
-                string html = string.Empty;
-                PageIndex = 1;
-                if (obj == null || (obj as BookEntity) == null)
+
+                if (obj == null || (obj as BookEntity) == null || (obj == null && this.ChapterList.Count > 0))
                 {
-                    CommonMethod.ShowMessage("数据有误");
                     return;
                 }
+
+                if (CurrentEntity == obj as BookEntity)
+                {
+                    return;
+                }
+
+                string html = string.Empty;
 
                 //  如果正在加载，或者提示不需要刷新，这时候不需要刷新了
                 if (IsLoading || !IsRefresh)
@@ -107,9 +125,10 @@ namespace Sodu.ViewModel
                     this.ChapterList.Clear();
                 }
                 // IsLoading = true;
-                CurrentPageUrl = (obj as BookEntity).ContentsUrl;
+                CurrentEntity = (obj as BookEntity);
+                CurrentPageUrl = (obj as BookEntity).CatalogUrl;
                 ContentTitle = (obj as BookEntity).BookName;
-                this.ContentTitle = ContentTitle;
+
                 bool result = await LoadPageDataByIndex(1);
             }
             catch (Exception ex)
@@ -136,12 +155,12 @@ namespace Sodu.ViewModel
             {
                 if (PageIndex == 1)
                 {
-                    html = await HttpHelper.HttpClientGetRequest(PageUrl.HomePage + CurrentPageUrl, true);
+                    html = await HttpHelper.WebRequestGet(CurrentPageUrl, true);
 
                 }
                 else
                 {
-                    html = await HttpHelper.HttpClientGetRequest(PageUrl.HomePage + CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + PageIndex), true);
+                    html = await HttpHelper.WebRequestGet(CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + PageIndex), true);
                 }
                 if (string.IsNullOrEmpty(html))
                 {
@@ -162,7 +181,6 @@ namespace Sodu.ViewModel
             {
                 IsLoading = false;
             }
-            return false;
         }
 
         public async Task<bool> SetBookList(string html)

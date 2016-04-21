@@ -20,17 +20,11 @@ namespace Sodu.Pages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class BookContentPage : Page
+    public sealed partial class HotPage : Page
     {
-        public BookContentPage()
+        public HotPage()
         {
             this.InitializeComponent();
-
-        }
-
-        private void txtContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            this.scrollViewer.ScrollToVerticalOffset(0);
         }
     }
 }

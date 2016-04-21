@@ -49,7 +49,8 @@ namespace Sodu.Constants
 
         public static ObservableCollection<MenuModel> UnloadMenuList = new ObservableCollection<MenuModel>()
         {
-            new MenuModel() { MenuName= "更新列表",MenuIcon="",MenuType=typeof(HomePage) },
+            new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
+            new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
             new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
             new MenuModel() { MenuName= "搜索",MenuIcon="",MenuType=typeof(SearchResultPage)},
@@ -74,7 +75,8 @@ namespace Sodu.Constants
         /// <summary>
         /// 首页地址
         /// </summary>
-        public const string HomePage = "http://www.soduso.com";
+        //public const string HomePage = "http://www.soduso.com";
+        public const string HomePage = "http://www.sodu.cc/";
 
         /// <summary>
         /// 登录页
@@ -113,7 +115,9 @@ namespace Sodu.Constants
         /// <summary>
         /// 排行榜地址
         /// </summary>
-        public const string BookRankListPage = "http://www.soduso.com/top_{0}.html";
+        //public const string BookRankListPage = "http://www.soduso.com/top_{0}.html";
+        public const string BookRankListPage = "http://www.sodu.cc/top.html";
+        public const string BookRankListPage2 = "http://www.sodu.cc/top_{0}.html";
 
         /// <summary>
         /// 看过的书

@@ -163,7 +163,7 @@ namespace Sodu.Services
             return result;
         }
 
-        private static string ReplaceSymbol(string html)
+        public static string ReplaceSymbol(string html)
         {
             string result = string.Empty;
             html = Regex.Replace(html, "<br.*?/>", "\n");

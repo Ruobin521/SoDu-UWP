@@ -101,6 +101,16 @@ namespace Sodu
                 Window.Current.Content = rootFrame;
             }
 
+
+            bool result = await ReadSettingData();
+            // IninAppCacheData();
+
+            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
+            {
+                Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+            }
+
+
             if (rootFrame.Content == null)
             {
                 // 当导航堆栈尚未还原时，导航到第一页，
@@ -111,13 +121,7 @@ namespace Sodu
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
 
-            await ReadSettingData();
-            // IninAppCacheData();
 
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
-            {
-                Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-            }
         }
 
 
@@ -127,14 +131,11 @@ namespace Sodu
             SettingPageViewModel appSetingViewModel = null;
             try
             {
-
                 string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
                 StorageFile file = null;
                 try
                 {
                     file = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
-                    await file.DeleteAsync();
-                    file = null;
                 }
                 catch (Exception)
                 {
@@ -143,39 +144,48 @@ namespace Sodu
 
                 if (file == null)
                 {
-                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = true, TextFontSzie = 22, UserName = "918201" };
+                    ///初始化设置默认值
+                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = false, TextFontSzie = 20, UserName = null };
                     await SerializeHelper.WriteAsync(appSetingViewModel, fileName);
+                    return true;
                 }
                 else
                 {
                     appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(fileName);
-                }
-                ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
-
-                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
-                foreach (var cookieItem in cookieCollection)
-                {
-                    if (cookieItem.Name == "loginname")
+                    if (appSetingViewModel.IfAutoLogin)
                     {
-                        // cookie = new HttpCookie(cookieItem.Name, cookieItem.Path, "/");
-                        // cookie.Value = cookieItem.Value;
-                        if (cookieItem.Value.Contains(appSetingViewModel.UserName))
+                        HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                        HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
+                        foreach (var cookieItem in cookieCollection)
                         {
-                            if (appSetingViewModel.IfAutoLogin)
+                            if (cookieItem.Name == "loginname")
                             {
-                                ViewModelInstance.Instance.IsLogin = true;
-                            }
-                            else
-                            {
-                                ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
-                                cookieItem.Expires = null;
-                                filter.CookieManager.SetCookie(cookieItem, false);
+                                // cookie = new HttpCookie(cookieItem.Name, cookieItem.Path, "/");
+                                // cookie.Value = cookieItem.Value;
+                                if (cookieItem.Value.Contains(appSetingViewModel.UserName))
+                                {
+                                    if (appSetingViewModel.IfAutoLogin)
+                                    {
+                                        ViewModelInstance.Instance.IsLogin = true;
+                                    }
+                                    else
+                                    {
+                                        ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
+                                        cookieItem.Expires = null;
+                                        filter.CookieManager.SetCookie(cookieItem, false);
+                                        ViewModelInstance.Instance.IsLogin = false;
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    else
+                    {
+                        ViewModelInstance.Instance.IsLogin = false;
+                    }
 
+                }
+                ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
             }
             catch (Exception ex)
             {

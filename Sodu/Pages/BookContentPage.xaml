@@ -24,8 +24,8 @@
         <Border Grid.Row="1" Child="{Binding WebViewBrowser}">
 
         </Border>
-        <ScrollViewer Grid.Row="1" Padding="5"   FontSize="{Binding ContentFontSzie}"   >
-            <TextBlock Text="{Binding TextContent}" TextWrapping="Wrap">
+        <ScrollViewer x:Name="scrollViewer" Grid.Row="1" Padding="5"   FontSize="{Binding ContentFontSzie}"   >
+            <TextBlock x:Name="txtContent" Text="{Binding ElementName=txtContent,Path=DataContext}" TextWrapping="Wrap"  DataContext="{Binding Instance.BookContentPageViewModelInstance.TextContent,Source={ StaticResource  Locator}}"  DataContextChanged="txtContent_DataContextChanged">
 
             </TextBlock>
         </ScrollViewer>

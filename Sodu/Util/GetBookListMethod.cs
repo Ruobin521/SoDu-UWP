@@ -22,39 +22,50 @@ namespace Sodu.Util
                 string html1 = html;
                 string html2 = html;
 
-                ObservableCollection<BookEntity> lookedList = null;
+                //整体
+                Match match = Regex.Match(html0, "<div class=\"main-head\">.*?<table");
+
+                if (match == null)
+                {
+                    return null;
+                }
+
+                //  MatchCollection matches = Regex.Matches(match.ToString(), "<div class=\"main-head\">.*?<div class=\"main-head\">");
+
+                var matches = match.ToString().Split(new string[] { "<div class=\"main-head\">" }, StringSplitOptions.RemoveEmptyEntries);
+                if (matches.Length < 3)
+                {
+                    return null;
+                }
+
+                ///站长推荐
+                ObservableCollection<BookEntity> recommendList = null;
                 try
                 {
-                    //曾经看过的小说
-                    Match readedMatch0 = Regex.Match(html0, "<form name=\"form1\".*?</form>");
-
-                    if (readedMatch0 != null && !string.IsNullOrEmpty(readedMatch0.ToString()))
+                    if (matches[1] != null && !string.IsNullOrEmpty(matches[1].ToString()))
                     {
-                        lookedList = CommonGetEntityList(readedMatch0.ToString(), false);
+                        recommendList = CommonGetEntityList(matches[1].ToString());
                     }
                 }
                 catch (Exception)
                 {
-                    lookedList = null;
+                    recommendList = null;
                 }
 
 
-                //个人书架
-                ObservableCollection<BookEntity> personalList = null;
+                //热门小说
+                ObservableCollection<BookEntity> hotList = null;
                 try
                 {
-                    Match readedMatch = Regex.Match(html1, "<form name=\"form2\".*?</form>");
-
-                    if (readedMatch != null && !string.IsNullOrEmpty(readedMatch.ToString()))
+                    if (matches[2] != null && !string.IsNullOrEmpty(matches[2].ToString()))
                     {
-                        personalList = CommonGetEntityList(readedMatch.ToString(), true);
+                        hotList = CommonGetEntityList(matches[2].ToString());
                     }
                 }
                 catch (Exception)
                 {
-                    personalList = null;
+                    hotList = null;
                 }
-
 
                 try
                 {
@@ -75,9 +86,9 @@ namespace Sodu.Util
                 }
                 ObservableCollection<BookEntity> updateList = CommonGetEntityList(html2);
 
-                listArray[0] = lookedList;
-                listArray[1] = personalList;
-                listArray[2] = updateList;
+                listArray[0] = null;
+                listArray[1] = recommendList;
+                listArray[2] = hotList;
             }
             catch (Exception)
             {
@@ -85,6 +96,47 @@ namespace Sodu.Util
             }
 
             return listArray;
+        }
+        public static ObservableCollection<BookEntity> GetRankListFromHtml(string html)
+        {
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+
+            //个人书架
+            ObservableCollection<BookEntity> t_list = new ObservableCollection<BookEntity>();
+
+            MatchCollection matches = Regex.Matches(html, "<div class=\"main-html\".*?<div style=\"width:88px;float:left;\">.*?</div>");
+            if (matches.Count == 0)
+            {
+                t_list = null;
+                return t_list;
+            }
+
+            BookEntity t_entity;
+            for (int i = 0; i < matches.Count; i++)
+            {
+                t_entity = new BookEntity();
+
+                try
+                {
+                    Match match = Regex.Match(matches[i].ToString(), "<a href=\"javascript.*?</a>");
+
+
+                    t_entity.BookName = Regex.Match(match.ToString(), "(?<=addToFav\\(.*?').*?(?=')").ToString();
+                    t_entity.CatalogUrl = Regex.Match(matches[i].ToString(), "(?<=<a href=\").*?(?=\">.*?</a>)").ToString();
+                    t_entity.BookID = Regex.Match(match.ToString(), "(?<=id=\").*?(?=\")").ToString();
+                    t_entity.ChapterName = Regex.Match(matches[i].ToString(), "(?<=<a href.*?>).*?(?=</a>)", RegexOptions.RightToLeft).ToString();
+
+                    Match match2 = Regex.Match(matches[i].ToString(), "(<div.*?>).*?(?=</div>)", RegexOptions.RightToLeft);
+                    t_entity.UpdateTime = Regex.Replace(match2.ToString(), "<.*?>", "");
+                    t_list.Add(t_entity);
+                }
+                catch
+                {
+                    t_list = null;
+                    return t_list;
+                }
+            }
+            return t_list;
         }
 
         public static ObservableCollection<BookEntity> GetUpdatePageBookList(string html)
@@ -101,18 +153,15 @@ namespace Sodu.Util
             ObservableCollection<BookEntity> updateList = CommonGetEntityList(html);
             return updateList;
         }
+
         public static ObservableCollection<BookEntity> GetBookShelftListFromHtml(string html)
         {
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<form name=\"form2\".*?</form>");
             //个人书架
             ObservableCollection<BookEntity> personalList = new ObservableCollection<BookEntity>();
-            Match readedMatch = Regex.Match(html, "<form name=\"form2\".*?</form>");
+            personalList = CommonGetEntityList(html);
 
-            if (readedMatch != null && !string.IsNullOrEmpty(readedMatch.ToString()))
-            {
-                personalList = CommonGetEntityList(readedMatch.ToString(), true);
-            }
             return personalList;
         }
         public static ObservableCollection<BookEntity> GetSearchResultkListFromHtml(string html)
@@ -129,10 +178,10 @@ namespace Sodu.Util
         }
 
 
-        public static ObservableCollection<BookEntity> CommonGetEntityList(string html, bool flag = false)
+        public static ObservableCollection<BookEntity> CommonGetEntityList(string html)
         {
             ObservableCollection<BookEntity> t_list = new ObservableCollection<BookEntity>();
-            MatchCollection matches = Regex.Matches(html, "<a href=\"/mulu.*?>.*?</div></div>");
+            MatchCollection matches = Regex.Matches(html, "<div class=\"main-html\".*?class=xt1.*?</div>");
             //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
             if (matches.Count == 0)
             {
@@ -144,38 +193,17 @@ namespace Sodu.Util
             for (int i = 0; i < matches.Count; i++)
             {
                 t_entity = new BookEntity();
-                string t_string = "<div>" + matches[i].ToString();
+
                 try
                 {
-                    MatchCollection matches2 = Regex.Matches(t_string, "<div.*?>.*?</div>");
-                    if (matches.Count == 0)
-                    {
-                        continue;
-                    }
-                    t_entity.BookName = Regex.Replace(matches2[0].ToString(), "<.*?>", "");
-                    t_entity.ContentsUrl = Regex.Match(matches2[0].ToString(), "(?<=<a href=\").*?(?=\">)").ToString();
+                    Match match = Regex.Match(matches[i].ToString(), "<div style=\"width:482px;float:left;\">.*?</div>");
+                    t_entity.BookName = Regex.Match(match.ToString(), "(?<=alt=\").*?(?=\")").ToString();
+                    t_entity.CatalogUrl = Regex.Match(match.ToString(), "(?<=<a href=\").*?(?=\")").ToString();
+                    t_entity.BookID = Regex.Match(matches[i].ToString(), "(?<=class=\"bookset\".*?id=\").*?(?=\")").ToString();
+                    t_entity.ChapterName = Regex.Replace(match.ToString(), "<.*?>", "");
+                    Match match2 = Regex.Match(matches[i].ToString(), "(?<=<.*?class=xt1>).*?(?=</div>)");
+                    t_entity.UpdateTime = match2.ToString();
 
-                    t_entity.BookID = Regex.Match(matches2[0].ToString(), "(?<=<a href=.*?_).*?(?=.html)").ToString();
-
-
-
-                    t_entity.ChapterName = Regex.Replace(matches2[1].ToString(), "<.*?>", "");
-
-                    Match str_Unread = Regex.Match(t_entity.ChapterName, @"\(未读.*?\)");
-                    if (str_Unread != null && !string.IsNullOrEmpty(str_Unread.ToString()))
-                    {
-                        t_entity.UnReadCountData = str_Unread.ToString();
-                        t_entity.ChapterName = t_entity.ChapterName.Replace(t_entity.UnReadCountData, "");
-                    }
-                    t_entity.UpdateTime = Regex.Replace(matches2[2].ToString(), "<.*?>", "");
-                    //if (flag)
-                    //{
-                    //    t_entity.IfBookshelf = true;
-                    //}
-                    //else
-                    //{
-                    //    t_entity.IfBookshelf = false;
-                    //}
                     t_list.Add(t_entity);
                 }
                 catch
@@ -189,21 +217,22 @@ namespace Sodu.Util
         }
 
 
-
         public static List<BookEntity> GetBookUpdateChapterList(string html)
         {
             List<BookEntity> list = new List<BookEntity>();
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match str = Regex.Match(html, "<center><script.*?>.*</div></div>");
-            MatchCollection collections = Regex.Matches(str.ToString(), "<a href=.*?>.*?</div></div>");
+            MatchCollection matches = Regex.Matches(html, "<div class=\"main-html\".*?class=\"xt1.*?</div>");
 
-            foreach (var item in collections)
+            foreach (var item in matches)
             {
+                MatchCollection matches2 = Regex.Matches(item.ToString(), "<a href.*?</a>");
                 BookEntity t_entity = new BookEntity();
-                t_entity.ChapterUrl = Regex.Match(item.ToString(), "(?<=<a href=').*?(?=')").ToString();
-                t_entity.ChapterName = Regex.Match(item.ToString(), "(?<=<a href=.*?>).*?(?=</a>)").ToString();
-                t_entity.LyUrl = Regex.Match(item.ToString(), "(?<=<a href=.*?>).*?(?=</a>)", RegexOptions.RightToLeft).ToString();
-                t_entity.UpdateTime = Regex.Match(item.ToString(), "(?<=<div.*?>).*?(?=</div></div>)", RegexOptions.RightToLeft).ToString();
+                t_entity.ChapterUrl = Regex.Match(matches2[0].ToString(), "(?<=&chapterurl=).*?(?=\")").ToString();
+                t_entity.ChapterName = Regex.Replace(matches2[0].ToString(), "<.*?>", "").ToString();
+                t_entity.LyWeb = Regex.Replace(matches2[1].ToString(), "<.*?>", "").ToString();
+
+                Match match2 = Regex.Match(item.ToString(), "(?<=<.*?class=\"xt1\">).*?(?=</div>)");
+                t_entity.UpdateTime = match2.ToString();
 
                 list.Add(t_entity);
             }

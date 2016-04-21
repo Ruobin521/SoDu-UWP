@@ -124,6 +124,9 @@
     <Compile Include="Pages\EverReadPage.xaml.cs">
       <DependentUpon>EverReadPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\HotPage.xaml.cs">
+      <DependentUpon>HotPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\RankListPage.xaml.cs">
       <DependentUpon>RankListPage.xaml</DependentUpon>
     </Compile>
@@ -196,6 +199,7 @@
     <Compile Include="ViewModel\BookReaderPageViewModel.cs" />
     <Compile Include="ViewModel\EverReadBookPageViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
+    <Compile Include="ViewModel\HotPageViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
@@ -244,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EverReadPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\HotPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

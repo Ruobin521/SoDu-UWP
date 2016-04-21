@@ -143,7 +143,7 @@ namespace Sodu.ViewModel
                 //}
                 // ViewModelInstance.Instance.NeedSelfShelfRefresh = false;
                 IsLoading = true;
-                html = await HttpHelper.HttpClientGetRequest(PageUrl.HomePage);
+                html = await HttpHelper.WebRequestGet(PageUrl.HomePage);
 
                 if (string.IsNullOrEmpty(html))
                 {
@@ -199,7 +199,7 @@ namespace Sodu.ViewModel
                             await Task.Delay(1);
                         }
                     }
-                    ViewModelInstance.Instance.HomePageViewModelInstance.UpdateBookList = ArrayList[2];
+                    //ViewModelInstance.Instance.HomePageViewModelInstance = ArrayList[2];
                 }
 
             }

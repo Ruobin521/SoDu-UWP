@@ -80,9 +80,9 @@ namespace Sodu.Services
             {
                 CancleHttpRequest();
 
-                _ContentFrame.Navigated -= _ContentFrame_Navigated;
+               // _ContentFrame.Navigated -= _ContentFrame_Navigated;
                 ContentFrame.GoBack();
-                _ContentFrame.Navigated += _ContentFrame_Navigated;
+                //_ContentFrame.Navigated += _ContentFrame_Navigated;
             }
             else
             {

@@ -170,7 +170,7 @@ namespace Sodu.ViewModel
                 IsLoading = true;
                 string uri = string.Format(PageUrl.BookSearchPage, ChineseGBKConverter.Utf8ToGb2312(SearchPara), CurrentPageIndex);
 
-                string html = await http.HttpClientGetRequest(uri);
+                string html = await http.WebRequestGet(uri);
                 this.MaxPageIndex = GetMaxPageIndex(html);
                 SearchResultList = GetBookListMethod.GetSearchResultkListFromHtml(html);
                 IsShow = true;
