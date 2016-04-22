@@ -165,7 +165,7 @@ namespace Sodu.ViewModel
                 {
                     if (arraryList[2] != null)
                     {
-                        CommonMethod.ShowMessage("已获取" + arraryList[2].Count + "条数据");
+                        CommonMethod.ShowMessage("已更新" + arraryList[2].Count + "条数据");
                     }
                     this.BookList.Clear();
                     foreach (var item in arraryList[2])

@@ -1,4 +1,5 @@
-﻿using Sodu.Model;
+﻿using GalaSoft.MvvmLight.Command;
+using Sodu.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,23 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_TextFontSzie, value);
+            }
+        }
+
+        private List<int> m_FontSzieList;
+        /// <summary>
+        /// 阅读显示字体大小  14-26
+        /// </summary>
+        [XmlIgnore]
+        public List<int> FontSzieList
+        {
+            get
+            {
+                return m_FontSzieList;
+            }
+            set
+            {
+                SetProperty(ref m_FontSzieList, value);
             }
         }
 
@@ -77,8 +95,31 @@ namespace Sodu.ViewModel
             }
         }
 
+
+        public SettingPageViewModel()
+        {
+            this.FontSzieList = new List<int>()
+            {
+               14,16,18,20,22,24,26
+            };
+        }
+
+
+
+
+        /// </summary>
+        public RelayCommand<object> SaveCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(OnSaveCommand);
+            }
+        }
+
+        private void OnSaveCommand(object obj)
+        {
+
+
+        }
     }
-
-
-
 }

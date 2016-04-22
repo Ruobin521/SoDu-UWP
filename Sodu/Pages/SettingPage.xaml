@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    DataContext="{Binding Instance.SettingPageViewModelInstance,Source={ StaticResource  Locator}}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
@@ -13,15 +14,39 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <TextBlock x:Name="TextTitle"   Text="设置" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
         <!--<Border Grid.Row="1" Visibility="{Binding IsShow,Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock Text="还没有阅读记录" FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,10"/>
         </Border>-->
+        <Grid Margin="0,35,0,10" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" Grid.Row="1"  Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <ToggleSwitch x:Name="togAutoLogin" Grid.Column="1" Grid.Row="2" Foreground="Black" IsOn="{Binding IfAutoLogin,Mode=OneWay}" ></ToggleSwitch>
+
+            <TextBlock Grid.Column="1" Grid.Row="3"  Text="登陆后，自动添加点击小说到个人收藏" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <ToggleSwitch x:Name="togAutoAdd" Grid.Column="1"  Grid.Row="4" Foreground="Black"   IsOn="{Binding IfAutAddToShelf,Mode=OneWay}"></ToggleSwitch>
+
+            <TextBlock Grid.Column="1" Grid.Row="5"  Text="正文阅读字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <ComboBox x:Name="font" Grid.Column="1" Grid.Row="6" Foreground="Black" ItemsSource="{Binding FontSzieList}" SelectedItem="{Binding  TextFontSzie,Mode=OneWay}"  FontSize="18"></ComboBox>
+        </Grid>
 
 
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
-            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
+            <AppBarButton Icon="Save" Label="保存"   Click="AppBarButton_Click"/>
         </CommandBar>
     </Grid>
 

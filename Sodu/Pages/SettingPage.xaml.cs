@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,14 @@ namespace Sodu.Pages
         public SettingPage()
         {
             this.InitializeComponent();
+        }
+
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.SettingPageViewModel viewModel = this.DataContext as SettingPageViewModel;
+
+
+            if(this.)
         }
     }
 }

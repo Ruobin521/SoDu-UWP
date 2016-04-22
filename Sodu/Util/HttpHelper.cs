@@ -25,9 +25,10 @@ namespace Sodu.Util
     {
 
         public CancellationTokenSource Cts = new CancellationTokenSource();
+        WebRequest Request;
+
 
         Encoding DefauleEncoding = Encoding.GetEncoding("gb2312");
-
         /// <summary>
         /// 获取html代码
         /// </summary>
@@ -45,64 +46,41 @@ namespace Sodu.Util
             {
                 url = url + "?time=" + GetTimeStamp();
             }
-            WebRequest request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
-            request.Method = "GET";    //设置请求方式为GET
-            request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
-            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
-
-            var response = await request.GetResponseAsync();
-            Stream stream = null;
-            if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
-            {
-                stream = response.Headers[HttpRequestHeader.ContentEncoding].Equals("gzip",
-                               StringComparison.CurrentCultureIgnoreCase) ? new GZipStream(response.GetResponseStream(), CompressionMode.Decompress) : response.GetResponseStream();
-            }
-            else
-            {
-                stream = response.GetResponseStream();
-            }
-            var ms = new MemoryStream();
-            var buffer = new byte[1024];
-            while (true)
-            {
-                if (stream == null) continue;
-                var sz = stream.Read(buffer, 0, 1024);
-                if (sz == 0) break;
-                ms.Write(buffer, 0, sz);
-            }
-            var bytes = ms.ToArray();
-            string html = string.Empty;
-            //var html = /*Encoding.UTF8.GetString(bytes);*///GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]).GetString(bytes);  t
-            try
-            {
-                var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
-                html = encoding.GetString(bytes);
-                await stream.FlushAsync();
-            }
-            catch (Exception ex)
-            {
-
-            }
-
+            Request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+            Request.Method = "GET";    //设置请求方式为GET
+            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+            Request.Proxy = null;
+            // Request.Headers["Timeout"] = "300";
+            string html = await GetReponseHtml(Request);
             return html;
-
         }
 
         public async Task<string> WebRequestPost(string url, string postData)
         {
-            HttpWebRequest request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
-            request.Method = "POST";    //设置请求方式为GET
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
-            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+            Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+            Request.Method = "POST";    //设置请求方式为GET
+            Request.ContentType = "application/x-www-form-urlencoded";
+            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+            Request.Proxy = null;
 
 
-            using (Stream str = await request.GetRequestStreamAsync())
+            using (Stream str = await Request.GetRequestStreamAsync())
             {
                 string content = postData;
                 byte[] data = Encoding.UTF8.GetBytes(content);
                 str.Write(data, 0, data.Length);
             }
+
+            string html = await GetReponseHtml(Request);
+            return html;
+
+        }
+
+        public async Task<string> GetReponseHtml(WebRequest request)
+        {
+            string html = string.Empty;
             var response = await request.GetResponseAsync();
             Stream stream = null;
             if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
@@ -124,8 +102,6 @@ namespace Sodu.Util
                 ms.Write(buffer, 0, sz);
             }
             var bytes = ms.ToArray();
-            string html = string.Empty;
-            //var html = /*Encoding.UTF8.GetString(bytes);*///GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]).GetString(bytes);  t
             try
             {
                 var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
@@ -136,25 +112,16 @@ namespace Sodu.Util
             {
 
             }
-
             return html;
-
         }
 
 
         public Encoding GetEncoding(byte[] bytes, string charSet)
         {
             var html = Encoding.UTF8.GetString(bytes);
-            //  var regCharset = new Regex(@".*?/.*?;.*?=.*?");
             string strCharSet =
            Regex.Match(html, @"<meta.*?charset=""?([a-z0-9-]+)\b", RegexOptions.IgnoreCase)
            .Groups[1].Value;
-            //if (regCharset.IsMatch(html))
-            //{
-            //    //text/html; charset=utf-8
-            //    string encodingName = Regex.Match(regCharset.Match(html).ToString(), "(?<=.*?charset=).*$").ToString().ToUpper();
-            //    return Encoding.GetEncoding(encodingName);
-            //}
 
             return !string.IsNullOrEmpty(strCharSet) ? Encoding.GetEncoding(strCharSet) : Encoding.UTF8;
         }
@@ -263,7 +230,6 @@ namespace Sodu.Util
             string html = string.Empty;
             try
             {
-
                 CancellationTokenSource cts = new CancellationTokenSource();
                 HttpClient httpclient = new HttpClient();
                 HttpStringContent httpStringContent = new HttpStringContent(postData);
@@ -316,12 +282,28 @@ namespace Sodu.Util
         }
 
 
-        public void HttpClientCancleRequest()
+        public void HttpClientCancleRequest2()
         {
             if (Cts.Token.CanBeCanceled)
             {
                 this.Cts.Cancel();
             }
+        }
+
+        public void HttpClientCancleRequest()
+        {
+            try
+            {
+                if (Request != null)
+                {
+                    Request.Abort();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
     }
 }

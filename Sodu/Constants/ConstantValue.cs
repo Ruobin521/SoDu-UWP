@@ -49,8 +49,8 @@ namespace Sodu.Constants
 
         public static ObservableCollection<MenuModel> UnloadMenuList = new ObservableCollection<MenuModel>()
         {
-            new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
             new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
+            new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
             //new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
             new MenuModel() { MenuName= "搜索",MenuIcon="",MenuType=typeof(SearchResultPage)},
@@ -62,8 +62,8 @@ namespace Sodu.Constants
         public static ObservableCollection<MenuModel> LoadMenuList = new ObservableCollection<MenuModel>()
         {
             new MenuModel() { MenuName= "个人书架",MenuIcon="",MenuType=typeof(MyBookShelfPage)},
-              new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
             new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
+              new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(HomePage) },
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
             //new MenuModel() { MenuName= "阅读记录",MenuIcon="",MenuType=typeof(EverReadPage)},
             new MenuModel() { MenuName= "搜索",MenuIcon="",MenuType=typeof(SearchResultPage)},

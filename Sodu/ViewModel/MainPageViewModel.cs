@@ -419,7 +419,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                     {
-                        MenuModel menu = new MenuModel() { MenuName = "设置", MenuType = typeof(CodingPage) };
+                        MenuModel menu = new MenuModel() { MenuName = "设置", MenuType = typeof(SettingPage) };
                         NavigateToPage(menu, null);
                     });
             }
