@@ -313,6 +313,7 @@ namespace Sodu.ViewModel
         }
         private void OnSelectAllCommand(object obj)
         {
+            if (!IsEditing) return;
             if (obj != null && obj.ToString().Equals("0"))
             {
                 foreach (var item in ShelfBookList)
@@ -352,29 +353,34 @@ namespace Sodu.ViewModel
                 }));
                 await msgDialog.ShowAsync();
             }
-
-            List<BookEntity> removeList = new List<BookEntity>();
-
-            foreach (var item in ShelfBookList)
+            else
             {
-                if (item.IsSelected == true)
+
+
+
+                List<BookEntity> removeList = new List<BookEntity>();
+
+                foreach (var item in ShelfBookList)
                 {
-                    removeList.Add(item);
+                    if (item.IsSelected == true)
+                    {
+                        removeList.Add(item);
+                    }
                 }
-            }
 
-            if (removeList.Count > 0)
-            {
-                var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消收藏" + removeList.Count + "本小说？") { Title = "取消收藏" };
-                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                if (removeList.Count > 0)
                 {
-                    RemoveBook(removeList);
-                }));
-                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
-                {
-                    return;
-                }));
-                await msgDialog.ShowAsync();
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消收藏" + removeList.Count + "本小说？") { Title = "取消收藏" };
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                    {
+                        RemoveBook(removeList);
+                    }));
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
+                    {
+                        return;
+                    }));
+                    await msgDialog.ShowAsync();
+                }
             }
         }
 

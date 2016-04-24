@@ -31,9 +31,6 @@ namespace Sodu.Pages
         private void AppBarButton_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.SettingPageViewModel viewModel = this.DataContext as SettingPageViewModel;
-
-
-            if(this.)
         }
     }
 }
