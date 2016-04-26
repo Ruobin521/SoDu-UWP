@@ -17,6 +17,8 @@ namespace Sodu.ViewModel
 {
     public class BookCatalogPageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
+
         public string ContentTitle
         {
             get; set;
@@ -100,15 +102,14 @@ namespace Sodu.ViewModel
         {
             try
             {
+                if (!IsNeedRefresh) return;
+
                 if (obj == null)
                 {
                     return;
                 }
                 object[] para = obj as object[];
-                if (this.CurrentBookEntity != null && this.CurrentBookEntity.BookName == (para[1] as BookEntity).BookName)
-                {
-                    return;
-                }
+
                 this.BaseUrl = para[0].ToString();
                 BookEntity temp = para[1] as BookEntity;
                 this.CurrentBookEntity = new BookEntity()
@@ -200,17 +201,23 @@ namespace Sodu.ViewModel
                         {
                             BookCatalog catalog = str as BookCatalog;
                             if (catalog == null) return;
-                            string url = BaseUrl + "/" + catalog.CatalogUrl;
-                            CurrentBookEntity.ChapterUrl = BaseUrl + "/" + catalog.CatalogUrl;
+                            this.IsNeedRefresh = false;
+                            CurrentBookEntity.ChapterUrl = catalog.CatalogUrl;
                             CurrentBookEntity.ChapterName = catalog.CatalogName;
                             MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
-                            NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
+
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.BookEntity = CurrentBookEntity;
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.CurrentCatalog = catalog;
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.CatalogList = this.CatalogList;
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = false;
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.SetContent();
+                            NavigationService.GoBack(null, null);
+                            //   NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
                         }
                         catch (Exception)
                         {
 
                         }
-
                     }
                 });
             }
@@ -262,6 +269,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<object>(OnDwonLoadhCommandd);
             }
         }
+
 
         private void OnDwonLoadhCommandd(object obj)
         {

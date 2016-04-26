@@ -14,6 +14,7 @@ namespace Sodu.ViewModel
 {
     public class RegiserPageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
 
         private string _ContentTitle = "用户注册";
         public string ContentTitle

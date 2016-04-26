@@ -42,7 +42,7 @@
             </control:PullToRefreshListView.RefreshIndicatorContent>-->
             <Interactivity:Interaction.Behaviors >
                 <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  Instance.MainPageViewModelInstance.BookChapterSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
+                    <Core:InvokeCommandAction Command="{Binding  BookChapterSelectedChangedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
                 </Core:EventTriggerBehavior>
             </Interactivity:Interaction.Behaviors>
         </ListView>

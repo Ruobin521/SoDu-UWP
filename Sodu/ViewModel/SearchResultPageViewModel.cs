@@ -15,6 +15,7 @@ namespace Sodu.ViewModel
 {
     public class SearchResultPageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
 
         private string _ContentTitle = "搜索";
         public string ContentTitle

@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
 using Sodu.Model;
+using Sodu.Pages;
 using Sodu.Services;
 using Sodu.Util;
 using System;
@@ -16,6 +17,8 @@ namespace Sodu.ViewModel
 {
     public class UpdateChapterViewModel : BaseViewModel, IViewModel
     {
+
+        public bool IsNeedRefresh { get; set; } = true;
 
         private int m_PageIndex = 1;
         public int PageIndex
@@ -127,6 +130,8 @@ namespace Sodu.ViewModel
         {
             try
             {
+                if (!IsNeedRefresh) return;
+
                 if (obj == null || (obj as BookEntity) == null || (obj == null && this.ChapterList.Count > 0))
                 {
                     return;
@@ -145,7 +150,7 @@ namespace Sodu.ViewModel
                     this.ChapterList = new ObservableCollection<BookEntity>();
                 }
                 string html = string.Empty;
-                PageCount = 0;
+                PageCount = 1;
                 PageIndex = 1;
                 CurrentEntity = (obj as BookEntity);
                 CurrentPageUrl = (obj as BookEntity).CatalogUrl;
@@ -197,7 +202,7 @@ namespace Sodu.ViewModel
                 {
                     throw new Exception();
                 }
-                if (PageCount == 0)
+                if (PageCount == 1)
                 {
                     Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
                     if (match != null)
@@ -328,7 +333,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        #region  上拉刷新,下拉加载
 
         ///跳转到相应页数
         /// </summary>
@@ -430,15 +434,20 @@ namespace Sodu.ViewModel
                 {
                     if (!IsLoading)
                     {
-                        ViewModelInstance.Instance.MainPageViewModelInstance.OnBookChapterSelectedChangedCommand(obj);
+                        BookEntity entity = obj as BookEntity;
+                        if (entity != null)
+                        {
+                            this.IsNeedRefresh = false;
+                            MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = true;
+                            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
+                        }
+
                     }
                 }
                 );
             }
         }
-
-        #endregion
-
 
     }
 }

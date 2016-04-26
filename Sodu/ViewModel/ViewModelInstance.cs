@@ -269,18 +269,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        private bool m_NeedSelfShelfRefresh = true;
-        public bool NeedSelfShelfRefresh
-        {
-            get
-            {
-                return m_NeedSelfShelfRefresh;
-            }
-            set
-            {
-                SetProperty(ref m_NeedSelfShelfRefresh, value);
-            }
-        }
     }
 
 

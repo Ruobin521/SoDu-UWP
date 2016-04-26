@@ -20,6 +20,8 @@ namespace Sodu.ViewModel
     {
         #region  属性
 
+        public bool IsNeedRefresh { get; set; } = true;
+
         private string _ContentTitle = "用户登录";
         public string ContentTitle
         {
@@ -85,6 +87,7 @@ namespace Sodu.ViewModel
             {
                 SetProperty(ref m_IsAutoLogin, value);
                 ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin = value;
+                ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
             }
         }
 
@@ -97,7 +100,7 @@ namespace Sodu.ViewModel
         #region  构造函数
         public LoginViewModel()
         {
-
+            this.IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
         }
         #endregion
 
@@ -162,8 +165,16 @@ namespace Sodu.ViewModel
                         postdata = "username=" + this.UserName + "&userpass=" + this.Password;
                     }
 
-                    html = await HttpHelper.WebRequestPost(PageUrl.LoginPostPage, postdata);
-
+                    html = await HttpHelper.HttpClientPostLoginRequest(PageUrl.LoginPostPage, postdata, IsAutoLogin);
+                    if (html.Contains("{\"success\":true}"))
+                    {
+                        CommonMethod.ShowMessage("登陆成功");
+                        ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
+                    }
+                    else
+                    {
+                        CommonMethod.ShowMessage("账号或密码错误，请重新输入。");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -172,15 +183,6 @@ namespace Sodu.ViewModel
                 finally
                 {
                     IsLoading = false;
-                }
-
-                if (html.Contains("{\"success\":true}"))
-                {
-                    ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
-                }
-                else
-                {
-                    CommonMethod.ShowMessage("账号或密码错误，请重新输入。");
                 }
             }
         }

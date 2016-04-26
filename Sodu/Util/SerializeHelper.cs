@@ -82,18 +82,28 @@ namespace Sodu.Util
         /// <param name="data"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static async Task WriteAsync<T>(T data, string fileName)
+        public static async Task<bool> WriteAsync<T>(T data, string fileName)
         {
-            StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            using (IRandomAccessStream rastream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
+            bool result = false;
+            try
             {
-                using (IOutputStream outStream = rastream.GetOutputStreamAt(0))
+                StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                using (IRandomAccessStream rastream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite))
                 {
-                    DataContractSerializer serializer = new DataContractSerializer(typeof(T));
-                    serializer.WriteObject(outStream.AsStreamForWrite(), data);
-                    await outStream.FlushAsync();
+                    using (IOutputStream outStream = rastream.GetOutputStreamAt(0))
+                    {
+                        DataContractSerializer serializer = new DataContractSerializer(typeof(T));
+                        serializer.WriteObject(outStream.AsStreamForWrite(), data);
+                        await outStream.FlushAsync();
+                        result = true;
+                    }
                 }
             }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
         }
 
 

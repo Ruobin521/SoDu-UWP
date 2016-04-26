@@ -18,6 +18,8 @@ namespace Sodu.ViewModel
 {
     public class MyBookShelfViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
+
 
         private string _ContentTitle = "个人书架";
         public string ContentTitle
@@ -52,18 +54,21 @@ namespace Sodu.ViewModel
         }
 
 
-        private ObservableCollection<BookEntity> m_ShelfBookList = new ObservableCollection<BookEntity>();
+        private ObservableCollection<BookEntity> m_ShelfBookList;
         //我的书架
         public ObservableCollection<BookEntity> ShelfBookList
         {
             get
             {
+                if (m_ShelfBookList == null)
+                {
+                    m_ShelfBookList = new ObservableCollection<BookEntity>();
+                }
                 return m_ShelfBookList;
             }
             set
             {
                 this.SetProperty(ref this.m_ShelfBookList, value);
-
             }
         }
 
@@ -161,7 +166,6 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
-                CommonMethod.ShowMessage(ex.Message);
                 ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
             }
             finally
@@ -178,6 +182,7 @@ namespace Sodu.ViewModel
 
                 if (list == null)
                 {
+                    this.IsShow = true;
                     return;
                 }
                 else
@@ -198,12 +203,7 @@ namespace Sodu.ViewModel
                             await Task.Delay(1);
                         }
                     }
-
-                    if (this.ShelfBookList == null || this.ShelfBookList.Count < 1)
-                    {
-                        this.IsShow = true;
-                    }
-                    //ViewModelInstance.Instance.HomePageViewModelInstance = ArrayList[2];
+                    CommonMethod.ShowMessage("个人收藏已更新");
                 }
 
             }
@@ -254,11 +254,11 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<object>(
                  (obj) =>
-                    {
+                 {
 
-                        if (IsLoading) return;
-                        OnEditCommand();
-                    }
+                     if (IsLoading) return;
+                     OnEditCommand();
+                 }
                     );
             }
         }
@@ -406,8 +406,10 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
+                    ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
+                    this.IsNeedRefresh = false;
                     ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
-                    ViewModelInstance.Instance.NeedSelfShelfRefresh = true;
+
                     if (entity.UnReadCountData != null)
                     {
                         entity.UnReadCountData = string.Empty;

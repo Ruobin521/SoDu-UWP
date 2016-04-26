@@ -168,6 +168,7 @@ namespace Sodu.Services
             string result = string.Empty;
             html = Regex.Replace(html, "<br.*?/>", "\n");
             html = Regex.Replace(html, "&nbsp;", " ");
+            html = Regex.Replace(html, "</p.*?>", "\n");
             html = Regex.Replace(html, "<.*?>", "");
             result = html;
             return result;

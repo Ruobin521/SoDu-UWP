@@ -14,6 +14,8 @@ namespace Sodu.ViewModel
 {
     public class EverReadBookPageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
+
         private string _ContentTitle = "阅读记录";
         public string ContentTitle
         {

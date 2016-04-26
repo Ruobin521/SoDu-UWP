@@ -1,4 +1,6 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿
+
+using GalaSoft.MvvmLight.Command;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
@@ -17,11 +19,9 @@ namespace Sodu.ViewModel
 {
     public class BookContentPageViewModel : BaseViewModel, IViewModel
     {
-        /// <summary>
-        /// 阅读模式， 0 代表单个章节阅读，1 代表从目录章节阅读
-        /// </summary>
-        private string ReadingMode { get; set; }
+        public bool IsNeedRefresh { get; set; } = true;
 
+        public bool IsLocal { get; set; }
 
         private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
         public IconElement RefreshIcon
@@ -117,7 +117,6 @@ namespace Sodu.ViewModel
 
 
 
-
         public int m_FontSize;
         public int ContentFontSzie
         {
@@ -146,6 +145,11 @@ namespace Sodu.ViewModel
             set
             {
                 this.SetProperty(ref this.m_CatalogList, value);
+                if (CatalogList != null && CatalogList.Count > 0)
+                {
+                    this.IsCatalogMenuShow = true;
+                    this.DirectionArrowShow = true;
+                }
             }
         }
 
@@ -165,13 +169,27 @@ namespace Sodu.ViewModel
             }
         }
 
-        public BookEntity CurrentBookEntity { get; set; }
+        private BookEntity m_BookEntity;
+        public BookEntity BookEntity
+        {
+            get
+            {
+                return m_BookEntity;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_BookEntity, value);
+                if (this.m_BookEntity != null)
+                {
+                    this.ContentTitle = this.m_BookEntity.ChapterName;
+                }
+            }
+        }
 
 
         public BookContentPageViewModel()
         {
-            this.ContentFontSzie = ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
-
+            // this.ContentFontSzie = ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
         }
 
         public void CancleHttpRequest()
@@ -182,31 +200,28 @@ namespace Sodu.ViewModel
         HttpHelper http = new HttpHelper();
 
 
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public async void RefreshData(object obj = null, bool isRefresh = true)
         {
             try
             {
-                this.TextContent = string.Empty;
-                this.ContentTitle = string.Empty;
-                this.IsCatalogMenuShow = false;
-                this.DirectionArrowShow = false;
-
-                if (obj == null && (obj as BookEntity) != null)
+                if (!IsNeedRefresh) return;
+                BookEntity entity = obj as BookEntity;
+                if (entity == null)
                 {
                     throw new Exception();
                 }
 
-                ReadingMode = (obj as object[])[0].ToString();
-                BookEntity entity = (obj as object[])[1] as BookEntity;
-                if (entity == null) return;
-
-                if (ReadingMode.Equals("1"))
+                this.TextContent = string.Empty;
+                this.ContentTitle = string.Empty;
+                if (this.CatalogList != null)
                 {
-                    this.CatalogList = (obj as object[])[2] as ObservableCollection<BookCatalog>;
-                    this.CurrentCatalog = (obj as object[])[3] as BookCatalog;
+                    this.CatalogList.Clear();
+                    this.IsCatalogMenuShow = false;
+                    this.DirectionArrowShow = false;
                 }
-                this.CurrentBookEntity = entity;
-                SetContentByReadingMode();
+                this.BookEntity = entity;
+
+                SetContent();
             }
             catch (Exception ex)
             {
@@ -214,47 +229,32 @@ namespace Sodu.ViewModel
             }
 
         }
-        private async void SetContentByReadingMode()
+        public async void SetContent()
         {
             try
             {
                 IsLoading = true;
                 string url = null;
-                if (ReadingMode.Equals("0"))
+
+                this.TextContent = string.Empty;
+                this.ContentTitle = BookEntity.ChapterName;
+
+                if (IsLocal)
                 {
-                    DirectionArrowShow = false;
-                    url = CurrentBookEntity.ChapterUrl;
-                    this.ContentTitle = CurrentBookEntity.ChapterName;
-                    bool result = await SetContentString(url, CurrentBookEntity);
-                    if (!result)
-                    {
-                        throw new Exception();
-                    }
-                }
-                else if (ReadingMode.Equals("1"))
-                {
-                    if (CurrentBookEntity == null || CatalogList == null || CatalogList.Count < 1 || CurrentCatalog == null)
-                    {
-                        return;
-                    }
-                    url = CurrentCatalog.CatalogUrl;
-                    this.DirectionArrowShow = true;
                     Schema.BookCatalog catalog = GetCatafromDatabase(this.CurrentCatalog);
                     if (catalog != null)
                     {
 
                     }
-                    else
+                }
+                else
+                {
+                    url = BookEntity.ChapterUrl;
+                    bool result = await SetContentString(url, BookEntity);
+
+                    if (!result)
                     {
-                        bool result = await SetContentString(url, CurrentBookEntity);
-                        if (!result)
-                        {
-                            throw new Exception();
-                        }
-                        else
-                        {
-                            this.ContentTitle = CurrentCatalog.CatalogName;
-                        }
+                        throw new Exception();
                     }
                 }
             }
@@ -328,12 +328,13 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    if (ContentFontSzie >= 26) return;
-                    string temp = this.TextContent;
-                    this.TextContent = string.Empty;
-                    this.ContentFontSzie += 2;
-                    //this.TextContent = temp;
-                    SetTextContent(temp);
+                    //if (ContentFontSzie >= 26) return;
+                    //string temp = this.TextContent;
+                    //this.TextContent = string.Empty;
+                    //this.ContentFontSzie += 2;
+                    ////this.TextContent = temp;
+                    //SetTextContent(temp);
+                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(true);
                 });
             }
         }
@@ -349,11 +350,12 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    if (ContentFontSzie <= 16) return;
-                    string temp = this.TextContent;
-                    this.TextContent = string.Empty;
-                    this.ContentFontSzie -= 2;
-                    SetTextContent(temp);
+                    //if (ContentFontSzie <= 16) return;
+                    //string temp = this.TextContent;
+                    //this.TextContent = string.Empty;
+                    //this.ContentFontSzie -= 2;
+                    //SetTextContent(temp);
+                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false);
                 });
             }
         }
@@ -396,7 +398,7 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
-                        SetContentByReadingMode();
+                        SetContent();
                     }
                 });
             }
@@ -427,8 +429,10 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.BookName, MenuType = typeof(BookCatalogPage) };
-                    NavigationService.NavigateTo(menu, new object[] { this.CatalogUrl, this.CurrentBookEntity });
+                    this.IsNeedRefresh = false;
+                    MenuModel menu = new MenuModel() { MenuName = BookEntity.BookName, MenuType = typeof(BookCatalogPage) };
+                    ViewModelInstance.Instance.BookCatalogPageViewModelInstance.IsNeedRefresh = true;
+                    ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, new object[] { this.CatalogUrl, this.BookEntity });
                 });
             }
         }
@@ -441,9 +445,9 @@ namespace Sodu.ViewModel
             get
             {
                 return new RelayCommand<object>((str) =>
-             {
-                 OnSwtichCommand(str);
-             });
+                {
+                    OnSwtichCommand(str);
+                });
             }
         }
 
@@ -481,9 +485,9 @@ namespace Sodu.ViewModel
             }
             if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)
             {
-                this.CurrentBookEntity.ChapterName = this.CurrentCatalog.CatalogName;
-                this.CurrentBookEntity.ChapterUrl = this.CurrentCatalog.CatalogUrl;
-                SetContentByReadingMode();
+                this.BookEntity.ChapterName = this.CurrentCatalog.CatalogName;
+                this.BookEntity.ChapterUrl = this.CurrentCatalog.CatalogUrl;
+                SetContent();
             }
         }
 

@@ -44,11 +44,11 @@ namespace Sodu.Util
         {
             if (isAddTime)
             {
-                url = url + "?time=" + GetTimeStamp();
+                url = url + "?" + GetTimeStamp();
             }
             Request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
-            Request.Method = "GET";    //设置请求方式为GET
-            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            Request.Method = "GET";    //设置请求方式为GET : 
+            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
             Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
             Request.Proxy = null;
             // Request.Headers["Timeout"] = "300";
@@ -61,7 +61,7 @@ namespace Sodu.Util
             Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
             Request.Method = "POST";    //设置请求方式为GET
             Request.ContentType = "application/x-www-form-urlencoded";
-            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0";
+            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
             Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
             Request.Proxy = null;
 
@@ -81,29 +81,30 @@ namespace Sodu.Util
         public async Task<string> GetReponseHtml(WebRequest request)
         {
             string html = string.Empty;
-            var response = await request.GetResponseAsync();
-            Stream stream = null;
-            if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
-            {
-                stream = response.Headers[HttpRequestHeader.ContentEncoding].Equals("gzip",
-                               StringComparison.CurrentCultureIgnoreCase) ? new GZipStream(response.GetResponseStream(), CompressionMode.Decompress) : response.GetResponseStream();
-            }
-            else
-            {
-                stream = response.GetResponseStream();
-            }
-            var ms = new MemoryStream();
-            var buffer = new byte[1024];
-            while (true)
-            {
-                if (stream == null) continue;
-                var sz = stream.Read(buffer, 0, 1024);
-                if (sz == 0) break;
-                ms.Write(buffer, 0, sz);
-            }
-            var bytes = ms.ToArray();
             try
             {
+                var response = await request.GetResponseAsync();
+                Stream stream = null;
+                if (response.Headers[HttpRequestHeader.ContentEncoding] != null)
+                {
+                    stream = response.Headers[HttpRequestHeader.ContentEncoding].Equals("gzip",
+                                   StringComparison.CurrentCultureIgnoreCase) ? new GZipStream(response.GetResponseStream(), CompressionMode.Decompress) : response.GetResponseStream();
+                }
+                else
+                {
+                    stream = response.GetResponseStream();
+                }
+                var ms = new MemoryStream();
+                var buffer = new byte[1024];
+                while (true)
+                {
+                    if (stream == null) continue;
+                    var sz = stream.Read(buffer, 0, 1024);
+                    if (sz == 0) break;
+                    ms.Write(buffer, 0, sz);
+                }
+                var bytes = ms.ToArray();
+
                 var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
                 html = encoding.GetString(bytes);
                 await stream.FlushAsync();
@@ -236,6 +237,8 @@ namespace Sodu.Util
                 //就这个问题让我找了好几个小时
                 httpStringContent.Headers.ContentType = new HttpMediaTypeHeaderValue("application/x-www-form-urlencoded");
 
+
+
                 HttpResponseMessage response = await httpclient.PostAsync(new Uri(url), httpStringContent).AsTask(cts.Token);
 
                 //  HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, new Uri(url));
@@ -267,7 +270,7 @@ namespace Sodu.Util
             HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
             foreach (var cookieItem in cookieCollection)
             {
-                if (cookieItem.Name == "loginname")
+                if (cookieItem.Name == "sodu_user")
                 {
                     // cookie = new HttpCookie(cookieItem.Name, cookieItem.Path, "/");
                     // cookie.Value = cookieItem.Value;
@@ -275,6 +278,24 @@ namespace Sodu.Util
                     {
                         ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
                         cookieItem.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
+                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie =
+                            new ViewModel.UserCookie()
+                            {
+                                Expires = cookieItem.Expires,
+                                Value = cookieItem.Value,
+                                Name = cookieItem.Name,
+                                Path = cookieItem.Path,
+                                Domain = cookieItem.Domain,
+                            };
+
+                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
+                    }
+                    else
+                    {
+                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie = null;
+                        cookieItem.Expires = null;
+                        filter.CookieManager.SetCookie(cookieItem, false);
+
                     }
                     filter.CookieManager.SetCookie(cookieItem, false);
                 }

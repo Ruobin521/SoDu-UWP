@@ -145,45 +145,60 @@ namespace Sodu
                 if (file == null)
                 {
                     ///初始化设置默认值
-                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = false, TextFontSzie = 20, IfAutAddToShelf = true, UserName = null };
+                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = true, TextFontSzie = 20, IfAutAddToShelf = true, UserCookie = null };
                     await SerializeHelper.WriteAsync(appSetingViewModel, fileName);
-                    return true;
                 }
                 else
                 {
                     appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(fileName);
+
+                    HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                    HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
+                    var cookieItem = cookieCollection.First(p => p.Name.Equals("sodu_user"));
+
                     if (appSetingViewModel.IfAutoLogin)
                     {
-                        HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                        HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
-                        foreach (var cookieItem in cookieCollection)
+                        if (cookieItem != null)
                         {
-                            if (cookieItem.Name == "loginname")
+                            if (appSetingViewModel.UserCookie == null)
                             {
-                                // cookie = new HttpCookie(cookieItem.Name, cookieItem.Path, "/");
-                                // cookie.Value = cookieItem.Value;
-                                if (cookieItem.Value.Contains(appSetingViewModel.UserName))
+                                cookieItem.Expires = null;
+                                filter.CookieManager.SetCookie(cookieItem, false);
+                                ViewModelInstance.Instance.IsLogin = false;
+                            }
+                            else {
+                                if (cookieItem.Value.Equals(appSetingViewModel.UserCookie.Value))
                                 {
-                                    if (appSetingViewModel.IfAutoLogin)
-                                    {
-                                        ViewModelInstance.Instance.IsLogin = true;
-                                    }
-                                    else
-                                    {
-                                        ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
-                                        cookieItem.Expires = null;
-                                        filter.CookieManager.SetCookie(cookieItem, false);
-                                        ViewModelInstance.Instance.IsLogin = false;
-                                    }
+                                    ViewModelInstance.Instance.IsLogin = true;
                                 }
+                                else
+                                {
+                                    cookieItem.Value = appSetingViewModel.UserCookie.Value;
+                                    filter.CookieManager.SetCookie(cookieItem);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (appSetingViewModel.UserCookie != null)
+                            {
+                                HttpCookie cookie = new HttpCookie(appSetingViewModel.UserCookie.Name, appSetingViewModel.UserCookie.Domain, appSetingViewModel.UserCookie.Path);
+                                cookie.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
+                                cookie.Value = appSetingViewModel.UserCookie.Value;
+                                filter.CookieManager.SetCookie(cookie);
                             }
                         }
                     }
                     else
                     {
-                        ViewModelInstance.Instance.IsLogin = false;
+                        if (cookieItem != null)
+                        {
+                            ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
+                            cookieItem.Expires = null;
+                            filter.CookieManager.SetCookie(cookieItem, false);
+                            ViewModelInstance.Instance.IsLogin = false;
+                        }
                     }
-
                 }
                 ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
             }

@@ -44,6 +44,9 @@ namespace Sodu.ViewModel
         //    }
         //}
 
+        public bool IsNeedRefresh { get; set; } = true;
+
+
         private bool m_IsLeftPanelOpen;
         /// <summary>
         /// 左侧控制面板是否显示
@@ -324,34 +327,34 @@ namespace Sodu.ViewModel
             }
 
         }
-        /// <summary>
-        /// 选中相应的chapteritem
-        /// </summary>
-        public BaseCommand BookChapterSelectedChangedCommand
-        {
-            get
-            {
-                return new BaseCommand(OnBookChapterSelectedChangedCommand);
-            }
-        }
-        public void OnBookChapterSelectedChangedCommand(object obj)
-        {
-            //SetCurrentMenu("0");
-            BookEntity entity = obj as BookEntity;
 
-            if (entity != null)
-            {
-                if (entity.LyWeb.Equals("起点中文网")) return;
-                MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
-                //0 表示从更新列表跳转 1 表示从目录跳转
-                NavigateToPage(menu, new object[] { "0", entity });
-            }
-            else
-            {
-                CommonMethod.ShowMessage("数据有误，请重新尝试");
-            }
 
-        }
+        ///// <summary>
+        ///// 选中相应的chapteritem
+        ///// </summary>
+        //public BaseCommand BookChapterSelectedChangedCommand
+        //{
+        //    get
+        //    {
+        //        return new BaseCommand(OnBookChapterSelectedChangedCommand);
+        //    }
+        //}
+        //public void OnBookChapterSelectedChangedCommand(object obj)
+        //{
+        //    //SetCurrentMenu("0");
+        //    BookEntity entity = obj as BookEntity;
+
+        //    if (entity != null)
+        //    {
+        //        MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
+        //        NavigateToPage(menu, new object[] { "0", entity });
+        //    }
+        //    else
+        //    {
+        //        CommonMethod.ShowMessage("数据有误，请重新尝试");
+        //    }
+
+        //}
 
         /// <summary>
         /// 注销

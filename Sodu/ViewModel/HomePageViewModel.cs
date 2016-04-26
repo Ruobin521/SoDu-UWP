@@ -21,6 +21,7 @@ namespace Sodu.ViewModel
 {
     public class HomePageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
         private int m_PageIndex = 1;
         public int PageIndex
         {
@@ -188,7 +189,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        #region  上拉刷新,下拉加载
 
         ///跳转到相应页数
         /// </summary>
@@ -255,6 +255,8 @@ namespace Sodu.ViewModel
                 {
                     if (!IsLoading)
                     {
+                        this.IsNeedRefresh = false;
+                        ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
                         ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
                     }
                 });
@@ -262,6 +264,6 @@ namespace Sodu.ViewModel
         }
 
 
-        #endregion
+
     }
 }

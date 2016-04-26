@@ -129,7 +129,10 @@ namespace Sodu.Services
                 IViewModel viewModel = page.DataContext as IViewModel;
                 if (viewModel != null)
                 {
-                    viewModel.RefreshData(e.Parameter, true);
+                    if (viewModel.IsNeedRefresh)
+                    {
+                        viewModel.RefreshData(e.Parameter);
+                    }
                 }
             }
         }

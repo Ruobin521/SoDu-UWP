@@ -11,6 +11,7 @@ namespace Sodu.ViewModel
 {
     public class BookReaderPageViewModel : BaseViewModel, IViewModel
     {
+        public bool IsNeedRefresh { get; set; } = true;
 
         public BookEntity CurrentBookEntity { get; set; }
 
