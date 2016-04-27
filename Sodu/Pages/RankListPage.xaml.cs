@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public RankListPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

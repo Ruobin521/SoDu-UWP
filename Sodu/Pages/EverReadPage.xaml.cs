@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public EverReadPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

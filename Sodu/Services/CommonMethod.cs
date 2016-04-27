@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Sodu.Services
 {
@@ -14,9 +15,13 @@ namespace Sodu.Services
         /// <summary>
         /// ShowMessage
         /// </summary>
-        public static void ShowMessage(string message)
+        public async static void ShowMessage(string message)
         {
-            ToastHeplper.ShowMessage(message);
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+          {
+              ToastHeplper.ShowMessage(message);
+          });
+
         }
     }
 }

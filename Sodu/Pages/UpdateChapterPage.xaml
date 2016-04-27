@@ -13,6 +13,9 @@
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.UpdataChapterPageViewModelInstance,Source={ StaticResource  Locator}}"
     xmlns:control="using:Sodu.Controls">
+    <Page.Resources>
+
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
@@ -25,7 +28,10 @@
           >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_ChapterItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"  />
+                    <Button  Background="Transparent" Style="{StaticResource ContentButtonStyle}"  Padding="15,3"  Height="65"
+                             Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}">
+                        <UC:UC_ChapterItem x:Name="item" DataContext="{Binding}"   />
+                    </Button>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>
@@ -40,11 +46,11 @@
                     </TextBlock>
                 </Grid>
             </control:PullToRefreshListView.RefreshIndicatorContent>-->
-            <Interactivity:Interaction.Behaviors >
+            <!--<Interactivity:Interaction.Behaviors >
                 <Core:EventTriggerBehavior   EventName="SelectionChanged">
                     <Core:InvokeCommandAction Command="{Binding  BookChapterSelectedChangedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
                 </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>
+            </Interactivity:Interaction.Behaviors>-->
         </ListView>
         <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->

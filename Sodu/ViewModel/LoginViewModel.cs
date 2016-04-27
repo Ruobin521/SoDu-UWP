@@ -76,6 +76,20 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsChecked;
+        public bool IsChecked
+        {
+            get
+            {
+                return m_IsChecked;
+            }
+            set
+            {
+                SetProperty(ref m_IsChecked, value);
+            }
+        }
+
+
         private bool m_IsAutoLogin;
         public bool IsAutoLogin
         {
@@ -100,7 +114,7 @@ namespace Sodu.ViewModel
         #region  构造函数
         public LoginViewModel()
         {
-            this.IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
+            this.m_IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
         }
         #endregion
 

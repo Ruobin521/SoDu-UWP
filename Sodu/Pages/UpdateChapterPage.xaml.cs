@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public UpdateChapterPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

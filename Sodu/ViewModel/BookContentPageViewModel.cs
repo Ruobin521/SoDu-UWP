@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -213,12 +214,13 @@ namespace Sodu.ViewModel
 
                 this.TextContent = string.Empty;
                 this.ContentTitle = string.Empty;
+                this.IsCatalogMenuShow = false;
+                this.DirectionArrowShow = false;
                 if (this.CatalogList != null)
                 {
                     this.CatalogList.Clear();
-                    this.IsCatalogMenuShow = false;
-                    this.DirectionArrowShow = false;
                 }
+
                 this.BookEntity = entity;
 
                 SetContent();
@@ -328,13 +330,10 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    //if (ContentFontSzie >= 26) return;
                     //string temp = this.TextContent;
                     //this.TextContent = string.Empty;
-                    //this.ContentFontSzie += 2;
-                    ////this.TextContent = temp;
-                    //SetTextContent(temp);
                     ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(true);
+                    //SetTextContent();
                 });
             }
         }
@@ -350,29 +349,42 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    //if (ContentFontSzie <= 16) return;
                     //string temp = this.TextContent;
                     //this.TextContent = string.Empty;
-                    //this.ContentFontSzie -= 2;
-                    //SetTextContent(temp);
+                    //Task.Run(() =>
+                    //    {
                     ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false);
+                    //}
+                    //).ContinueWith((obj) =>
+                    //{
+                  //  SetTextContent();
+                    //});
+
                 });
             }
         }
 
-        public async void SetTextContent(string temp)
+        public async void SetTextContent()
         {
-            var group = Split<char>(temp.ToList(), 5);
-            foreach (var list in group)
-            {
-                foreach (var item in list)
-                {
-                    this.TextContent = string.Format(this.TextContent, item.ToString());
-                }
-                await Task.Delay(1);
-            }
+            string temp = this.TextContent;
 
-            this.TextContent = temp;
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+          {
+              this.TextContent = string.Empty;
+              this.TextContent = temp;
+          });
+
+
+            //var group = Split<char>(temp.ToList(), 5);
+            //foreach (var list in group)
+            //{
+            //    foreach (var item in list)
+            //    {
+            //        this.TextContent = string.Format(this.TextContent, item.ToString());
+            //    }
+            //    await Task.Delay(1);
+            //}
+
         }
 
         public IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> items,
@@ -429,7 +441,7 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    this.IsNeedRefresh = false;
+                    // this.IsNeedRefresh = false;
                     MenuModel menu = new MenuModel() { MenuName = BookEntity.BookName, MenuType = typeof(BookCatalogPage) };
                     ViewModelInstance.Instance.BookCatalogPageViewModelInstance.IsNeedRefresh = true;
                     ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, new object[] { this.CatalogUrl, this.BookEntity });

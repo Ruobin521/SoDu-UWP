@@ -25,6 +25,27 @@ namespace Sodu.Pages
         public MyBookShelfPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+
+        private void btnSelectAllAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            // ViewModel.ViewModelInstance.Instance
+
+            ViewModel.MyBookShelfViewModel viewModel = this.DataContext as ViewModel.MyBookShelfViewModel;
+            if (viewModel.IsEditing)
+            {
+                if (this.btnSelectAll.Label.Equals("全选"))
+                {
+                    this.btnSelectAll.Label = "全不选";
+                    viewModel.OnSelectAllCommand("0");
+                }
+                else if (this.btnSelectAll.Label.Equals("全不选"))
+                {
+                    this.btnSelectAll.Label = "全选";
+                    viewModel.OnSelectAllCommand("1");
+                }
+            }
         }
     }
 }

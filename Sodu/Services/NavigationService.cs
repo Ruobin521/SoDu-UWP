@@ -60,12 +60,16 @@ namespace Sodu.Services
 
             if (menu != null)
             {
-                ContentFrame.Navigate(menu.MenuType, para);
-
-                if (ViewModelInstance.Instance.MainPageViewModelInstance.CurrentMenuList.Contains(menu))
+                Page page = ContentFrame.Content as Page;
+                if (page != null)
                 {
-                    ContentFrame.BackStack.Clear();
+                    IViewModel viewModel = page.DataContext as IViewModel;
+                    if (viewModel != null)
+                    {
+                        viewModel.IsNeedRefresh = false;
+                    }
                 }
+                ContentFrame.Navigate(menu.MenuType, para);
             }
         }
 

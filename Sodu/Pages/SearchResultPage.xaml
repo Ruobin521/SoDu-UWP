@@ -36,7 +36,7 @@
            RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
                 <control:PullToRefreshListView.ItemTemplate>
                     <DataTemplate>
-                        <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"  />
+                        <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Command="{Binding  Instance.MainPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"  />
                     </DataTemplate>
                 </control:PullToRefreshListView.ItemTemplate>
                 <Interactivity:Interaction.Behaviors >

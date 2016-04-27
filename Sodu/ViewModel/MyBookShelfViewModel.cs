@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
+using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
@@ -36,7 +37,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private bool IsEditing = false;
+        public bool IsEditing = false;
 
 
         private bool m_IsShow = false;
@@ -50,45 +51,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref this.m_IsShow, value);
-            }
-        }
-
-
-        private ObservableCollection<BookEntity> m_ShelfBookList;
-        //我的书架
-        public ObservableCollection<BookEntity> ShelfBookList
-        {
-            get
-            {
-                if (m_ShelfBookList == null)
-                {
-                    m_ShelfBookList = new ObservableCollection<BookEntity>();
-                }
-                return m_ShelfBookList;
-            }
-            set
-            {
-                this.SetProperty(ref this.m_ShelfBookList, value);
-            }
-        }
-
-
-        HttpHelper HttpHelper = new HttpHelper();
-
-        public MyBookShelfViewModel()
-        {
-
-        }
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
             }
         }
 
@@ -113,65 +75,133 @@ namespace Sodu.ViewModel
                 }
             }
         }
+
+        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
+        public IconElement RefreshIcon
+        {
+            get
+            {
+                return m_RefreshIcon;
+            }
+            set
+            {
+                SetProperty(ref m_RefreshIcon, value);
+            }
+        }
+
+        private ObservableCollection<BookEntity> m_ShelfBookList;
+        //我的书架
+        public ObservableCollection<BookEntity> ShelfBookList
+        {
+            get
+            {
+                if (m_ShelfBookList == null)
+                {
+                    m_ShelfBookList = new ObservableCollection<BookEntity>();
+                }
+                return m_ShelfBookList;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_ShelfBookList, value);
+            }
+        }
+
+
+        HttpHelper http = new HttpHelper();
+
+        public MyBookShelfViewModel()
+        {
+
+        }
+
         /// <summary>
         /// 取消请求
         /// </summary>
         public void CancleHttpRequest()
         {
-            HttpHelper.HttpClientCancleRequest();
+            http.HttpClientCancleRequest();
             IsLoading = false;
         }
 
 
-        public bool BackpressedHandler()
+        public async Task<bool> BackpressedHandler()
         {
             if (IsEditing)
             {
                 OnEditCommand();
                 return true;
             }
+
+            if (IsLoading)
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    CancleHttpRequest();
+                });
+                return true;
+            }
             return false;
         }
         public async void RefreshData(object obj = null, bool IsRefresh = true)
         {
-            string html = string.Empty;
+            if (!IsNeedRefresh) return;
+            SetData();
+        }
+
+        public void SetData()
+        {
+            Task.Run(async () =>
+            {
+                string html = await GetHtmlData();
+
+                return html;
+            }).ContinueWith(async (result) =>
+            {
+                if (result.Result != null)
+                {
+                    string html = result.Result;
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
+                        {
+                            SetBookList(html);
+                        }
+                        else if (html.Contains("您还没有登录"))
+                        {
+                            CommonMethod.ShowMessage("您还没有登录");
+                            ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                        }
+                    });
+                }
+            });
+        }
+
+
+        private async Task<string> GetHtmlData()
+        {
+            string html = null;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
             try
             {
-                //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh || (obj == null && this.ShelfBookList.Count > 0))
-                {
-                    return;
-                }
-
-                IsLoading = true;
-                html = await HttpHelper.WebRequestGet(PageUrl.BookShelfPage);
-
-                if (string.IsNullOrEmpty(html))
-                {
-                    return;
-                }
-                if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
-                {
-                    SetBookList(html);
-
-                }
-                else if (html.Contains("您还没有登录"))
-                {
-                    throw new Exception("您还没有登录");
-                }
-                else
-                {
-                    throw new Exception("请求数据出错");
-                }
+                html = await http.WebRequestGet(PageUrl.BookShelfPage, true);
             }
             catch (Exception ex)
             {
-                ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                html = null;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+            return html;
         }
 
         public async void SetBookList(string html)
@@ -219,7 +249,7 @@ namespace Sodu.ViewModel
                 foreach (var item in removeBookList)
                 {
                     string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
-                    html = await HttpHelper.WebRequestGet(url);
+                    html = await http.WebRequestGet(url);
                     if (html.Contains("取消收藏成功"))
                     {
                         ShelfBookList.Remove(item);
@@ -243,7 +273,56 @@ namespace Sodu.ViewModel
                 OnEditCommand();
             }
         }
+        public async void RemoveBookList(List<BookEntity> removeBookList)
+        {
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+            Task.Run(async () =>
+            {
+                bool result = true;
+                foreach (var item in removeBookList)
+                {
+                    if (!IsLoading)
+                    {
+                        result = false;
+                        break;
+                    }
+                    string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
+                    string html = await http.WebRequestGet(url);
+                    if (html.Contains("取消收藏成功"))
+                    {
+                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            ShelfBookList.Remove(item);
+                        });
+                    }
+                    else
+                    {
+                        result = false;
+                    }
+                }
+                return result;
 
+            }).ContinueWith(async (result) =>
+           {
+               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+               {
+                   if (!result.Result)
+                   {
+                       CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
+                   }
+                   else
+                   {
+                       CommonMethod.ShowMessage("操作完毕");
+                       removeBookList.Clear();
+                   }
+                   IsLoading = false;
+               }
+               );
+           });
+        }
 
         /// <summary>
         /// 全选，全不选
@@ -311,7 +390,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<object>(OnSelectAllCommand);
             }
         }
-        private void OnSelectAllCommand(object obj)
+        public void OnSelectAllCommand(object obj)
         {
             if (!IsEditing) return;
             if (obj != null && obj.ToString().Equals("0"))
@@ -380,13 +459,12 @@ namespace Sodu.ViewModel
                         return;
                     }));
                     await msgDialog.ShowAsync();
+
                 }
             }
         }
 
-        /// <summary>
-        /// 全选，全不选
-        /// </summary>
+
         public RelayCommand<object> BookItemSelectedCommand
         {
             get
@@ -407,7 +485,7 @@ namespace Sodu.ViewModel
                 else
                 {
                     ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
-                    this.IsNeedRefresh = false;
+                    // this.IsNeedRefresh = false;
                     ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
 
                     if (entity.UnReadCountData != null)

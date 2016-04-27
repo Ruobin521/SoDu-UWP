@@ -25,25 +25,6 @@ namespace Sodu.ViewModel
     {
 
         #region 属性，字段
-
-        //private Frame m_ContentFrame = new Frame();
-        ///// <summary>
-        //// 右侧内容区域的page
-        ///// </summary>
-        //public Frame ContentFrame
-        //{
-        //    get
-        //    {
-        //        return m_ContentFrame;
-        //    }
-        //    set
-        //    {
-        //        //m_ContentFrame = value;
-        //        this.SetProperty(ref this.m_ContentFrame, value);
-        //        //RaisePropertyChanged("ContentFrame");
-        //    }
-        //}
-
         public bool IsNeedRefresh { get; set; } = true;
 
 
@@ -215,6 +196,7 @@ namespace Sodu.ViewModel
                 this.CurrentMenuList = this.UnloadMenuList;
             }
             this.CurrentMenu = this.CurrentMenuList[0];
+            NavigationService.ContentFrame.BackStack.Clear();
         }
 
         /// <summary>
@@ -328,35 +310,6 @@ namespace Sodu.ViewModel
 
         }
 
-
-        ///// <summary>
-        ///// 选中相应的chapteritem
-        ///// </summary>
-        //public BaseCommand BookChapterSelectedChangedCommand
-        //{
-        //    get
-        //    {
-        //        return new BaseCommand(OnBookChapterSelectedChangedCommand);
-        //    }
-        //}
-        //public void OnBookChapterSelectedChangedCommand(object obj)
-        //{
-        //    //SetCurrentMenu("0");
-        //    BookEntity entity = obj as BookEntity;
-
-        //    if (entity != null)
-        //    {
-        //        MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
-        //        NavigateToPage(menu, new object[] { "0", entity });
-        //    }
-        //    else
-        //    {
-        //        CommonMethod.ShowMessage("数据有误，请重新尝试");
-        //    }
-
-        //}
-
-        /// <summary>
         /// 注销
         /// </summary>
         public ICommand LogoutCommand

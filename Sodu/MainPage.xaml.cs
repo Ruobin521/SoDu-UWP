@@ -23,9 +23,6 @@ namespace Sodu
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        Point start;
-        Point end;
-
         public MainPage()
         {
             this.InitializeComponent();
@@ -36,10 +33,13 @@ namespace Sodu
 
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            NavigationService.ContentFrame = this.contentFrame;
+            NavigationService.ContentFrame = NavigationService.ContentFrame ?? this.contentFrame;
             if (this.menuListBox.Items != null && this.menuListBox.Items.Count > 0)
             {
-                this.menuListBox.SelectedIndex = 0;
+                if (this.menuListBox.SelectedIndex == -1)
+                {
+                    this.menuListBox.SelectedIndex = 0;
+                }
             }
         }
     }

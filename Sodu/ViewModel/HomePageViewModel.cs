@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -113,45 +114,59 @@ namespace Sodu.ViewModel
         }
         public async void RefreshData(object obj = null, bool IsRefresh = true)
         {
-            string html = string.Empty; ;
+            if (!IsNeedRefresh) return;
+
+            SetData();
+        }
+
+
+        public void SetData()
+        {
+            Task.Run(async () =>
+           {
+               string html = await GetHtmlData();
+               return html;
+           }).ContinueWith(async (result) =>
+          {
+              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+               {
+                   if (result.Result != null && await SetBookList(result.Result.ToString()))
+                   {
+                       CommonMethod.ShowMessage("已更新" + BookList.Count + "条数据");
+                   }
+                   else
+                   {
+                       CommonMethod.ShowMessage("未能获取推荐阅读数据");
+                   }
+               });
+          });
+        }
+
+
+        public async Task<string> GetHtmlData()
+        {
+            string html = null;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+           {
+               IsLoading = true;
+           });
             try
             {
-                if (Convert.ToInt32(obj) > 8)
-                {
-                    CommonMethod.ShowMessage("已加载所有，没有更多了");
-                    return;
-                }
-                //  如果正在加载，或者提示不需要刷新 或者obj为空说明是从主要左侧列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh || (obj == null && this.BookList.Count > 0))
-                {
-                    return;
-                }
-
-                IsLoading = true;
-                if (obj != null)
-                {
-                    this.PageIndex = Convert.ToInt32(obj);
-                }
                 html = await http.WebRequestGet(PageUrl.HomePage, true);
-                if (string.IsNullOrEmpty(html))
-                {
-                    throw new Exception();
-                }
-                var result = await SetBookList(html);
-                if (!result)
-                {
-                    throw new Exception();
-                }
             }
             catch (Exception ex)
             {
-                html = string.Empty;
-                CommonMethod.ShowMessage("未能获取数据 ");
+                html = null;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+            return html;
         }
 
         public async Task<bool> SetBookList(string html)
@@ -167,9 +182,9 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    if (arraryList[1] != null)
+                    if (arraryList[1] == null)
                     {
-                        CommonMethod.ShowMessage("已更新" + arraryList[1].Count + "条数据");
+                        return false;
                     }
                     this.BookList.Clear();
                     foreach (var item in arraryList[1])
@@ -208,7 +223,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                RefreshData(1, true);
+                SetData();
             }
         }
 
@@ -255,7 +270,7 @@ namespace Sodu.ViewModel
                 {
                     if (!IsLoading)
                     {
-                        this.IsNeedRefresh = false;
+                        // this.IsNeedRefresh = false;
                         ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
                         ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
                     }

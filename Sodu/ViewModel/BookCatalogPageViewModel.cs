@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -100,63 +101,76 @@ namespace Sodu.ViewModel
 
         public async void RefreshData(object obj = null, bool IsRefresh = true)
         {
+            if (!IsNeedRefresh) return;
+
+            object[] para = obj as object[];
+
+            this.BaseUrl = para[0].ToString();
+            BookEntity temp = para[1] as BookEntity;
+            this.CurrentBookEntity = new BookEntity()
+            {
+                BookID = temp.BookID,
+                BookName = temp.BookName,
+                ChapterName = temp.ChapterName,
+                ChapterUrl = temp.ChapterUrl,
+                CatalogUrl = temp.CatalogUrl,
+                LyWeb = temp.LyWeb,
+                UpdateTime = temp.UpdateTime,
+            };
+
+            this.ContentTitle = CurrentBookEntity.BookName + "  目录";
+            SetData(BaseUrl);
+        }
+
+        private async void SetData(string url)
+        {
+            Task.Run(async () =>
+            {
+                string html = await GetHtmlData(url);
+                return html;
+            }).ContinueWith(async (result) =>
+           {
+               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+               {
+                   if (result.Result != null && await SetCatalogList(result.Result.ToString(), CurrentBookEntity.LyWeb))
+                   {
+                       CommonMethod.ShowMessage("已加载目录数据");
+                   }
+                   else
+                   {
+                       CommonMethod.ShowMessage("未能获取目录数据");
+                   }
+               });
+           });
+        }
+
+        public async Task<string> GetHtmlData(string url)
+        {
+            string html = string.Empty;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
             try
             {
-                if (!IsNeedRefresh) return;
-
-                if (obj == null)
-                {
-                    return;
-                }
-                object[] para = obj as object[];
-
-                this.BaseUrl = para[0].ToString();
-                BookEntity temp = para[1] as BookEntity;
-                this.CurrentBookEntity = new BookEntity()
-                {
-                    BookID = temp.BookID,
-                    BookName = temp.BookName,
-                    ChapterName = temp.ChapterName,
-                    ChapterUrl = temp.ChapterUrl,
-                    CatalogUrl = temp.CatalogUrl,
-                    LyWeb = temp.LyWeb,
-                    UpdateTime = temp.UpdateTime,
-                };
-
-                this.ContentTitle = CurrentBookEntity.BookName;
-                bool result = await SetData(BaseUrl);
-
-                if (!result)
-                {
-                    throw new Exception();
-                }
+                html = await http.WebRequestGet(url, true);
             }
             catch (Exception ex)
             {
-                Services.CommonMethod.ShowMessage("未能获取到目录数据，请重新尝试");
-            }
-        }
-
-
-        private async Task<bool> SetData(string url)
-        {
-            try
-            {
-                IsLoading = true;
-                string html = await http.WebRequestGet(url, true);
-                bool result = await SetCatalogList(html, CurrentBookEntity.LyWeb);
-                return result;
-            }
-            catch (Exception)
-            {
-                Services.CommonMethod.ShowMessage("未能获取到目录数据，请重新尝试");
-                return false;
+                html = null;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+
+            return html;
         }
+
 
         private async Task<bool> SetCatalogList(string html, string webname)
         {
@@ -201,7 +215,7 @@ namespace Sodu.ViewModel
                         {
                             BookCatalog catalog = str as BookCatalog;
                             if (catalog == null) return;
-                            this.IsNeedRefresh = false;
+                            // this.IsNeedRefresh = false;
                             CurrentBookEntity.ChapterUrl = catalog.CatalogUrl;
                             CurrentBookEntity.ChapterName = catalog.CatalogName;
                             MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
@@ -241,7 +255,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                await SetData(BaseUrl);
+                SetData(BaseUrl);
             }
         }
         /// <summary>

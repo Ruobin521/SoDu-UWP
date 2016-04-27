@@ -254,7 +254,8 @@ namespace Sodu.Util
                 MatchCollection matches2 = Regex.Matches(item.ToString(), "<a href.*?</a>");
                 BookEntity t_entity = new BookEntity();
                 t_entity.ChapterUrl = Regex.Match(matches2[0].ToString(), "(?<=&chapterurl=).*?(?=\")").ToString();
-                t_entity.ChapterName = Regex.Replace(matches2[0].ToString(), "<.*?>", "").ToString();
+                t_entity.ChapterName = Regex.Match(matches2[0].ToString(), "(?<=alt=\").*?(?=\")").ToString();
+                //t_entity.ChapterName = Regex.Replace(matches2[0].ToString(), "<.*?>", "").ToString();
                 t_entity.LyWeb = Regex.Replace(matches2[1].ToString(), "<.*?>", "").ToString();
 
                 Match match2 = Regex.Match(item.ToString(), "(?<=<.*?class=\"xt1\">).*?(?=</div>)");

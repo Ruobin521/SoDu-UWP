@@ -24,12 +24,9 @@
         <Border Grid.Row="1" Child="{Binding WebViewBrowser}">
 
         </Border>
-        <ScrollViewer x:Name="scrollViewer" Grid.Row="1" Padding="5"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"   >
-            <TextBlock x:Name="txtContent" Text="{Binding ElementName=txtContent,Path=DataContext}" TextWrapping="Wrap"  DataContext="{Binding Instance.BookContentPageViewModelInstance.TextContent,Source={ StaticResource  Locator}}"  DataContextChanged="txtContent_DataContextChanged">
+            <TextBox x:Name="txtContent" Grid.Row="1" BorderThickness="0" TextWrapping="Wrap"  IsReadOnly="True"  Text="{Binding ElementName=txtContent,Path=DataContext}"    DataContext="{Binding Instance.BookContentPageViewModelInstance.TextContent,Source={ StaticResource  Locator}}" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
 
-            </TextBlock>
-        </ScrollViewer>
-
+            </TextBox>
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
             <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
             <AppBarButton Icon="{Binding RefreshIcon}" x:Name="refreshBtn" Label="刷新" Width="50"    Command="{Binding  RefreshCommand}"/>

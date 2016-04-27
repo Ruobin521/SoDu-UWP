@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public BookCatalogPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

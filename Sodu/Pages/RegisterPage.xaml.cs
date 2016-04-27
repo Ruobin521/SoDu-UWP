@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public RegisterPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

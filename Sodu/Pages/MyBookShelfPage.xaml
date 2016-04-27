@@ -26,19 +26,18 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
         <TextBlock Grid.Row="1" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
-        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList}"     Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
-          >
+        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList}"     Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"  >
-                        <Interactivity:Interaction.Behaviors >
-                            <Core:EventTriggerBehavior   EventName="Tapped">
-                                <Core:InvokeCommandAction Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
-                            </Core:EventTriggerBehavior>
-                        </Interactivity:Interaction.Behaviors>
-                    </UC:UC_BookListItem>
+                        <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}">
+                        </UC:UC_BookListItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
+            <!--<Interactivity:Interaction.Behaviors >
+                <Core:EventTriggerBehavior   EventName="SelectionChanged">
+                    <Core:InvokeCommandAction Command="{Binding  BookItemSelectedCommand}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
+                </Core:EventTriggerBehavior>
+            </Interactivity:Interaction.Behaviors>-->
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>
                 <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
                     <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
@@ -57,8 +56,8 @@
         <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"  >
             <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="65"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>
-            <AppBarButton Icon="SelectAll" Label="全选" Width="65"    Command="{Binding SelectAllCommand}" CommandParameter="0"/>
-            <AppBarButton Icon="Undo" Label="全不选"  Width="65"  Command="{Binding  SelectAllCommand}" CommandParameter="1"/>
+            <AppBarButton x:Name="btnSelectAll" Icon="SelectAll" Label="全选" Width="65"    Click="btnSelectAllAppBarButton_Click" CommandParameter="0"/>
+            <!--<AppBarButton Icon="Undo" Label="全不选"  Width="65"  Command="{Binding  SelectAllCommand}" CommandParameter="1"/>-->
             <AppBarButton Icon="Delete" Label="下架"  Width="65"  Command="{Binding RemoveBookFromShelfCommand}"/>
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>

@@ -26,11 +26,7 @@ namespace Sodu.Pages
         public SettingPage()
         {
             this.InitializeComponent();
-        }
-
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.SettingPageViewModel viewModel = this.DataContext as SettingPageViewModel;
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

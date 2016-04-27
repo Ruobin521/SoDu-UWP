@@ -54,7 +54,7 @@
                 </Interactivity:Interaction.Behaviors>
             </ToggleSwitch>
 
-            <TextBlock Grid.Column="1" Grid.Row="5"  Text="正文阅读字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="5"  Text="正文字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
             <ComboBox x:Name="font" Grid.Column="1" Grid.Row="6" Foreground="Black" ItemsSource="{Binding FontSzieList}" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
                 <Interactivity:Interaction.Behaviors >
                     <Core:EventTriggerBehavior   EventName="SelectionChanged">

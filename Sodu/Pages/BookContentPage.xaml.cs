@@ -25,12 +25,13 @@ namespace Sodu.Pages
         public BookContentPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
 
         }
 
-        private void txtContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            this.scrollViewer.ScrollToVerticalOffset(0);
-        }
+        //private void txtContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        //{
+        //    this.scrollViewer.ScrollToVerticalOffset(0);
+        //}
     }
 }

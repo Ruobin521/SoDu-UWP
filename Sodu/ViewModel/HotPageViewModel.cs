@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -113,82 +114,104 @@ namespace Sodu.ViewModel
         {
             if (!IsNeedRefresh) return;
 
-            string html = string.Empty; ;
+            SetData();
+        }
+
+        public async void SetData()
+        {
+            Task.Run(async () =>
+            {
+                string html = await GetHtmlData();
+                return html;
+            }).ContinueWith(async (resultHtml) =>
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                  {
+                      if (resultHtml.Result != null && await SetBookList(resultHtml.Result.ToString()))
+                      {
+                          CommonMethod.ShowMessage("已更新" + this.BookList.Count + "条数据");
+                      }
+                      else
+                      {
+                          CommonMethod.ShowMessage("未能获取热门小说数据");
+                      }
+                  });
+
+            });
+        }
+
+        public async Task<string> GetHtmlData()
+        {
+            string html = string.Empty;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
             try
             {
-                if (Convert.ToInt32(obj) > 8)
-                {
-                    CommonMethod.ShowMessage("已加载所有，没有更多了");
-                    return;
-                }
-                //  如果正在加载，或者提示不需要刷新 或者obj为空说明是从主要左侧列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh || (obj == null && this.BookList.Count > 0))
-                {
-                    return;
-                }
-
-                IsLoading = true;
-                if (obj != null)
-                {
-                    this.PageIndex = Convert.ToInt32(obj);
-                }
                 html = await http.WebRequestGet(PageUrl.HomePage, true);
-                if (string.IsNullOrEmpty(html))
-                {
-                    throw new Exception();
-                }
-                var result = await SetBookList(html);
-                if (!result)
-                {
-                    throw new Exception();
-                }
             }
             catch (Exception ex)
             {
-                html = string.Empty;
-                CommonMethod.ShowMessage("未能获取数据 ");
+                html = null;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+
+            return html;
         }
 
         public async Task<bool> SetBookList(string html)
         {
             bool result = false;
-            if (!string.IsNullOrEmpty(html))
-            {
 
-                ObservableCollection<BookEntity>[] arraryList = GetBookListMethod.GetHomePageBookList(html);
-                if (arraryList == null)
+            try
+            {
+                if (!string.IsNullOrEmpty(html))
                 {
-                    return false;
+
+                    ObservableCollection<BookEntity>[] arraryList = GetBookListMethod.GetHomePageBookList(html);
+                    if (arraryList == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        if (arraryList[2] == null)
+                        {
+                            return false;
+                        }
+                        if (this.BookList != null)
+                        {
+                            this.BookList.Clear();
+                        }
+
+                        foreach (var item in arraryList[2])
+                        {
+                            this.BookList.Add(item);
+                            await Task.Delay(1);
+                        }
+                        result = true;
+                        ViewModelInstance.Instance.HomePageViewModelInstance.BookList = arraryList[1];
+                        return result;
+                    }
                 }
                 else
                 {
-                    if (arraryList[2] != null)
-                    {
-                        CommonMethod.ShowMessage("已更新" + arraryList[2].Count + "条数据");
-                    }
-                    this.BookList.Clear();
-                    foreach (var item in arraryList[2])
-                    {
-                        this.BookList.Add(item);
-                        await Task.Delay(1);
-                    }
-                    result = true;
-
-
-                    ViewModelInstance.Instance.HomePageViewModelInstance.BookList = arraryList[1];
-
                     return result;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                return result;
+                result = false;
             }
+            return result;
         }
 
 
@@ -211,7 +234,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                RefreshData(1, true);
+                SetData();
             }
         }
 
@@ -258,7 +281,7 @@ namespace Sodu.ViewModel
                 {
                     if (!IsLoading)
                     {
-                        this.IsNeedRefresh = false;
+                        // this.IsNeedRefresh = false;
                         ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
                         ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
                     }

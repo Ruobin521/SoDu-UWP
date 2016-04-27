@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public HotPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

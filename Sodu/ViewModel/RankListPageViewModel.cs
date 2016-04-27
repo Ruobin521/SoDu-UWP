@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -117,39 +118,22 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public async void RefreshData(object obj = null, bool isrefresh = true)
         {
-            string html = string.Empty; ;
-            try
+            if (!IsNeedRefresh) return;
+            //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
+            if (IsLoading || this.BookList.Count > 0)
             {
-                if (Convert.ToInt32(obj) > 8)
-                {
-                    CommonMethod.ShowMessage("已加载所有");
-                    return;
-                }
-                //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh || (obj == null && this.BookList.Count > 0))
-                {
-                    return;
-                }
-                if (this.BookList != null)
-                {
-                    this.BookList.Clear();
-                }
+                return;
+            }
+            SetData(1);
+        }
 
-                IsLoading = true;
-                int pageindex;
-                if (obj == null)
-                {
-                    pageindex = 1;
-                }
-                else
-                {
-                    pageindex = Convert.ToInt32(obj);
-
-                }
-                string url = string.Empty;
-
+        private void SetData(int pageindex)
+        {
+            Task.Run(async () =>
+            {
+                string url = null;
                 if (pageindex == 1)
                 {
                     url = PageUrl.BookRankListPage;
@@ -158,27 +142,57 @@ namespace Sodu.ViewModel
                 {
                     url = string.Format(PageUrl.BookRankListPage2, pageindex);
                 }
-                html = await http.WebRequestGet(url);
 
-                bool result = await SetBookList(html, pageindex);
-                if (!result)
+                string html = await GetHtmlData(url);
+                return html;
+            }).ContinueWith(async (result) =>
+            {
+                if (result.Result != null)
                 {
-                    throw new Exception();
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                     {
+                         bool rs = await SetBookList(result.Result.ToString(), pageindex);
+                         if (!rs)
+                         {
+                             CommonMethod.ShowMessage(" 第" + pageindex + "页数据加载失败");
+                         }
+                         else
+                         {
+                             CommonMethod.ShowMessage("已加载第" + pageindex + "页，共8页");
+                         }
+                     });
                 }
+            });
+        }
+
+        private async Task<string> GetHtmlData(string url)
+        {
+            string html = null;
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+            try
+            {
+                html = await http.WebRequestGet(url, true);
             }
             catch (Exception ex)
             {
-                html = string.Empty;
-                CommonMethod.ShowMessage("获取数据失败，请重新尝试");
+                html = null;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+            return html;
         }
 
         public async Task<bool> SetBookList(string html, int pageIndex)
         {
+
             if (!string.IsNullOrEmpty(html))
             {
                 ObservableCollection<BookEntity> arrary = GetBookListMethod.GetRankListFromHtml(html);
@@ -188,17 +202,7 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    //if (this.PageIndex == 1)
-                    //{
-                    // this.BookList.Clear();
-                    //}
-                    CommonMethod.ShowMessage("已加载" + PageIndex + "页，共8页");
-                    this.PageIndex = pageIndex;
-                    if (this.BookList == null)
-                    {
-                        this.BookList = new ObservableCollection<BookEntity>();
-                    }
-                    else
+                    if (this.BookList != null)
                     {
                         this.BookList.Clear();
                     }
@@ -207,11 +211,10 @@ namespace Sodu.ViewModel
                         this.BookList.Add(item);
                         await Task.Delay(1);
                     }
-
+                    this.PageIndex = pageIndex;
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -248,7 +251,6 @@ namespace Sodu.ViewModel
                 });
             }
         }
-        #region  上拉刷新,下拉加载
 
         ///跳转到相应页数
         /// </summary>
@@ -268,7 +270,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                RefreshData(1);
+                SetData(1);
             }
         }
 
@@ -292,7 +294,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("已经是最后一页");
                 return;
             }
-            RefreshData(PageIndex + 1);
+            SetData(PageIndex + 1);
         }
 
 
@@ -312,7 +314,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("已经是第一页");
                 return;
             }
-            RefreshData(PageIndex - 1);
+            SetData(PageIndex - 1);
         }
 
         public RelayCommand<object> BackCommand
@@ -328,7 +330,9 @@ namespace Sodu.ViewModel
             NavigationService.GoBack(null, null);
         }
 
-        #endregion
+
+
+
     }
 }
 

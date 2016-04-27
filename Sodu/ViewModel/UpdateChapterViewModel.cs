@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -125,104 +126,110 @@ namespace Sodu.ViewModel
         public string CurrentPageUrl { get; set; }
 
 
-        HttpHelper HttpHelper = new HttpHelper();
-        public async void RefreshData(object obj = null, bool IsRefresh = false)
-        {
-            try
-            {
-                if (!IsNeedRefresh) return;
-
-                if (obj == null || (obj as BookEntity) == null || (obj == null && this.ChapterList.Count > 0))
-                {
-                    return;
-                }
-                if (CurrentEntity == obj as BookEntity)
-                {
-                    return;
-                }
-
-                if (this.ChapterList != null)
-                {
-                    this.ChapterList.Clear();
-                }
-                else
-                {
-                    this.ChapterList = new ObservableCollection<BookEntity>();
-                }
-                string html = string.Empty;
-                PageCount = 1;
-                PageIndex = 1;
-                CurrentEntity = (obj as BookEntity);
-                CurrentPageUrl = (obj as BookEntity).CatalogUrl;
-                ContentTitle = (obj as BookEntity).BookName;
-
-                if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
-                {
-                    IsAddBtnShow = true;
-                }
-                else
-                {
-                    IsAddBtnShow = false;
-                }
-
-                bool result = await LoadPageDataByIndex(1);
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
+        HttpHelper http = new HttpHelper();
         public void CancleHttpRequest()
         {
-            this.HttpHelper.HttpClientCancleRequest();
+            this.http.HttpClientCancleRequest();
             IsLoading = false;
         }
 
-        async Task<bool> LoadPageDataByIndex(int nextPageIndex)
+        public async void RefreshData(object obj = null, bool IsRefresh = false)
+        {
+            if (!IsNeedRefresh) return;
+
+            if (CurrentEntity == obj as BookEntity)
+            {
+                return;
+            }
+
+            PageCount = 1;
+            PageIndex = 1;
+            CurrentEntity = (obj as BookEntity);
+            CurrentPageUrl = (obj as BookEntity).CatalogUrl;
+            ContentTitle = (obj as BookEntity).BookName;
+
+            //显示添加到收藏按钮
+            if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
+            {
+                IsAddBtnShow = true;
+            }
+            else
+            {
+                IsAddBtnShow = false;
+            }
+            SetData(1);
+        }
+
+        private async void SetData(int pageIndex)
+        {
+            Task.Run(async () =>
+           {
+               string html = await LoadPageDataByIndex(pageIndex);
+               return html;
+
+           }).ContinueWith(async (result) =>
+         {
+             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+             {
+                 if (result.Result != null && await SetBookList(result.Result.ToString(), pageIndex))
+                 {
+                     CommonMethod.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+                 }
+                 else
+                 {
+                     CommonMethod.ShowMessage("未能获取最新章节数据");
+                 }
+             });
+         });
+        }
+
+        async Task<string> LoadPageDataByIndex(int nextPageIndex)
         {
             string html = string.Empty;
-            IsLoading = true;
             try
             {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = true;
+                });
+
+                string url = null;
                 if (nextPageIndex == 1)
                 {
-                    html = await HttpHelper.WebRequestGet(CurrentPageUrl, true);
-
+                    url = CurrentPageUrl;
                 }
                 else
                 {
-                    html = await HttpHelper.WebRequestGet(CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + nextPageIndex), true);
+                    url = CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + nextPageIndex);
                 }
-                if (string.IsNullOrEmpty(html))
+
+                html = await http.WebRequestGet(url, true);
+                if (html == null) return html;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    throw new Exception();
-                }
-                if (PageCount == 1)
-                {
-                    Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
-                    if (match != null)
+                    if (PageCount == 1)
                     {
-                        PageCount = Convert.ToInt32(match.ToString().Trim());
+                        Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
+                        if (match != null)
+                        {
+                            PageCount = Convert.ToInt32(match.ToString().Trim());
+                        }
                     }
-                }
-                bool result = await SetBookList(html, nextPageIndex);
-                return result;
+                });
+
             }
             catch (Exception ex)
             {
                 html = null;
-                CommonMethod.ShowMessage("未能获取数据");
-                return false;
             }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+            return html;
         }
 
         public async Task<bool> SetBookList(string html, int pageIndex)
@@ -246,7 +253,7 @@ namespace Sodu.ViewModel
                         this.ChapterList = new ObservableCollection<BookEntity>();
                     }
                     this.PageIndex = pageIndex;
-                    CommonMethod.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+
                     foreach (var item in arrary)
                     {
                         item.BookName = this.ContentTitle;
@@ -311,7 +318,7 @@ namespace Sodu.ViewModel
                        CommonMethod.ShowMessage("已经是第一页");
                        return;
                    }
-                   await LoadPageDataByIndex(1);
+                   SetData(1);
                });
             }
         }
@@ -328,7 +335,7 @@ namespace Sodu.ViewModel
                         CommonMethod.ShowMessage("已经是最后一页");
                         return;
                     }
-                    await LoadPageDataByIndex(PageCount);
+                    SetData(PageCount);
                 });
             }
         }
@@ -352,7 +359,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                await LoadPageDataByIndex(1);
+                SetData(1);
             }
         }
 
@@ -390,7 +397,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("已经是最后一页");
                 return;
             }
-            await LoadPageDataByIndex(PageIndex + 1);
+            SetData(PageIndex + 1);
         }
 
         public RelayCommand<object> PreviousPageCommand
@@ -410,7 +417,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("已经是第一页");
                 return;
             }
-            await LoadPageDataByIndex(PageIndex - 1);
+            SetData(PageIndex - 1);
         }
 
         public RelayCommand<object> BackCommand
@@ -437,7 +444,7 @@ namespace Sodu.ViewModel
                         BookEntity entity = obj as BookEntity;
                         if (entity != null)
                         {
-                            this.IsNeedRefresh = false;
+                            // this.IsNeedRefresh = false;
                             MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = true;
                             ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);

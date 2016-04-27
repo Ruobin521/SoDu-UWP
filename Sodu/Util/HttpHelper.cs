@@ -287,8 +287,7 @@ namespace Sodu.Util
                                 Path = cookieItem.Path,
                                 Domain = cookieItem.Domain,
                             };
-
-                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
+                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting(false);
                     }
                     else
                     {

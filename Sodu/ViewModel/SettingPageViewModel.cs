@@ -129,7 +129,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async void SaveSetting()
+        public async void SaveSetting(bool showMessage = true)
         {
             try
             {
@@ -137,7 +137,10 @@ namespace Sodu.ViewModel
                 {
                     string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
                     bool result = await SerializeHelper.WriteAsync(this, fileName);
-                    CommonMethod.ShowMessage("已保存设置更改");
+                    if (showMessage)
+                    {
+                        CommonMethod.ShowMessage("已保存设置更改");
+                    }
                     if (HasChanged)
                     {
                         SaveSetting();
@@ -167,12 +170,20 @@ namespace Sodu.ViewModel
             if (isAdd)
             {
                 if (this.TextFontSzie < 28)
+                {
+
                     this.TextFontSzie += 2;
+                    SaveSetting();
+                }
+
             }
             else
             {
                 if (this.TextFontSzie > 16)
+                {
                     this.TextFontSzie -= 2;
+                    SaveSetting();
+                }
             }
         }
     }

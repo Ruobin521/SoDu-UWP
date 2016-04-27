@@ -36,8 +36,12 @@ namespace Sodu.Util
             nt.Show(notification);
 
         }
-
         public static void ShowMessage(string message)
+        {
+            UC.PopupWindow popup = new UC.PopupWindow(message);
+            popup.ShowWindow();
+        }
+        public static void ShowMessage_1(string message)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 

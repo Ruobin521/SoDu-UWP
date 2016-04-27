@@ -41,7 +41,7 @@
                 <PasswordBox x:Name="txtPassword" Password="{Binding Password,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle}" Grid.Row="4"    VerticalAlignment="Center"  />
 
 
-                <CheckBox x:Name="AuotLoginCheckBox" Grid.Row="5" IsChecked="{Binding IsChecked}" Height="20"  Style="{StaticResource CheckboxStyle}" FontSize="15" BorderThickness="2" HorizontalAlignment="Left"  Margin="20,0,0,0"  Content=" 下次自动登录" Foreground="Black" />
+                <CheckBox x:Name="AuotLoginCheckBox" Grid.Row="5" IsChecked="{Binding IsAutoLogin,Mode=TwoWay}" Height="20"  Style="{StaticResource CheckboxStyle}" FontSize="15" BorderThickness="2" HorizontalAlignment="Left"  Margin="20,0,0,0"  Content=" 下次自动登录" Foreground="Black" />
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="btnSumbit" Content="确定"  Grid.Column="0" Style="{StaticResource   ButtonStyle1 }" Command="{Binding LoginCommand}" CommandParameter="" FontSize="16" Height="35" Width="75" Margin="10,0"  />
 
