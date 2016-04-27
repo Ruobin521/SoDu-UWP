@@ -44,7 +44,7 @@ namespace Sodu.Util
         {
             if (isAddTime)
             {
-                url = url + "?" + GetTimeStamp();
+                url = url + "?time=" + GetTimeStamp();
             }
             Request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
             Request.Method = "GET";    //设置请求方式为GET : 

@@ -128,6 +128,9 @@
     <Compile Include="Pages\HotPage.xaml.cs">
       <DependentUpon>HotPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\LogoutPage.xaml.cs">
+      <DependentUpon>LogoutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\RankListPage.xaml.cs">
       <DependentUpon>RankListPage.xaml</DependentUpon>
     </Compile>
@@ -200,12 +203,12 @@
     <Compile Include="Util\ToastHeplper.cs" />
     <Compile Include="ViewModel\BookCatalogPageViewModel.cs" />
     <Compile Include="ViewModel\BookContentPageViewModel.cs" />
-    <Compile Include="ViewModel\BookReaderPageViewModel.cs" />
     <Compile Include="ViewModel\EverReadBookPageViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\HotPageViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\LogoutPageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
     <Compile Include="ViewModel\MyBookShelfViewModel.cs" />
@@ -256,6 +259,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\HotPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LogoutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

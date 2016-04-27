@@ -25,7 +25,7 @@ namespace Sodu.ViewModel
             get; set;
         }
 
-        public string BaseUrl
+        public string CatalogPageUrl
         {
             get; set;
         }
@@ -54,7 +54,6 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_CatalogList, value);
             }
         }
-
 
         private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
         public IconElement RefreshIcon
@@ -99,13 +98,13 @@ namespace Sodu.ViewModel
             //throw new NotImplementedException();
         }
 
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null, bool IsRefresh = true)
         {
             if (!IsNeedRefresh) return;
 
             object[] para = obj as object[];
 
-            this.BaseUrl = para[0].ToString();
+            this.CatalogPageUrl = para[0].ToString();
             BookEntity temp = para[1] as BookEntity;
             this.CurrentBookEntity = new BookEntity()
             {
@@ -119,10 +118,10 @@ namespace Sodu.ViewModel
             };
 
             this.ContentTitle = CurrentBookEntity.BookName + "  目录";
-            SetData(BaseUrl);
+            SetData(CatalogPageUrl);
         }
 
-        private async void SetData(string url)
+        private void SetData(string url)
         {
             Task.Run(async () =>
             {
@@ -189,7 +188,7 @@ namespace Sodu.ViewModel
 
                 foreach (var item in result)
                 {
-                    item.CatalogUrl = Path.Combine(BaseUrl, item.CatalogUrl);
+                    item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
                     this.CatalogList.Add(item);
                 }
                 return true;
@@ -224,7 +223,7 @@ namespace Sodu.ViewModel
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.CurrentCatalog = catalog;
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.CatalogList = this.CatalogList;
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = false;
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.SetContent();
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.SetData(catalog);
                             NavigationService.GoBack(null, null);
                             //   NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
                         }
@@ -255,7 +254,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                SetData(BaseUrl);
+                SetData(CatalogPageUrl);
             }
         }
         /// <summary>

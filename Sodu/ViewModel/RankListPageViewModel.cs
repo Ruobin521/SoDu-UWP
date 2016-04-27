@@ -142,7 +142,6 @@ namespace Sodu.ViewModel
                 {
                     url = string.Format(PageUrl.BookRankListPage2, pageindex);
                 }
-
                 string html = await GetHtmlData(url);
                 return html;
             }).ContinueWith(async (result) =>
@@ -230,7 +229,7 @@ namespace Sodu.ViewModel
                         CommonMethod.ShowMessage("已经是第一页");
                         return;
                     }
-                    RefreshData(1);
+                    SetData(1);
                 });
             }
         }
@@ -247,7 +246,7 @@ namespace Sodu.ViewModel
                         CommonMethod.ShowMessage("已经是最后一页");
                         return;
                     }
-                    RefreshData(PageCount);
+                    SetData(PageCount);
                 });
             }
         }

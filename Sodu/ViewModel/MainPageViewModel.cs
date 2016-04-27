@@ -190,6 +190,7 @@ namespace Sodu.ViewModel
             if (isLogin)
             {
                 this.CurrentMenuList = this.LoadMenuList;
+                ViewModelInstance.Instance.MyBookShelfViewModelInstance.IsNeedRefresh = true;
             }
             else
             {
@@ -219,12 +220,11 @@ namespace Sodu.ViewModel
             }
         }
 
-        public void SetCurrentMenu(string menuName)
+        public void SetCurrentMenu(Type type)
         {
             try
             {
-                this.CurrentMenu = this.CurrentMenuList.ToList().Find(p => p.MenuName == menuName);
-
+                this.CurrentMenu = this.CurrentMenuList.ToList().FirstOrDefault(p => p.MenuType == type);
             }
             catch (Exception ex)
             {
@@ -295,7 +295,13 @@ namespace Sodu.ViewModel
                            string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, entity.BookID));
                            if (html.Contains("{\"success\":true}"))
                            {
-                               ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(entity);
+                               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                               {
+                                   if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                                   {
+                                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, entity);
+                                   }
+                               });
                            }
                        }
 
@@ -317,26 +323,12 @@ namespace Sodu.ViewModel
             get
             {
                 return new RelayCommand<bool>(
-                    async (str) =>
+                      (str) =>
                 {
-                    try
-                    {
-                        IsLeftPanelOpen = false;
-                        HttpHelper http = new HttpHelper();
-                        string html = await http.WebRequestGet(PageUrl.LogoutPage);
-                        if (html != null && html.Contains("to delete public domains' cookies"))
-                        {
-                            ChangeLoginState(false);
-                        }
-                        else
-                        {
-                            throw new Exception();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        CommonMethod.ShowMessage("注销失败，请重新操作");
-                    }
+                    IsLeftPanelOpen = false;
+                    ViewModelInstance.Instance.LoginViewModelInstance.IsNeedRefresh = true;
+                    MenuModel menu = new MenuModel() { MenuName = "注销登陆", MenuType = typeof(LogoutPage) };
+                    NavigateToPage(menu, null);
                 });
             }
         }

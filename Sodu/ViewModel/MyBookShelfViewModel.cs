@@ -143,9 +143,11 @@ namespace Sodu.ViewModel
             }
             return false;
         }
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null, bool IsRefresh = true)
         {
             if (!IsNeedRefresh) return;
+            this.IsShow = false;
+
             SetData();
         }
 
@@ -154,7 +156,6 @@ namespace Sodu.ViewModel
             Task.Run(async () =>
             {
                 string html = await GetHtmlData();
-
                 return html;
             }).ContinueWith(async (result) =>
             {
@@ -206,6 +207,10 @@ namespace Sodu.ViewModel
 
         public async void SetBookList(string html)
         {
+            if (this.ShelfBookList != null)
+            {
+                this.ShelfBookList.Clear();
+            }
             if (!string.IsNullOrEmpty(html))
             {
                 ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
@@ -217,14 +222,7 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    if (this.ShelfBookList != null)
-                    {
-                        this.ShelfBookList.Clear();
-                    }
-                    else
-                    {
-                        this.ShelfBookList = new ObservableCollection<BookEntity>();
-                    }
+                    this.IsShow = false;
                     if (list.Count > 0)
                     {
                         foreach (var item in list)
@@ -435,8 +433,6 @@ namespace Sodu.ViewModel
             else
             {
 
-
-
                 List<BookEntity> removeList = new List<BookEntity>();
 
                 foreach (var item in ShelfBookList)
@@ -460,6 +456,15 @@ namespace Sodu.ViewModel
                     }));
                     await msgDialog.ShowAsync();
 
+                }
+                else
+                {
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("\n请勾选需要取消收藏的小说。") { Title = "取消收藏" };
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                    {
+                        return;
+                    }));
+                    await msgDialog.ShowAsync();
                 }
             }
         }
@@ -517,7 +522,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                RefreshData(1, true);
+                SetData();
             }
         }
 

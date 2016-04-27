@@ -112,10 +112,12 @@ namespace Sodu.ViewModel
             http.HttpClientCancleRequest();
             IsLoading = false;
         }
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null, bool IsRefresh = true)
         {
-            if (!IsNeedRefresh) return;
-
+            if (!IsNeedRefresh || (this.BookList != null && this.BookList.Count > 0))
+            {
+                return;
+            }
             SetData();
         }
 

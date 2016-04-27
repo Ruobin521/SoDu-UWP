@@ -28,7 +28,9 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  TextBlockButtonStyle}"></TextBlock>
+                    <Button Style="{StaticResource ContentButtonStyle}" Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding}">
+                        <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  TextBlockButtonStyle}" Margin="15,0,0,0"></TextBlock>
+                    </Button>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  
@@ -50,11 +52,11 @@
                     </TextBlock>
                 </Grid>
             </control:PullToRefreshListView.RefreshIndicatorContent>-->
-            <Interactivity:Interaction.Behaviors >
+            <!--<Interactivity:Interaction.Behaviors >
                 <Core:EventTriggerBehavior   EventName="SelectionChanged">
                     <Core:InvokeCommandAction Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
                 </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>
+            </Interactivity:Interaction.Behaviors>-->
         </ListView>
 
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >

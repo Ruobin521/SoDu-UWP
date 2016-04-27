@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -70,7 +71,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        public string CatalogUrl
+        public string CatalogListUrl
         {
             get; set;
         }
@@ -89,8 +90,8 @@ namespace Sodu.ViewModel
             }
         }
 
-        public string m_TextContent;
-        public string TextContent
+        public StringBuilder m_TextContent;
+        public StringBuilder TextContent
         {
             get
             {
@@ -101,6 +102,25 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_TextContent, value);
             }
         }
+
+        public ObservableCollection<string> m_ContentListt;
+        public ObservableCollection<string> ContentListt
+        {
+            get
+            {
+                if (m_ContentListt == null)
+                {
+                    m_ContentListt = new ObservableCollection<string>();
+                }
+                return m_ContentListt;
+            }
+            set
+            {
+                SetProperty(ref m_ContentListt, value);
+            }
+        }
+
+
 
 
         public bool m_DirectionArrowShow;
@@ -127,8 +147,6 @@ namespace Sodu.ViewModel
             }
             set
             {
-
-
                 SetProperty(ref m_FontSize, value);
             }
         }
@@ -190,7 +208,7 @@ namespace Sodu.ViewModel
 
         public BookContentPageViewModel()
         {
-            // this.ContentFontSzie = ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
+            this.ContentFontSzie = ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
         }
 
         public void CancleHttpRequest()
@@ -201,124 +219,180 @@ namespace Sodu.ViewModel
         HttpHelper http = new HttpHelper();
 
 
-        public async void RefreshData(object obj = null, bool isRefresh = true)
+        public void RefreshData(object obj = null, bool isRefresh = true)
         {
-            try
+            if (!IsNeedRefresh) return;
+
+            BookEntity entity = obj as BookEntity;
+            if (entity == null)
             {
-                if (!IsNeedRefresh) return;
-                BookEntity entity = obj as BookEntity;
-                if (entity == null)
-                {
-                    throw new Exception();
-                }
-
-                this.TextContent = string.Empty;
-                this.ContentTitle = string.Empty;
-                this.IsCatalogMenuShow = false;
-                this.DirectionArrowShow = false;
-                if (this.CatalogList != null)
-                {
-                    this.CatalogList.Clear();
-                }
-
-                this.BookEntity = entity;
-
-                SetContent();
-            }
-            catch (Exception ex)
-            {
-                Services.CommonMethod.ShowMessage("未能获取章节正文。");
+                return;
             }
 
-        }
-        public async void SetContent()
-        {
-            try
+            this.ContentTitle = entity.ChapterName;
+
+            this.TextContent = null;
+
+            this.IsCatalogMenuShow = false;
+            this.DirectionArrowShow = false;
+
+            if (this.CatalogList != null)
             {
-                IsLoading = true;
-                string url = null;
-
-                this.TextContent = string.Empty;
-                this.ContentTitle = BookEntity.ChapterName;
-
-                if (IsLocal)
-                {
-                    Schema.BookCatalog catalog = GetCatafromDatabase(this.CurrentCatalog);
-                    if (catalog != null)
-                    {
-
-                    }
-                }
-                else
-                {
-                    url = BookEntity.ChapterUrl;
-                    bool result = await SetContentString(url, BookEntity);
-
-                    if (!result)
-                    {
-                        throw new Exception();
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                Services.CommonMethod.ShowMessage("未能获取到正文内容。");
-            }
-            finally
-            {
-                IsLoading = false;
+                this.CatalogList.Clear();
             }
 
+            if (this.ContentListt != null)
+            {
+                this.ContentListt.Clear();
+            }
+
+            this.BookEntity = entity;
+
+            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.BookName, CatalogUrl = entity.ChapterUrl, LyWeb = entity.LyWeb };
+
+            SetData(CurrentCatalog);
         }
 
-        private Schema.BookCatalog GetCatafromDatabase(BookCatalog catalog)
+        public void SetData(BookCatalog catalog)
         {
+            Task.Run(async () =>
+           {
+               if (IsLocal)
+               {
+                   string html = await GetCatafromDatabase(catalog);
+                   return html;
+               }
+               else
+               {
+                   string html = await GetHtmlData(catalog);
+                   return html;
+               }
 
-            return null;
+           }).ContinueWith(async (result) =>
+          {
+              string html = result.Result;
+
+              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+              {
+                  if (html != null)
+                  {
+                      SetTextContent(html);
+                  }
+              });
+          });
         }
 
 
-        private async Task<bool> SetContentString(string url, BookEntity entity)
+        private async void SetTextContent(string html)
         {
-            try
+            double width = Window.Current.Bounds.Width;
+            double height = Window.Current.Bounds.Height;
+
+            int textCount = ((int)(width / this.ContentFontSzie)) * ((int)height / this.ContentFontSzie);
+            int count = (int)(html.Length / textCount) + 1;
+
+            if (this.ContentListt != null)
             {
-                string html = await http.WebRequestGet(url, false);
-                if (string.IsNullOrEmpty(html))
+                this.ContentListt.Clear();
+            }
+            List<string> strList = SplitString(html, count);
+            for (int i = 0; i < strList.Count; i++)
+            {
+                this.ContentListt.Add(strList[i]);
+                // this.TextContent = string.Format("{0}{1}", this.TextContent, strList[i]);
+                await Task.Delay(10);
+            }
+        }
+
+        private List<string> SplitString(string str, int count = 20)
+        {
+            List<string> strList = new List<string>();
+            if (str.Length < 1000)
+            {
+                strList.Add(str);
+            }
+            else
+            {
+                int perCount = str.Length / count + 1;
+                for (int i = 0; i < count; i++)
                 {
-                    throw new Exception();
-                }
-                if (Services.WebSetList.AlreadyAnalysisWebList.Contains(entity.LyWeb))
-                {
-                    CatalogUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogUrl(html, entity.LyWeb);
-                    if (string.IsNullOrEmpty(CatalogUrl))
+                    string tempStr = null;
+                    if (i == count - 1)
                     {
-                        IsCatalogMenuShow = false;
+                        tempStr = str.Substring(perCount * i, str.Length - perCount * i);
                     }
                     else
                     {
-                        IsCatalogMenuShow = true;
+                        tempStr = str.Substring(perCount * i, perCount);
                     }
-                    html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, entity.LyWeb);
-                    if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
-                    {
-                        Services.CommonMethod.ShowMessage("未能解析到正文内容。");
-                        return false;
-                    }
-                    this.TextContent = string.Empty;
-                    this.TextContent = html;
-                    return true;
+                    strList.Add(tempStr);
+                }
+            }
+
+            return strList;
+        }
+
+
+        /// <summary>
+        /// 网络请求数据
+        /// </summary>
+        /// <param name="catalog"></param>
+        /// <returns></returns>
+        public async Task<string> GetHtmlData(BookCatalog catalog)
+        {
+            string html = null;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+            try
+            {
+                html = await http.WebRequestGet(catalog.CatalogUrl, true);
+                if (string.IsNullOrEmpty(html))
+                {
+                    return null;
+                }
+
+                string catalogListUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogListUrl(html, catalog.CatalogUrl);
+                if (string.IsNullOrEmpty(catalogListUrl))
+                {
+                    IsCatalogMenuShow = false;
                 }
                 else
                 {
-                    html = Services.AnalysisContentHtmlService.ReplaceSymbol(html);
-                    this.TextContent = html;
-                    return true;
+                    this.CatalogListUrl = catalogListUrl;
+                    IsCatalogMenuShow = true;
+                }
+                html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalog.CatalogUrl);
+                if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
+                {
+                    return null;
                 }
             }
             catch (Exception ex)
             {
-                return false;
+                html = null;
             }
+            finally
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
+            }
+            return html;
+        }
+
+        /// <summary>
+        /// 从数据库获取数据
+        /// <param name="catalog"></param>
+        /// <param name="isBackGround"></param>
+        /// <returns></returns>
+        private async Task<string> GetCatafromDatabase(BookCatalog catalog, bool isBackGround = true)
+        {
+            await Task.Delay(1000);
+            return null;
         }
 
         /// <summary>
@@ -328,13 +402,22 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    //string temp = this.TextContent;
-                    //this.TextContent = string.Empty;
-                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(true);
-                    //SetTextContent();
-                });
+                return new RelayCommand<bool>(async (str) =>
+               {
+                   var list = new ObservableCollection<string>();
+                   foreach (var item in this.ContentListt)
+                   {
+                       list.Add(item);
+                   }
+                   this.ContentListt.Clear();
+                   ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(true, false);
+                   this.ContentFontSzie = ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
+                   foreach (var item in list)
+                   {
+                       this.ContentListt.Add(item);
+                       await Task.Delay(5);
+                   }
+               });
             }
         }
 
@@ -347,53 +430,24 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    //string temp = this.TextContent;
-                    //this.TextContent = string.Empty;
-                    //Task.Run(() =>
-                    //    {
-                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false);
-                    //}
-                    //).ContinueWith((obj) =>
-                    //{
-                  //  SetTextContent();
-                    //});
-
-                });
+                return new RelayCommand<bool>(async (str) =>
+               {
+                   var list = new ObservableCollection<string>();
+                   foreach (var item in this.ContentListt)
+                   {
+                       list.Add(item);
+                   }
+                   this.ContentListt.Clear();
+                   ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false, false);
+                   this.ContentFontSzie = ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
+                   foreach (var item in list)
+                   {
+                       this.ContentListt.Add(item);
+                       await Task.Delay(5);
+                   }
+               });
             }
         }
-
-        public async void SetTextContent()
-        {
-            string temp = this.TextContent;
-
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-          {
-              this.TextContent = string.Empty;
-              this.TextContent = temp;
-          });
-
-
-            //var group = Split<char>(temp.ToList(), 5);
-            //foreach (var list in group)
-            //{
-            //    foreach (var item in list)
-            //    {
-            //        this.TextContent = string.Format(this.TextContent, item.ToString());
-            //    }
-            //    await Task.Delay(1);
-            //}
-
-        }
-
-        public IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> items,
-                                                       int numOfParts)
-        {
-            int i = 0;
-            return items.GroupBy(x => i++ % numOfParts);
-        }
-
 
         /// <summary>
         /// 刷新
@@ -410,7 +464,7 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
-                        SetContent();
+                        SetData(CurrentCatalog);
                     }
                 });
             }
@@ -444,7 +498,7 @@ namespace Sodu.ViewModel
                     // this.IsNeedRefresh = false;
                     MenuModel menu = new MenuModel() { MenuName = BookEntity.BookName, MenuType = typeof(BookCatalogPage) };
                     ViewModelInstance.Instance.BookCatalogPageViewModelInstance.IsNeedRefresh = true;
-                    ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, new object[] { this.CatalogUrl, this.BookEntity });
+                    ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, new object[] { this.CatalogListUrl, this.BookEntity });
                 });
             }
         }
@@ -495,11 +549,12 @@ namespace Sodu.ViewModel
                 }
                 this.CurrentCatalog = this.CatalogList[this.CatalogList.IndexOf(this.CurrentCatalog) + 1];
             }
+
             if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)
             {
                 this.BookEntity.ChapterName = this.CurrentCatalog.CatalogName;
                 this.BookEntity.ChapterUrl = this.CurrentCatalog.CatalogUrl;
-                SetContent();
+                SetData(CurrentCatalog);
             }
         }
 

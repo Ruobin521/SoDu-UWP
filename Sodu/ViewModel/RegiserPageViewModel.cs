@@ -138,7 +138,7 @@ namespace Sodu.ViewModel
                 else if (html.Contains("注册成功"))
                 {
                     CommonMethod.ShowMessage("注册成功,请登录");
-                    ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu("登陆");
+                    NavigationService.NavigateTo(new Model.MenuModel() { MenuName = "登录", MenuType = typeof(Pages.LoginPage) }, null);
                 }
                 else
                 {

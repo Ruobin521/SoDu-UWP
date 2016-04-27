@@ -24,12 +24,47 @@
         <Border Grid.Row="1" Child="{Binding WebViewBrowser}">
 
         </Border>
-            <TextBox x:Name="txtContent" Grid.Row="1" BorderThickness="0" TextWrapping="Wrap"  IsReadOnly="True"  Text="{Binding ElementName=txtContent,Path=DataContext}"    DataContext="{Binding Instance.BookContentPageViewModelInstance.TextContent,Source={ StaticResource  Locator}}" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
 
-            </TextBox>
+        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent"   
+            >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Button Style="{StaticResource ContentButtonStyle}" Height="auto" >
+                        <TextBox   BorderThickness="0" TextWrapping="Wrap" Height="auto" IsReadOnly="True"  Text="{Binding}"    DataContext="{Binding }" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.BookContentPageViewModelInstance.ContentFontSzie,Source={StaticResource  Locator}}">
+                        </TextBox>
+                    </Button>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  
+           RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
+            <control:PullToRefreshListView.ItemTemplate>
+                <DataTemplate>
+                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"  />
+                </DataTemplate>
+            </control:PullToRefreshListView.ItemTemplate>-->
+            <!--<control:PullToRefreshListView.RefreshIndicatorContent>
+                <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
+                    <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
+                        <Run FontWeight="Black">↑</Run>
+                        <Run>释放刷新</Run>
+                    </TextBlock>
+                    <TextBlock FontSize="16" x:Name="downText"  Visibility="Collapsed">
+                        <Run FontWeight="Black">↓</Run>
+                        <Run>下拉刷新</Run>
+                    </TextBlock>
+                </Grid>
+            </control:PullToRefreshListView.RefreshIndicatorContent>-->
+            <!--<Interactivity:Interaction.Behaviors >
+                <Core:EventTriggerBehavior   EventName="SelectionChanged">
+                    <Core:InvokeCommandAction Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
+                </Core:EventTriggerBehavior>
+            </Interactivity:Interaction.Behaviors>-->
+        </ListView>
+
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
             <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
             <AppBarButton Icon="{Binding RefreshIcon}" x:Name="refreshBtn" Label="刷新" Width="50"    Command="{Binding  RefreshCommand}"/>
+            <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="directionAppBarButton_Click"/>
             <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding DirectionArrowShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding DirectionArrowShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Bullets" Label="目录"  Visibility="{Binding IsCatalogMenuShow,Converter={StaticResource BooleanToVisibilityConverter}}" Width="50"  Command="{Binding CatalogCommand}"/>

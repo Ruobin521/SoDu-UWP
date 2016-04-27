@@ -28,6 +28,51 @@ namespace Sodu.Pages
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
         }
+        public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
+        {
+            List<T> visualCollection = new List<T>();
+            GetVisualChildCollection(parent as DependencyObject, visualCollection);
+            return visualCollection;
+        }
+
+        private void directionAppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewer scrllviewer = GetVisualChildCollection<ScrollViewer>(this.listview).FirstOrDefault();
+
+            if (scrllviewer == null)
+
+                return;
+
+            if (this.listview.Items != null && this.listview.Items.Count > 0)
+            {
+                if (this.direction.Label.Equals("回到顶部"))
+                {
+                    scrllviewer.ScrollToVerticalOffset(0);
+                    this.direction.Label = "转到底部";
+                }
+
+                else if (this.direction.Label.Equals("转到底部"))
+                {
+                    //this.listview.ScrollIntoView(this.listview.Items[this.listview.Items.Count - 1]);
+                    scrllviewer.ScrollToVerticalOffset(scrllviewer.ScrollableHeight);
+                    this.direction.Label = "回到顶部";
+                }
+            }
+        }
+
+        public static void GetVisualChildCollection<T>(DependencyObject parent, List<T> visualCollection) where T : UIElement
+        {
+            int count = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T)
+                    visualCollection.Add(child as T);
+                else if (child != null)
+                    GetVisualChildCollection(child, visualCollection);
+            }
+        }
+
 
         //private void txtContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         //{

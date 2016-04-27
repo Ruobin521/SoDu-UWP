@@ -82,6 +82,23 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_LoginViewModelInstance, value);
             }
         }
+        private LogoutPageViewModel m_LogoutPageViewModelInstance;
+        public LogoutPageViewModel LogoutPageViewModelInstance
+        {
+            get
+            {
+                if (m_LogoutPageViewModelInstance == null)
+                {
+                    m_LogoutPageViewModelInstance = new LogoutPageViewModel();
+                }
+                return m_LogoutPageViewModelInstance;
+            }
+            set
+            {
+                SetProperty(ref this.m_LogoutPageViewModelInstance, value);
+            }
+        }
+
 
         private HomePageViewModel m_HomePageViewModelInstance;
         public HomePageViewModel HomePageViewModelInstance

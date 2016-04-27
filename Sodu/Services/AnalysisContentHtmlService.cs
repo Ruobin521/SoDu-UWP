@@ -8,61 +8,140 @@ using System.Threading.Tasks;
 
 namespace Sodu.Services
 {
-    public class WebSetList
+    public class WebSet
     {
-        public static List<string> AlreadyAnalysisWebList = new List<string>()
-        {
-            "手牵手小说网","七度书屋","大海中文","爱上中文","少年文学","书旗小说","木鱼哥","无弹窗小说网"
-        };
+        /// <summary>
+        /// 7度书屋
+        /// </summary>
+        public const string qdsw = "www.7dsw.com";
+        /// <summary>
+        /// 笔下文学（依依中文网）
+        /// </summary>
+        public const string bxwx5 = "www.bxwx5.com";
+        /// <summary>
+        /// 第九中文网
+        /// </summary>
+        public const string dijiuzww = "www.dijiuzww.com";
+
+        /// <summary>
+        /// 清风小说
+        /// </summary>
+        public const string qfxs = "www.qfxs.cc";
+        /// <summary>
+        /// 窝窝小说网
+        /// </summary>
+        public const string wwxsw = " www.quanxiong.org";
+        /// <summary>
+        /// 55xs（古古小说）
+        /// </summary>
+        public const string xs55 = "www.55xs.com";
+
+        /// <summary>
+        /// 风云小说
+        /// </summary>
+        public const string fyxs = "www.baoliny.com";
+
+        /// <summary>
+        /// 爱上中文
+        /// </summary>
+        public const string aszw520 = "www.aszw520.com";
+
+        /// <summary>
+        /// 大海中文
+        /// </summary>
+        public const string dhzw = "www.dhzw.com";
+
+        /// <summary>
+        /// 酷酷看书
+        /// </summary>
+        public const string kkks = "www.kukukanshu.cc";
+
+        /// <summary>
+        /// 少年文学
+        /// </summary>
+        public const string snwx = "www.snwx.com";
+
+        /// <summary>
+        /// 手牵手小说
+        /// </summary>
+        public const string sqsxs = "www.sqsxs.com";
+
+        /// <summary>
+        /// 大书包
+        /// </summary>
+        public const string dsb = "www.dashubao.cc";
+
+        /// <summary>
+        /// 找书网
+        /// </summary>
+        public const string zsw = "www.zhaodaoshu.com";
+
+        /// <summary>
+        /// 趣笔阁
+        /// </summary>
+        public const string qbiquge = "www.qbiquge.com";
+
+        /// <summary>
+        /// 书路小说
+        /// </summary>
+        public const string shu6 = "www.shu6.cc";
+
+        /// <summary>
+        /// 风华居
+        /// </summary>
+        public const string fenghuaju = "www.fenghuaju.com";
     }
     public class AnalysisContentHtmlService
     {
-        public static string AnalysisContentHtml(string html, string webName)
+        public static string AnalysisContentHtml(string html, string url)
         {
             string result = string.Empty;
 
-            switch (webName)
+            Uri tempUrl = new Uri(url);
+
+            string web = tempUrl.Authority;
+
+            switch (web)
             {
-                case "手牵手小说网":
+                //7度书屋
+                case WebSet.qdsw:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                case "七度书屋":
+                //笔下文学（依依中文网）
+                case WebSet.bxwx5:
+                    result = ReplaceSymbol(html);
+                    break;
+
+                case WebSet.sqsxs:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                case "大海中文":
+                case WebSet.dhzw:
                     result = AnalysisSlsxsw(html); ;
                     break;
 
-                case "爱上中文":
+                case WebSet.aszw520:
                     result = AnalysisAszw(html);
                     break;
 
-                case "少年文学":
+                case WebSet.snwx:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                case "书旗小说":
-                    result = AnalysisSq(html);
-                    break;
-
-                case "木鱼哥":
-                    result = AnalysisMyg(html);
-                    break;
-
-                case "无弹窗小说网":
-                    result = AnalysisWtc(html);
-                    break;
-
-                //case " 天天看书网":
-                //    result = "";
+                //case "书旗小说":
+                //    result = AnalysisSq(html);
                 //    break;
 
-                //case "  二六九小说网":
-                //    result = "";
+                //case "木鱼哥":
+                //    result = AnalysisMyg(html);
+                //    break;
+
+                //case "无弹窗小说网":
+                //    result = AnalysisWtc(html);
                 //    break;
                 default:
+                    result = ReplaceSymbol(html);
                     break;
             }
             if (!string.IsNullOrEmpty(result))
@@ -180,7 +259,7 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogUrl
     {
-        public static string GetBookCatalogUrl(string html, string webName)
+        public static string GetBookCatalogListUrl(string html, string webName)
         {
             string result = string.Empty;
             try
@@ -218,15 +297,8 @@ namespace Sodu.Services
                     case "无弹窗小说网":
                         result = AnalysisWtc(html);
                         break;
-
-                    //case " 天天看书网":
-                    //    result = "";
-                    //    break;
-
-                    //case "  二六九小说网":
-                    //    result = "";
-                    //    break;
                     default:
+                        result = AnalysisWtc(html);
                         break;
                 }
             }
@@ -244,7 +316,7 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisWtc(string html)
         {
-            return "";
+            return null;
         }
 
         /// <summary>
@@ -254,7 +326,7 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisMyg(string html)
         {
-            return "";
+            return null;
 
         }
 
@@ -265,7 +337,7 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisSq(string html)
         {
-            return "";
+            return null;
 
         }
 
@@ -276,8 +348,7 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisAszw(string html)
         {
-            return "";
-
+            return null;
         }
 
         /// <summary>

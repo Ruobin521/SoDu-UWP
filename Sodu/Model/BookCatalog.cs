@@ -10,5 +10,7 @@ namespace Sodu.Model
     {
         public string CatalogName { get; set; }
         public string CatalogUrl { get; set; }
+        public string LyWeb { get; set; }
+        public string BookID { get; set; }
     }
 }

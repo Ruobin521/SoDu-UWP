@@ -165,7 +165,7 @@ namespace Sodu.ViewModel
         }
 
 
-        public void SetFontSize(bool isAdd)
+        public void SetFontSize(bool isAdd, bool isShowMessage = true)
         {
             if (isAdd)
             {
@@ -173,7 +173,7 @@ namespace Sodu.ViewModel
                 {
 
                     this.TextFontSzie += 2;
-                    SaveSetting();
+                    SaveSetting(isShowMessage);
                 }
 
             }
@@ -182,7 +182,7 @@ namespace Sodu.ViewModel
                 if (this.TextFontSzie > 16)
                 {
                     this.TextFontSzie -= 2;
-                    SaveSetting();
+                    SaveSetting(isShowMessage);
                 }
             }
         }

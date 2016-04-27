@@ -61,7 +61,7 @@ namespace Sodu.Services
             if (menu != null)
             {
                 Page page = ContentFrame.Content as Page;
-                if (page != null)
+                if (page != null && page.GetType() != menu.MenuType)
                 {
                     IViewModel viewModel = page.DataContext as IViewModel;
                     if (viewModel != null)
@@ -139,6 +139,8 @@ namespace Sodu.Services
                     }
                 }
             }
+            // var menu = ViewModelInstance.Instance.MainPageViewModelInstance.CurrentMenuList.ToList().FirstOrDefault(p => p.MenuType == page.GetType());
+            ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
         }
 
     }

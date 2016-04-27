@@ -183,6 +183,8 @@ namespace Sodu.ViewModel
                     if (html.Contains("{\"success\":true}"))
                     {
                         CommonMethod.ShowMessage("登陆成功");
+
+                       
                         ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                     }
                     else

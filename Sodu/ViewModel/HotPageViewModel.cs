@@ -110,14 +110,15 @@ namespace Sodu.ViewModel
             http.HttpClientCancleRequest();
             IsLoading = false;
         }
-        public async void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null, bool IsRefresh = true)
         {
-            if (!IsNeedRefresh) return;
+            if (!IsNeedRefresh || (this.BookList != null && this.BookList.Count > 0))
+                return;
 
             SetData();
         }
 
-        public async void SetData()
+        public void SetData()
         {
             Task.Run(async () =>
             {
@@ -129,7 +130,7 @@ namespace Sodu.ViewModel
                   {
                       if (resultHtml.Result != null && await SetBookList(resultHtml.Result.ToString()))
                       {
-                          CommonMethod.ShowMessage("已更新" + this.BookList.Count + "条数据");
+                          CommonMethod.ShowMessage("热门小说数据已更新");
                       }
                       else
                       {

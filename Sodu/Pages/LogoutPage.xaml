@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="Sodu.Pages.LogoutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.Pages"
+    DataContext="{Binding Instance.LogoutPageViewModelInstance,Source={ StaticResource  Locator}}"
+    xmlns:UC="using:Sodu.UC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="TextTitle"   Text="注销登陆" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+
+        <!--<CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
+            -->
+        <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
+        <!--<AppBarSeparator/>-->
+        <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
+        <!--
+            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="70"  Command="{Binding RefreshCommand}"/>
+        </CommandBar>-->
+        <UC:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding IsLoading}"  ></UC:UC_ProgressRing>
+    </Grid>
+</Page>

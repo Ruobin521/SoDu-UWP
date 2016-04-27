@@ -122,7 +122,19 @@ namespace Sodu.ViewModel
             }
         }
 
-        public string ContentTitle { get; set; }
+        private string m_ContentTitle;
+        public string ContentTitle
+        {
+            get
+            {
+                return m_ContentTitle;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_ContentTitle, value);
+
+            }
+        }
         public string CurrentPageUrl { get; set; }
 
 
@@ -133,7 +145,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null, bool IsRefresh = false)
+        public void RefreshData(object obj = null, bool IsRefresh = false)
         {
             if (!IsNeedRefresh) return;
 
@@ -148,8 +160,19 @@ namespace Sodu.ViewModel
             CurrentPageUrl = (obj as BookEntity).CatalogUrl;
             ContentTitle = (obj as BookEntity).BookName;
 
-            //显示添加到收藏按钮
-            if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
+            if (this.ChapterList != null)
+            {
+                ChapterList.Clear();
+            }
+            if (!ViewModelInstance.Instance.IsLogin)
+            {
+                IsAddBtnShow = false;
+            }
+            else if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
+            {
+                IsAddBtnShow = false;
+            }
+            else if (ViewModelInstance.Instance.IsLogin && !ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf && ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
             {
                 IsAddBtnShow = true;
             }
@@ -160,7 +183,7 @@ namespace Sodu.ViewModel
             SetData(1);
         }
 
-        private async void SetData(int pageIndex)
+        private void SetData(int pageIndex)
         {
             Task.Run(async () =>
            {
@@ -257,6 +280,7 @@ namespace Sodu.ViewModel
                     foreach (var item in arrary)
                     {
                         item.BookName = this.ContentTitle;
+                        item.BookID = this.CurrentEntity.BookID;
                         this.ChapterList.Add(item);
                         await Task.Delay(1);
                     }
