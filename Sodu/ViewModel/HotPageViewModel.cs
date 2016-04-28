@@ -19,7 +19,7 @@ namespace Sodu.ViewModel
     //}
     public class HotPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsNeedRefresh { get; set; } = true;
+
 
         private int m_PageIndex = 1;
         public int PageIndex
@@ -110,9 +110,9 @@ namespace Sodu.ViewModel
             http.HttpClientCancleRequest();
             IsLoading = false;
         }
-        public void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null)
         {
-            if (!IsNeedRefresh || (this.BookList != null && this.BookList.Count > 0))
+            if ((this.BookList != null && this.BookList.Count > 0))
                 return;
 
             SetData();
@@ -282,7 +282,6 @@ namespace Sodu.ViewModel
                     if (!IsLoading)
                     {
                         // this.IsNeedRefresh = false;
-                        ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
                         ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
                     }
                 });

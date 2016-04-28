@@ -17,9 +17,6 @@ namespace Sodu.ViewModel
     public class RankListPageViewModel : BaseViewModel, IViewModel
     {
 
-        public bool IsNeedRefresh { get; set; } = true;
-
-
         private string _ContentTitle = "点击排行榜";
         public string ContentTitle
         {
@@ -118,9 +115,8 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null, bool isrefresh = true)
+        public async void RefreshData(object obj = null)
         {
-            if (!IsNeedRefresh) return;
             //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
             if (IsLoading || this.BookList.Count > 0)
             {
@@ -328,9 +324,21 @@ namespace Sodu.ViewModel
             NavigationService.GoBack(null, null);
         }
 
+        /// <summary>
+        /// 选中相应的bookitem
+        /// </summary>
+        public BaseCommand BookItemSelectedChangedCommand
+        {
+            get
+            {
+                return new BaseCommand(OnBookItemSelectedChangedCommand);
+            }
+        }
 
-
-
+        private void OnBookItemSelectedChangedCommand(object obj)
+        {
+            ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+        }
     }
 }
 

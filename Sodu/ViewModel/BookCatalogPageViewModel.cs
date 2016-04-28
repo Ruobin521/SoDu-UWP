@@ -18,25 +18,24 @@ namespace Sodu.ViewModel
 {
     public class BookCatalogPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsNeedRefresh { get; set; } = true;
-
+        private string m_ContentTitle;
         public string ContentTitle
         {
-            get; set;
+            get
+            {
+                return m_ContentTitle;
+            }
+            set
+            {
+                SetProperty(ref m_ContentTitle, value);
+            }
         }
-
         public string CatalogPageUrl
         {
             get; set;
         }
 
-        //public string WebName
-        //{
-        //    get; set;
-        //}
-
         public BookEntity CurrentBookEntity { get; set; }
-
 
 
         private ObservableCollection<BookCatalog> m_CatalogList;
@@ -99,14 +98,16 @@ namespace Sodu.ViewModel
         {
             http.HttpClientCancleRequest();
             IsLoading = false;
-            //throw new NotImplementedException();
         }
 
-        public void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null)
         {
-            if (!IsNeedRefresh) return;
-
             object[] para = obj as object[];
+            if (para[0] != null && para[0].ToString().Equals(this.CatalogPageUrl))
+            {
+                return;
+            }
+            this.CatalogList.Clear();
 
             this.CatalogPageUrl = para[0].ToString();
             BookEntity temp = para[1] as BookEntity;
@@ -119,10 +120,25 @@ namespace Sodu.ViewModel
                 CatalogUrl = temp.CatalogUrl,
                 LyWeb = temp.LyWeb,
                 UpdateTime = temp.UpdateTime,
+                CatalogList = temp.CatalogList,
             };
 
             this.ContentTitle = CurrentBookEntity.BookName + "  目录";
-            SetData(CatalogPageUrl);
+            if (this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)
+            {
+                int i = 0;
+                foreach (var item in this.CurrentBookEntity.CatalogList)
+                {
+                    item.Index = i;
+                    i++;
+                    item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
+                    this.CatalogList.Add(item);
+                }
+            }
+            else
+            {
+                SetData(CatalogPageUrl);
+            }
         }
 
         private void SetData(string url)
@@ -184,11 +200,15 @@ namespace Sodu.ViewModel
                 {
                     this.CatalogList.Clear();
                 }
+                int i = 0;
                 foreach (var item in result)
                 {
+                    item.Index = i;
+                    i++;
                     item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
                     this.CatalogList.Add(item);
                 }
+                this.CurrentBookEntity.CatalogList = this.CatalogList.ToList();
                 return true;
             }
             return false;
@@ -212,18 +232,25 @@ namespace Sodu.ViewModel
                         {
                             BookCatalog catalog = str as BookCatalog;
                             if (catalog == null) return;
-                            // this.IsNeedRefresh = false;
+
                             CurrentBookEntity.ChapterUrl = catalog.CatalogUrl;
                             CurrentBookEntity.ChapterName = catalog.CatalogName;
-                            MenuModel menu = new MenuModel() { MenuName = CurrentBookEntity.ChapterName, MenuType = typeof(BookContentPage) };
 
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.BookEntity = CurrentBookEntity;
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.CurrentCatalog = catalog;
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.CatalogList = this.CatalogList;
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = false;
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.SetData(catalog);
-                            NavigationService.GoBack(null, null);
+                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.CurrentCatalog = catalog;
+                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.CatalogList = this.CatalogList;
+
+                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.SetData(catalog);
+                            //// NavigationService.GoBack(null, null);
+                            MenuModel menu = new MenuModel() { MenuName = catalog.CatalogName, MenuType = typeof(BookContentPage) };
+
+                            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, CurrentBookEntity);
+
                             //   NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
+
+                            //MenuModel menu = new MenuModel() { MenuName = catalog.CatalogName, MenuType = typeof(BookContentPage) };
+
+                            //ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, CurrentBookEntity);
                         }
                         catch (Exception)
                         {
@@ -285,6 +312,7 @@ namespace Sodu.ViewModel
         private void OnDwonLoadhCommandd(object obj)
         {
             Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
+            ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.CurrentBookEntity);
         }
     }
 }

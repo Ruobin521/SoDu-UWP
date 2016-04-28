@@ -15,12 +15,7 @@ namespace Sodu.Constants
     public class ConstantValue
     {
 
-        public static Dictionary<Type, string> XmlCacheFileNameDic = new Dictionary<Type, string>()
-        {
-            { typeof(MainPageViewModel),"MainPageViewModel.xml" },
-            { typeof(HomePageViewModel),"HomePageViewModel.xml" },
-            { typeof(SettingPageViewModel),"SettingPageViewModel.xml" },
-        };
+      
 
         //public enum OperationCode
         //{

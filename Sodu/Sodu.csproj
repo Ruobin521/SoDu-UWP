@@ -114,13 +114,19 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constants\AppDataPath.cs" />
     <Compile Include="Converter\PopupWindowWidthConverter.cs" />
+    <Compile Include="Database\DBHistory.cs" />
+    <Compile Include="Database\DBLocalBook.cs" />
     <Compile Include="Model\BookCatalog.cs" />
     <Compile Include="Pages\BookContentPage.xaml.cs">
       <DependentUpon>BookContentPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\BookCatalogPage.xaml.cs">
       <DependentUpon>BookCatalogPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DownLoadCenterPage.xaml.cs">
+      <DependentUpon>DownLoadCenterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\EverReadPage.xaml.cs">
       <DependentUpon>EverReadPage.xaml</DependentUpon>
@@ -154,6 +160,9 @@
     </Compile>
     <Compile Include="UC\UC_ChapterItem.xaml.cs">
       <DependentUpon>UC_ChapterItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UC_DownLoadItem.xaml.cs">
+      <DependentUpon>UC_DownLoadItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="UC\UC_ProgressRing.xaml.cs">
       <DependentUpon>UC_ProgressRing.xaml</DependentUpon>
@@ -203,6 +212,7 @@
     <Compile Include="Util\ToastHeplper.cs" />
     <Compile Include="ViewModel\BookCatalogPageViewModel.cs" />
     <Compile Include="ViewModel\BookContentPageViewModel.cs" />
+    <Compile Include="ViewModel\DownLoadCenterViewModel.cs" />
     <Compile Include="ViewModel\EverReadBookPageViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\HotPageViewModel.cs" />
@@ -211,7 +221,7 @@
     <Compile Include="ViewModel\LogoutPageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\MyBookShelfViewModel.cs" />
+    <Compile Include="ViewModel\BookShelfPageViewModel.cs" />
     <Compile Include="ViewModel\RankListPageViewModel.cs" />
     <Compile Include="ViewModel\RegiserPageViewModel.cs" />
     <Compile Include="ViewModel\SearchResultPageViewModel.cs" />
@@ -251,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\CodingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DownLoadCenterPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -315,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UC_ChapterItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UC_DownLoadItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

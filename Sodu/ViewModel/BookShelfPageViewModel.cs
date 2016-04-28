@@ -17,10 +17,8 @@ using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
 {
-    public class MyBookShelfViewModel : BaseViewModel, IViewModel
+    public class BookShelfPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsNeedRefresh { get; set; } = true;
-
 
         private string _ContentTitle = "个人书架";
         public string ContentTitle
@@ -110,7 +108,7 @@ namespace Sodu.ViewModel
 
         HttpHelper http = new HttpHelper();
 
-        public MyBookShelfViewModel()
+        public BookShelfPageViewModel()
         {
 
         }
@@ -143,11 +141,9 @@ namespace Sodu.ViewModel
             }
             return false;
         }
-        public void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null)
         {
-            if (!IsNeedRefresh) return;
             this.IsShow = false;
-
             SetData();
         }
 
@@ -205,7 +201,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async void SetBookList(string html)
+        public void SetBookList(string html)
         {
             if (this.ShelfBookList != null)
             {
@@ -278,48 +274,48 @@ namespace Sodu.ViewModel
                 IsLoading = true;
             });
             Task.Run(async () =>
-            {
-                bool result = true;
-                foreach (var item in removeBookList)
-                {
-                    if (!IsLoading)
-                    {
-                        result = false;
-                        break;
-                    }
-                    string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
-                    string html = await http.WebRequestGet(url);
-                    if (html.Contains("取消收藏成功"))
-                    {
-                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            ShelfBookList.Remove(item);
-                        });
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                return result;
+         {
+             bool result = true;
+             foreach (var item in removeBookList)
+             {
+                 if (!IsLoading)
+                 {
+                     result = false;
+                     break;
+                 }
+                 string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
+                 string html = await http.WebRequestGet(url);
+                 if (html.Contains("取消收藏成功"))
+                 {
+                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                     {
+                         ShelfBookList.Remove(item);
+                     });
+                 }
+                 else
+                 {
+                     result = false;
+                 }
+             }
+             return result;
 
-            }).ContinueWith(async (result) =>
-           {
-               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-               {
-                   if (!result.Result)
-                   {
-                       CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
-                   }
-                   else
-                   {
-                       CommonMethod.ShowMessage("操作完毕");
-                       removeBookList.Clear();
-                   }
-                   IsLoading = false;
-               }
-               );
-           });
+         }).ContinueWith(async (result) =>
+        {
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (!result.Result)
+                {
+                    CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
+                }
+                else
+                {
+                    CommonMethod.ShowMessage("操作完毕");
+                    removeBookList.Clear();
+                }
+                IsLoading = false;
+            }
+            );
+        });
         }
 
         /// <summary>
@@ -340,7 +336,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnEditCommand()
+        private void OnEditCommand()
         {
             if (IsLoading) return;
 
@@ -476,8 +472,6 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    ViewModelInstance.Instance.UpdataChapterPageViewModelInstance.IsNeedRefresh = true;
-                    // this.IsNeedRefresh = false;
                     ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
 
                     if (entity.UnReadCountData != null)

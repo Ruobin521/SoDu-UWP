@@ -8,9 +8,7 @@ namespace Sodu.ViewModel
 {
     public interface IViewModel
     {
-        void RefreshData(object obj = null, bool IsRefresh = true);
-        bool IsNeedRefresh { get; set; }
-
+        void RefreshData(object obj = null);
         bool IsLoading { get; set; }
         string ContentTitle { get; set; }
 

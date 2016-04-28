@@ -19,7 +19,7 @@ namespace Sodu.ViewModel
     public class UpdateChapterViewModel : BaseViewModel, IViewModel
     {
 
-        public bool IsNeedRefresh { get; set; } = true;
+
 
         private int m_PageIndex = 1;
         public int PageIndex
@@ -145,9 +145,8 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void RefreshData(object obj = null, bool IsRefresh = false)
+        public void RefreshData(object obj = null)
         {
-            if (!IsNeedRefresh) return;
 
             if (CurrentEntity == obj as BookEntity)
             {
@@ -471,7 +470,6 @@ namespace Sodu.ViewModel
                         {
                             // this.IsNeedRefresh = false;
                             MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsNeedRefresh = true;
                             ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
                         }
 

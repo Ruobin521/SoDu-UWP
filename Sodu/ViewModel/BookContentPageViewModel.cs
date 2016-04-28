@@ -1,6 +1,4 @@
-﻿
-
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
@@ -21,7 +19,7 @@ namespace Sodu.ViewModel
 {
     public class BookContentPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsNeedRefresh { get; set; } = true;
+
 
         public bool IsLocal { get; set; }
 
@@ -151,26 +149,26 @@ namespace Sodu.ViewModel
             }
         }
 
-        private ObservableCollection<BookCatalog> m_CatalogList;
-        /// <summary>
-        /// 目录集合
-        /// </summary>
-        public ObservableCollection<BookCatalog> CatalogList
-        {
-            get
-            {
-                return m_CatalogList;
-            }
-            set
-            {
-                this.SetProperty(ref this.m_CatalogList, value);
-                if (CatalogList != null && CatalogList.Count > 0)
-                {
-                    this.IsCatalogMenuShow = true;
-                    this.DirectionArrowShow = true;
-                }
-            }
-        }
+        //private ObservableCollection<BookCatalog> m_CatalogList;
+        ///// <summary>
+        ///// 目录集合
+        ///// </summary>
+        //public ObservableCollection<BookCatalog> CatalogList
+        //{
+        //    get
+        //    {
+        //        return m_CatalogList;
+        //    }
+        //    set
+        //    {
+        //        this.SetProperty(ref this.m_CatalogList, value);
+        //        //if (CatalogList != null && CatalogList.Count > 0)
+        //        //{
+        //        //    this.IsCatalogMenuShow = true;
+        //        //    this.DirectionArrowShow = true;
+        //        //}
+        //    }
+        //}
 
         private BookCatalog m_CurrentCatalog;
         /// <summary>
@@ -219,9 +217,8 @@ namespace Sodu.ViewModel
         HttpHelper http = new HttpHelper();
 
 
-        public void RefreshData(object obj = null, bool isRefresh = true)
+        public void RefreshData(object obj)
         {
-            if (!IsNeedRefresh) return;
 
             BookEntity entity = obj as BookEntity;
             if (entity == null)
@@ -236,10 +233,6 @@ namespace Sodu.ViewModel
             this.IsCatalogMenuShow = false;
             this.DirectionArrowShow = false;
 
-            if (this.CatalogList != null)
-            {
-                this.CatalogList.Clear();
-            }
 
             if (this.ContentListt != null)
             {
@@ -248,7 +241,7 @@ namespace Sodu.ViewModel
 
             this.BookEntity = entity;
 
-            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.ChapterName, CatalogUrl = entity.ChapterUrl, LyWeb = entity.LyWeb };
+            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.ChapterName, CatalogUrl = entity.ChapterUrl, LyWeb = new Uri(entity.ChapterUrl).Authority };
 
             SetData(CurrentCatalog);
         }
@@ -289,19 +282,29 @@ namespace Sodu.ViewModel
 
         private async void SetBookCataologListUrl(string html, string catalogUrl)
         {
-            string catalogListUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogListUrl(html, catalogUrl);
             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                if (string.IsNullOrEmpty(catalogListUrl))
-                {
-                    IsCatalogMenuShow = false;
-                }
-                else
-                {
-                    CatalogListUrl = catalogListUrl;
-                    IsCatalogMenuShow = true;
-                }
-            });
+                 {
+                     if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+                     {
+                         IsCatalogMenuShow = true;
+                         DirectionArrowShow = true;
+                     }
+                     else
+                     {
+                         string catalogListUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogListUrl(html, catalogUrl);
+
+                         if (string.IsNullOrEmpty(catalogListUrl))
+                         {
+                             IsCatalogMenuShow = false;
+                         }
+                         else
+                         {
+                             CatalogListUrl = catalogListUrl;
+                             IsCatalogMenuShow = true;
+                         }
+
+                     }
+                 });
         }
 
         private async void SetTextContent(string html)
@@ -424,7 +427,7 @@ namespace Sodu.ViewModel
                    }
                    this.ContentListt.Clear();
                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(true, false);
-                   this.ContentFontSzie = ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
+                   // this.ContentFontSzie = ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
                    foreach (var item in list)
                    {
                        this.ContentListt.Add(item);
@@ -434,8 +437,6 @@ namespace Sodu.ViewModel
             }
         }
 
-
-
         /// <summary>
         /// 字体减小
         /// </summary>
@@ -443,22 +444,20 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<bool>(async (str) =>
-               {
-                   var list = new ObservableCollection<string>();
-                   foreach (var item in this.ContentListt)
-                   {
-                       list.Add(item);
-                   }
-                   this.ContentListt.Clear();
-                   ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false, false);
-                   this.ContentFontSzie = ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie;
-                   foreach (var item in list)
-                   {
-                       this.ContentListt.Add(item);
-                       await Task.Delay(5);
-                   }
-               });
+                return new RelayCommand<bool>((str) =>
+             {
+                 var list = new ObservableCollection<string>();
+                 foreach (var item in this.ContentListt)
+                 {
+                     list.Add(item);
+                 }
+                 this.ContentListt.Clear();
+                 ViewModelInstance.Instance.SettingPageViewModelInstance.SetFontSize(false, false);
+                 foreach (var item in list)
+                 {
+                     this.ContentListt.Add(item);
+                 }
+             });
             }
         }
 
@@ -482,7 +481,6 @@ namespace Sodu.ViewModel
                 });
             }
         }
-
 
         /// <summary>
         /// 返回
@@ -510,7 +508,6 @@ namespace Sodu.ViewModel
                 {
                     // this.IsNeedRefresh = false;
                     MenuModel menu = new MenuModel() { MenuName = BookEntity.BookName, MenuType = typeof(BookCatalogPage) };
-                    ViewModelInstance.Instance.BookCatalogPageViewModelInstance.IsNeedRefresh = true;
                     ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, new object[] { this.CatalogListUrl, this.BookEntity });
                 });
             }
@@ -537,30 +534,30 @@ namespace Sodu.ViewModel
             //上一章
             if (str.ToString().Equals("0"))
             {
-                if (this.CatalogList.IndexOf(this.CurrentCatalog) == 0)
+                if (this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) == 0)
                 {
                     Services.CommonMethod.ShowMessage("已经是第一章。");
                     return;
                 }
-                if (this.CatalogList.Count < 2)
+                if (this.BookEntity.CatalogList.Count < 2)
                 {
                     return;
                 }
-                this.CurrentCatalog = this.CatalogList[this.CatalogList.IndexOf(this.CurrentCatalog) - 1];
+                this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) - 1];
             }
             //下一章
             else /*if (str.ToString().Equals("01"))*/
             {
-                if (this.CatalogList.IndexOf(this.CurrentCatalog) == this.CatalogList.Count - 1)
+                if (this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) == this.BookEntity.CatalogList.Count - 1)
                 {
                     Services.CommonMethod.ShowMessage("已经是最后一章。");
                     return;
                 }
-                if (this.CatalogList.Count < 2)
+                if (this.BookEntity.CatalogList.Count < 2)
                 {
                     return;
                 }
-                this.CurrentCatalog = this.CatalogList[this.CatalogList.IndexOf(this.CurrentCatalog) + 1];
+                this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) + 1];
             }
 
             if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)

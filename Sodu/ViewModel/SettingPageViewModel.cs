@@ -135,7 +135,7 @@ namespace Sodu.ViewModel
             {
                 if (!IsLoading)
                 {
-                    string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
+                    string fileName = AppDataPath.SettingFileName;
                     bool result = await SerializeHelper.WriteAsync(this, fileName);
                     if (showMessage)
                     {

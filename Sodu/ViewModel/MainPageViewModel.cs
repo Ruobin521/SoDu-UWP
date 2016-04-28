@@ -25,7 +25,7 @@ namespace Sodu.ViewModel
     {
 
         #region 属性，字段
-        public bool IsNeedRefresh { get; set; } = true;
+
 
 
         private bool m_IsLeftPanelOpen;
@@ -190,7 +190,6 @@ namespace Sodu.ViewModel
             if (isLogin)
             {
                 this.CurrentMenuList = this.LoadMenuList;
-                ViewModelInstance.Instance.MyBookShelfViewModelInstance.IsNeedRefresh = true;
             }
             else
             {
@@ -231,7 +230,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("未知错误");
             }
         }
-        public void RefreshData(object obj = null, bool IsRefresh = false)
+        public void RefreshData(object obj = null)
         {
             //throw new NotImplementedException();
         }
@@ -278,14 +277,17 @@ namespace Sodu.ViewModel
         }
         public void OnBookItemSelectedChangedCommand(object obj)
         {
-            //SetCurrentMenu("0");
             BookEntity entity = obj as BookEntity;
 
             if (entity != null)
             {
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
+
+
+                //添加小说到历史记录
                 ViewModelInstance.Instance.EverReadBookPageViewModelInstance.AddToHistoryList(entity);
 
+                //判断是否自动添加书到收藏
                 if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
                 {
                     Task.Run(async () =>
@@ -304,7 +306,6 @@ namespace Sodu.ViewModel
                                });
                            }
                        }
-
                    });
                 }
                 NavigateToPage(menu, entity);
@@ -326,7 +327,6 @@ namespace Sodu.ViewModel
                       (str) =>
                 {
                     IsLeftPanelOpen = false;
-                    ViewModelInstance.Instance.LoginViewModelInstance.IsNeedRefresh = true;
                     MenuModel menu = new MenuModel() { MenuName = "注销登陆", MenuType = typeof(LogoutPage) };
                     NavigateToPage(menu, null);
                 });
@@ -370,6 +370,22 @@ namespace Sodu.ViewModel
                         MenuModel menu = new MenuModel() { MenuName = "设置", MenuType = typeof(SettingPage) };
                         NavigateToPage(menu, null);
                     });
+            }
+        }
+
+        /// <summary>
+        /// 下载中心
+        /// </summary>
+        public ICommand DownLoadCenterCommadn
+        {
+            get
+            {
+                return new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          MenuModel menu = new MenuModel() { MenuName = "下载中心", MenuType = typeof(DownLoadCenterPage) };
+                          NavigateToPage(menu, null);
+                      });
             }
         }
 

@@ -28,8 +28,8 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Button Style="{StaticResource ContentButtonStyle}" Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding}">
-                        <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  TextBlockButtonStyle}" Margin="15,0,0,0"></TextBlock>
+                    <Button Style="{StaticResource ContentButtonStyle}"  VerticalAlignment="Stretch" Command="{Binding  Instance.BookCatalogPageViewModelInstance.CatalogSelectedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}">
+                        <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  TextBlockButtonStyle}" Margin="15,0,0,0" VerticalAlignment="Center"></TextBlock>
                     </Button>
                 </DataTemplate>
             </ListView.ItemTemplate>

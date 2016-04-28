@@ -120,8 +120,6 @@ namespace Sodu
             }
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
-
-
         }
 
 
@@ -131,27 +129,16 @@ namespace Sodu
             SettingPageViewModel appSetingViewModel = null;
             try
             {
-                string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
-                StorageFile file = null;
-                try
-                {
-                    file = await ApplicationData.Current.LocalFolder.GetFileAsync(fileName);
-                }
-                catch (Exception)
-                {
-                    file = null;
-                }
-
-                if (file == null)
+                string settingName = AppDataPath.SettingFileName;
+                if (!File.Exists(AppDataPath.GetSettingFilePath()))
                 {
                     ///初始化设置默认值
                     appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = true, TextFontSzie = 20, IfAutAddToShelf = true, UserCookie = null };
-                    await SerializeHelper.WriteAsync(appSetingViewModel, fileName);
+                    await SerializeHelper.WriteAsync(appSetingViewModel, settingName);
                 }
                 else
                 {
-                    appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(fileName);
-
+                    appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(settingName);
                     HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
                     HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
                     var cookieItem = cookieCollection.First(p => p.Name.Equals("sodu_user"));

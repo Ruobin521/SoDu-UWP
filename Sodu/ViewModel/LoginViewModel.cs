@@ -20,7 +20,7 @@ namespace Sodu.ViewModel
     {
         #region  属性
 
-        public bool IsNeedRefresh { get; set; } = true;
+
 
         private string _ContentTitle = "用户登录";
         public string ContentTitle
@@ -130,7 +130,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void RefreshData(object obj = null, bool IsRefresh = false)
+        public void RefreshData(object obj = null)
         {
 
         }
@@ -184,7 +184,7 @@ namespace Sodu.ViewModel
                     {
                         CommonMethod.ShowMessage("登陆成功");
 
-                       
+
                         ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                     }
                     else

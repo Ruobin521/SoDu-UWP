@@ -49,7 +49,7 @@ namespace Sodu.ViewModel
             return;
         }
 
-        public void RefreshData(object obj = null, bool IsRefresh = true)
+        public void RefreshData(object obj = null)
         {
             Task.Run(async () =>
             {

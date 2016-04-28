@@ -57,20 +57,8 @@ namespace Sodu.Services
         public static void NavigateTo(MenuModel menu, object para)
         {
             CancleHttpRequest();
+            ContentFrame.Navigate(menu.MenuType, para);
 
-            if (menu != null)
-            {
-                Page page = ContentFrame.Content as Page;
-                if (page != null && page.GetType() != menu.MenuType)
-                {
-                    IViewModel viewModel = page.DataContext as IViewModel;
-                    if (viewModel != null)
-                    {
-                        viewModel.IsNeedRefresh = false;
-                    }
-                }
-                ContentFrame.Navigate(menu.MenuType, para);
-            }
         }
 
 
@@ -128,18 +116,17 @@ namespace Sodu.Services
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             Page page = ContentFrame.Content as Page;
-            if (page != null)
+            if (e.NavigationMode != Windows.UI.Xaml.Navigation.NavigationMode.Back && e.NavigationMode != Windows.UI.Xaml.Navigation.NavigationMode.Forward)
             {
-                IViewModel viewModel = page.DataContext as IViewModel;
-                if (viewModel != null)
+                if (page != null)
                 {
-                    if (viewModel.IsNeedRefresh)
+                    IViewModel viewModel = page.DataContext as IViewModel;
+                    if (viewModel != null)
                     {
                         viewModel.RefreshData(e.Parameter);
                     }
                 }
             }
-            // var menu = ViewModelInstance.Instance.MainPageViewModelInstance.CurrentMenuList.ToList().FirstOrDefault(p => p.MenuType == page.GetType());
             ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
         }
 

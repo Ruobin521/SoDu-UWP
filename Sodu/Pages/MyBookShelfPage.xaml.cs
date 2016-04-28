@@ -32,7 +32,7 @@ namespace Sodu.Pages
         {
             // ViewModel.ViewModelInstance.Instance
 
-            ViewModel.MyBookShelfViewModel viewModel = this.DataContext as ViewModel.MyBookShelfViewModel;
+            ViewModel.BookShelfPageViewModel viewModel = this.DataContext as ViewModel.BookShelfPageViewModel;
             if (viewModel.IsEditing)
             {
                 if (this.btnSelectAll.Label.Equals("全选"))

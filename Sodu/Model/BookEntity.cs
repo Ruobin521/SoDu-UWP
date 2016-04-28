@@ -1,4 +1,5 @@
 ﻿using Sodu.ViewModel;
+using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,21 @@ namespace Sodu.Model
 {
     public class BookEntity : BaseViewModel
     {
+        [PrimaryKey]// 主键。
+        [AutoIncrement]// 自动增长。
+        public int Id
+        {
+            get;
+            set;
+        }
+
+
+        public string Guid { get; set; }
+
         /// <summary>
         ///书ID
         /// </summary>
+        [Unique]
         public string BookID { get; set; }
 
         /// <summary>
@@ -43,14 +56,20 @@ namespace Sodu.Model
         public string CatalogUrl { get; set; }
 
         /// <summary>
+        ///目录地址
+        /// </summary>
+        public string AuthorName { get; set; }
+
+        /// <summary>
         ///来源网站
         /// </summary>
         public string LyWeb { get; set; }
 
-
+        [Ignore]
+        public List<BookCatalog> CatalogList { get; set; }
 
         /// <summary>
-        /// 是否在书架上，默认不在
+        /// 是否为编辑状态
         /// </summary>
         private bool m_IfBookshelf;
         public bool IfBookshelf

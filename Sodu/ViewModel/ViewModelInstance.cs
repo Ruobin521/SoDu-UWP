@@ -48,14 +48,14 @@ namespace Sodu.ViewModel
 
 
 
-        private MyBookShelfViewModel m_MyBookShelfViewModelInstance;
-        public MyBookShelfViewModel MyBookShelfViewModelInstance
+        private BookShelfPageViewModel m_MyBookShelfViewModelInstance;
+        public BookShelfPageViewModel MyBookShelfViewModelInstance
         {
             get
             {
                 if (m_MyBookShelfViewModelInstance == null)
                 {
-                    m_MyBookShelfViewModelInstance = new MyBookShelfViewModel();
+                    m_MyBookShelfViewModelInstance = new BookShelfPageViewModel();
                 }
                 return m_MyBookShelfViewModelInstance;
             }
@@ -270,6 +270,24 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_BookCatalogPageViewModelInstance, value);
+            }
+        }
+
+
+        private DownLoadCenterViewModel m_DownLoadCenterViewModelInstance;
+        public DownLoadCenterViewModel DownLoadCenterViewModelInstance
+        {
+            get
+            {
+                if (m_DownLoadCenterViewModelInstance == null)
+                {
+                    m_DownLoadCenterViewModelInstance = new DownLoadCenterViewModel();
+                }
+                return m_DownLoadCenterViewModelInstance;
+            }
+            set
+            {
+                SetProperty(ref m_DownLoadCenterViewModelInstance, value);
             }
         }
 

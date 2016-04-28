@@ -30,7 +30,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Button Style="{StaticResource ContentButtonStyle}" Height="auto" >
-                        <TextBox   BorderThickness="0" TextWrapping="Wrap" Height="auto" IsReadOnly="True"  Text="{Binding}"    DataContext="{Binding }" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.BookContentPageViewModelInstance.ContentFontSzie,Source={StaticResource  Locator}}">
+                        <TextBox   BorderThickness="0" TextWrapping="Wrap" Height="auto" IsReadOnly="True"  Text="{Binding}"    DataContext="{Binding }" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
                         </TextBox>
                     </Button>
                 </DataTemplate>

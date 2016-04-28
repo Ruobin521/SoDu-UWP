@@ -1,0 +1,57 @@
+﻿<UserControl
+    x:Class="Sodu.UC.UC_DownLoadItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.UC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="100"
+    d:DesignWidth="500">
+
+    <Grid Background="White" Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="55"/>
+            <ColumnDefinition Width="55"/>
+        </Grid.ColumnDefinitions>
+        <!--<CheckBox  Style="{StaticResource  CheckBoxStyle1}" Width="30"  VerticalAlignment="Center" Height="30" Margin="10" ></CheckBox>-->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock  Foreground="Black" VerticalAlignment="Center" TextWrapping="Wrap"  Margin="20,0">
+                <Run Text="{Binding Entity.BookName}" FontSize="20"/>
+                <Run Text="(" FontSize="16"> </Run>
+                <Run Text="{Binding CurrentIndex}" FontSize="16"></Run>
+                <Run Text="/" FontSize="16"> </Run>
+                <Run Text="{Binding Entity.CatalogList.Count}" FontSize="16"></Run>
+                <Run Text=")" FontSize="16"> </Run>
+            </TextBlock>
+
+            <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#FFC1C1CA" Height="5" Value="{Binding ProgressValue}"  Margin="20,0"></ProgressBar>
+            <Grid Grid.Row="2">
+                <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  TextTrimming="WordEllipsis" Text="{Binding CurrentCatalogName}"></TextBlock>
+            </Grid>
+        </Grid>
+        <TextBlock FontSize="16" Grid.Column="1"   HorizontalAlignment="Center" VerticalAlignment="Center" >
+
+        </TextBlock>
+        <TextBlock Grid.Column="2"  VerticalAlignment="Center" FontSize="16">
+            <Run Text="{Binding ProgressValue}"></Run>
+            <Run Text="%"></Run>
+        </TextBlock>
+        <AppBarButton Icon="Pause" Style="{ StaticResource    AppBarButtonStyle1 }" Width="40" Grid.Column="3" VerticalAlignment="Center" Command="{Binding PauseCommand}"></AppBarButton>
+        <AppBarButton Foreground="Black"  Grid.Column="4" Style="{ StaticResource    AppBarButtonStyle1 }"  Width="40" >
+            <AppBarButton.Icon>
+                <PathIcon HorizontalAlignment="Center" VerticalAlignment="Center"   Data="M0.901244342327118,0L10.0009498596191,9.11580276489258 19.1169033050537,0.0162473320960999 20,0.900594055652618 10.8838920593262,10.0003061294556 19.9837551116943,19.116268157959 19.0994033813477,19.999361038208 9.99922275543213,10.8833827972412 0.883097350597382,19.9831104278564 0,19.0987644195557 9.11626815795898,9.99889469146729 0.0168922543525696,0.883722960948944 0.901244342327118,0z" />
+            </AppBarButton.Icon>
+        </AppBarButton>
+
+    </Grid>
+</UserControl>

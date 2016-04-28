@@ -29,7 +29,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0" Command="{Binding  Instance.MainPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                    <UC:UC_BookListItem x:Name="item"  DataContext="{Binding}"  Margin="0,0,15,0" Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>

@@ -15,8 +15,6 @@ namespace Sodu.ViewModel
 {
     public class SearchResultPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsNeedRefresh { get; set; } = true;
-
         private string _ContentTitle = "搜索";
         public string ContentTitle
         {
@@ -135,12 +133,12 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null, bool IsRefresh = false)
+        public async void RefreshData(object obj = null)
         {
             try
             {
                 //  如果正在加载，或者提示不需要刷新 或者obj为空说明是从主要左侧列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || !IsRefresh || string.IsNullOrEmpty(SearchPara))
+                if (IsLoading || string.IsNullOrEmpty(SearchPara))
                 {
                     return;
                 }
@@ -214,7 +212,7 @@ namespace Sodu.ViewModel
         }
         private void OnSearchCommand(object obj)
         {
-            RefreshData(1, true);
+            RefreshData(1);
         }
 
         #region  上拉刷新,下拉加载
@@ -236,7 +234,7 @@ namespace Sodu.ViewModel
                 CommonMethod.ShowMessage("请输入搜索条件");
                 return;
             }
-            RefreshData(CurrentPageIndex, true);
+            RefreshData(CurrentPageIndex);
         }
 
         /// <summary>
@@ -252,7 +250,7 @@ namespace Sodu.ViewModel
 
         private void OnRequestCommand(object obj)
         {
-            RefreshData(this.CurrentPageIndex + 1, true);
+            RefreshData(this.CurrentPageIndex);
         }
 
         public RelayCommand<object> PrePageCommand
@@ -265,7 +263,7 @@ namespace Sodu.ViewModel
 
         private void OnPrePageCommand(object obj)
         {
-            RefreshData(this.CurrentPageIndex - 1, true);
+            RefreshData(this.CurrentPageIndex - 1);
         }
 
 
@@ -279,7 +277,7 @@ namespace Sodu.ViewModel
 
         private void OnLastPageCommand(object obj)
         {
-            RefreshData(this.MaxPageIndex, true);
+            RefreshData(this.MaxPageIndex);
         }
 
 
