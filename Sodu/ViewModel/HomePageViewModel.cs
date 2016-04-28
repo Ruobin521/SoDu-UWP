@@ -192,7 +192,6 @@ namespace Sodu.ViewModel
                     foreach (var item in arraryList[1])
                     {
                         this.BookList.Add(item);
-                        await Task.Delay(1);
                     }
                     result = true;
 

@@ -25,7 +25,8 @@ namespace Sodu.Util
     {
 
         public CancellationTokenSource Cts = new CancellationTokenSource();
-        WebRequest Request;
+
+        HttpWebRequest Request;
 
 
         Encoding DefauleEncoding = Encoding.GetEncoding("gb2312");
@@ -46,12 +47,26 @@ namespace Sodu.Util
             {
                 url = url + "?time=" + GetTimeStamp();
             }
-            Request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+            Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
             Request.Method = "GET";    //设置请求方式为GET : 
+            Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
-            Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
+            Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, sdch"; //设置接收的编码 可以接受 gzip
+            Request.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.8";
+            Request.Headers[HttpRequestHeader.CacheControl] = "max-age=0";
+            Request.Headers[HttpRequestHeader.Connection] = "keep-alive";
+            Request.ContentType = "application/x-www-form-urlencoded";
             Request.Proxy = null;
-            // Request.Headers["Timeout"] = "300";
+            Request.ContinueTimeout = 350;
+
+            ///大书包网
+            if (Request.RequestUri.ToString().Contains("dashubao"))
+            {
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
+                filter.CookieManager.SetCookie(new HttpCookie("security_session_mid_verify", cookieCollection[0].Domain, cookieCollection[0].Path) { Value = "71d9dcd1140e65842cff308a2f67c6d9" }, false);
+            }
+
             string html = await GetReponseHtml(Request);
             return html;
         }
@@ -61,6 +76,8 @@ namespace Sodu.Util
             Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
             Request.Method = "POST";    //设置请求方式为GET
             Request.ContentType = "application/x-www-form-urlencoded";
+
+            Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
             Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate"; //设置接收的编码 可以接受 gzip
             Request.Proxy = null;
@@ -72,7 +89,6 @@ namespace Sodu.Util
                 byte[] data = Encoding.UTF8.GetBytes(content);
                 str.Write(data, 0, data.Length);
             }
-
             string html = await GetReponseHtml(Request);
             return html;
 
@@ -106,6 +122,7 @@ namespace Sodu.Util
                 var bytes = ms.ToArray();
 
                 var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
+
                 html = encoding.GetString(bytes);
                 await stream.FlushAsync();
             }
@@ -149,7 +166,6 @@ namespace Sodu.Util
                 {
                     url = url + "?time=" + GetTimeStamp();
                 }
-                //  HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
                 try
                 {
                     HttpResponseMessage response = await httpclient.GetAsync(new Uri(url)).AsTask(Cts.Token);

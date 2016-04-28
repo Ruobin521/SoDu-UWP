@@ -185,6 +185,8 @@ namespace Sodu.ViewModel
 
         private void SetData(int pageIndex)
         {
+            if (IsLoading) return;
+
             Task.Run(async () =>
            {
                string html = await LoadPageDataByIndex(pageIndex);
@@ -282,7 +284,6 @@ namespace Sodu.ViewModel
                         item.BookName = this.ContentTitle;
                         item.BookID = this.CurrentEntity.BookID;
                         this.ChapterList.Add(item);
-                        await Task.Delay(1);
                     }
                     return true;
                 }

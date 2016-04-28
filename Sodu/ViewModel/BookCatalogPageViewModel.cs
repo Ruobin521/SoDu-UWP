@@ -47,6 +47,10 @@ namespace Sodu.ViewModel
         {
             get
             {
+                if (m_CatalogList == null)
+                {
+                    m_CatalogList = new ObservableCollection<BookCatalog>();
+                }
                 return m_CatalogList;
             }
             set
@@ -129,17 +133,17 @@ namespace Sodu.ViewModel
                 return html;
             }).ContinueWith(async (result) =>
            {
-               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-               {
-                   if (result.Result != null && await SetCatalogList(result.Result.ToString(), CurrentBookEntity.LyWeb))
-                   {
-                       CommonMethod.ShowMessage("已加载目录数据");
-                   }
-                   else
-                   {
-                       CommonMethod.ShowMessage("未能获取目录数据");
-                   }
-               });
+               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 if (result.Result != null && SetCatalogList(result.Result.ToString(), url))
+                 {
+                     CommonMethod.ShowMessage("已加载目录数据");
+                 }
+                 else
+                 {
+                     CommonMethod.ShowMessage("未能获取目录数据");
+                 }
+             });
            });
         }
 
@@ -171,21 +175,15 @@ namespace Sodu.ViewModel
         }
 
 
-        private async Task<bool> SetCatalogList(string html, string webname)
+        private bool SetCatalogList(string html, string url)
         {
-            var result = AnalysisBookCatalogList.GetCatalogListByHtml(html, webname);
+            var result = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
             if (result != null)
             {
                 if (this.CatalogList != null)
                 {
                     this.CatalogList.Clear();
                 }
-                else
-                {
-                    this.CatalogList = new ObservableCollection<BookCatalog>();
-                }
-
-
                 foreach (var item in result)
                 {
                     item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);

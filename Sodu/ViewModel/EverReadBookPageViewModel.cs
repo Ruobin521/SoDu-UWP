@@ -140,7 +140,6 @@ namespace Sodu.ViewModel
                     foreach (var item in arrary)
                     {
                         this.BookList.Add(item);
-                        await Task.Delay(1);
                     }
                 }
             }

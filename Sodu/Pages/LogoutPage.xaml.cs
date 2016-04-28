@@ -25,6 +25,7 @@ namespace Sodu.Pages
         public LogoutPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

@@ -8,18 +8,17 @@
     mc:Ignorable="d"
     xmlns:converter="using:Sodu.Converter"
     d:DesignHeight="38"
-    d:DesignWidth="170"
-    HorizontalAlignment="Right" x:Name="root">
+    Width="Auto"
+    HorizontalAlignment="Stretch" x:Name="root">
     <UserControl.Resources>
         <converter:PopupWindowWidthConverter x:Key="PopupWindowWidthConverter"></converter:PopupWindowWidthConverter>
     </UserControl.Resources>
-    <Grid  >
-        <Border x:Name="mainGrid" MinWidth="150" Width="auto" Height="38" CornerRadius="3,2,2,3"  BorderThickness="0" RenderTransformOrigin="0.5,0.5"   Background="#FF3388FF"  
-                        Padding="5,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Right"  
+    <Grid>
+        <Border x:Name="mainGrid"   Width="Auto" MinWidth="150" Height="38" CornerRadius="3,2,2,3"  BorderThickness="0" RenderTransformOrigin="0.5,0.5"   Background="#FF3388FF"                         Padding="5,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Stretch" 
                           Visibility="Visible">
             <Border.Resources>
                 <Storyboard x:Name="tb_Notify_in">
-                    <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
+                    <!--<ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Storyboard.TargetName="mainGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
                         <DiscreteObjectKeyFrame KeyTime="00:00:00">
                             <DiscreteObjectKeyFrame.Value>
                                 <Visibility>Visible</Visibility>
@@ -31,7 +30,7 @@
                                 <Visibility>Collapsed</Visibility>
                             </DiscreteObjectKeyFrame.Value>
                         </DiscreteObjectKeyFrame>
-                    </ObjectAnimationUsingKeyFrames>
+                    </ObjectAnimationUsingKeyFrames>-->
 
                     <DoubleAnimationUsingKeyFrames Storyboard.TargetName="GridTrans"
                                 Storyboard.TargetProperty="X">
@@ -45,7 +44,7 @@
                                 <BackEase EasingMode="EaseOut" Amplitude="0.3"/>
                             </EasingDoubleKeyFrame.EasingFunction>
                         </EasingDoubleKeyFrame>-->
-                        <EasingDoubleKeyFrame KeyTime="0:0:1" x:Name="easeKeyframe" Value="-170">
+                        <EasingDoubleKeyFrame KeyTime="0:0:1" x:Name="easeKeyframe" Value="-150">
                             <EasingDoubleKeyFrame.EasingFunction>
                                 <BackEase EasingMode="EaseOut" Amplitude="0.5" />
                             </EasingDoubleKeyFrame.EasingFunction>
@@ -71,8 +70,8 @@
                 <!--<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center"
                         Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}"   Text="√" FontWeight="Black">
                             </TextBlock>-->
-                <TextBlock  HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" Grid.Column="1"
-                        Foreground="White"  FontSize="16"    x:Name="tb_Notify">
+                <TextBlock  HorizontalAlignment="Stretch"  Margin="5,0,0,0" VerticalAlignment="Center"  
+                        Foreground="White"  FontSize="16"    x:Name="tb_Notify" >
                 </TextBlock>
             </Grid>
         </Border>

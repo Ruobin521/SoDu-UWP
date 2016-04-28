@@ -228,7 +228,7 @@ namespace Sodu.ViewModel
                         foreach (var item in list)
                         {
                             this.ShelfBookList.Add(item);
-                            await Task.Delay(1);
+
                         }
                     }
                     CommonMethod.ShowMessage("个人收藏已更新");
@@ -351,17 +351,6 @@ namespace Sodu.ViewModel
                 foreach (var item in ShelfBookList)
                 {
                     item.IfBookshelf = true;
-                    //try
-                    //{
-                    //    if (ShelfBookList.IndexOf(item) % 5 == 0)
-                    //    {
-                    //        await Task.Delay(1);
-                    //    }
-                    //}
-                    //catch (Exception ex)
-                    //{
-
-                    //}
                 }
             }
             else
@@ -370,12 +359,10 @@ namespace Sodu.ViewModel
                 {
                     item.IfBookshelf = false;
                     item.IsSelected = false;
-                    await Task.Delay(1);
                 }
                 IsEditing = false;
             }
         }
-
 
 
         /// <summary>

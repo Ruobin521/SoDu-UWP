@@ -30,7 +30,7 @@ namespace Sodu.Services
         /// <summary>
         /// 窝窝小说网
         /// </summary>
-        public const string wwxsw = " www.quanxiong.org";
+        public const string wwxsw = "www.quanxiong.org";
         /// <summary>
         /// 55xs（古古小说）
         /// </summary>
@@ -79,7 +79,7 @@ namespace Sodu.Services
         /// <summary>
         /// 趣笔阁
         /// </summary>
-        public const string qbiquge = "www.qbiquge.com";
+        public const string qubige = "www.qbiquge.com";
 
         /// <summary>
         /// 书路小说
@@ -90,6 +90,12 @@ namespace Sodu.Services
         /// 风华居
         /// </summary>
         public const string fenghuaju = "www.fenghuaju.com";
+
+        /// <summary>
+        ///云来阁
+        /// </summary>
+        public const string ylg = "www.yunlaige.com";
+
     }
     public class AnalysisContentHtmlService
     {
@@ -110,43 +116,108 @@ namespace Sodu.Services
 
                 //笔下文学（依依中文网）
                 case WebSet.bxwx5:
-                    result = ReplaceSymbol(html);
+                    result = AnalysisBxzw5(html);
                     break;
 
-                case WebSet.sqsxs:
-                    result = AnalysisSlsxsw(html);
+                //第九中文网（有分页）
+                case WebSet.dijiuzww:
+                    result = AnalysisBxzw5(html);
                     break;
 
-                case WebSet.dhzw:
-                    result = AnalysisSlsxsw(html); ;
+
+                //清风小说（有分页）
+                case WebSet.qfxs:
+                    result = AnalysisQfxsw(html);
                     break;
 
+                //窝窝小说网（有分页）
+                case WebSet.wwxsw:
+                    result = AnalysisBxzw5(html);
+                    break;
+
+                //55小说（古古小说网）
+                case WebSet.xs55:
+                    result = Analysis55xs(html);
+                    break;
+
+                //风云小说
+                case WebSet.fyxs:
+                    result = AnalysisWtc(html);
+                    break;
+
+                //爱上中文
                 case WebSet.aszw520:
                     result = AnalysisAszw(html);
                     break;
 
+                //大海中文
+                case WebSet.dhzw:
+                    result = AnalysisSlsxsw(html); ;
+                    break;
+
+                //酷酷看书
+                case WebSet.kkks:
+                    result = AnalysisSlsxsw(html);
+                    break;
+
+                //少年文学
                 case WebSet.snwx:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                //case "书旗小说":
-                //    result = AnalysisSq(html);
-                //    break;
+                //手牵手
+                case WebSet.sqsxs:
+                    result = AnalysisSlsxsw(html);
+                    break;
 
-                //case "木鱼哥":
-                //    result = AnalysisMyg(html);
-                //    break;
+                //大书包
+                case WebSet.dsb:
+                    result = AnalysisDsb(html);
+                    break;
 
-                //case "无弹窗小说网":
-                //    result = AnalysisWtc(html);
-                //    break;
+                //找书网
+                case WebSet.zsw:
+                    result = ReplaceSymbol(html);
+                    break;
+
+                //趣笔阁
+                case WebSet.qubige:
+                    result = AnalysisBxzw5(html);
+                    break;
+
+                //书路
+                case WebSet.shu6:
+                    result = AnalysisShu6(html);
+                    break;
+
+                //风华居
+                case WebSet.fenghuaju:
+                    result = AnalysisBxzw5(html);
+                    break;
+
+                //云来阁
+                case WebSet.ylg:
+                    result = AnalysisYlg(html);
+                    break;
+
+                case "书旗小说":
+                    result = AnalysisSq(html);
+                    break;
+
+                case "木鱼哥":
+                    result = AnalysisMyg(html);
+                    break;
+
+                case "无弹窗小说网":
+                    result = AnalysisWtc(html);
+                    break;
                 default:
                     result = ReplaceSymbol(html);
                     break;
             }
             if (!string.IsNullOrEmpty(result))
             {
-                result = result + "\n\n\n\n\n\n\n\n";
+                result = result + "\n\n\n\n\n\n";
             }
             return result;
         }
@@ -161,7 +232,97 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "<div id=\"BookText\">.*?</div>");
+            Match match = Regex.Match(html, "<div id=\"BookText\">.*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+        /// <summary>
+        /// 解析依依文学（笔下中文5）
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisBxzw5(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"?content\"?.*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 云来阁
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisYlg(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"content\".*?<div class=\"tc\".*?>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+
+        /// <summary>
+        /// 解析55sx 古古小说
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string Analysis55xs(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<dd id=\"contents\".*?</dd>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 解析清风小说网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisQfxsw(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"chapterContent\".*?<center>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 解析大书包
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisDsb(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div class=\"hr101\".*?<span id=\"endtips\"></span>", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
@@ -179,12 +340,11 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "<p class=\"vote\">.*?</div>");
+            Match match = Regex.Match(html, "<p class=\"vote\">.*?</div>", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
                 result = ReplaceSymbol(result);
-                result = result;
             }
             return result;
         }
@@ -198,7 +358,7 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "<div id=\"contents\">.*?</div>");
+            Match match = Regex.Match(html, "<div id=\"contents\">.*?</div>", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
@@ -215,10 +375,28 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "<p id=\"?content\"?.*?</p>");
+            Match match = Regex.Match(html, "<p id=\"?content\"?.*?</p>", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 书路
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisShu6(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div class=\"chapter_con\".*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString().Replace("记住本站网址：书路（shu6.cc）", "");
                 result = ReplaceSymbol(result);
             }
             return result;
@@ -233,7 +411,7 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "(?<=<div class=\"bq\">本书关键词.*?</div>).*?(?=<font color=\"red\"><a href=.*?</font>)");
+            Match match = Regex.Match(html, "(?<=<div class=\"bq\">本书关键词.*?</div>).*?(?=<font color=\"red\"><a href=.*?</font>)", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
@@ -246,6 +424,7 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = Regex.Replace(html, "<br.*?/>", "\n");
+            html = Regex.Replace(html, "<script.*?</script>", "");
             html = Regex.Replace(html, "&nbsp;", " ");
             html = Regex.Replace(html, "</p.*?>", "\n");
             html = Regex.Replace(html, "<.*?>", "");
@@ -259,30 +438,32 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogUrl
     {
-        public static string GetBookCatalogListUrl(string html, string webName)
+        public static string GetBookCatalogListUrl(string html, string url)
         {
+            Uri tempUrl = new Uri(url);
+            string web = tempUrl.Authority;
             string result = string.Empty;
             try
             {
-                switch (webName)
+                switch (web)
                 {
-                    case "手牵手小说网":
+                    case WebSet.sqsxs:
                         result = AnalysisSlsxsw(html);
                         break;
 
-                    case "七度书屋":
+                    case WebSet.qdsw:
                         result = AnalysisSlsxsw(html);
                         break;
 
-                    case "大海中文":
+                    case WebSet.dhzw:
                         result = AnalysisSlsxsw(html); ;
                         break;
 
-                    case "爱上中文":
+                    case WebSet.aszw520:
                         result = AnalysisAszw(html);
                         break;
 
-                    case "少年文学":
+                    case WebSet.snwx:
                         result = AnalysisSlsxsw(html);
                         break;
 
@@ -298,7 +479,7 @@ namespace Sodu.Services
                         result = AnalysisWtc(html);
                         break;
                     default:
-                        result = AnalysisWtc(html);
+                        result = null;
                         break;
                 }
             }
@@ -372,25 +553,27 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogList
     {
-        public static List<BookCatalog> GetCatalogListByHtml(string html, string webName)
+        public static List<BookCatalog> GetCatalogListByHtml(string html, string url)
         {
             List<BookCatalog> result = null;
+            Uri tempUrl = new Uri(url);
+            string web = tempUrl.Authority;
 
-            switch (webName)
+            switch (web)
             {
-                case "手牵手小说网":
+                case WebSet.sqsxs:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                case "七度书屋":
+                case WebSet.qdsw:
                     result = AnalysisSlsxsw(html);
                     break;
 
-                case "大海中文":
+                case WebSet.dhzw:
                     result = AnalysisSlsxsw(html); ;
                     break;
 
-                case "爱上中文":
+                case WebSet.aszw520:
                     result = AnalysisAszw(html);
                     break;
 
@@ -465,23 +648,26 @@ namespace Sodu.Services
 
         private static List<BookCatalog> AnalysisAszw(string html)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
 
         private static List<BookCatalog> AnalysisSq(string html)
         {
-            throw new NotImplementedException();
+            return null;
+
         }
 
         private static List<BookCatalog> AnalysisMyg(string html)
         {
-            throw new NotImplementedException();
+            return null;
+
         }
 
         private static List<BookCatalog> AnalysisWtc(string html)
         {
-            throw new NotImplementedException();
+            return null;
+
         }
     }
 }

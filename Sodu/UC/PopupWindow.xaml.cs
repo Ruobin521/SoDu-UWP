@@ -31,7 +31,6 @@ namespace Sodu.UC
             this.InitializeComponent();
             m_Popup = new Popup();
             m_Popup.Child = this;
-            this.Margin = new Thickness(Window.Current.Bounds.Width, Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height, 0, 0);
             this.Loaded += PopupWindow_Loaded;
             //this.Unloaded += PopupWindow_Unloaded;
         }
@@ -48,9 +47,10 @@ namespace Sodu.UC
 
         private void PopupWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Margin = new Thickness(Window.Current.Bounds.Width, Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height, 0, 0);
             this.tb_Notify.Text = this.txtMessage;
             this.storyBoard = this.tb_Notify_in;
-            this.easeKeyframe.Value = -this.ActualWidth;
+            this.easeKeyframe.Value = -(this.tb_Notify.Text.Length * 16 > 150 ? this.tb_Notify.Text.Length * 16 : 150);
             this.storyBoard.Completed += StoryBoard_Completed;
             this.storyBoard.Begin();
         }

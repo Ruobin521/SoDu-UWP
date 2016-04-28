@@ -208,7 +208,6 @@ namespace Sodu.ViewModel
                     foreach (var item in arrary)
                     {
                         this.BookList.Add(item);
-                        await Task.Delay(1);
                     }
                     this.PageIndex = pageIndex;
                     return true;
@@ -269,7 +268,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                SetData(1);
+                SetData(PageIndex);
             }
         }
 
