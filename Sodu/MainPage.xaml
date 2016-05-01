@@ -65,7 +65,7 @@
                     </Border>
 
                     <Grid  HorizontalAlignment="Stretch" RelativePanel.AlignBottomWithPanel="True"   >
-                        <StackPanel Margin="0,0,0,15" x:Name="FooterPanel"  Orientation="Vertical"  >
+                        <StackPanel Margin="15,0,0,15" x:Name="FooterPanel"  Orientation="Vertical"  >
                             <AppBarButton   Label="注销登录"  Visibility="{Binding Path=Instance.IsLogin,  Source={StaticResource Locator},Converter={StaticResource BooleanToVisibilityConverter}}" 
                                             Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                             IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding LogoutCommand}"

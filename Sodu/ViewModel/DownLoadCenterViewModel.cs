@@ -72,16 +72,16 @@ namespace Sodu.ViewModel
                    try
                    {
                        BookEntity entity = temp.Entity;
-                       entity.Guid = Guid.NewGuid().ToString();
-                       foreach (var item in temp.Entity.CatalogList)
+
+                       for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
                        {
                            try
                            {
-                               item.Guid = entity.Guid;
+                               var item = temp.Entity.CatalogList[i];
                                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                {
                                    temp.CurrentCatalogName = item.CatalogName;
-                                   temp.CurrentIndex = item.Index;
+                                   temp.CurrentIndex = i + 1;
                                    temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3, MidpointRounding.AwayFromZero) * 100;
                                });
                                string html = await GetHtmlData(item.CatalogUrl);

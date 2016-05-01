@@ -134,6 +134,9 @@
     <Compile Include="Pages\HotPage.xaml.cs">
       <DependentUpon>HotPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\LocalBookPage.xaml.cs">
+      <DependentUpon>LocalBookPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\LogoutPage.xaml.cs">
       <DependentUpon>LogoutPage.xaml</DependentUpon>
     </Compile>
@@ -163,6 +166,9 @@
     </Compile>
     <Compile Include="UC\UC_DownLoadItem.xaml.cs">
       <DependentUpon>UC_DownLoadItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UC_LocalBookItem.xaml.cs">
+      <DependentUpon>UC_LocalBookItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="UC\UC_ProgressRing.xaml.cs">
       <DependentUpon>UC_ProgressRing.xaml</DependentUpon>
@@ -217,6 +223,7 @@
     <Compile Include="ViewModel\HomePageViewModel.cs" />
     <Compile Include="ViewModel\HotPageViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
+    <Compile Include="ViewModel\LocalBookPageViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\LogoutPageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
@@ -273,6 +280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\HotPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LocalBookPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -333,6 +344,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UC_DownLoadItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UC_LocalBookItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

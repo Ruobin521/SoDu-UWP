@@ -1,0 +1,34 @@
+﻿<Page
+    x:Class="Sodu.Pages.LocalBookPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    DataContext="{Binding Instance.LocalBookPage,Source={ StaticResource  Locator}}"
+    xmlns:UC="using:Sodu.UC"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+
+        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+            >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <UC:UC_LocalBookItem x:Name="item"  DataContext="{Binding}"  Margin="0,0,15,0" Command="{Binding  Instance.LocalBookPage.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
+            <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding ClearCommand}"/>
+            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
+        </CommandBar>
+    </Grid>
+</Page>

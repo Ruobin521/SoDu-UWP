@@ -22,6 +22,5 @@ namespace Sodu.Model
 
         public int Index { get; set; }
 
-        public string Guid { get; set; }
     }
 }

@@ -291,6 +291,23 @@ namespace Sodu.ViewModel
             }
         }
 
+        private LocalBookPageViewModel m_LocalBookPage;
+        public LocalBookPageViewModel LocalBookPage
+        {
+            get
+            {
+                if (m_LocalBookPage == null)
+                {
+                    m_LocalBookPage = new LocalBookPageViewModel();
+                }
+                return m_LocalBookPage;
+            }
+            set
+            {
+                SetProperty(ref m_LocalBookPage, value);
+            }
+        }
+
         private bool m_IsLogin;
         public bool IsLogin
         {

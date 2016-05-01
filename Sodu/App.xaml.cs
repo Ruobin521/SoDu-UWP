@@ -65,7 +65,7 @@ namespace Sodu
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
-                this.DebugSettings.EnableFrameRateCounter = true;
+                this.DebugSettings.EnableFrameRateCounter = false;
             }
 #endif
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -103,7 +103,7 @@ namespace Sodu
 
 
             bool result = await ReadSettingData();
-            // IninAppCacheData();
+            InitLocalBook();
 
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
             {
@@ -198,61 +198,12 @@ namespace Sodu
 
 
         /// <summary>
-        /// 初始化程序缓存的数据
+        /// 初始化本地缓存的数据
         /// </summary>
-        //private async void IninAppCacheData()
-        //{
-
-
-        //    //获取主页缓存数据
-        //    MainPageViewModel mainPageViewModel = null;
-        //    try
-        //    {
-        //        string fileName = ConstantValue.XmlCacheFileNameDic[typeof(MainPageViewModel)];
-        //        mainPageViewModel = await SerializeHelper.ReadAsync<MainPageViewModel>(fileName);
-        //        if (mainPageViewModel != null)
-        //        {
-        //            ViewModelInstance.Instance.MainPageViewModelInstance = mainPageViewModel;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewModelInstance.Instance.MainPageViewModelInstance = new MainPageViewModel();
-        //    }
-
-        //    //获取首页缓存数据
-        //    HomePageViewModel homePageViewModel = null;
-        //    try
-        //    {
-        //        string fileName = ConstantValue.XmlCacheFileNameDic[typeof(HomePageViewModel)];
-        //        homePageViewModel = await SerializeHelper.ReadAsync<HomePageViewModel>(fileName);
-        //        if (mainPageViewModel != null)
-        //        {
-        //            ViewModelInstance.Instance.HomePageViewModelInstance = homePageViewModel;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewModelInstance.Instance.HomePageViewModelInstance = new HomePageViewModel();
-        //    }
-
-        //    //获取设置数据
-        //    SettingPageViewModel appSetingViewModel = null;
-        //    try
-        //    {
-        //        string fileName = ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)];
-        //        appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(fileName);
-        //        if (appSetingViewModel != null)
-        //        {
-        //            ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewModelInstance.Instance.SettingPageViewModelInstance = new SettingPageViewModel();
-        //        //  await SerializeHelper.WriteAsync(new SettingPageViewModel(), ConstantValue.HomePageDataPath);
-        //    }
-        //}
+        private void InitLocalBook()
+        {
+            ViewModelInstance.Instance.LocalBookPage.RefreshData(null);
+        }
 
         /// <summary>
         /// 点击返回按钮

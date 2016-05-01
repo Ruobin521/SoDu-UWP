@@ -804,7 +804,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
-                    <Border Background="Transparent" Width="{TemplateBinding Width}" HorizontalAlignment="Left" BorderBrush="#FF004D00">
+                    <Border Background="Transparent" Width="{TemplateBinding Width}" HorizontalAlignment="Stretch" BorderBrush="#FF004D00">
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CheckStates">
                                 <VisualState x:Name="Checked">
@@ -826,7 +826,9 @@
                             <Border x:Name="NormalRectangle"  BorderThickness="1" BorderBrush="#FF004D00" 
                             UseLayoutRounding="False" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
                             <Border  x:Name="CheckGlyph" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}" Opacity="0"   >
-                                <AppBarButton Icon="Accept"    Foreground="{TemplateBinding Foreground}" UseLayoutRounding="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></AppBarButton>
+                                <Viewbox>
+                                    <TextBlock Text="√" FontSize="18" FontWeight="Bold" Foreground="#FF004D00" UseLayoutRounding="False" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                </Viewbox>
                             </Border>
                             <Border x:Name="IndeterminateGlyph"   BorderThickness="1" BorderBrush="#FF004D00"  Opacity="0" 
                             UseLayoutRounding="False" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"/>
@@ -1447,7 +1449,7 @@
         <Setter Property="UseSystemFocusVisuals" Value="True"/>
         <Setter Property="Width" Value="150"/>
         <Setter Property="FontSize" Value="16"/>
-        <Setter Property="Padding" Value="15,0,0,0"/>
+        <Setter Property="Padding" Value="0,0,0,0"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AppBarButton">

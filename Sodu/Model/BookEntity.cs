@@ -20,9 +20,6 @@ namespace Sodu.Model
             set;
         }
 
-
-        public string Guid { get; set; }
-
         /// <summary>
         ///书ID
         /// </summary>
