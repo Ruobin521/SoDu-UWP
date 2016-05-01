@@ -124,7 +124,6 @@ namespace Sodu.Services
                     result = AnalysisBxzw5(html);
                     break;
 
-
                 //清风小说（有分页）
                 case WebSet.qfxs:
                     result = AnalysisQfxsw(html);
@@ -132,6 +131,11 @@ namespace Sodu.Services
 
                 //窝窝小说网（有分页）
                 case WebSet.wwxsw:
+                    result = AnalysisBxzw5(html);
+                    break;
+
+                //找书网（需要分页）
+                case WebSet.zsw:
                     result = AnalysisBxzw5(html);
                     break;
 
@@ -175,10 +179,7 @@ namespace Sodu.Services
                     result = AnalysisDsb(html);
                     break;
 
-                //找书网
-                case WebSet.zsw:
-                    result = ReplaceSymbol(html);
-                    break;
+
 
                 //趣笔阁
                 case WebSet.qubige:
@@ -440,55 +441,154 @@ namespace Sodu.Services
     {
         public static string GetBookCatalogListUrl(string html, string url)
         {
-            Uri tempUrl = new Uri(url);
-            string web = tempUrl.Authority;
             string result = string.Empty;
-            try
+
+            Uri tempUrl = new Uri(url);
+
+            string web = tempUrl.Authority;
+
+            switch (web)
             {
-                switch (web)
-                {
-                    case WebSet.sqsxs:
-                        result = AnalysisSlsxsw(html);
-                        break;
+                //7度书屋
+                case WebSet.qdsw:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case WebSet.qdsw:
-                        result = AnalysisSlsxsw(html);
-                        break;
+                //笔下文学（依依中文网）
+                case WebSet.bxwx5:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case WebSet.dhzw:
-                        result = AnalysisSlsxsw(html); ;
-                        break;
+                //第九中文网（有分页）
+                case WebSet.dijiuzww:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case WebSet.aszw520:
-                        result = AnalysisAszw(html);
-                        break;
+                //清风小说（有分页）
+                case WebSet.qfxs:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case WebSet.snwx:
-                        result = AnalysisSlsxsw(html);
-                        break;
+                //窝窝小说网（有分页）
+                case WebSet.wwxsw:
+                    result = AnalysisCommonUrl(url) + "mulu.html";
+                    break;
 
-                    case "书旗小说":
-                        result = AnalysisSq(html);
-                        break;
+                //找书网（需要分页）
+                case WebSet.zsw:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case "木鱼哥":
-                        result = AnalysisMyg(html);
-                        break;
+                //55小说（古古小说网）
+                case WebSet.xs55:
+                    result = AnalysisCommonUrl(url);
+                    break;
 
-                    case "无弹窗小说网":
-                        result = AnalysisWtc(html);
-                        break;
-                    default:
-                        result = null;
-                        break;
-                }
-            }
-            catch (Exception)
-            {
+                //风云小说 //有可能要添加特殊处理  +index.html
+                case WebSet.fyxs:
+                    result = AnalysisCommonUrl(url) + "index.html";
+                    break;
+
+                //爱上中文
+                case WebSet.aszw520:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //大海中文
+                case WebSet.dhzw:
+                    result = AnalysisCommonUrl(url); ;
+                    break;
+
+                //酷酷看书
+                case WebSet.kkks:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //少年文学
+                case WebSet.snwx:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //手牵手
+                case WebSet.sqsxs:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //大书包
+                case WebSet.dsb:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //趣笔阁
+                case WebSet.qubige:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //书路
+                case WebSet.shu6:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //风华居
+                case WebSet.fenghuaju:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //云来阁
+                case WebSet.ylg:
+                    result = AnalysisYlg(html);
+                    break;
+
+                case "书旗小说":
+                    result = AnalysisSq(html);
+                    break;
+
+                case "木鱼哥":
+                    result = AnalysisMyg(html);
+                    break;
+
+                case "无弹窗小说网":
+                    result = AnalysisWtc(html);
+                    break;
+                default:
+                    result = null;
+                    break;
             }
 
             return result;
         }
+
+
+        /// <summary>
+        /// 通用截取目录url的方法
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisCommonUrl(string url)
+        {
+            string result = url.Substring(0, url.LastIndexOf('/') + 1);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 云来阁
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisYlg(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "(?<=<a id=\"hlBookName\" href=).*?(\".*?</a>)");
+            if (match != null)
+            {
+                result = match.ToString().Trim();
+            }
+            return result;
+        }
+
+        //<a id = "hlBookName" href="http://www.yunlaige.com/book/4351.html">大主宰
 
         /// <summary>
         /// 无弹窗
@@ -497,7 +597,14 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisWtc(string html)
         {
-            return null;
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "(?<=<a href=).*?(?=title=.*?>章节目录</a>)", RegexOptions.RightToLeft);
+            if (match != null)
+            {
+                result = match.ToString().Trim().Replace("\"", "");
+            }
+            return result;
         }
 
         /// <summary>

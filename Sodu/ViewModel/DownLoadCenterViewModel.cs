@@ -66,21 +66,37 @@ namespace Sodu.ViewModel
                    {
                        break;
                    }
-
                    bool result = true;
+
                    DowmLoadEntity temp = DownLoadList[0];
                    try
                    {
+                       int startIndex = 0;
+
+                       //适用于暂停然后重新开始
+                       if (temp.CurrentCatalog != null)
+                       {
+                           if (temp.Entity.CatalogList != null && temp.Entity.CatalogList.Count > 0)
+                           {
+                               var catalog = temp.Entity.CatalogList.FirstOrDefault(p => p.CatalogUrl == temp.CurrentCatalog.CatalogUrl);
+                               if (catalog != null)
+                               {
+                                   startIndex = temp.Entity.CatalogList.IndexOf(catalog);
+                               }
+                           }
+                       }
+
                        BookEntity entity = temp.Entity;
 
-                       for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
+                       //for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
+                       for (int i = startIndex; i < 50; i++)
                        {
                            try
                            {
                                var item = temp.Entity.CatalogList[i];
                                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                                {
-                                   temp.CurrentCatalogName = item.CatalogName;
+                                   temp.CurrentCatalog = item;
                                    temp.CurrentIndex = i + 1;
                                    temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3, MidpointRounding.AwayFromZero) * 100;
                                });
@@ -104,8 +120,9 @@ namespace Sodu.ViewModel
                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                        {
                            this.DownLoadList.Remove(temp);
+                           Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，您可在左侧导航“本地图书”中查看");
+                           Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，您可在左侧导航“本地图书”中查看");
                        });
-
                    }
                }
            }).ContinueWith((result) =>
@@ -155,16 +172,16 @@ namespace Sodu.ViewModel
             }
         }
 
-        private string m_CurrentCatalogName;
-        public string CurrentCatalogName
+        private BookCatalog m_CurrentCatalog;
+        public BookCatalog CurrentCatalog
         {
             get
             {
-                return m_CurrentCatalogName;
+                return m_CurrentCatalog;
             }
             set
             {
-                SetProperty(ref m_CurrentCatalogName, value);
+                SetProperty(ref m_CurrentCatalog, value);
             }
         }
 

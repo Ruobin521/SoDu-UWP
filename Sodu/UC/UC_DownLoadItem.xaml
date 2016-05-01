@@ -6,19 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Height="130"
+    d:DesignHeight="110"
     d:DesignWidth="500">
-    <Grid Background="#FF5391FF">
-        <Grid Background="White" Margin="0,0,0,1">
+    <Grid Background="Transparent">
+        <Grid Background="White" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
                 <RowDefinition Height="30"/>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
             <TextBlock  Foreground="Black" VerticalAlignment="Center" TextWrapping="Wrap"  Margin="20,0" Grid.ColumnSpan="1">
@@ -27,13 +27,13 @@
 
             <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"  Margin="20,0"></ProgressBar>
 
-            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  Grid.Row="2" TextTrimming="WordEllipsis">
+            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  Grid.Row="2" TextTrimming="WordEllipsis" Grid.ColumnSpan="3">
                 <Run Text=" (" FontSize="16"> </Run>
                 <Run Text="{Binding CurrentIndex}" FontSize="16"></Run>
                 <Run Text="/" FontSize="16"> </Run>
                 <Run Text="{Binding Entity.CatalogList.Count}" FontSize="16"></Run>
                 <Run Text=")  " FontSize="16"> </Run>
-                <Run  Text="{Binding CurrentCatalogName}" FontSize="16"> </Run>
+                <Run  Text="{Binding CurrentCatalog.CatalogName}" FontSize="16"> </Run>
             </TextBlock>
 
 

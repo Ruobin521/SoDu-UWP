@@ -206,6 +206,7 @@ namespace Sodu.ViewModel
                     item.Index = i;
                     i++;
                     item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
+                    item.BookID = this.CurrentBookEntity.BookID;
                     this.CatalogList.Add(item);
                 }
                 this.CurrentBookEntity.CatalogList = this.CatalogList.ToList();
@@ -311,8 +312,13 @@ namespace Sodu.ViewModel
 
         private void OnDwonLoadhCommandd(object obj)
         {
-            Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
-            ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.CurrentBookEntity);
+            if (IsLoading) return;
+            if (this.CurrentBookEntity != null)
+            {
+                Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
+                ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.CurrentBookEntity);
+            }
+
         }
     }
 }

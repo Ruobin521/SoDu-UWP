@@ -31,16 +31,17 @@ namespace Sodu.ViewModel
             }
         }
 
+
+        private bool m_IsLoading;
         public bool IsLoading
         {
             get
             {
-                throw new NotImplementedException();
+                return m_IsLoading;
             }
-
             set
             {
-                throw new NotImplementedException();
+                this.SetProperty(ref this.m_IsLoading, value);
             }
         }
 

@@ -121,7 +121,26 @@ namespace Sodu.Database
                 {
                     try
                     {
-                        db.DeleteAll<BookEntity>();
+                        var books = (from m in db.Table<BookEntity>()
+                                     select m
+                               );
+                        if (books != null && books.Count() > 0)
+                        {
+                            foreach (var item in books)
+                            {
+                                var catalogs = (from m in db.Table<BookCatalog>()
+                                                where m.BookID == item.BookID
+                                                select m
+                              );
+                                if (catalogs != null && catalogs.Count() > 0)
+                                {
+                                    foreach (var catalog in catalogs)
+                                    {
+                                        db.Delete(catalog);
+                                    }
+                                }
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {

@@ -53,7 +53,7 @@ namespace Sodu.Model
         public string CatalogUrl { get; set; }
 
         /// <summary>
-        ///目录地址
+        ///作者名称
         /// </summary>
         public string AuthorName { get; set; }
 
@@ -69,6 +69,7 @@ namespace Sodu.Model
         /// 是否为编辑状态
         /// </summary>
         private bool m_IfBookshelf;
+        [Ignore]
         public bool IfBookshelf
         {
             get
@@ -86,6 +87,7 @@ namespace Sodu.Model
         /// 是否勾选
         /// </summary>
         private bool m_IsSelected;
+        [Ignore]
         [XmlIgnore]
         public bool IsSelected
         {
