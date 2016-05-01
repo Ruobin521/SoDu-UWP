@@ -313,7 +313,7 @@ namespace Sodu.ViewModel
         private void OnDwonLoadhCommandd(object obj)
         {
             if (IsLoading) return;
-            if (this.CurrentBookEntity != null)
+            if (this.CurrentBookEntity != null && this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)
             {
                 Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
                 ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.CurrentBookEntity);
