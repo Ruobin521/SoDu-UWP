@@ -36,6 +36,11 @@ namespace Sodu.Model
         public string ChapterName { get; set; }
 
         /// <summary>
+        ///最后阅读的章节
+        /// </summary>
+        public string LastReadChapterName { get; set; }
+
+        /// <summary>
         ///未读提示
         /// </summary>
         public string UnReadCountData { get; set; }

@@ -6,10 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="110"
+    d:DesignHeight="120"
+    x:Name="root"
     d:DesignWidth="500">
     <Grid Background="Transparent">
-        <Grid Background="White" Margin="10">
+        <Grid Background="White" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
@@ -27,7 +28,7 @@
 
             <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"  Margin="20,0"></ProgressBar>
 
-            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  Grid.Row="2" TextTrimming="WordEllipsis" Grid.ColumnSpan="3">
+            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Top"  Grid.Row="2" TextTrimming="WordEllipsis" Grid.ColumnSpan="3">
                 <Run Text=" (" FontSize="16"> </Run>
                 <Run Text="{Binding CurrentIndex}" FontSize="16"></Run>
                 <Run Text="/" FontSize="16"> </Run>
@@ -42,12 +43,12 @@
             <Run Text="{Binding ProgressValue}"></Run>
             <Run Text="%"></Run>
         </TextBlock>-->
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="1" Command="{Binding PauseCommand}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="1" Command="{Binding PauseCommand,ElementName=root}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Button.Content>
                     <SymbolIcon  Symbol="Pause"></SymbolIcon>
                 </Button.Content>
             </Button>
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="2" Padding="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="2" Padding="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding ElementName=root,Path=DeleteCommand}">
                 <Button.Content>
                     <SymbolIcon  Symbol="Clear"></SymbolIcon>
                 </Button.Content>

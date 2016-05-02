@@ -116,7 +116,7 @@ namespace Sodu.Services
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
             Page page = ContentFrame.Content as Page;
-            if (e.NavigationMode != Windows.UI.Xaml.Navigation.NavigationMode.Back && e.NavigationMode != Windows.UI.Xaml.Navigation.NavigationMode.Forward)
+            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.New)
             {
                 if (page != null)
                 {

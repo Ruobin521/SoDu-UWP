@@ -202,9 +202,9 @@ namespace Sodu
         /// </summary>
         private void InitLocalBook()
         {
-            Database.DBLocalBook.DeleteAllLocalBooks(AppDataPath.GetLocalBookDBPath());
+            //Database.DBLocalBook.DeleteAllLocalBooks(AppDataPath.GetLocalBookDBPath());
 
-            Database.DBLocalBook.DeleteAllCatalog(AppDataPath.GetLocalBookDBPath());
+            //Database.DBLocalBook.DeleteAllCatalog(AppDataPath.GetLocalBookDBPath());
 
             ViewModelInstance.Instance.LocalBookPage.RefreshData(null);
         }

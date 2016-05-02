@@ -121,7 +121,6 @@ namespace Sodu.ViewModel
                        {
                            this.DownLoadList.Remove(temp);
                            Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，您可在左侧导航“本地图书”中查看");
-                           Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，您可在左侧导航“本地图书”中查看");
                        });
                    }
                }

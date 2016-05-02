@@ -29,9 +29,7 @@ namespace Sodu.UC
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.Register("Command", typeof(ICommand), typeof(UC_BookListItem), new PropertyMetadata(null));
-
-
+            DependencyProperty.Register("Command", typeof(ICommand), typeof(UC_LocalBookItem), new PropertyMetadata(null));
 
 
         public object CommandParameter
@@ -42,7 +40,9 @@ namespace Sodu.UC
 
         // Using a DependencyProperty as the backing store for CommandParameter.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CommandParameterProperty =
-            DependencyProperty.Register("CommandParameter", typeof(object), typeof(UC_BookListItem), new PropertyMetadata(null));
+            DependencyProperty.Register("CommandParameter", typeof(object), typeof(UC_LocalBookItem), new PropertyMetadata(null));
+
+
         public UC_LocalBookItem()
         {
             this.InitializeComponent();

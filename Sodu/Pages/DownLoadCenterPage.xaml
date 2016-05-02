@@ -19,7 +19,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:UC_DownLoadItem Height="100"></uc:UC_DownLoadItem>
+                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="0,10"></uc:UC_DownLoadItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

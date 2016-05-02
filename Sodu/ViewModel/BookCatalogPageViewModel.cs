@@ -18,6 +18,8 @@ namespace Sodu.ViewModel
 {
     public class BookCatalogPageViewModel : BaseViewModel, IViewModel
     {
+        private bool IsLocal { get; set; }
+
         private string m_ContentTitle;
         public string ContentTitle
         {

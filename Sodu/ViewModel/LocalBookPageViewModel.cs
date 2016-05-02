@@ -62,18 +62,21 @@ namespace Sodu.ViewModel
         public void GetLocalBook()
         {
 
-            Task.Run(() =>
-         {
-             var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
-             if (result != null)
-             {
-                 this.LocalBookList.Clear();
-                 foreach (var item in result)
-                 {
-                     this.LocalBookList.Add(item);
-                 }
-             }
-         });
+            Task.Run(async () =>
+        {
+            var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+            if (result != null)
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    this.LocalBookList.Clear();
+                    foreach (var item in result)
+                    {
+                        this.LocalBookList.Add(item);
+                    }
+                });
+            }
+        });
         }
 
         public void RefreshData(object obj = null)
@@ -101,7 +104,7 @@ namespace Sodu.ViewModel
 
         private void OnBookItemSelectedCommand(object obj)
         {
-            /// ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+            /// ViewModelInstance.Instance.MainPageViewModelInstance.OnBooq aswkItemSelectedChangedCommand(obj);
             CommonMethod.ShowMessage("您点击了。。。");
         }
     }
