@@ -18,7 +18,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <TextBlock x:Name="TextTitle"   Text="搜索" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -26,60 +26,27 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <RelativePanel Height="40" Margin="0,0,0,0"  Grid.Column="1"  MaxWidth="500">
-                <Button  x:Name="btnSearch"    RelativePanel.AlignRightWithPanel="True" HorizontalAlignment="Right" RelativePanel.AlignVerticalCenterWithPanel="True"   Command="{Binding SearchCommand}" Style="{StaticResource ButtonStyle1}" Height="38" Width="90" FontSize="16" VerticalAlignment="Center" Content="搜索" />
-                <TextBox  x:Name="txtSearchPara"  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"    Style="{StaticResource TextboxStyle}" BorderThickness="1,1,0,1"   FontSize="22"  HorizontalAlignment="Stretch" Height="38" Text="{Binding SearchPara,Mode=TwoWay}"  ></TextBox>
+                <Button  x:Name="btnSearch"    RelativePanel.AlignRightWithPanel="True" HorizontalAlignment="Right" RelativePanel.AlignVerticalCenterWithPanel="True"   Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" Style="{StaticResource ButtonStyle1}" Height="38" Width="90" FontSize="16" VerticalAlignment="Center" Content="搜索" />
+                <TextBox  x:Name="txtSearchPara"  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"  Text="{Binding SearchPara,Mode=TwoWay}"   Style="{StaticResource TextboxStyle}" BorderThickness="1,1,0,1"   FontSize="22"  HorizontalAlignment="Stretch" Height="38" ></TextBox>
             </RelativePanel>
         </Grid>
-        <TextBlock Grid.Row="2" Text="请输入搜索条件" FontSize="18"  Visibility="{Binding IsShow2,Converter={StaticResource BooleanToVisibilityConverter}}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,30,0,0"></TextBlock>
-        <Grid Grid.Row="2" Grid.Column="1" Height="Auto" Margin="0,5,0,0" >
-            <control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="booklistview" Margin="0,0,0,0"   ItemsSource="{Binding SearchResultList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent" 
-           RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
-                <control:PullToRefreshListView.ItemTemplate>
-                    <DataTemplate>
-                        <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Command="{Binding  Instance.MainPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"  />
-                    </DataTemplate>
-                </control:PullToRefreshListView.ItemTemplate>
-                <Interactivity:Interaction.Behaviors >
-                    <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                        <Core:InvokeCommandAction Command="{Binding  Instance.MainPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
-                    </Core:EventTriggerBehavior>
-                </Interactivity:Interaction.Behaviors>
-            </control:PullToRefreshListView>
-        </Grid>
+        <ListView  Grid.Row="2" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+            >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <Interactivity:Interaction.Behaviors >
+                <Core:EventTriggerBehavior   EventName="SelectionChanged">
+                    <Core:InvokeCommandAction Command="{Binding  BookItemSelectedChangedCommand}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
+                </Core:EventTriggerBehavior>
+            </Interactivity:Interaction.Behaviors>
+        </ListView>
 
         <CommandBar  Grid.Row="3"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
-            <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
-            <!--<AppBarSeparator/>-->
-            <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
-            <AppBarButton Icon="Refresh" Label="刷新"  Width="60"  Command="{Binding RefreshCommand}"/>
-            <AppBarButton Icon="Previous" Label="上一页" Width="60"  Command="{Binding PrePageCommand}"/>
-            <AppBarButton Icon="Next" Label="下一页"  Width="60"  Command="{Binding  RequestCommand }"/>
-            <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->
-
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Like" Label="Like"  />
-                <AppBarButton Icon="Dislike" Label="Dislike"  />
-            </CommandBar.SecondaryCommands>-->
-            <CommandBar.Content>
-                <Border  Height="{Binding ElementName=menu,Path=ActualHeight}"  Width="Auto"  Padding="3">
-                    <TextBlock  FontSize="18"     VerticalAlignment="Center">
-                    <Run  Text=" 第"></Run>
-                    <Run Text="{Binding   CurrentPageIndex}"></Run> 
-                    <Run  Text=" 页"></Run>
-                    </TextBlock>
-                </Border>
-
-            </CommandBar.Content>
+            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="60"  Command="{Binding RefreshCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" />
         </CommandBar>
-        <!--<StackPanel   Visibility="{Binding  IsShow,Converter={StaticResource BooleanToVisibilityConverter}}" Height="40" Grid.Row="3"  Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button  Style="{StaticResource ButtonStyle2}" Content="上一页"  Width="70" Height="35" Margin="10,0,10,0" 
-                     Command="{Binding   PrePageCommand }"/>
-            <Button  Style="{StaticResource ButtonStyle2}" Content="下一页"  Width="70" Height="35" Margin="10,0,10,0"  
-                     Command="{Binding   RequestCommand}"/>
-            <Button  Style="{StaticResource ButtonStyle2}" Content="尾　页"  Width="70" Height="35" Margin="10,0,10,0"  
-                     Command="{Binding  LastPageCommand}"/>
-        </StackPanel>-->
+        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>
 </Page>

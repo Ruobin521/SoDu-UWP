@@ -1,6 +1,8 @@
 ﻿using Sodu.Model;
+using Sodu.Util;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -99,6 +101,46 @@ namespace Sodu.Services
     }
     public class AnalysisContentHtmlService
     {
+        public async static Task<string> GetHtmlContent(HttpHelper http, string catalogUrl)
+        {
+            string html = null;
+            string content = null;
+            try
+            {
+                html = await http.WebRequestGet(catalogUrl, false);
+                if (string.IsNullOrEmpty(html))
+                {
+                    return null;
+                }
+                content = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalogUrl);
+                if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
+                {
+                    return null;
+                }
+                List<string> lists = AnalysisPagingUrlFromUrl.GetPagingUrlListFromUrl(html, catalogUrl);
+                if (lists != null)
+                {
+                    foreach (var url in lists)
+                    {
+                        string temp = await http.WebRequestGet(url, false);
+                        temp = await http.WebRequestGet(url, false);
+                        if (temp != null)
+                        {
+                            temp = Services.AnalysisContentHtmlService.AnalysisContentHtml(temp, url);
+                        }
+                        if (temp != null)
+                        {
+                            content += temp.Trim();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                content = null;
+            }
+            return content;
+        }
         public static string AnalysisContentHtml(string html, string url)
         {
             string result = string.Empty;
@@ -215,10 +257,6 @@ namespace Sodu.Services
                 default:
                     result = ReplaceSymbol(html);
                     break;
-            }
-            if (!string.IsNullOrEmpty(result))
-            {
-                result = result + "\n\n\n\n\n\n";
             }
             return result;
         }
@@ -668,20 +706,92 @@ namespace Sodu.Services
 
             switch (web)
             {
+                //手牵手
                 case WebSet.sqsxs:
                     result = AnalysisSlsxsw(html);
                     break;
 
+                //7度
                 case WebSet.qdsw:
                     result = AnalysisSlsxsw(html);
                     break;
 
+                //大海
                 case WebSet.dhzw:
                     result = AnalysisSlsxsw(html); ;
                     break;
-
+                //爱上中文
                 case WebSet.aszw520:
                     result = AnalysisAszw(html);
+                    break;
+
+                //笔下文学（依依中文网）
+                case WebSet.bxwx5:
+                    result = AnalysisYyzww(html);
+                    break;
+
+                //第九中文网（有分页）
+                case WebSet.dijiuzww:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //清风小说（有分页）
+                case WebSet.qfxs:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //窝窝小说网（有分页）
+                case WebSet.wwxsw:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //找书网（需要分页）
+                case WebSet.zsw:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //55小说（古古小说网）
+                case WebSet.xs55:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //风云小说
+                case WebSet.fyxs:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //酷酷看书
+                case WebSet.kkks:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //少年文学
+                case WebSet.snwx:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //大书包
+                case WebSet.dsb:
+                    result = AnalysisDefault(html);
+                    break;
+                //趣笔阁
+                case WebSet.qubige:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //书路
+                case WebSet.shu6:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //风华居
+                case WebSet.fenghuaju:
+                    result = AnalysisDefault(html);
+                    break;
+
+                //云来阁
+                case WebSet.ylg:
+                    result = AnalysisDefault(html);
                     break;
 
                 case "少年文学":
@@ -700,13 +810,6 @@ namespace Sodu.Services
                     result = AnalysisWtc(html);
                     break;
 
-                //case " 天天看书网":
-                //    result = "";
-                //    break;
-
-                //case "  二六九小说网":
-                //    result = "";
-                //    break;
                 default:
                     break;
             }
@@ -776,5 +879,205 @@ namespace Sodu.Services
             return null;
 
         }
+        /// <summary>
+        /// 依依中文网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisYyzww(string html)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
+
+            //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        private static List<BookCatalog> AnalysisDefault(string html)
+        {
+            return null;
+
+        }
+    }
+
+
+    public class AnalysisPagingUrlFromUrl
+    {
+        public static List<string> GetPagingUrlListFromUrl(string html, string pageUrl)
+        {
+            List<string> result = new List<string>();
+            Uri tempUrl = new Uri(pageUrl);
+            string web = tempUrl.Authority;
+
+            switch (web)
+            {
+                //第九中文网（有分页）
+                case WebSet.dijiuzww:
+                    result = AnalysisDjzw(html, web);
+                    break;
+
+                //清风小说（有分页）
+                case WebSet.qfxs:
+                    result = AnalysisQfxs(html, web);
+                    break;
+
+                //窝窝小说网（有分页）
+                case WebSet.wwxsw:
+                    result = AnalysisWwxs(html, web);
+                    break;
+
+                //找书网（需要分页）
+                case WebSet.zsw:
+                    result = AnalysisDjzw(html, web);
+                    break;
+            }
+
+            return result;
+
+        }
+
+        private static List<string> AnalysisDjzw(string html, string baseUrl)
+        {
+            List<string> lists = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                MatchCollection matches = Regex.Matches(html, @"/pdnovel.php\?mod=read.*?page=\d");
+                if (matches != null && matches.Count > 1)
+                {
+                    lists = new List<string>();
+                    for (int i = 1; i < matches.Count - 1; i++)
+                    {
+                        string url = "http://" + baseUrl + matches[i].ToString();
+                        lists.Add(url);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                lists = null;
+            }
+            return lists;
+        }
+
+        /// <summary>
+        /// 清风小说
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<string> AnalysisQfxs(string html, string baseUrl)
+        {
+            List<string> lists = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                MatchCollection matches = Regex.Matches(html, "(?<=<a rel=\"external nofollow\" href=\")/qfxs-\\d+/.*?&page=\\d");
+                if (matches != null && matches.Count > 1)
+                {
+                    lists = new List<string>();
+                    for (int i = 1; i < matches.Count - 1; i++)
+                    {
+                        string url = "http://" + baseUrl + matches[i].ToString();
+                        lists.Add(url);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                lists = null;
+            }
+            return lists;
+        }
+
+        /// <summary>
+        /// 窝窝小说
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<string> AnalysisWwxs(string html, string baseUrl)
+        {
+            List<string> lists = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                MatchCollection matches = Regex.Matches(html, "(?<=<a href=\")/books/\\d+/\\d+\\.html&page=\\d(?=\" class=\"f_\\w\">)");
+                if (matches != null && matches.Count > 1)
+                {
+                    lists = new List<string>();
+                    for (int i = 1; i < matches.Count - 1; i++)
+                    {
+                        string url = "http://" + baseUrl + matches[i].ToString();
+                        lists.Add(url);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                lists = null;
+            }
+            return lists;
+        }
+
+        /// <summary>
+        /// 找书网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<string> AnalysisZsw(string html, string baseUrl)
+        {
+            List<string> lists = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                MatchCollection matches = Regex.Matches(html, "(?<=<a href=\")/books/\\d+/\\d+\\.html&page=\\d(?=\" class=\"f_\\w\">)");
+                if (matches != null && matches.Count > 1)
+                {
+                    lists = new List<string>();
+                    for (int i = 1; i < matches.Count - 1; i++)
+                    {
+                        string url = "http://" + baseUrl + matches[i].ToString();
+                        lists.Add(url);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                lists = null;
+            }
+            return lists;
+        }
     }
 }
+
+
+

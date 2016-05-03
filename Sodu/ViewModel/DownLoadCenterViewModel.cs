@@ -88,8 +88,8 @@ namespace Sodu.ViewModel
 
                        BookEntity entity = temp.Entity;
 
-                       //for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
-                       for (int i = startIndex; i < 50; i++)
+                       for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
+                       //for (int i = startIndex; i < 50; i++)
                        {
                            try
                            {
@@ -98,7 +98,7 @@ namespace Sodu.ViewModel
                                {
                                    temp.CurrentCatalog = item;
                                    temp.CurrentIndex = i + 1;
-                                   temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3, MidpointRounding.AwayFromZero) * 100;
+                                   temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
                                });
                                string html = await GetHtmlData(item.CatalogUrl);
                                item.CatalogContent = html;
@@ -120,7 +120,7 @@ namespace Sodu.ViewModel
                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                        {
                            this.DownLoadList.Remove(temp);
-                           Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，您可在左侧导航“本地图书”中查看");
+                           Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
                        });
                    }
                }
@@ -135,22 +135,12 @@ namespace Sodu.ViewModel
             string html = null;
             try
             {
-                html = await new HttpHelper().WebRequestGet(catalogUrl, false);
-                if (string.IsNullOrEmpty(html))
-                {
-                    return null;
-                }
-                html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalogUrl);
-                if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
-                {
-                    return null;
-                }
+                html = await AnalysisContentHtmlService.GetHtmlContent(new HttpHelper(), catalogUrl);
             }
             catch (Exception ex)
             {
                 html = null;
             }
-
             return html;
         }
     }

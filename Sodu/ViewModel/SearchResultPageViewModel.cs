@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.UI.Core;
+using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
 {
@@ -50,6 +52,10 @@ namespace Sodu.ViewModel
         {
             get
             {
+                if (m_SearchResultList == null)
+                {
+                    m_SearchResultList = new ObservableCollection<BookEntity>();
+                }
                 return m_SearchResultList;
             }
             set
@@ -90,9 +96,38 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_MaxPageIndex, value);
             }
         }
+        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
+        public IconElement RefreshIcon
+        {
+            get
+            {
+                return m_RefreshIcon;
+            }
+            set
+            {
+                SetProperty(ref m_RefreshIcon, value);
+            }
+        }
+
+        private bool m_IsLoading;
         public bool IsLoading
         {
-            get; set;
+            get
+            {
+                return m_IsLoading;
+            }
+            set
+            {
+                SetProperty(ref m_IsLoading, value);
+                if (m_IsLoading == false)
+                {
+                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
+                }
+                else
+                {
+                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
+                }
+            }
         }
 
         private bool m_IsShow = false;
@@ -107,22 +142,8 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_IsShow, value);
             }
         }
-        private bool m_IsShow2 = true;
-
-        public bool IsShow2
-        {
-            get
-            {
-                return m_IsShow2;
-            }
-            set
-            {
-                SetProperty(ref this.m_IsShow2, value);
-            }
-        }
 
         HttpHelper http = new HttpHelper();
-
 
         /// <summary>
         /// 取消请求
@@ -133,57 +154,117 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null)
+        public void RefreshData(object obj = null)
         {
             try
             {
-                //  如果正在加载，或者提示不需要刷新 或者obj为空说明是从主要左侧列表项从而导致刷新，这时候不需要刷新了
-                if (IsLoading || string.IsNullOrEmpty(SearchPara))
+                if (obj == null)
                 {
+                    SearchPara = "";
+                    this.SearchResultList.Clear();
                     return;
-                }
-
-                if (obj != null)
-                {
-                    if (Convert.ToInt32(obj) > this.MaxPageIndex)
-                    {
-                        CommonMethod.ShowMessage("已经是最后一页");
-                        return;
-
-                    }
-                    if (Convert.ToInt32(obj) < 1)
-                    {
-                        CommonMethod.ShowMessage("已经是第一页");
-                        return;
-                    }
-                    else
-                    {
-                        this.CurrentPageIndex = Convert.ToInt32(obj);
-                    }
                 }
 
                 if (SearchResultList != null)
                 {
                     SearchResultList.Clear();
                 }
-                IsLoading = true;
-                string uri = string.Format(PageUrl.BookSearchPage, ChineseGBKConverter.Utf8ToGb2312(SearchPara), CurrentPageIndex);
-
-                string html = await http.WebRequestGet(uri);
-                this.MaxPageIndex = GetMaxPageIndex(html);
-                SearchResultList = GetBookListMethod.GetSearchResultkListFromHtml(html);
-                IsShow = true;
-                IsShow2 = false;
-                CommonMethod.ShowMessage("第" + CurrentPageIndex + "页，共" + MaxPageIndex + "页");
+                SetData(obj.ToString());
             }
             catch (Exception ex)
             {
                 CommonMethod.ShowMessage("获取数据有误，请重新尝试");
             }
+        }
+
+
+        public void SetData(string para)
+        {
+            Task.Run(async () =>
+            {
+
+                string uri = string.Format(PageUrl.BookSearchPage, System.Net.WebUtility.UrlEncode(para));
+                string html = await GetHtmlData(uri);
+                return html;
+            }).ContinueWith(async (resultHtml) =>
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+              {
+                  if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
+                  {
+                      CommonMethod.ShowMessage("共返回" + this.SearchResultList.Count + "条结果");
+                  }
+                  else
+                  {
+                      CommonMethod.ShowMessage("无搜索结果");
+                  }
+              });
+
+            });
+        }
+
+        public bool SetBookList(string html)
+        {
+            bool result = false;
+
+            try
+            {
+                if (!string.IsNullOrEmpty(html))
+                {
+                    ObservableCollection<BookEntity> arraryList = GetBookListMethod.GetRankListFromHtml(html);
+                    if (arraryList == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        if (arraryList.Count > 0)
+                        {
+                            foreach (var item in arraryList)
+                            {
+                                this.SearchResultList.Add(item);
+                            }
+                        }
+                        result = true;
+                    }
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        public async Task<string> GetHtmlData(string url)
+        {
+            string html = string.Empty;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+            try
+            {
+                html = await http.WebRequestGet(url, false);
+            }
+            catch (Exception ex)
+            {
+                html = null;
+            }
             finally
             {
-                IsLoading = false;
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
             }
+
+            return html;
         }
 
         /// <summary>
@@ -212,10 +293,10 @@ namespace Sodu.ViewModel
         }
         private void OnSearchCommand(object obj)
         {
-            RefreshData(1);
+            RefreshData(obj.ToString());
         }
 
-        #region  上拉刷新,下拉加载
+
 
         ///跳转到相应页数
         /// </summary>
@@ -229,12 +310,15 @@ namespace Sodu.ViewModel
 
         private void OnRefreshCommand(object obj)
         {
-            if (string.IsNullOrEmpty(this.SearchPara))
+            if (IsLoading)
             {
-                CommonMethod.ShowMessage("请输入搜索条件");
-                return;
+                CancleHttpRequest();
             }
-            RefreshData(CurrentPageIndex);
+            else
+            {
+                if (obj == null) return;
+                RefreshData(obj.ToString());
+            }
         }
 
         /// <summary>
@@ -250,7 +334,7 @@ namespace Sodu.ViewModel
 
         private void OnRequestCommand(object obj)
         {
-            RefreshData(this.CurrentPageIndex);
+            //  RefreshData(this.CurrentPageIndex);
         }
 
         public RelayCommand<object> PrePageCommand
@@ -263,7 +347,7 @@ namespace Sodu.ViewModel
 
         private void OnPrePageCommand(object obj)
         {
-            RefreshData(this.CurrentPageIndex - 1);
+            //RefreshData(this.CurrentPageIndex - 1);
         }
 
 
@@ -277,11 +361,35 @@ namespace Sodu.ViewModel
 
         private void OnLastPageCommand(object obj)
         {
-            RefreshData(this.MaxPageIndex);
+            // RefreshData(this.MaxPageIndex);
         }
 
 
-        #endregion
+        private void OnBackCommand(object obj)
+        {
+            NavigationService.GoBack(null, null);
+        }
+
+
+        /// <summary>
+        /// 选中相应的bookitem
+        /// </summary>
+        public BaseCommand BookItemSelectedChangedCommand
+        {
+            get
+            {
+                return new BaseCommand((obj) =>
+                {
+                    if (!IsLoading)
+                    {
+                        // this.IsNeedRefresh = false;
+                        ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+                    }
+                });
+            }
+        }
+
+
 
     }
 }

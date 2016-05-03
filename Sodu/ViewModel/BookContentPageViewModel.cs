@@ -19,8 +19,6 @@ namespace Sodu.ViewModel
 {
     public class BookContentPageViewModel : BaseViewModel, IViewModel
     {
-
-
         public bool IsLocal { get; set; }
 
         private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
@@ -257,7 +255,7 @@ namespace Sodu.ViewModel
                }
                else
                {
-                   string html = await GetHtmlData(catalog);
+                   string html = await GetHtmlData(catalog.CatalogUrl);
                    return html;
                }
 
@@ -302,12 +300,11 @@ namespace Sodu.ViewModel
                              CatalogListUrl = catalogListUrl;
                              IsCatalogMenuShow = true;
                          }
-
                      }
                  });
         }
 
-        private async void SetTextContent(string html)
+        private void SetTextContent(string html)
         {
             this.ContentTitle = this.BookEntity.BookName + "_" + this.CurrentCatalog.CatalogName;
 
@@ -325,8 +322,6 @@ namespace Sodu.ViewModel
             for (int i = 0; i < strList.Count; i++)
             {
                 this.ContentListt.Add(strList[i]);
-                // this.TextContent = string.Format("{0}{1}", this.TextContent, strList[i]);
-                await Task.Delay(5);
             }
         }
 
@@ -364,31 +359,49 @@ namespace Sodu.ViewModel
         /// </summary>
         /// <param name="catalog"></param>
         /// <returns></returns>
-        public async Task<string> GetHtmlData(BookCatalog catalog)
+        public async Task<string> GetHtmlData(string catalogUrl)
         {
-            string html = null;
-
             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 IsLoading = true;
             });
+
+            string html = null;
+            string content = null;
             try
             {
-                html = await http.WebRequestGet(catalog.CatalogUrl, false);
+                html = await http.WebRequestGet(catalogUrl, false);
                 if (string.IsNullOrEmpty(html))
                 {
                     return null;
                 }
-                SetBookCataologListUrl(html, catalog.CatalogUrl);
-                html = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalog.CatalogUrl);
-                if (string.IsNullOrEmpty(html) || string.IsNullOrWhiteSpace(html))
+                SetBookCataologListUrl(html, catalogUrl);
+                content = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalogUrl);
+                if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
                 {
                     return null;
+                }
+                List<string> lists = AnalysisPagingUrlFromUrl.GetPagingUrlListFromUrl(html, catalogUrl);
+                if (lists != null)
+                {
+                    foreach (var url in lists)
+                    {
+                        string temp = await http.WebRequestGet(url, false);
+                        temp = await http.WebRequestGet(url, false);
+                        if (temp != null)
+                        {
+                            temp = Services.AnalysisContentHtmlService.AnalysisContentHtml(temp, url);
+                        }
+                        if (temp != null)
+                        {
+                            content += temp.Trim();
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                html = null;
+                content = null;
             }
             finally
             {
@@ -397,8 +410,11 @@ namespace Sodu.ViewModel
                     IsLoading = false;
                 });
             }
-            return html;
+            return content;
         }
+
+
+
 
         /// <summary>
         /// 从数据库获取数据

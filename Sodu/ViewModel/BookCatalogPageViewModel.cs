@@ -207,7 +207,7 @@ namespace Sodu.ViewModel
                 {
                     item.Index = i;
                     i++;
-                    item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
+                    item.CatalogUrl = item.CatalogUrl;
                     item.BookID = this.CurrentBookEntity.BookID;
                     this.CatalogList.Add(item);
                 }

@@ -35,6 +35,7 @@ namespace Sodu.ViewModel
             }
         }
 
+
         public bool IsEditing = false;
 
 
@@ -169,6 +170,10 @@ namespace Sodu.ViewModel
                             CommonMethod.ShowMessage("您还没有登录");
                             ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
                         }
+                        else
+                        {
+                            CommonMethod.ShowMessage("获取数据失败");
+                        }
                     });
                 }
             });
@@ -247,7 +252,6 @@ namespace Sodu.ViewModel
                     if (html.Contains("取消收藏成功"))
                     {
                         ShelfBookList.Remove(item);
-                        //CommonMethod.ShowMessage(item.BookName + " 取消收藏成功");
                     }
                     else
                     {
@@ -274,48 +278,48 @@ namespace Sodu.ViewModel
                 IsLoading = true;
             });
             Task.Run(async () =>
-         {
-             bool result = true;
-             foreach (var item in removeBookList)
-             {
-                 if (!IsLoading)
-                 {
-                     result = false;
-                     break;
-                 }
-                 string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
-                 string html = await http.WebRequestGet(url);
-                 if (html.Contains("取消收藏成功"))
-                 {
-                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                     {
-                         ShelfBookList.Remove(item);
-                     });
-                 }
-                 else
-                 {
-                     result = false;
-                 }
-             }
-             return result;
-
-         }).ContinueWith(async (result) =>
         {
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            bool result = true;
+            foreach (var item in removeBookList)
             {
-                if (!result.Result)
+                if (!IsLoading)
                 {
-                    CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
+                    result = false;
+                    break;
+                }
+                string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
+                string html = await http.WebRequestGet(url);
+                if (html.Contains("取消收藏成功"))
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        ShelfBookList.Remove(item);
+                    });
                 }
                 else
                 {
-                    CommonMethod.ShowMessage("操作完毕");
-                    removeBookList.Clear();
+                    result = false;
                 }
-                IsLoading = false;
             }
-            );
-        });
+            return result;
+
+        }).ContinueWith(async (result) =>
+       {
+           await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+           {
+               if (!result.Result)
+               {
+                   CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
+               }
+               else
+               {
+                   CommonMethod.ShowMessage("操作完毕");
+                   removeBookList.Clear();
+               }
+               IsLoading = false;
+           }
+           );
+       });
         }
 
         /// <summary>
@@ -431,7 +435,7 @@ namespace Sodu.ViewModel
                     var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消收藏" + removeList.Count + "本小说？") { Title = "取消收藏" };
                     msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
                     {
-                        RemoveBook(removeList);
+                        RemoveBookList(removeList);
                     }));
                     msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
                     {
@@ -482,7 +486,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        #region  上拉刷新,下拉加载
 
         ///跳转到相应页数
         /// </summary>
@@ -506,9 +509,6 @@ namespace Sodu.ViewModel
                 SetData();
             }
         }
-
-        #endregion
-
 
     }
 }

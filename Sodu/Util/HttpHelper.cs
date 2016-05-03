@@ -49,6 +49,7 @@ namespace Sodu.Util
             }
             Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
             Request.Method = "GET";    //设置请求方式为GET : 
+            Request.Headers["Timeout"] = "15000";
             Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
             Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
             Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, sdch"; //设置接收的编码 可以接受 gzip

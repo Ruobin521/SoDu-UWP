@@ -15,32 +15,7 @@ namespace Sodu.Constants
     public class ConstantValue
     {
 
-      
 
-        //public enum OperationCode
-        //{
-        //    CancleHttpRequest
-        //}
-
-
-
-
-        //private static string m_SettingFilePath;
-        //public static string SettingFilePath
-        //{
-        //    get
-        //    {
-        //        if (m_SettingFilePath == null)
-        //        {
-        //            //m_SettingFilePath = string.Empty;
-        //            //StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
-        //            //StorageFolder SettingFolder = local.CreateFolderAsync("SoDuSetting", CreationCollisionOption.OpenIfExists).GetResults();
-        //            //m_SettingFilePath = SettingFolder.Path + "\\Setting.xml";
-        //            m_SettingFilePath = "Setting.xml";
-        //        }
-        //        return m_SettingFilePath;
-        //    }
-        //}
 
         public static ObservableCollection<MenuModel> UnloadMenuList = new ObservableCollection<MenuModel>()
         {
@@ -108,8 +83,8 @@ namespace Sodu.Constants
         /// <summary>
         /// 搜索地址
         /// </summary>
-        public const string BookSearchPage = "http://www.soduso.com/search/index.aspx?key={0}&page={1}";
-
+       // public const string BookSearchPage = "http://www.soduso.com/search/index.aspx?key={0}&page={1}";
+        public const string BookSearchPage = "http://www.sodu.cc/result.html?searchstr={0}";
 
         /// <summary>
         /// 排行榜地址

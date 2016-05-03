@@ -19,13 +19,13 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="0,10"></uc:UC_DownLoadItem>
+                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="5,0,5,10"></uc:UC_DownLoadItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
-            <AppBarButton Icon="Pause" Label="全部暂停"  Command="{Binding ClearCommand}"/>
-            <AppBarButton Icon="Clear" Label="全部删除"  Command="{Binding ClearCommand}"/>
+        <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  >
+            <AppBarButton Icon="Pause" Label="全部暂停"  Command="{Binding ClearCommand}"  />
+            <AppBarButton Icon="Clear" Label="全部删除" Width="65" Command="{Binding ClearCommand}" />
         </CommandBar>
     </Grid>
 </Page>

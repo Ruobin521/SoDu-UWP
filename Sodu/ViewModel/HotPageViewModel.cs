@@ -112,10 +112,14 @@ namespace Sodu.ViewModel
         }
         public void RefreshData(object obj = null)
         {
-            if ((this.BookList != null && this.BookList.Count > 0))
-                return;
-
-            SetData();
+            if (IsLoading)
+            {
+                CancleHttpRequest();
+            }
+            else
+            {
+                SetData();
+            }
         }
 
         public void SetData()
@@ -126,17 +130,17 @@ namespace Sodu.ViewModel
                 return html;
             }).ContinueWith(async (resultHtml) =>
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                  {
-                      if (resultHtml.Result != null && await SetBookList(resultHtml.Result.ToString()))
-                      {
-                          CommonMethod.ShowMessage("热门小说数据已更新");
-                      }
-                      else
-                      {
-                          CommonMethod.ShowMessage("未能获取热门小说数据");
-                      }
-                  });
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                 {
+                     if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
+                     {
+                         CommonMethod.ShowMessage("热门小说数据已更新");
+                     }
+                     else
+                     {
+                         CommonMethod.ShowMessage("未能获取热门小说数据");
+                     }
+                 });
 
             });
         }
@@ -168,7 +172,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async Task<bool> SetBookList(string html)
+        public bool SetBookList(string html)
         {
             bool result = false;
 

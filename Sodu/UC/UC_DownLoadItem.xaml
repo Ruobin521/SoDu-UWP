@@ -6,34 +6,35 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="120"
+    d:DesignHeight="75"
     x:Name="root"
     d:DesignWidth="500">
-    <Grid Background="Transparent">
-        <Grid Background="White" >
+    <Grid Background="#FFFBFBFB">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="65"/>
+                <ColumnDefinition Width="65"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="10"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
             <TextBlock  Foreground="Black" VerticalAlignment="Center" TextWrapping="Wrap"  Margin="20,0" Grid.ColumnSpan="1">
                 <Run Text="{Binding Entity.BookName}" FontSize="20"/>
+                <Run Text="(" FontSize="16"> </Run>
+                <Run Text="{Binding CurrentIndex}" FontSize="16"></Run>
+                <Run Text="/" FontSize="16"> </Run>
+                <Run Text="{Binding Entity.CatalogList.Count}" FontSize="16"></Run>
+                <Run Text=")" FontSize="16"> </Run>
             </TextBlock>
 
             <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"  Margin="20,0"></ProgressBar>
 
-            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Top"  Grid.Row="2" TextTrimming="WordEllipsis" Grid.ColumnSpan="3">
-                <Run Text=" (" FontSize="16"> </Run>
-                <Run Text="{Binding CurrentIndex}" FontSize="16"></Run>
-                <Run Text="/" FontSize="16"> </Run>
-                <Run Text="{Binding Entity.CatalogList.Count}" FontSize="16"></Run>
-                <Run Text=")  " FontSize="16"> </Run>
+            <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  Grid.Row="2" TextTrimming="WordEllipsis" >
+                
                 <Run  Text="{Binding CurrentCatalog.CatalogName}" FontSize="16"> </Run>
             </TextBlock>
 
@@ -43,14 +44,14 @@
             <Run Text="{Binding ProgressValue}"></Run>
             <Run Text="%"></Run>
         </TextBlock>-->
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="1" Command="{Binding PauseCommand,ElementName=root}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"   Command="{Binding PauseCommand,ElementName=root}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Button.Content>
                     <SymbolIcon  Symbol="Pause"></SymbolIcon>
                 </Button.Content>
             </Button>
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="1" Grid.Column="2" Padding="9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding ElementName=root,Path=DeleteCommand}">
+            <Button Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding ElementName=root,Path=DeleteCommand}">
                 <Button.Content>
-                    <SymbolIcon  Symbol="Clear"></SymbolIcon>
+                    <SymbolIcon  Symbol="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="18"></SymbolIcon>
                 </Button.Content>
             </Button>
         </Grid>
