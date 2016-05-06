@@ -98,15 +98,17 @@ namespace Sodu
 
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
-            }
 
 
-            bool result = await ReadSettingData();
-            InitLocalBook();
+                bool result = await ReadSettingData();
+                InitLocalBook();
 
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
-            {
-                Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+                if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
+                {
+                    Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+                    Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+                }
+
             }
 
 

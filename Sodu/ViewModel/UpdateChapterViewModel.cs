@@ -156,7 +156,7 @@ namespace Sodu.ViewModel
             PageCount = 1;
             PageIndex = 1;
             CurrentEntity = (obj as BookEntity);
-            CurrentPageUrl = (obj as BookEntity).CatalogUrl;
+            CurrentPageUrl = (obj as BookEntity).UpdateCatalogUrl;
             ContentTitle = (obj as BookEntity).BookName;
 
             if (this.ChapterList != null)

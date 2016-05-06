@@ -91,7 +91,7 @@ namespace Sodu.Services
         /// <summary>
         /// 风华居
         /// </summary>
-        public const string fenghuaju = "www.fenghuaju.com";
+        public const string fenghuaju = "www.fenghuaju.cc";
 
         /// <summary>
         ///云来阁
@@ -708,17 +708,17 @@ namespace Sodu.Services
             {
                 //手牵手
                 case WebSet.sqsxs:
-                    result = AnalysisSlsxsw(html);
+                    result = AnalysisSlsxsw(html, url);
                     break;
 
                 //7度
                 case WebSet.qdsw:
-                    result = AnalysisSlsxsw(html);
+                    result = AnalysisSlsxsw(html, url);
                     break;
 
                 //大海
                 case WebSet.dhzw:
-                    result = AnalysisSlsxsw(html); ;
+                    result = AnalysisSlsxsw(html, url); ;
                     break;
                 //爱上中文
                 case WebSet.aszw520:
@@ -732,22 +732,22 @@ namespace Sodu.Services
 
                 //第九中文网（有分页）
                 case WebSet.dijiuzww:
-                    result = AnalysisDefault(html);
+                    result = AnalysisdJzww(html, web);
                     break;
 
                 //清风小说（有分页）
                 case WebSet.qfxs:
-                    result = AnalysisDefault(html);
+                    result = AnalysisdQfxs(html, web);
                     break;
 
                 //窝窝小说网（有分页）
                 case WebSet.wwxsw:
-                    result = AnalysisDefault(html);
+                    result = AnalysisdWwxsw(html, web);
                     break;
 
                 //找书网（需要分页）
                 case WebSet.zsw:
-                    result = AnalysisDefault(html);
+                    result = AnalysisdJzww(html, web);
                     break;
 
                 //55小说（古古小说网）
@@ -795,7 +795,7 @@ namespace Sodu.Services
                     break;
 
                 case "少年文学":
-                    result = AnalysisSlsxsw(html);
+                    result = AnalysisSlsxsw(html, url);
                     break;
 
                 case "书旗小说":
@@ -817,7 +817,7 @@ namespace Sodu.Services
         }
 
 
-        private static List<BookCatalog> AnalysisSlsxsw(string html)
+        private static List<BookCatalog> AnalysisSlsxsw(string html, string baseUrl)
         {
 
             List<BookCatalog> list = null;
@@ -836,6 +836,7 @@ namespace Sodu.Services
                 else
                 {
                     list = new List<BookCatalog>();
+                    int i = 0;
                     foreach (var item in matches)
                     {
                         var url_Mathch = Regex.Match(item.ToString(), "(?<=href=\").*?(?=\")");
@@ -844,7 +845,9 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
-                            catalog.CatalogUrl = url_Mathch.ToString();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }
@@ -909,6 +912,164 @@ namespace Sodu.Services
                         {
                             BookCatalog catalog = new BookCatalog();
                             catalog.CatalogUrl = url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        /// <summary>
+        /// 第九中文网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisdJzww(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+
+        /// <summary>
+        /// 清风小说
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisdQfxs(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<td class=\"chapterBean\".*?href=\")(.*?)(?=\".*?>(.*?)</a></td>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+
+        /// <summary>
+        /// 窝窝小说网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisdWwxsw(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<li>.*?href=\")(/books/.*?)(?=\".*?>(.*?)</a></li>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        /// <summary>
+        /// 找书网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisdZsw(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<li>.*?href=\")(/books/.*?)(?=\".*?>(.*?)</a></li>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }

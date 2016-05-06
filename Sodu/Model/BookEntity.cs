@@ -48,14 +48,24 @@ namespace Sodu.Model
         ///更新时间
         /// </summary>
         public string UpdateTime { get; set; }
+
         /// <summary>
-        ///章节地址
+        ///当前章节正文地址
         /// </summary>
         public string ChapterUrl { get; set; }
+
         /// <summary>
-        ///目录地址
+        ///更新目录地址
         /// </summary>
-        public string CatalogUrl { get; set; }
+        public string UpdateCatalogUrl { get; set; }
+
+        /// <summary>
+        /// 正文章节列表地址
+        /// </summary>
+        public string CatalogListUrl
+        {
+            get; set;
+        }
 
         /// <summary>
         ///作者名称
@@ -69,6 +79,7 @@ namespace Sodu.Model
 
         [Ignore]
         public List<BookCatalog> CatalogList { get; set; }
+
 
         /// <summary>
         /// 是否为编辑状态

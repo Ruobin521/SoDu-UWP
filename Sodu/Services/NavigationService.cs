@@ -61,6 +61,10 @@ namespace Sodu.Services
 
         }
 
+        public static void GoBack()
+        {
+            GoBack(null, null);
+        }
 
         public static void GoBack(object sender, BackPressedEventArgs e)
         {

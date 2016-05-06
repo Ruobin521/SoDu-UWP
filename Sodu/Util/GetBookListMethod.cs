@@ -121,7 +121,7 @@ namespace Sodu.Util
 
 
                     t_entity.BookName = Regex.Match(match.ToString(), "(?<=addToFav\\(.*?').*?(?=')").ToString();
-                    t_entity.CatalogUrl = Regex.Match(matches[i].ToString(), "(?<=<a href=\").*?(?=\">.*?</a>)").ToString();
+                    t_entity.UpdateCatalogUrl = Regex.Match(matches[i].ToString(), "(?<=<a href=\").*?(?=\">.*?</a>)").ToString();
                     t_entity.BookID = Regex.Match(match.ToString(), "(?<=id=\").*?(?=\")").ToString().Replace("a", "");
                     t_entity.ChapterName = Regex.Match(matches[i].ToString(), "(?<=<a href.*?>).*?(?=</a>)", RegexOptions.RightToLeft).ToString();
 
@@ -178,7 +178,7 @@ namespace Sodu.Util
                     t_entity.BookName = Regex.Replace(divmatches[0].ToString(), "<.*?>", "").ToString();
                     t_entity.ChapterName = Regex.Replace(divmatches[1].ToString(), "<.*?>", "").ToString();
                     t_entity.UpdateTime = Regex.Replace(divmatches[2].ToString(), "<.*?>", "");
-                    t_entity.CatalogUrl = Regex.Match(divmatches[0].ToString(), "(?<=<a href=\").*?(?=\")").ToString();
+                    t_entity.UpdateCatalogUrl = Regex.Match(divmatches[0].ToString(), "(?<=<a href=\").*?(?=\")").ToString();
                     t_entity.BookID = Regex.Match(divmatches[3].ToString(), "(?<=id=).*?(?=\")").ToString();
                     t_list.Add(t_entity);
                 }
@@ -224,7 +224,7 @@ namespace Sodu.Util
                 {
                     Match match = Regex.Match(matches[i].ToString(), "<div style=\"width:482px;float:left;\">.*?</div>");
                     t_entity.BookName = Regex.Match(match.ToString(), "(?<=alt=\").*?(?=\")").ToString();
-                    t_entity.CatalogUrl = Regex.Match(match.ToString(), "(?<=<a href=\").*?(?=\")").ToString();
+                    t_entity.UpdateCatalogUrl = Regex.Match(match.ToString(), "(?<=<a href=\").*?(?=\")").ToString();
                     t_entity.BookID = Regex.Match(matches[i].ToString(), "(?<=.*?id=\").*?(?=\")").ToString();
                     t_entity.ChapterName = Regex.Replace(match.ToString(), "<.*?>", "");
                     Match match2 = Regex.Match(matches[i].ToString(), "(?<=<.*?class=xt1>).*?(?=</div>)");

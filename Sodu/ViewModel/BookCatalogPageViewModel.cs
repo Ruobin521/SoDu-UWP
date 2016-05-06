@@ -32,33 +32,20 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_ContentTitle, value);
             }
         }
-        public string CatalogPageUrl
-        {
-            get; set;
-        }
 
-        public BookEntity CurrentBookEntity { get; set; }
-
-
-        private ObservableCollection<BookCatalog> m_CatalogList;
-        /// <summary>
-        /// 目录集合
-        /// </summary>
-        public ObservableCollection<BookCatalog> CatalogList
+        private BookEntity m_CurrentBookEntity;
+        public BookEntity CurrentBookEntity
         {
             get
             {
-                if (m_CatalogList == null)
-                {
-                    m_CatalogList = new ObservableCollection<BookCatalog>();
-                }
-                return m_CatalogList;
+                return m_CurrentBookEntity;
             }
             set
             {
-                this.SetProperty(ref this.m_CatalogList, value);
+                this.SetProperty(ref this.m_CurrentBookEntity, value);
             }
         }
+
 
         private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
         public IconElement RefreshIcon
@@ -104,118 +91,30 @@ namespace Sodu.ViewModel
 
         public void RefreshData(object obj = null)
         {
-            object[] para = obj as object[];
-            if (para[0] != null && para[0].ToString().Equals(this.CatalogPageUrl))
+            BookEntity temp = obj as BookEntity;
+            if (temp == null)
             {
                 return;
             }
-            this.CatalogList.Clear();
 
-            this.CatalogPageUrl = para[0].ToString();
-            BookEntity temp = para[1] as BookEntity;
             this.CurrentBookEntity = new BookEntity()
             {
                 BookID = temp.BookID,
                 BookName = temp.BookName,
                 ChapterName = temp.ChapterName,
                 ChapterUrl = temp.ChapterUrl,
-                CatalogUrl = temp.CatalogUrl,
+                CatalogListUrl = temp.CatalogListUrl,
+                UpdateCatalogUrl = temp.UpdateCatalogUrl,
                 LyWeb = temp.LyWeb,
                 UpdateTime = temp.UpdateTime,
                 CatalogList = temp.CatalogList,
             };
 
             this.ContentTitle = CurrentBookEntity.BookName + "  目录";
-            if (this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)
-            {
-                int i = 0;
-                foreach (var item in this.CurrentBookEntity.CatalogList)
-                {
-                    item.Index = i;
-                    i++;
-                    item.CatalogUrl = Path.Combine(CatalogPageUrl, item.CatalogUrl);
-                    this.CatalogList.Add(item);
-                }
-            }
-            else
-            {
-                SetData(CatalogPageUrl);
-            }
-        }
-
-        private void SetData(string url)
-        {
-            Task.Run(async () =>
-            {
-                string html = await GetHtmlData(url);
-                return html;
-            }).ContinueWith(async (result) =>
-           {
-               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 if (result.Result != null && SetCatalogList(result.Result.ToString(), url))
-                 {
-                     CommonMethod.ShowMessage("已加载目录数据");
-                 }
-                 else
-                 {
-                     CommonMethod.ShowMessage("未能获取目录数据");
-                 }
-             });
-           });
-        }
-
-        public async Task<string> GetHtmlData(string url)
-        {
-            string html = string.Empty;
-
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                IsLoading = true;
-            });
-            try
-            {
-                html = await http.WebRequestGet(url, true);
-            }
-            catch (Exception ex)
-            {
-                html = null;
-            }
-            finally
-            {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
-            }
-
-            return html;
         }
 
 
-        private bool SetCatalogList(string html, string url)
-        {
-            var result = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
-            if (result != null)
-            {
-                if (this.CatalogList != null)
-                {
-                    this.CatalogList.Clear();
-                }
-                int i = 0;
-                foreach (var item in result)
-                {
-                    item.Index = i;
-                    i++;
-                    item.CatalogUrl = item.CatalogUrl;
-                    item.BookID = this.CurrentBookEntity.BookID;
-                    this.CatalogList.Add(item);
-                }
-                this.CurrentBookEntity.CatalogList = this.CatalogList.ToList();
-                return true;
-            }
-            return false;
-        }
+
 
 
         /// <summary>
@@ -239,21 +138,10 @@ namespace Sodu.ViewModel
                             CurrentBookEntity.ChapterUrl = catalog.CatalogUrl;
                             CurrentBookEntity.ChapterName = catalog.CatalogName;
 
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.BookEntity = CurrentBookEntity;
-                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.CurrentCatalog = catalog;
-                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.CatalogList = this.CatalogList;
 
-                            //ViewModelInstance.Instance.BookContentPageViewModelInstance.SetData(catalog);
-                            //// NavigationService.GoBack(null, null);
-                            MenuModel menu = new MenuModel() { MenuName = catalog.CatalogName, MenuType = typeof(BookContentPage) };
+                            NavigationService.GoBack();
 
-                            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, CurrentBookEntity);
-
-                            //   NavigationService.NavigateTo(menu, new object[] { "1", CurrentBookEntity, this.CatalogList, catalog });
-
-                            //MenuModel menu = new MenuModel() { MenuName = catalog.CatalogName, MenuType = typeof(BookContentPage) };
-
-                            //ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, CurrentBookEntity);
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.OnSwtichCommand(catalog);
                         }
                         catch (Exception)
                         {
@@ -282,7 +170,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                SetData(CatalogPageUrl);
+                //  SetData(CatalogPageUrl);
             }
         }
         /// <summary>
