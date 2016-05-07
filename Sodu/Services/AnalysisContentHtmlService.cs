@@ -98,6 +98,16 @@ namespace Sodu.Services
         /// </summary>
         public const string ylg = "www.yunlaige.com";
 
+        /// <summary>
+        ///4k中文
+        /// </summary>
+        public const string fourkzw = "www.4kzw.com";
+
+        /// <summary>
+        ///幼狮书盟
+        /// </summary>
+        public const string yssm = "www.youshishumeng.com";
+
     }
     public class AnalysisContentHtmlService
     {
@@ -242,6 +252,15 @@ namespace Sodu.Services
                 case WebSet.ylg:
                     result = AnalysisYlg(html);
                     break;
+                //4k
+                case WebSet.fourkzw:
+                    result = Analysis4kzw(html);
+                    break;
+                //4k
+                case WebSet.yssm:
+                    result = Analysis4kzw(html);
+                    break;
+
 
                 case "书旗小说":
                     result = AnalysisSq(html);
@@ -314,6 +333,25 @@ namespace Sodu.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// 4k中文网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string Analysis4kzw(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"htmlContent\".*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
 
 
         /// <summary>
@@ -466,7 +504,10 @@ namespace Sodu.Services
             html = Regex.Replace(html, "<script.*?</script>", "");
             html = Regex.Replace(html, "&nbsp;", " ");
             html = Regex.Replace(html, "</p.*?>", "\n");
+            html = Regex.Replace(html, "</p.*?>", "\n");
             html = Regex.Replace(html, "<.*?>", "");
+            html = html.Replace("&lt;/script&gt;", "");
+            html = html.Replace("&lt;/div&gt;", "");
             result = html;
             return result;
         }
@@ -574,19 +615,29 @@ namespace Sodu.Services
 
                 //云来阁
                 case WebSet.ylg:
-                    result = AnalysisYlg(html);
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //幼狮
+                case WebSet.yssm:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                //4k
+                case WebSet.fourkzw:
+                    result = AnalysisCommonUrl(url);
                     break;
 
                 case "书旗小说":
-                    result = AnalysisSq(html);
+                    result = AnalysisSq(url);
                     break;
 
                 case "木鱼哥":
-                    result = AnalysisMyg(html);
+                    result = AnalysisMyg(url);
                     break;
 
                 case "无弹窗小说网":
-                    result = AnalysisWtc(html);
+                    result = AnalysisWtc(url);
                     break;
                 default:
                     result = null;
@@ -614,11 +665,11 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static string AnalysisYlg(string html)
+        private static string AnalysisYlg(string html, string url)
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "(?<=<a id=\"hlBookName\" href=).*?(\".*?</a>)");
+            Match match = Regex.Match(html, "(?<=<a id=\"hlBookName\" href=).*?(?=\".*?</a>)");
             if (match != null)
             {
                 result = match.ToString().Trim();
@@ -752,47 +803,59 @@ namespace Sodu.Services
 
                 //55小说（古古小说网）
                 case WebSet.xs55:
-                    result = AnalysisDefault(html);
+                    result = Analysisggxs(html, url);
                     break;
 
                 //风云小说
                 case WebSet.fyxs:
-                    result = AnalysisDefault(html);
+                    result = AnalysisFyxs(html, web);
                     break;
 
                 //酷酷看书
                 case WebSet.kkks:
-                    result = AnalysisDefault(html);
+                    result = AnalysisKkks(html, web);
                     break;
 
                 //少年文学
                 case WebSet.snwx:
-                    result = AnalysisDefault(html);
+                    result = AnalysisSlsxsw(html, url);
                     break;
 
                 //大书包
                 case WebSet.dsb:
                     result = AnalysisDefault(html);
                     break;
+
                 //趣笔阁
                 case WebSet.qubige:
-                    result = AnalysisDefault(html);
+                    result = AnalysisQbg(html, web);
                     break;
 
                 //书路
                 case WebSet.shu6:
-                    result = AnalysisDefault(html);
+                    result = AnalysisSl(html, url);
                     break;
 
                 //风华居
                 case WebSet.fenghuaju:
-                    result = AnalysisDefault(html);
+                    result = AnalysisQbg(html, web);
                     break;
 
                 //云来阁
                 case WebSet.ylg:
-                    result = AnalysisDefault(html);
+                    result = AnalysisYlg(html, url);
                     break;
+
+                //4k
+                case WebSet.fourkzw:
+                    result = Analysis4k(html, url);
+                    break;
+
+                //幼狮
+                case WebSet.yssm:
+                    result = Analysis4k(html, url);
+                    break;
+
 
                 case "少年文学":
                     result = AnalysisSlsxsw(html, url);
@@ -841,6 +904,102 @@ namespace Sodu.Services
                     {
                         var url_Mathch = Regex.Match(item.ToString(), "(?<=href=\").*?(?=\")");
                         var title_Mathch = Regex.Match(item.ToString(), "(?<=title=\").*?(?=\")");
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        /// <summary>
+        /// 去笔阁
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisQbg(string html, string baseUrl)
+        {
+
+            List<BookCatalog> list = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<div id=\"list\">.*?</div>");
+            if (t_string != null)
+            {
+                string str = Regex.Replace(t_string.ToString(), "<dt>.*?<dt>", "").ToString();
+                MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href=\"(.*?)\".*?>(.*?)</a></dd>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        /// <summary>
+        /// 书路
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisSl(string html, string baseUrl)
+        {
+
+            List<BookCatalog> list = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<div id=\"content\">.*?</div>");
+            if (t_string != null)
+            {
+                string str = Regex.Replace(t_string.ToString(), "<dt>.*?<dt>", "").ToString();
+                MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href='(.*?)'.*?>(.*?)</a></dd>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
 
                         if (url_Mathch != null && title_Mathch != null)
                         {
@@ -962,6 +1121,219 @@ namespace Sodu.Services
 
         }
 
+        /// <summary>
+        /// 古古小说网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> Analysisggxs(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<table.*?</table>");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?href=\"(.*?)\".*?>(.*?)</a></td>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[2].ToString();
+                        var title_Mathch = groups[3].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+        /// <summary>
+        /// 4f
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> Analysis4k(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div class=\"book_list\".*?</div>");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "<li>.*?href=\"(.*?)\".*?>(.*?)</a></li>");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.CatalogUrl = url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+
+
+        private static List<BookCatalog> AnalysisYlg(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<table.*?</table>");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?href=\"(.*?)\".*?>(.*?)</a>.*?</td>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[2].ToString();
+                        var title_Mathch = groups[3].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            string url = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
+
+                            catalog.CatalogUrl = url + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        /// <summary>
+        /// 风云小说
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisFyxs(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                Match match = Regex.Match(html, "<div class=\"readerListShow\".*?</div>");
+                if (match == null) return null;
+                MatchCollection matches = Regex.Matches(match.ToString(), "<td.*?href=\"(.*?)\".*?>(.*?)</a></td>");
+                if (matches != null && matches.Count < 1)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        if (groups != null && groups.Count > 2)
+                        {
+                            var url_Mathch = groups[1].ToString();
+                            var title_Mathch = groups[2].ToString();
+                            if (url_Mathch != null && title_Mathch != null)
+                            {
+                                BookCatalog catalog = new BookCatalog();
+                                catalog.CatalogUrl = url_Mathch.ToString();
+                                catalog.CatalogName = title_Mathch.ToString();
+                                list.Add(catalog);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                list = null;
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// 酷酷看书
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="baseUrl"></param>
+        /// <returns></returns>
+        private static List<BookCatalog> AnalysisKkks(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            try
+            {
+                html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+                Match match = Regex.Match(html, "<div class=\"dirtitone\">.*?<div class=\"blinebgs\"");
+                if (match == null) return null;
+                MatchCollection matches = Regex.Matches(match.ToString(), "<li.*?href=\"(.*?)\".*?>(.*?)</a></li>");
+                if (matches != null && matches.Count < 1)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        if (groups != null && groups.Count > 2)
+                        {
+                            var url_Mathch = groups[1].ToString();
+                            var title_Mathch = groups[2].ToString();
+                            if (url_Mathch != null && title_Mathch != null)
+                            {
+                                BookCatalog catalog = new BookCatalog();
+                                catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                                catalog.CatalogName = title_Mathch.ToString();
+                                list.Add(catalog);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                list = null;
+            }
+            return list;
+        }
 
         /// <summary>
         /// 清风小说
