@@ -54,6 +54,19 @@ namespace Sodu.ViewModel
                 }
             }
         }
+        private bool m_IsLoadingCatalogList;
+        public bool IsLoadingCatalogList
+        {
+            get
+            {
+                return m_IsLoadingCatalogList;
+            }
+            set
+            {
+                SetProperty(ref m_IsLoadingCatalogList, value);
+            }
+        }
+
         private string m_ContentTitle;
         public string ContentTitle
         {
@@ -66,7 +79,6 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_ContentTitle, value);
             }
         }
-
 
         //public bool m_IsCatalogMenuShow = true;
         //public bool IsCatalogMenuShow
@@ -249,20 +261,64 @@ namespace Sodu.ViewModel
            }).ContinueWith(async (result) =>
           {
               string html = result.Result;
+              bool rs = false;
               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
               {
                   if (html != null)
                   {
                       SetTextContent(html);
                       Services.CommonMethod.ShowMessage("正文加载完毕");
+                      rs = true;
                   }
                   else
                   {
                       Services.CommonMethod.ShowMessage("未能获取正文内容");
+                      rs = false;
                   }
               });
+              return rs;
+          }, TaskContinuationOptions.OnlyOnRanToCompletion).ContinueWith(async (result) =>
+          {
+              bool rs = result.Result.Result;
+              if (rs)
+              {
+                  try
+                  {
+
+                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                      {
+                          IsLoadingCatalogList = true;
+                      });
+                      if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+                      {
+                          return;
+                      }
+                      else
+                      {
+                          if (string.IsNullOrEmpty(this.BookEntity.CatalogListUrl))
+                          {
+                              return;
+                          }
+                          await SetCatalogData(this.BookEntity.CatalogListUrl);
+
+
+                      }
+                  }
+                  catch (Exception ex)
+                  {
+                  }
+                  finally
+                  {
+                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                      {
+                          IsLoadingCatalogList = false;
+                      });
+                  }
+              }
           });
+
         }
+
 
 
         private async void SetBookCataologListUrl(string html, string catalogUrl)
@@ -371,7 +427,6 @@ namespace Sodu.ViewModel
                     foreach (var url in lists)
                     {
                         string temp = await http.WebRequestGet(url, false);
-                        temp = await http.WebRequestGet(url, false);
                         if (temp != null)
                         {
                             temp = Services.AnalysisContentHtmlService.AnalysisContentHtml(temp, url);
@@ -419,21 +474,14 @@ namespace Sodu.ViewModel
             await Task.Run(async () =>
              {
                  string html = await GetCatalogHtmlData(url);
-                 return html;
-             }).ContinueWith(async (result) =>
-             {
-                 await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                 if (html != null && SetCatalogList(html, url))
                  {
-                     if (result.Result != null && SetCatalogList(result.Result.ToString(), url))
+                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                      {
                          this.IsSwitchButtonShow = true;
                          rs = true;
-                     }
-                     else
-                     {
-                         rs = false;
-                     }
-                 });
+                     });
+                 }
              });
             return rs;
         }
@@ -443,10 +491,14 @@ namespace Sodu.ViewModel
         {
             string html = string.Empty;
 
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (!IsLoadingCatalogList)
             {
-                IsLoading = true;
-            });
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = true;
+                });
+            }
+
             try
             {
                 html = await http.WebRequestGet(url, true);
@@ -479,7 +531,6 @@ namespace Sodu.ViewModel
                 {
                     this.BookEntity.CatalogList = new List<BookCatalog>();
                 }
-                int i = 0;
                 foreach (var item in result)
                 {
                     item.BookID = this.BookEntity.BookID;
@@ -586,6 +637,16 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>(async (str) =>
               {
+                  if (IsLoadingCatalogList)
+                  {
+                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                      {
+                          IsLoading = false;
+                      });
+                      //  CommonMethod.ShowMessage("正在加载目录");
+                      return;
+                  }
+
                   bool rs = false;
                   if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
                   {

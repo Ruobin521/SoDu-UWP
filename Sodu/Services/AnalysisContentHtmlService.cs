@@ -385,7 +385,14 @@ namespace Sodu.Services
             if (match != null)
             {
                 result = match.ToString();
+                result = result.Replace("<<", "<");
+                result = Regex.Replace(result, "<p class=\"pdp\">清风小说网.*?</p>", "");
+                result = Regex.Replace(result, "<p class=\"pdp\" style=\"color:#2E2EFE\">.*?</p>", "");
+                //  result = result.Replace("<p class=\"pd</p>", "<p class=\"pd></p>");
                 result = ReplaceSymbol(result);
+                result = result.Replace("p class=\"pdp\">", "");
+                result = result.Replace("p\">", "");
+
             }
             return result;
         }
@@ -503,8 +510,7 @@ namespace Sodu.Services
             html = Regex.Replace(html, "<br.*?/>", "\n");
             html = Regex.Replace(html, "<script.*?</script>", "");
             html = Regex.Replace(html, "&nbsp;", " ");
-            html = Regex.Replace(html, "</p.*?>", "\n");
-            html = Regex.Replace(html, "</p.*?>", "\n");
+            html = Regex.Replace(html, "<p.*?>", "\n");
             html = Regex.Replace(html, "<.*?>", "");
             html = html.Replace("&lt;/script&gt;", "");
             html = html.Replace("&lt;/div&gt;", "");
