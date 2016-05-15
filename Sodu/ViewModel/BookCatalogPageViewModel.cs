@@ -101,8 +101,8 @@ namespace Sodu.ViewModel
             {
                 BookID = temp.BookID,
                 BookName = temp.BookName,
-                ChapterName = temp.ChapterName,
-                ChapterUrl = temp.ChapterUrl,
+                NewestChapterName = temp.NewestChapterName,
+                NewestChapterUrl = temp.NewestChapterUrl,
                 CatalogListUrl = temp.CatalogListUrl,
                 UpdateCatalogUrl = temp.UpdateCatalogUrl,
                 LyWeb = temp.LyWeb,
@@ -135,8 +135,8 @@ namespace Sodu.ViewModel
                             BookCatalog catalog = str as BookCatalog;
                             if (catalog == null) return;
 
-                            CurrentBookEntity.ChapterUrl = catalog.CatalogUrl;
-                            CurrentBookEntity.ChapterName = catalog.CatalogName;
+                            CurrentBookEntity.LastReadChapterUrl = catalog.CatalogUrl;
+                            CurrentBookEntity.LastReadChapterName = catalog.CatalogName;
 
 
                             NavigationService.GoBack();

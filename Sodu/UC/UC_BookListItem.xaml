@@ -38,7 +38,7 @@
                 <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}" FontSize="18" Text="{Binding  BookName}"></TextBlock>
                 <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}" FontSize="18"  Text="{Binding UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
                 <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" FontSize="16" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
-                <Run x:Name="txtChapterName" Text="{Binding ChapterName}"></Run>
+                <Run x:Name="txtChapterName" Text="{Binding NewestChapterName}"></Run>
                 <Run x:Name="txtUnreadData" Foreground="Blue" Text="{Binding UnReadCountData}"></Run>
                 </TextBlock>
             </Grid>

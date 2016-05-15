@@ -45,39 +45,6 @@ namespace Sodu.Database
         }
 
 
-        public static bool InsertOrUpdateBookCatalog(string path, BookCatalog catalog)
-        {
-            bool result = true;
-            try
-            {
-                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
-                {
-                    db.CreateTable<BookCatalog>();
-                    db.RunInTransaction(() =>
-                    {
-                        var temp = (from m in db.Table<BookCatalog>()
-                                    where m.BookID == catalog.BookID && m.Index == catalog.Index
-                                    select m
-                            ).FirstOrDefault();
-                        if (temp == null)
-                        {
-                            db.Insert(catalog);
-                        }
-                        else
-                        {
-                            catalog.Id = temp.Id;
-                            db.Update(catalog);
-                        }
-
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                result = false;
-            }
-            return result;
-        }
 
         public static List<BookEntity> GetAllLocalBookList(string path)
         {
@@ -109,6 +76,7 @@ namespace Sodu.Database
             }
             return result;
         }
+
 
 
         public static bool DeleteAllLocalBooks(string path)
@@ -152,26 +120,5 @@ namespace Sodu.Database
         }
 
 
-        public static bool DeleteAllCatalog(string path)
-        {
-            bool result = true;
-
-            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
-            {
-                db.CreateTable<BookCatalog>();
-                db.RunInTransaction(() =>
-                {
-                    try
-                    {
-                        db.DeleteAll<BookEntity>();
-                    }
-                    catch (Exception ex)
-                    {
-                        result = false;
-                    }
-                });
-            }
-            return result;
-        }
     }
 }

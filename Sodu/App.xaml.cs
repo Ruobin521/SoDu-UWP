@@ -205,7 +205,7 @@ namespace Sodu
         {
             //Database.DBLocalBook.DeleteAllLocalBooks(AppDataPath.GetLocalBookDBPath());
 
-            //Database.DBLocalBook.DeleteAllCatalog(AppDataPath.GetLocalBookDBPath());
+            //Database.DBBookCatalog.DeleteAllCatalog(AppDataPath.GetLocalBookDBPath());
 
             ViewModelInstance.Instance.LocalBookPage.RefreshData(null);
         }

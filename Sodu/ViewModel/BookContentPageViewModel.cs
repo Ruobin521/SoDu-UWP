@@ -183,7 +183,7 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_BookEntity, value);
                 if (this.m_BookEntity != null)
                 {
-                    this.ContentTitle = this.m_BookEntity.ChapterName;
+                    this.ContentTitle = this.m_BookEntity.NewestChapterName;
                 }
             }
         }
@@ -211,7 +211,7 @@ namespace Sodu.ViewModel
                 return;
             }
 
-            this.ContentTitle = entity.BookName + "_" + entity.ChapterName;
+            this.ContentTitle = entity.BookName + "_" + entity.LastReadChapterName;
 
             this.TextContent = null;
 
@@ -229,16 +229,21 @@ namespace Sodu.ViewModel
                 AuthorName = entity.AuthorName,
                 BookID = entity.AuthorName,
                 Id = entity.Id,
-                ChapterUrl = entity.ChapterUrl,
+                NewestChapterUrl = entity.NewestChapterUrl,
+                LastReadChapterUrl = entity.LastReadChapterUrl,
+                NewestChapterName = entity.NewestChapterName,
                 LastReadChapterName = entity.LastReadChapterName,
                 LyWeb = entity.LyWeb,
-                ChapterName = entity.ChapterName,
+
                 BookName = entity.BookName,
                 UpdateCatalogUrl = entity.UpdateCatalogUrl,
                 UpdateTime = entity.UpdateTime,
+                CatalogList = entity.CatalogList,
+                CatalogListUrl = entity.CatalogListUrl,
+                UnReadCountData = entity.UnReadCountData
             };
 
-            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.ChapterName, CatalogUrl = entity.ChapterUrl, LyWeb = new Uri(entity.ChapterUrl).Authority };
+            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
 
             SetData(CurrentCatalog);
         }
@@ -459,8 +464,20 @@ namespace Sodu.ViewModel
         /// <returns></returns>
         private async Task<string> GetCatafromDatabase(BookCatalog catalog, bool isBackGround = true)
         {
-            await Task.Delay(1000);
-            return null;
+            string html = null;
+            await Task.Run(() =>
+             {
+                 var item = this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == catalog.CatalogUrl);
+                 if (item != null)
+                 {
+                     var content = Database.DBBookCatalogContent.SelectBookCatalogContent(Constants.AppDataPath.GetLocalBookDBPath(), item.CatalogContentGUID);
+                     if (content != null)
+                     {
+                         html = content.Content;
+                     }
+                 }
+             });
+            return html;
         }
 
 
@@ -641,9 +658,9 @@ namespace Sodu.ViewModel
                   {
                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                       {
-                          IsLoading = false;
+                          IsLoading = true;
                       });
-                      //  CommonMethod.ShowMessage("正在加载目录");
+                      CommonMethod.ShowMessage("正在加载目录");
                       return;
                   }
 
@@ -724,8 +741,8 @@ namespace Sodu.ViewModel
 
             if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)
             {
-                this.BookEntity.ChapterName = this.CurrentCatalog.CatalogName;
-                this.BookEntity.ChapterUrl = this.CurrentCatalog.CatalogUrl;
+                this.BookEntity.NewestChapterName = this.CurrentCatalog.CatalogName;
+                this.BookEntity.NewestChapterUrl = this.CurrentCatalog.CatalogUrl;
                 SetData(CurrentCatalog);
             }
         }

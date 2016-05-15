@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Model;
+using Sodu.Pages;
 using Sodu.Services;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,7 @@ namespace Sodu.ViewModel
                     this.LocalBookList.Clear();
                     foreach (var item in result)
                     {
+                        item.CatalogList = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
                         this.LocalBookList.Add(item);
                     }
                 });
@@ -104,8 +106,52 @@ namespace Sodu.ViewModel
 
         private void OnBookItemSelectedCommand(object obj)
         {
-            /// ViewModelInstance.Instance.MainPageViewModelInstance.OnBooq aswkItemSelectedChangedCommand(obj);
-            CommonMethod.ShowMessage("您点击了。。。");
+            ///// ViewModelInstance.Instance.MainPageViewModelInstance.OnBooq aswkItemSelectedChangedCommand(obj);
+            //CommonMethod.ShowMessage("您点击了。。。");
+            BookEntity entity = obj as BookEntity;
+
+            if (entity == null)
+            {
+                CommonMethod.ShowMessage("获取数据有误");
+                return;
+            }
+
+            if (entity.CatalogList == null || entity.CatalogList.Count < 1)
+            {
+                CommonMethod.ShowMessage("获取章节数据有误");
+                return;
+            }
+
+            BookEntity temp = new BookEntity();
+            entity.BookID = entity.BookID;
+            entity.BookName = entity.BookName;
+            entity.CatalogList = entity.CatalogList;
+            entity.CatalogListUrl = entity.CatalogListUrl;
+
+            ///最新章节名称 ，以及地址
+            entity.NewestChapterName = entity.NewestChapterName;
+            entity.NewestChapterUrl = entity.NewestChapterUrl;
+
+            entity.LastReadChapterName = entity.LastReadChapterName;
+            entity.LastReadChapterUrl = entity.LastReadChapterUrl;
+            entity.LyWeb = entity.LyWeb;
+            entity.UnReadCountData = entity.UnReadCountData;
+            entity.UpdateCatalogUrl = entity.UpdateCatalogUrl;
+            entity.UpdateTime = entity.UpdateTime;
+
+            if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
+            {
+                var item = entity.CatalogList.FirstOrDefault();
+                if (item != null)
+                {
+                    entity.LastReadChapterUrl = item.CatalogUrl; ;
+                    entity.LastReadChapterName = item.CatalogName;
+                }
+            }
+
+            MenuModel menu = new MenuModel() { MenuName = null, MenuType = typeof(BookContentPage) };
+            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
+            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
         }
     }
 }

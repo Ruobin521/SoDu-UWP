@@ -33,12 +33,22 @@ namespace Sodu.Model
         /// <summary>
         ///章节名称
         /// </summary>
-        public string ChapterName { get; set; }
+        public string NewestChapterName { get; set; }
 
         /// <summary>
-        ///最后阅读的章节
+        ///当前章节正文地址
+        /// </summary>
+        public string NewestChapterUrl { get; set; }
+
+        /// <summary>
+        ///最后阅读的章节名称
         /// </summary>
         public string LastReadChapterName { get; set; }
+
+        /// <summary>
+        ///最后阅读的章节地址
+        /// </summary>
+        public string LastReadChapterUrl { get; set; }
 
         /// <summary>
         ///未读提示
@@ -49,10 +59,7 @@ namespace Sodu.Model
         /// </summary>
         public string UpdateTime { get; set; }
 
-        /// <summary>
-        ///当前章节正文地址
-        /// </summary>
-        public string ChapterUrl { get; set; }
+
 
         /// <summary>
         ///更新目录地址

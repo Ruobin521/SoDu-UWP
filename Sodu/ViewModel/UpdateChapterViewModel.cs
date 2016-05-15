@@ -469,7 +469,7 @@ namespace Sodu.ViewModel
                         if (entity != null)
                         {
                             // this.IsNeedRefresh = false;
-                            MenuModel menu = new MenuModel() { MenuName = entity.ChapterName, MenuType = typeof(BookContentPage) };
+                            MenuModel menu = new MenuModel() { MenuName = entity.NewestChapterName, MenuType = typeof(BookContentPage) };
                             ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
                         }
 

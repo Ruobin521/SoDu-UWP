@@ -88,8 +88,7 @@ namespace Sodu.ViewModel
 
                        BookEntity entity = temp.Entity;
 
-                       for (int i = 0; i < temp.Entity.CatalogList.Count; i++)
-                       //for (int i = startIndex; i < 50; i++)
+                       for (int i = startIndex; i < 10; i++)
                        {
                            try
                            {
@@ -101,8 +100,19 @@ namespace Sodu.ViewModel
                                    temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
                                });
                                string html = await GetHtmlData(item.CatalogUrl);
-                               item.CatalogContent = html;
-                               Database.DBLocalBook.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
+                               //  item.CatalogContent = html;
+                               item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                               BookCatalogContent content = new BookCatalogContent()
+                               {
+                                   BookID = item.BookID,
+                                   CatalogContentGUID = item.CatalogContentGUID,
+                                   Content = html
+                               };
+
+
+                               Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
+                               Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+
                            }
                            catch (Exception ex)
                            {
@@ -125,9 +135,9 @@ namespace Sodu.ViewModel
                    }
                }
            }).ContinueWith((result) =>
-           {
-               isDownLoading = false;
-           });
+                  {
+                      isDownLoading = false;
+                  });
         }
 
         private async Task<string> GetHtmlData(string catalogUrl)

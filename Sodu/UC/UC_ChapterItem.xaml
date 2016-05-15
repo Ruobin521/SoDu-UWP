@@ -27,9 +27,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}" Foreground="{Binding LyWeb,Converter={StaticResource BookNameForgroundConverter}}"  FontSize="18" Text="{Binding   ChapterName}"  ></TextBlock>
-            <TextBlock x:Name="txtUpdateTime" Grid.Row="1" Grid.Column="1"  Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding UpdateTime}" HorizontalAlignment="Right" FontSize="16"  Foreground="{Binding LyWeb,Converter={StaticResource BookNameForgroundConverter}}"  ></TextBlock>
-            <TextBlock x:Name="txtLy"  FontWeight="Black" Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" Foreground="{Binding LyWeb,Converter={StaticResource BookNameForgroundConverter}}" ></TextBlock>
+            <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding   NewestChapterName}"  ></TextBlock>
+            <TextBlock x:Name="txtUpdateTime" Grid.Row="1" Grid.Column="1"  Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding UpdateTime}" HorizontalAlignment="Right" FontSize="16"    ></TextBlock>
+            <TextBlock x:Name="txtLy"  FontWeight="Black" Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" ></TextBlock>
         </Grid>
         <Line x:Name="line"  Grid.Row="1" Style="{StaticResource LineStyle}" StrokeDashArray="4" X1="0" X2="{Binding ElementName=grid,Path=ActualWidth}"  />
 

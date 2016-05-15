@@ -116,6 +116,8 @@
     </Compile>
     <Compile Include="Constants\AppDataPath.cs" />
     <Compile Include="Converter\PopupWindowWidthConverter.cs" />
+    <Compile Include="Database\DBBookCatalog.cs" />
+    <Compile Include="Database\DBBookCatalogContent.cs" />
     <Compile Include="Database\DBHistory.cs" />
     <Compile Include="Database\DBLocalBook.cs" />
     <Compile Include="Model\BookCatalog.cs" />
