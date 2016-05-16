@@ -203,9 +203,7 @@ namespace Sodu
         /// </summary>
         private void InitLocalBook()
         {
-            //Database.DBLocalBook.DeleteAllLocalBooks(AppDataPath.GetLocalBookDBPath());
-
-            //Database.DBBookCatalog.DeleteAllCatalog(AppDataPath.GetLocalBookDBPath());
+            //  Database.DBLocalBook.DeleteAllLocalBooksData(AppDataPath.GetLocalBookDBPath());
 
             ViewModelInstance.Instance.LocalBookPage.RefreshData(null);
         }

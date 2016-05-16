@@ -54,7 +54,7 @@ namespace Sodu.Database
                                     where m.CatalogContentGUID == contentGuid
                                     select m
                                 ).FirstOrDefault();
-                        if (temp == null)
+                        if (temp != null)
                         {
                             result = temp;
                         }

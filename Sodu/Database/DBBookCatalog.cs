@@ -71,7 +71,32 @@ namespace Sodu.Database
             }
             return result;
         }
-
+        public static List<BookCatalog> SelectAllBookCatalogs(string path)
+        {
+            List<BookCatalog> result = null;
+            try
+            {
+                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
+                {
+                    db.CreateTable<BookCatalog>();
+                    db.RunInTransaction(() =>
+                    {
+                        var temp = (from m in db.Table<BookCatalog>()
+                                    select m
+                            );
+                        if (temp != null && temp.Count() > 0)
+                        {
+                            result = temp.OrderBy(p => p.Index).ToList();
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = null;
+            }
+            return result;
+        }
         public static bool DeleteAllCatalog(string path)
         {
             bool result = true;
@@ -83,7 +108,7 @@ namespace Sodu.Database
                 {
                     try
                     {
-                        db.DeleteAll<BookEntity>();
+                        db.DeleteAll<BookCatalog>();
                     }
                     catch (Exception ex)
                     {

@@ -454,7 +454,7 @@ namespace Sodu.ViewModel
 
         private void OnBackCommand(object obj)
         {
-            NavigationService.GoBack(null, null);
+            NavigationService.GoBack();
         }
 
         public BaseCommand BookChapterSelectedChangedCommand
@@ -468,7 +468,7 @@ namespace Sodu.ViewModel
                         BookEntity entity = obj as BookEntity;
                         if (entity != null)
                         {
-                            // this.IsNeedRefresh = false;
+                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = false;
                             MenuModel menu = new MenuModel() { MenuName = entity.NewestChapterName, MenuType = typeof(BookContentPage) };
                             ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
                         }

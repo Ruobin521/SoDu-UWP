@@ -27,8 +27,8 @@
         </ListView>
 
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
-            <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding ClearCommand}"/>
-            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
+            <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>
+            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding RemoveBookCommand}"/>
         </CommandBar>
     </Grid>
 </Page>

@@ -69,7 +69,7 @@ namespace Sodu.ViewModel
                   else
                   {
                       CommonMethod.ShowMessage("注销失败请重新尝试");
-                      NavigationService.GoBack(null, null);
+                      NavigationService.GoBack();
                   }
               });
             });

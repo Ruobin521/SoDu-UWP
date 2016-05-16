@@ -79,36 +79,20 @@ namespace Sodu.Database
 
 
 
-        public static bool DeleteAllLocalBooks(string path)
+        public static bool DeleteAllLocalBooksData(string path)
         {
             bool result = true;
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
             {
                 db.CreateTable<BookEntity>();
+                db.CreateTable<BookCatalog>();
                 db.RunInTransaction(() =>
                 {
                     try
                     {
-                        var books = (from m in db.Table<BookEntity>()
-                                     select m
-                               );
-                        if (books != null && books.Count() > 0)
-                        {
-                            foreach (var item in books)
-                            {
-                                var catalogs = (from m in db.Table<BookCatalog>()
-                                                where m.BookID == item.BookID
-                                                select m
-                              );
-                                if (catalogs != null && catalogs.Count() > 0)
-                                {
-                                    foreach (var catalog in catalogs)
-                                    {
-                                        db.Delete(catalog);
-                                    }
-                                }
-                            }
-                        }
+                        db.DeleteAll<BookEntity>();
+                        db.DeleteAll<BookCatalog>();
+                        db.DeleteAll<BookCatalogContent>();
                     }
                     catch (Exception ex)
                     {
@@ -119,6 +103,61 @@ namespace Sodu.Database
             return result;
         }
 
+        public static bool DeleteLocalBooksDataByBookID(string path, string bookid)
+        {
+            bool result = true;
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
+            {
+                db.CreateTable<BookEntity>();
+                db.CreateTable<BookCatalog>();
+                db.CreateTable<BookCatalogContent>();
+                db.RunInTransaction(() =>
+                {
+                    try
+                    {
+                        var temp = (from m in db.Table<BookEntity>()
+                                    where m.BookID == bookid
+                                    select m
+                                 ).FirstOrDefault();
+                        if (temp != null)
+                        {
+                            db.Delete(temp);
+                        }
+                        var temp2 = (from m in db.Table<BookCatalog>()
+                                     where m.BookID == bookid
+                                     select m
+                               );
 
+                        if (temp2 != null)
+                        {
+                            foreach (var item in temp2)
+                            {
+                                db.Delete(item);
+
+                            }
+                        }
+                        var temp3 = (from m in db.Table<BookCatalogContent>()
+                                     where m.BookID == bookid
+                                     select m
+                              );
+
+                        if (temp3 != null)
+                        {
+                            foreach (var item in temp3)
+                            {
+                                db.Delete(item);
+
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        result = false;
+                    }
+                });
+            }
+            return result;
+        }
     }
 }

@@ -7,8 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="75"
+    xmlns:converter="using:Sodu.Converter"
     x:Name="root"
     d:DesignWidth="500">
+    <UserControl.Resources>
+        <converter:DownItemIconConverter x:Key="DownItemIconConverter"></converter:DownItemIconConverter>
+    </UserControl.Resources>
     <Grid Background="#FFFBFBFB">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -44,14 +48,14 @@
             <Run Text="{Binding ProgressValue}"></Run>
             <Run Text="%"></Run>
         </TextBlock>-->
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"   Command="{Binding PauseCommand,ElementName=root}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button x:Name="btnPause" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnPause_Click">
                 <Button.Content>
-                    <SymbolIcon  Symbol="Pause"></SymbolIcon>
+                    <SymbolIcon  Symbol="{Binding IsPause,Converter={StaticResource DownItemIconConverter},Mode=OneWay}"></SymbolIcon>
                 </Button.Content>
             </Button>
-            <Button Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding ElementName=root,Path=DeleteCommand}">
+            <Button x:Name="btnDelete" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnDelete_Click" >
                 <Button.Content>
-                    <SymbolIcon  Symbol="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Height="16" Width="18"></SymbolIcon>
+                    <SymbolIcon  Symbol="Cancel" HorizontalAlignment="Center" VerticalAlignment="Center"  ></SymbolIcon>
                 </Button.Content>
             </Button>
         </Grid>

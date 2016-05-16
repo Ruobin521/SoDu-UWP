@@ -112,14 +112,11 @@ namespace Sodu.ViewModel
         }
         public void RefreshData(object obj = null)
         {
-            if (IsLoading)
+            if (this.BookList.Count > 0)
             {
-                CancleHttpRequest();
+                return;
             }
-            else
-            {
-                SetData();
-            }
+            SetData();
         }
 
         public void SetData()
@@ -270,7 +267,7 @@ namespace Sodu.ViewModel
 
         private void OnBackCommand(object obj)
         {
-            NavigationService.GoBack(null, null);
+            NavigationService.GoBack();
         }
 
 

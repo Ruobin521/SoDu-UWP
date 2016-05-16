@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace Sodu.UC
 
         // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PasueCommandProperty =
-            DependencyProperty.Register("PasueCommand", typeof(int), typeof(UC_DownLoadItem), new PropertyMetadata(null));
+            DependencyProperty.Register("PasueCommand", typeof(ICommand), typeof(UC_DownLoadItem), new PropertyMetadata(null));
 
 
 
@@ -41,13 +42,46 @@ namespace Sodu.UC
 
         // Using a DependencyProperty as the backing store for DeleteCommand.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DeleteCommandProperty =
-            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(UC_DownLoadItem), new PropertyMetadata(null));
+            DependencyProperty.Register("DeleteCommand", typeof(ICommand), typeof(UC_DownLoadItem), new PropertyMetadata(null, IdPropertyChangedCallback));
+
+
+
+        private static void IdPropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            var ddo = dependencyObject as ICommand;
+        }
+        public object CommandParameter
+        {
+            get { return (object)GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CommandParameter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CommandParameterProperty =
+            DependencyProperty.Register("CommandParameter", typeof(object), typeof(UC_DownLoadItem), new PropertyMetadata(null));
+
 
 
 
         public UC_DownLoadItem()
         {
             this.InitializeComponent();
+        }
+
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.DeleteCommand != null)
+            {
+                this.DeleteCommand.Execute(this.CommandParameter);
+            }
+        }
+
+        private void btnPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.PasueCommand != null)
+            {
+                this.PasueCommand.Execute(this.CommandParameter);
+            }
         }
     }
 }

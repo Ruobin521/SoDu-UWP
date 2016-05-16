@@ -114,6 +114,10 @@ namespace Sodu.ViewModel
         }
         public void RefreshData(object obj = null)
         {
+            if (this.BookList.Count > 0)
+            {
+                return;
+            }
             SetData();
         }
 
@@ -252,7 +256,7 @@ namespace Sodu.ViewModel
 
         private void OnBackCommand(object obj)
         {
-            NavigationService.GoBack(null, null);
+            NavigationService.GoBack();
         }
 
 

@@ -2,6 +2,7 @@
 using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,15 +41,40 @@ namespace Sodu.Model
         /// </summary>
         public string NewestChapterUrl { get; set; }
 
+
+        private string _LastReadChapterName;
         /// <summary>
         ///最后阅读的章节名称
         /// </summary>
-        public string LastReadChapterName { get; set; }
+        public string LastReadChapterName
+        {
 
+            get
+            {
+                return _LastReadChapterName;
+            }
+            set
+            {
+                SetProperty(ref _LastReadChapterName, value);
+            }
+        }
+
+        private string _LastReadChapterUrl;
         /// <summary>
         ///最后阅读的章节地址
         /// </summary>
-        public string LastReadChapterUrl { get; set; }
+        public string LastReadChapterUrl
+        {
+
+            get
+            {
+                return _LastReadChapterUrl;
+            }
+            set
+            {
+                SetProperty(ref _LastReadChapterUrl, value);
+            }
+        }
 
         /// <summary>
         ///未读提示
@@ -58,7 +84,6 @@ namespace Sodu.Model
         ///更新时间
         /// </summary>
         public string UpdateTime { get; set; }
-
 
 
         /// <summary>
@@ -85,7 +110,7 @@ namespace Sodu.Model
         public string LyWeb { get; set; }
 
         [Ignore]
-        public List<BookCatalog> CatalogList { get; set; }
+        public ObservableCollection<BookCatalog> CatalogList { get; set; }
 
 
         /// <summary>

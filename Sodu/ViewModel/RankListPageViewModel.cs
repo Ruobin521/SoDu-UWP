@@ -321,7 +321,7 @@ namespace Sodu.ViewModel
 
         private void OnBackCommand(object obj)
         {
-            NavigationService.GoBack(null, null);
+            NavigationService.GoBack();
         }
 
         /// <summary>

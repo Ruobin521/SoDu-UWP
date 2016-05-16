@@ -9,23 +9,32 @@
     x:Name="root"
     d:DesignHeight="130"
     d:DesignWidth="500">
-    <Button HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}" Background="#FFFBFBFB"   x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" >
-        <Grid  HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="40*"/>
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="{Binding BookName}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis"></TextBlock>
-            <TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>
-            <TextBlock  Grid.Row="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+    <Button Padding="15,3" Background="#FFFBFBFB"  HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"    x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1" >
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IfBookshelf,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="{Binding BookName}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis"></TextBlock>
+                <TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>
+                <TextBlock  Grid.Row="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
             <Run Text="本地最新章节:  "></Run>
-            <Run Text="{Binding ChapterName}"></Run>
-            </TextBlock>
-            <TextBlock   Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+            <Run Text="{Binding NewestChapterName}"></Run>
+                </TextBlock>
+                <TextBlock   Grid.Row="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
             <Run Text="最后阅读章节:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
-            </TextBlock>
+                </TextBlock>
+            </Grid>
         </Grid>
     </Button>
+
+
 </UserControl>

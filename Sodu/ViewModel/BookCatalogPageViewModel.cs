@@ -81,6 +81,20 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_CanDownLoad;
+        public bool CanDownLoad
+        {
+            get
+            {
+                return m_CanDownLoad;
+            }
+            set
+            {
+                SetProperty(ref m_CanDownLoad, value);
+            }
+        }
+
+
         HttpHelper http = new HttpHelper();
 
         public void CancleHttpRequest()
@@ -111,9 +125,28 @@ namespace Sodu.ViewModel
             };
 
             this.ContentTitle = CurrentBookEntity.BookName + "  目录";
+
+            if (CheckIfLoacalExist())
+            {
+                CanDownLoad = false;
+            }
+            else
+            {
+                CanDownLoad = true;
+            }
         }
 
+        private bool CheckIfLoacalExist()
+        {
+            bool rs = false;
+            var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+            if (result.FirstOrDefault(p => p.BookID == this.CurrentBookEntity.BookID) != null)
+            {
+                rs = true;
+            }
 
+            return rs;
+        }
 
 
 
@@ -170,9 +203,84 @@ namespace Sodu.ViewModel
             }
             else
             {
-                //  SetData(CatalogPageUrl);
+                SetCatalogData(CurrentBookEntity.CatalogListUrl);
             }
         }
+        private async void SetCatalogData(string url)
+        {
+            bool rs = true;
+            if (string.IsNullOrEmpty(url))
+            {
+                return;
+            }
+            await Task.Run(async () =>
+            {
+                string html = await GetCatalogHtmlData(url);
+                if (html != null && await SetCatalogList(html, url))
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        rs = true;
+                    });
+                }
+            });
+        }
+
+        public async Task<string> GetCatalogHtmlData(string url)
+        {
+            string html = string.Empty;
+
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+
+            try
+            {
+                html = await http.WebRequestGet(url, true);
+            }
+            catch (Exception ex)
+            {
+                html = null;
+            }
+            finally
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    IsLoading = false;
+                });
+            }
+
+            return html;
+        }
+        private async Task<bool> SetCatalogList(string html, string url)
+        {
+            bool rs = false;
+            var result = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
+            if (result != null)
+            {
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if (this.CurrentBookEntity.CatalogList != null)
+                    {
+                        this.CurrentBookEntity.CatalogList.Clear();
+                    }
+                    else
+                    {
+                        this.CurrentBookEntity.CatalogList = new ObservableCollection<BookCatalog>();
+                    }
+                    foreach (var item in result)
+                    {
+                        item.BookID = this.CurrentBookEntity.BookID;
+                        item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                        this.CurrentBookEntity.CatalogList.Add(item);
+                    }
+                    rs = true;
+                });
+            }
+            return rs;
+        }
+
         /// <summary>
         /// 返回
         /// </summary>
@@ -182,7 +290,7 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    NavigationService.GoBack(null, null);
+                    NavigationService.GoBack();
                 });
             }
         }
@@ -205,7 +313,12 @@ namespace Sodu.ViewModel
             if (IsLoading) return;
             if (this.CurrentBookEntity != null && this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)
             {
-                Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
+                var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+                if (result.FirstOrDefault(p => p.BookID == this.CurrentBookEntity.BookID) != null)
+                {
+                    Services.CommonMethod.ShowMessage("该图书已经下载过");
+                }
+
                 ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.CurrentBookEntity);
             }
 

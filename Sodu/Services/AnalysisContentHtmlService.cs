@@ -779,7 +779,7 @@ namespace Sodu.Services
                     break;
                 //爱上中文
                 case WebSet.aszw520:
-                    result = AnalysisAszw(html);
+                    result = AnalysisAszw(html, url);
                     break;
 
                 //笔下文学（依依中文网）
@@ -1024,9 +1024,42 @@ namespace Sodu.Services
 
         }
 
-        private static List<BookCatalog> AnalysisAszw(string html)
+        private static List<BookCatalog> AnalysisAszw(string html, string baseUrl)
         {
-            return null;
+            List<BookCatalog> list = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            if (html != null)
+            {
+                MatchCollection matches = Regex.Matches(html, "<td class=\"L\".*?href=\"(.*?)\".*?>(.*?)</a></td>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
         }
 
 
@@ -1066,6 +1099,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1076,6 +1110,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1105,6 +1141,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1115,6 +1152,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1147,6 +1186,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1158,6 +1198,8 @@ namespace Sodu.Services
                         {
                             BookCatalog catalog = new BookCatalog();
                             catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }
@@ -1187,6 +1229,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1197,6 +1240,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1223,6 +1268,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1234,7 +1280,8 @@ namespace Sodu.Services
                         {
                             BookCatalog catalog = new BookCatalog();
                             string url = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
-
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = url + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1269,6 +1316,7 @@ namespace Sodu.Services
                 else
                 {
                     list = new List<BookCatalog>();
+                    int i = 0;
                     foreach (Match item in matches)
                     {
                         var groups = item.Groups;
@@ -1279,6 +1327,8 @@ namespace Sodu.Services
                             if (url_Mathch != null && title_Mathch != null)
                             {
                                 BookCatalog catalog = new BookCatalog();
+                                catalog.Index = i;
+                                i++;
                                 catalog.CatalogUrl = url_Mathch.ToString();
                                 catalog.CatalogName = title_Mathch.ToString();
                                 list.Add(catalog);
@@ -1316,6 +1366,7 @@ namespace Sodu.Services
                 else
                 {
                     list = new List<BookCatalog>();
+                    int i = 0;
                     foreach (Match item in matches)
                     {
                         var groups = item.Groups;
@@ -1326,6 +1377,8 @@ namespace Sodu.Services
                             if (url_Mathch != null && title_Mathch != null)
                             {
                                 BookCatalog catalog = new BookCatalog();
+                                catalog.Index = i;
+                                i++;
                                 catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                                 catalog.CatalogName = title_Mathch.ToString();
                                 list.Add(catalog);
@@ -1358,6 +1411,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1368,6 +1422,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1397,6 +1453,7 @@ namespace Sodu.Services
             }
             else
             {
+                int i = 0;
                 list = new List<BookCatalog>();
                 foreach (Match item in matches)
                 {
@@ -1408,6 +1465,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
@@ -1437,6 +1496,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
+                int i = 0;
                 foreach (Match item in matches)
                 {
                     var groups = item.Groups;
@@ -1447,6 +1507,8 @@ namespace Sodu.Services
                         if (url_Mathch != null && title_Mathch != null)
                         {
                             BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
                             catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);

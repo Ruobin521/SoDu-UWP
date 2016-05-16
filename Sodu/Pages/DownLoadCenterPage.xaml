@@ -7,7 +7,11 @@
     DataContext="{Binding Instance.DownLoadCenterViewModelInstance,Source={StaticResource Locator}}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="using:Sodu.UC"
+    xmlns:converter="using:Sodu.Converter"
     mc:Ignorable="d">
+    <Page.Resources>
+        <converter:DownLoadPagePauseIconConverter x:Key="DownLoadPagePauseIconConverter"></converter:DownLoadPagePauseIconConverter>
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
@@ -19,13 +23,13 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="5,0,5,10"></uc:UC_DownLoadItem>
+                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="5,0,5,10" PasueCommand="{Binding Instance.DownLoadCenterViewModelInstance.PauseCommand,Source={StaticResource Locator} }" DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownLoadItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
         <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  >
-            <AppBarButton Icon="Pause" Label="全部暂停"  Command="{Binding ClearCommand}"  />
-            <AppBarButton Icon="Clear" Label="全部删除" Width="65" Command="{Binding ClearCommand}" />
+            <AppBarButton Icon="{Binding IsDownLoading,Converter={StaticResource DownLoadPagePauseIconConverter}}" Label="全部暂停"  Command="{Binding PauseAllCommand}"  />
+            <AppBarButton Icon="Cancel" Label="全部删除" Width="65" Command="{Binding DeleteAllCommand}" />
         </CommandBar>
     </Grid>
 </Page>

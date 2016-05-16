@@ -204,7 +204,6 @@ namespace Sodu.ViewModel
 
         public void RefreshData(object obj)
         {
-
             BookEntity entity = obj as BookEntity;
             if (entity == null)
             {
@@ -216,34 +215,25 @@ namespace Sodu.ViewModel
             this.TextContent = null;
 
             // this.IsCatalogMenuShow = false;
-            this.IsSwitchButtonShow = false;
 
+            if (!IsLocal)
+            {
+                this.IsSwitchButtonShow = false;
+            }
+            else
+            {
+                this.IsSwitchButtonShow = true;
+
+            }
 
             if (this.ContentListt != null)
             {
                 this.ContentListt.Clear();
             }
 
-            this.BookEntity = new BookEntity()
-            {
-                AuthorName = entity.AuthorName,
-                BookID = entity.AuthorName,
-                Id = entity.Id,
-                NewestChapterUrl = entity.NewestChapterUrl,
-                LastReadChapterUrl = entity.LastReadChapterUrl,
-                NewestChapterName = entity.NewestChapterName,
-                LastReadChapterName = entity.LastReadChapterName,
-                LyWeb = entity.LyWeb,
+            this.BookEntity = entity;
 
-                BookName = entity.BookName,
-                UpdateCatalogUrl = entity.UpdateCatalogUrl,
-                UpdateTime = entity.UpdateTime,
-                CatalogList = entity.CatalogList,
-                CatalogListUrl = entity.CatalogListUrl,
-                UnReadCountData = entity.UnReadCountData
-            };
-
-            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
+            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.LastReadChapterUrl).Authority };
 
             SetData(CurrentCatalog);
         }
@@ -255,6 +245,10 @@ namespace Sodu.ViewModel
                if (IsLocal)
                {
                    string html = await GetCatafromDatabase(catalog);
+                   if (html == null)
+                   {
+                       html = await GetHtmlData(catalog.CatalogUrl);
+                   }
                    return html;
                }
                else
@@ -465,18 +459,38 @@ namespace Sodu.ViewModel
         private async Task<string> GetCatafromDatabase(BookCatalog catalog, bool isBackGround = true)
         {
             string html = null;
-            await Task.Run(() =>
-             {
-                 var item = this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == catalog.CatalogUrl);
-                 if (item != null)
-                 {
-                     var content = Database.DBBookCatalogContent.SelectBookCatalogContent(Constants.AppDataPath.GetLocalBookDBPath(), item.CatalogContentGUID);
-                     if (content != null)
-                     {
-                         html = content.Content;
-                     }
-                 }
-             });
+            await Task.Run(async () =>
+            {
+                try
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        IsLoading = true;
+                    });
+
+                    var item = this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == catalog.CatalogUrl);
+                    if (item != null)
+                    {
+                        var content = Database.DBBookCatalogContent.SelectBookCatalogContent(Constants.AppDataPath.GetLocalBookDBPath(), item.CatalogContentGUID);
+                        if (content != null)
+                        {
+                            html = content.Content;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        IsLoading = false;
+                    });
+                }
+
+            });
             return html;
         }
 
@@ -546,7 +560,7 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    this.BookEntity.CatalogList = new List<BookCatalog>();
+                    this.BookEntity.CatalogList = new ObservableCollection<BookCatalog>();
                 }
                 foreach (var item in result)
                 {
@@ -639,7 +653,7 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>((str) =>
                 {
-                    NavigationService.GoBack(null, null);
+                    NavigationService.GoBack();
                 });
             }
         }
@@ -741,8 +755,8 @@ namespace Sodu.ViewModel
 
             if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)
             {
-                this.BookEntity.NewestChapterName = this.CurrentCatalog.CatalogName;
-                this.BookEntity.NewestChapterUrl = this.CurrentCatalog.CatalogUrl;
+                this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogName;
+                this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogUrl;
                 SetData(CurrentCatalog);
             }
         }

@@ -65,7 +65,7 @@
             <!--<AppBarButton Icon="Back" Label="返回"    Command="{Binding GoBackCommand}"/>-->
             <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Command="{Binding RefreshCommand}"/>
             <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Download" Label="下载图书"   Command="{Binding DwonLoadhCommand}"/>
+            <AppBarButton Icon="Download" Label="下载图书" Visibility="{Binding CanDownLoad,Converter={StaticResource  BooleanToVisibilityConverter }}"   Command="{Binding DwonLoadhCommand}"/>
             <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->

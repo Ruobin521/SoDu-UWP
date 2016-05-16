@@ -13,8 +13,6 @@ namespace Sodu.Services
 {
     public static class NavigationService
     {
-
-        private static int BackKeyPressCount = 0;
         private static DateTime FirstTime { get; set; }
         private static DateTime SecondTime { get; set; }
 
@@ -74,11 +72,8 @@ namespace Sodu.Services
             }
             if (ContentFrame.CanGoBack)
             {
-                CancleHttpRequest();
-
-                // _ContentFrame.Navigated -= _ContentFrame_Navigated;
+                //     CancleHttpRequest();
                 ContentFrame.GoBack();
-                //_ContentFrame.Navigated += _ContentFrame_Navigated;
             }
             else
             {

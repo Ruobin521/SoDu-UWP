@@ -14,6 +14,8 @@ namespace Sodu.ViewModel
 {
     public class LocalBookPageViewModel : BaseViewModel, IViewModel
     {
+        private bool IsEditing;
+
         private ObservableCollection<BookEntity> m_LocalBookList;
         ///本地图书列表
         public ObservableCollection<BookEntity> LocalBookList
@@ -62,18 +64,32 @@ namespace Sodu.ViewModel
 
         public void GetLocalBook()
         {
-
+            this.LocalBookList.Clear();
             Task.Run(async () =>
         {
             var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+            foreach (var item in result)
+            {
+                var list = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
+                if (list != null)
+                {
+                    foreach (var catalog in list)
+                    {
+                        if (item.CatalogList == null)
+                        {
+                            item.CatalogList = new ObservableCollection<BookCatalog>();
+                        }
+                        item.CatalogList.Add(catalog);
+                    }
+                }
+            }
             if (result != null)
             {
                 await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
-                    this.LocalBookList.Clear();
+
                     foreach (var item in result)
                     {
-                        item.CatalogList = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
                         this.LocalBookList.Add(item);
                     }
                 });
@@ -96,6 +112,144 @@ namespace Sodu.ViewModel
 
         }
 
+
+        /// <summary>
+        /// 全选，全不选
+        /// </summary>
+        public RelayCommand<object> EditCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(
+                 (obj) =>
+                 {
+
+                     if (IsLoading) return;
+                     OnEditCommand();
+                 }
+                    );
+            }
+        }
+
+        private void OnEditCommand()
+        {
+            if (IsLoading) return;
+
+            if (this.LocalBookList == null || this.LocalBookList.Count < 1) return;
+            if (!IsEditing)
+            {
+                IsEditing = true;
+                foreach (var item in LocalBookList)
+                {
+                    item.IfBookshelf = true;
+                }
+            }
+            else
+            {
+                foreach (var item in LocalBookList)
+                {
+                    item.IfBookshelf = false;
+                    item.IsSelected = false;
+                }
+                IsEditing = false;
+            }
+        }
+
+
+        /// <summary>
+        /// 下架
+        /// </summary>
+        public RelayCommand<object> RemoveBookCommand
+        {
+            get
+            {
+                return new RelayCommand<object>(OnRemoveBookFromShelfCommand);
+            }
+        }
+        private async void OnRemoveBookFromShelfCommand(object obj)
+        {
+
+            if (!IsEditing)
+            {
+                var msgDialog = new Windows.UI.Popups.MessageDialog(" \n请点击编辑按钮，并选择需要删除的小说。") { Title = "删除本地缓存" };
+                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                {
+                    return;
+                }));
+                await msgDialog.ShowAsync();
+            }
+            else
+            {
+
+                List<BookEntity> removeList = new List<BookEntity>();
+
+                foreach (var item in LocalBookList)
+                {
+                    if (item.IsSelected == true)
+                    {
+                        removeList.Add(item);
+                    }
+                }
+
+                if (removeList.Count > 0)
+                {
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定删除" + removeList.Count + "本小说？") { Title = "删除本地缓存" };
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                    {
+                        RemoveBookList(removeList);
+                    }));
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
+                    {
+                        return;
+                    }));
+                    await msgDialog.ShowAsync();
+
+                }
+                else
+                {
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("\n请勾选需要删除的小说。") { Title = "删除本地缓存" };
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                    {
+                        return;
+                    }));
+                    await msgDialog.ShowAsync();
+                }
+            }
+        }
+
+        private async void RemoveBookList(List<BookEntity> removeList)
+        {
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = true;
+            });
+            await Task.Run(async () =>
+             {
+                 foreach (var item in removeList)
+                 {
+                     var result = Database.DBLocalBook.DeleteLocalBooksDataByBookID(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
+
+                     if (result)
+                     {
+                         await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                         {
+                             this.LocalBookList.Remove(item);
+                         });
+                     }
+                     else
+                     {
+                         Services.CommonMethod.ShowMessage(item.BookName + "删除失败，请重新尝试");
+                     }
+                 }
+             });
+            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                IsLoading = false;
+            });
+
+
+        }
+
         public RelayCommand<object> BookItemSelectedCommand
         {
             get
@@ -106,52 +260,58 @@ namespace Sodu.ViewModel
 
         private void OnBookItemSelectedCommand(object obj)
         {
-            ///// ViewModelInstance.Instance.MainPageViewModelInstance.OnBooq aswkItemSelectedChangedCommand(obj);
-            //CommonMethod.ShowMessage("您点击了。。。");
             BookEntity entity = obj as BookEntity;
-
             if (entity == null)
             {
                 CommonMethod.ShowMessage("获取数据有误");
                 return;
             }
 
-            if (entity.CatalogList == null || entity.CatalogList.Count < 1)
+            if (IsEditing)
             {
-                CommonMethod.ShowMessage("获取章节数据有误");
-                return;
+                entity.IsSelected = !entity.IsSelected;
             }
-
-            BookEntity temp = new BookEntity();
-            entity.BookID = entity.BookID;
-            entity.BookName = entity.BookName;
-            entity.CatalogList = entity.CatalogList;
-            entity.CatalogListUrl = entity.CatalogListUrl;
-
-            ///最新章节名称 ，以及地址
-            entity.NewestChapterName = entity.NewestChapterName;
-            entity.NewestChapterUrl = entity.NewestChapterUrl;
-
-            entity.LastReadChapterName = entity.LastReadChapterName;
-            entity.LastReadChapterUrl = entity.LastReadChapterUrl;
-            entity.LyWeb = entity.LyWeb;
-            entity.UnReadCountData = entity.UnReadCountData;
-            entity.UpdateCatalogUrl = entity.UpdateCatalogUrl;
-            entity.UpdateTime = entity.UpdateTime;
-
-            if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
+            else
             {
-                var item = entity.CatalogList.FirstOrDefault();
-                if (item != null)
+
+                if (entity.CatalogList == null || entity.CatalogList.Count < 1)
                 {
-                    entity.LastReadChapterUrl = item.CatalogUrl; ;
-                    entity.LastReadChapterName = item.CatalogName;
+                    CommonMethod.ShowMessage("获取章节数据有误");
+                    return;
                 }
+                BookEntity temp = new BookEntity();
+                entity.BookID = entity.BookID;
+                entity.BookName = entity.BookName;
+                entity.CatalogList = entity.CatalogList;
+                entity.CatalogListUrl = entity.CatalogListUrl;
+
+                ///最新章节名称 ，以及地址
+                entity.NewestChapterName = entity.NewestChapterName;
+                entity.NewestChapterUrl = entity.NewestChapterUrl;
+
+                entity.LastReadChapterName = entity.LastReadChapterName;
+                entity.LastReadChapterUrl = entity.LastReadChapterUrl;
+                entity.LyWeb = entity.LyWeb;
+                entity.UnReadCountData = entity.UnReadCountData;
+                entity.UpdateCatalogUrl = entity.UpdateCatalogUrl;
+                entity.UpdateTime = entity.UpdateTime;
+
+                if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
+                {
+                    var item = entity.CatalogList.FirstOrDefault();
+                    if (item != null)
+                    {
+                        entity.LastReadChapterUrl = item.CatalogUrl; ;
+                        entity.LastReadChapterName = item.CatalogName;
+                    }
+                }
+
+                MenuModel menu = new MenuModel() { MenuName = null, MenuType = typeof(BookContentPage) };
+                ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
+                ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
             }
 
-            MenuModel menu = new MenuModel() { MenuName = null, MenuType = typeof(BookContentPage) };
-            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
-            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
+
         }
     }
 }

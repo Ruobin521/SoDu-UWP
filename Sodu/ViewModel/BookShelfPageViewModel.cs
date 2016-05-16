@@ -145,6 +145,11 @@ namespace Sodu.ViewModel
         public void RefreshData(object obj = null)
         {
             this.IsShow = false;
+            if (this.ShelfBookList.Count > 0)
+            {
+                return;
+            }
+
             SetData();
         }
 
