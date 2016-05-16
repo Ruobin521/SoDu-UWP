@@ -298,9 +298,9 @@ namespace Sodu.ViewModel
                     }
                 }
 
-                MenuModel menu = new MenuModel() { MenuName = null, MenuType = typeof(BookContentPage) };
                 ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
-                ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
+                NavigationService.NavigateTo(typeof(BookCatalogPage), entity);
+
             }
         }
     }

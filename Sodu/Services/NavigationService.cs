@@ -52,11 +52,9 @@ namespace Sodu.Services
                 }
             }
         }
-        public static void NavigateTo(MenuModel menu, object para)
+        public static void NavigateTo(Type type, object para)
         {
-            CancleHttpRequest();
-            ContentFrame.Navigate(menu.MenuType, para);
-
+            ContentFrame.Navigate(type, para);
         }
 
         public static void GoBack()

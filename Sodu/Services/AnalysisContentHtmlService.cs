@@ -1134,16 +1134,16 @@ namespace Sodu.Services
             List<BookCatalog> list = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
-            if (matches != null && matches.Count < 1)
+            if (matches != null && matches.Count < 4)
             {
                 return list;
             }
             else
             {
                 list = new List<BookCatalog>();
-                int i = 0;
-                foreach (Match item in matches)
+                for (int i = 0; i < matches.Count - 4; i++)
                 {
+                    Match item = matches[i];
                     var groups = item.Groups;
                     if (groups != null && groups.Count > 2)
                     {
@@ -1153,8 +1153,7 @@ namespace Sodu.Services
                         {
                             BookCatalog catalog = new BookCatalog();
                             catalog.Index = i;
-                            i++;
-                            catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }
@@ -1424,7 +1423,7 @@ namespace Sodu.Services
                             BookCatalog catalog = new BookCatalog();
                             catalog.Index = i;
                             i++;
-                            catalog.CatalogUrl = "Http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }

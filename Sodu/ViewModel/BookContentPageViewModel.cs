@@ -693,9 +693,7 @@ namespace Sodu.ViewModel
                   }
                   if (rs)
                   {
-                      MenuModel menu = new MenuModel() { MenuName = BookEntity.BookName, MenuType = typeof(BookCatalogPage) };
-                      ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, this.BookEntity);
-                      CommonMethod.ShowMessage("目录加载完毕");
+                      NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
                   }
                   else
                   {

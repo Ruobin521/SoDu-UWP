@@ -476,10 +476,8 @@ namespace Sodu.ViewModel
                         if (entity != null)
                         {
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = false;
-                            MenuModel menu = new MenuModel() { MenuName = entity.NewestChapterName, MenuType = typeof(BookContentPage) };
-                            ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
+                            NavigationService.NavigateTo(typeof(BookContentPage), entity);
                         }
-
                     }
                 }
                 );

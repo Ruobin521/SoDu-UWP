@@ -210,7 +210,7 @@ namespace Sodu.ViewModel
                 if (menu != null)
                 {
                     this.IsLeftPanelOpen = false;
-                    NavigationService.NavigateTo(menu, para);
+                    NavigationService.NavigateTo(menu.MenuType, para);
                 }
             }
             catch (Exception ex)
@@ -308,13 +308,12 @@ namespace Sodu.ViewModel
                        }
                    });
                 }
-                NavigateToPage(menu, entity);
+                NavigationService.NavigateTo(typeof(UpdateChapterPage), entity);
             }
             else
             {
                 CommonMethod.ShowMessage("数据有误，请重新尝试");
             }
-
         }
 
         /// 注销
@@ -327,8 +326,7 @@ namespace Sodu.ViewModel
                       (str) =>
                 {
                     IsLeftPanelOpen = false;
-                    MenuModel menu = new MenuModel() { MenuName = "注销登陆", MenuType = typeof(LogoutPage) };
-                    NavigateToPage(menu, null);
+                    NavigationService.NavigateTo(typeof(LogoutPage), null);
                 });
             }
         }
@@ -367,8 +365,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                     {
-                        MenuModel menu = new MenuModel() { MenuName = "设置", MenuType = typeof(SettingPage) };
-                        NavigateToPage(menu, null);
+                        NavigationService.NavigateTo(typeof(SettingPage), null);
                     });
             }
         }
@@ -383,8 +380,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                       {
-                          MenuModel menu = new MenuModel() { MenuName = "下载中心", MenuType = typeof(DownLoadCenterPage) };
-                          NavigateToPage(menu, null);
+                          NavigationService.NavigateTo(typeof(DownLoadCenterPage), null);
                       });
             }
         }
@@ -399,8 +395,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                     {
-                        MenuModel menu = new MenuModel() { MenuName = "本地图书", MenuType = typeof(LocalBookPage) };
-                        NavigateToPage(menu, null);
+                        NavigationService.NavigateTo(typeof(LocalBookPage), null);
                     });
             }
         }
@@ -415,12 +410,10 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                       {
-                          MenuModel menu = new MenuModel() { MenuName = "阅读记录", MenuType = typeof(EverReadPage) };
-                          NavigateToPage(menu, null);
+                          NavigationService.NavigateTo(typeof(EverReadPage), null);
                       });
             }
         }
-
 
         #endregion
     }

@@ -170,10 +170,7 @@ namespace Sodu.ViewModel
 
                             CurrentBookEntity.LastReadChapterUrl = catalog.CatalogUrl;
                             CurrentBookEntity.LastReadChapterName = catalog.CatalogName;
-
-
                             NavigationService.GoBack();
-
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.OnSwtichCommand(catalog);
                         }
                         catch (Exception)
