@@ -31,8 +31,8 @@ namespace Sodu.Database
                         }
                         else
                         {
-                            catalog.Id = temp.Id;
-                            db.Update(catalog);
+                            db.Delete(temp);
+                            db.Insert(catalog);
                         }
 
                     });

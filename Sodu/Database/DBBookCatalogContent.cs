@@ -29,7 +29,11 @@ namespace Sodu.Database
                         {
                             db.Insert(content);
                         }
-                        result = false;
+                        else
+                        {
+                            db.Delete(temp);
+                            db.Insert(content);
+                        }
                     });
                 }
             }

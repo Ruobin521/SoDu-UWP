@@ -236,7 +236,14 @@ namespace Sodu.ViewModel
                         Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
                         if (match != null)
                         {
-                            PageCount = Convert.ToInt32(match.ToString().Trim());
+                            try
+                            {
+                                PageCount = Convert.ToInt32(match.ToString().Trim());
+                            }
+                            catch (Exception ex)
+                            {
+                                PageCount = 1;
+                            }
                         }
                     }
                 });

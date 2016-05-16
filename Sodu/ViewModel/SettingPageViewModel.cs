@@ -20,8 +20,6 @@ namespace Sodu.ViewModel
         [IgnoreDataMember]
         private bool IsLoading { get; set; }
 
-        [IgnoreDataMember]
-        private bool HasChanged { get; set; }
 
         private int m_TextFontSzie = 20;
         /// <summary>
@@ -78,7 +76,7 @@ namespace Sodu.ViewModel
 
         }
 
-        private bool m_IfAutAddToShelf;
+        private bool m_IfAutAddToShelf = true;
         /// <summary>
         /// 是否自动添加点击的小说到个人收藏
         /// </summary>
@@ -96,14 +94,36 @@ namespace Sodu.ViewModel
 
         }
 
+        private bool m_IfDownloadInWAAN = false;
+        /// <summary>
+        /// 是否在流量下下载小说
+        /// </summary>
+        public bool IfDownloadInWAAN
+        {
+            get
+            {
+                return m_IfDownloadInWAAN;
+            }
+            set
+            {
+                SetProperty(ref m_IfDownloadInWAAN, value);
+                // SaveSetting();
+            }
+
+        }
+
+
         private UserCookie m_UserCookie;
         public UserCookie UserCookie
         {
-            get { return m_UserCookie; }
+            get
+            {
+                return m_UserCookie;
+            }
             set
             {
                 SetProperty(ref m_UserCookie, value);
-                //  SaveSetting();
+
             }
         }
 
@@ -114,8 +134,6 @@ namespace Sodu.ViewModel
                16,18,20,22,24,26,28
             };
         }
-
-
 
         [IgnoreDataMember]
         public RelayCommand<object> SaveCommand
@@ -139,27 +157,19 @@ namespace Sodu.ViewModel
                     bool result = await SerializeHelper.WriteAsync(this, fileName);
                     if (showMessage)
                     {
-                        CommonMethod.ShowMessage("已保存设置更改");
+                        if (result)
+                        {
+                            CommonMethod.ShowMessage("已保存设置更改");
+                        }
+                        else
+                        {
+                            CommonMethod.ShowMessage("保存设置失败，请重新尝试");
+                        }
                     }
-                    if (HasChanged)
-                    {
-                        SaveSetting();
-                        HasChanged = false;
-                    }
-                    IsLoading = false;
-                }
-                else
-                {
-                    HasChanged = true;
                 }
             }
             catch (Exception)
             {
-
-            }
-            finally
-            {
-                HasChanged = false;
                 IsLoading = false;
             }
         }

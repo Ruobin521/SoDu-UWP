@@ -227,24 +227,32 @@ namespace Sodu.ViewModel
              {
                  foreach (var item in removeList)
                  {
-                     var result = Database.DBLocalBook.DeleteLocalBooksDataByBookID(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
-
-                     if (result)
+                     try
                      {
-                         await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                         var result = Database.DBLocalBook.DeleteLocalBooksDataByBookID(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
+                         if (result)
                          {
-                             this.LocalBookList.Remove(item);
-                         });
+                             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                             {
+                                 this.LocalBookList.Remove(item);
+                             });
+                         }
+                         else
+                         {
+                             Services.CommonMethod.ShowMessage(item.BookName + "删除失败，请重新尝试");
+                         }
                      }
-                     else
+                     catch (Exception ex)
                      {
                          Services.CommonMethod.ShowMessage(item.BookName + "删除失败，请重新尝试");
+                         continue;
                      }
                  }
              });
             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 IsLoading = false;
+                OnEditCommand();
             });
 
 
@@ -270,31 +278,15 @@ namespace Sodu.ViewModel
             if (IsEditing)
             {
                 entity.IsSelected = !entity.IsSelected;
+                return;
             }
             else
             {
-
                 if (entity.CatalogList == null || entity.CatalogList.Count < 1)
                 {
                     CommonMethod.ShowMessage("获取章节数据有误");
                     return;
                 }
-                BookEntity temp = new BookEntity();
-                entity.BookID = entity.BookID;
-                entity.BookName = entity.BookName;
-                entity.CatalogList = entity.CatalogList;
-                entity.CatalogListUrl = entity.CatalogListUrl;
-
-                ///最新章节名称 ，以及地址
-                entity.NewestChapterName = entity.NewestChapterName;
-                entity.NewestChapterUrl = entity.NewestChapterUrl;
-
-                entity.LastReadChapterName = entity.LastReadChapterName;
-                entity.LastReadChapterUrl = entity.LastReadChapterUrl;
-                entity.LyWeb = entity.LyWeb;
-                entity.UnReadCountData = entity.UnReadCountData;
-                entity.UpdateCatalogUrl = entity.UpdateCatalogUrl;
-                entity.UpdateTime = entity.UpdateTime;
 
                 if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
                 {
@@ -310,8 +302,6 @@ namespace Sodu.ViewModel
                 ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
                 ViewModelInstance.Instance.MainPageViewModelInstance.NavigateToPage(menu, entity);
             }
-
-
         }
     }
 }

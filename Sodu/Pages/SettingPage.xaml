@@ -18,15 +18,14 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="设置" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
-        <!--<Border Grid.Row="1" Visibility="{Binding IsShow,Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text="还没有阅读记录" FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,10"/>
-        </Border>-->
         <Grid Margin="0,35,0,10" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
@@ -54,8 +53,18 @@
                 </Interactivity:Interaction.Behaviors>
             </ToggleSwitch>
 
-            <TextBlock Grid.Column="1" Grid.Row="5"  Text="正文字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
-            <ComboBox x:Name="font" Grid.Column="1" Grid.Row="6" Foreground="Black" ItemsSource="{Binding FontSzieList}" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
+            <TextBlock Grid.Column="1" Grid.Row="5"  Text="是否在2G/3G/4G下缓存小说" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <ToggleSwitch x:Name="togDwonloadBook" Grid.Column="1"  Grid.Row="6" Foreground="Black"   IsOn="{Binding IfDownloadInWAAN,Mode=TwoWay}">
+                <Interactivity:Interaction.Behaviors >
+                    <Core:EventTriggerBehavior   EventName="Toggled">
+                        <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+            </ToggleSwitch>
+
+
+            <TextBlock Grid.Column="1" Grid.Row="7"  Text="正文字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
+            <ComboBox x:Name="font" Grid.Column="1" Grid.Row="8" Foreground="Black" ItemsSource="{Binding FontSzieList}" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
                 <Interactivity:Interaction.Behaviors >
                     <Core:EventTriggerBehavior   EventName="SelectionChanged">
                         <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />

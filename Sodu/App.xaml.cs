@@ -134,7 +134,7 @@ namespace Sodu
                 if (!File.Exists(AppDataPath.GetSettingFilePath()))
                 {
                     ///初始化设置默认值
-                    appSetingViewModel = new SettingPageViewModel() { IfAutoLogin = true, TextFontSzie = 20, IfAutAddToShelf = true, UserCookie = null };
+                    appSetingViewModel = new SettingPageViewModel();
                     await SerializeHelper.WriteAsync(appSetingViewModel, settingName);
                 }
                 else
@@ -259,15 +259,10 @@ namespace Sodu
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: 保存应用程序状态并停止任何后台活动
-
-            //await SerializeHelper.WriteAsync(ViewModelInstance.Instance.HomePageViewModelInstance, ConstantValue.XmlCacheFileNameDic[typeof(MainPageViewModel)]);
-            //await SerializeHelper.WriteAsync(ViewModelInstance.Instance.HomePageViewModelInstance, ConstantValue.XmlCacheFileNameDic[typeof(HomePageViewModel)]);
-            //await SerializeHelper.WriteAsync(ViewModelInstance.Instance.HomePageViewModelInstance, ConstantValue.XmlCacheFileNameDic[typeof(SettingPageViewModel)]);
-
             deferral.Complete();
         }
 
@@ -278,7 +273,7 @@ namespace Sodu
         /// <param name="e"></param>
         private void OnResuming(object sender, object e)
         {
-            //
+
         }
 
     }

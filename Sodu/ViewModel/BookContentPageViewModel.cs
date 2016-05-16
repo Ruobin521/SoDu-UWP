@@ -266,7 +266,10 @@ namespace Sodu.ViewModel
                   if (html != null)
                   {
                       SetTextContent(html);
-                      Services.CommonMethod.ShowMessage("正文加载完毕");
+                      if (!IsLocal)
+                      {
+                          Services.CommonMethod.ShowMessage("正文加载完毕");
+                      }
                       rs = true;
                   }
                   else
@@ -510,6 +513,7 @@ namespace Sodu.ViewModel
                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                      {
                          this.IsSwitchButtonShow = true;
+                         IsLoading = false;
                          rs = true;
                      });
                  }
@@ -719,6 +723,8 @@ namespace Sodu.ViewModel
         {
             if (IsLoading) return;
 
+            var tempcatalog = this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == this.CurrentCatalog.CatalogUrl);
+            int index = this.BookEntity.CatalogList.IndexOf(tempcatalog);
             //上一章
             if (str.ToString().Equals("0"))
             {
@@ -731,12 +737,15 @@ namespace Sodu.ViewModel
                 {
                     return;
                 }
-                this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) - 1];
+                if (tempcatalog != null)
+                {
+                    this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(tempcatalog) - 1];
+                }
             }
             //下一章
             else if (str.ToString().Equals("1"))
             {
-                if (this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) == this.BookEntity.CatalogList.Count - 1)
+                if (this.BookEntity.CatalogList.IndexOf(this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == this.CurrentCatalog.CatalogUrl)) == this.BookEntity.CatalogList.Count - 1)
                 {
                     Services.CommonMethod.ShowMessage("已经是最后一章。");
                     return;
@@ -745,7 +754,7 @@ namespace Sodu.ViewModel
                 {
                     return;
                 }
-                this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) + 1];
+                this.CurrentCatalog = this.BookEntity.CatalogList[index + 1];
             }
             else if (str is BookCatalog)
             {

@@ -18,9 +18,9 @@ namespace Sodu.ViewModel
     public class DownLoadCenterViewModel : BaseViewModel
     {
 
-        private List<BookEntity> downLoadedBookList = new List<BookEntity>();
-        private List<BookCatalog> downLoadedBookCatalogList = new List<BookCatalog>();
-        private List<BookCatalogContent> downLoadedBookContentList = new List<BookCatalogContent>();
+        private ObservableCollection<BookEntity> downLoadedBookList = new ObservableCollection<BookEntity>();
+        private ObservableCollection<BookCatalog> downLoadedBookCatalogList = new ObservableCollection<BookCatalog>();
+        private ObservableCollection<BookCatalogContent> downLoadedBookContentList = new ObservableCollection<BookCatalogContent>();
 
         private bool m_IsDownLoading;
         public bool IsDownLoading
@@ -58,7 +58,12 @@ namespace Sodu.ViewModel
         public DownLoadCenterViewModel()
         {
 
+            //downLoadedBookList.CollectionChanged += DownLoadedBookList_CollectionChanged;
+            //downLoadedBookCatalogList.CollectionChanged += DownLoadedBookCatalogList_CollectionChanged;
+            //downLoadedBookContentList.CollectionChanged += DownLoadedBookContentList_CollectionChanged;
         }
+
+
 
         public async void AddNewDownloadItem(BookEntity entity)
         {
@@ -75,26 +80,36 @@ namespace Sodu.ViewModel
                 Services.CommonMethod.ShowMessage("无网络连接，请检查网络后重试");
                 return;
             }
-            else if (NetworkManager.Current.Network == 3)
+            else if (NetworkManager.Current.Network == 2)
             {
                 Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
                 this.DownLoadList.Add(temp);
                 StartNewDownLoadInstance(temp);
             }
-            else
+            else if (NetworkManager.Current.Network == 3)
+            //   else
             {
-                var msgDialog = new Windows.UI.Popups.MessageDialog("\n你现在使用的是手机流量，确定下载？") { Title = "确认使用流量下载" };
-                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("我是土豪", uiCommand =>
+                if (!ViewModelInstance.Instance.SettingPageViewModelInstance.IfDownloadInWAAN)
+                {
+                    var msgDialog = new Windows.UI.Popups.MessageDialog("你现在使用的是手机流量，确定下载？\n你可以在设置中取消此提示。") { Title = "使用流量下载" };
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("我是土豪", uiCommand =>
+                    {
+                        Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
+                        this.DownLoadList.Add(temp);
+                        StartNewDownLoadInstance(temp);
+                    }));
+                    msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("还是算了吧", uiCommand =>
+                    {
+                        return;
+                    }));
+                    await msgDialog.ShowAsync();
+                }
+                else
                 {
                     Services.CommonMethod.ShowMessage("开始下载图书，请耐心等待。");
                     this.DownLoadList.Add(temp);
                     StartNewDownLoadInstance(temp);
-                }));
-                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("还是算了吧", uiCommand =>
-                {
-                    return;
-                }));
-                await msgDialog.ShowAsync();
+                }
             }
         }
 
@@ -149,11 +164,11 @@ namespace Sodu.ViewModel
                                CatalogContentGUID = item.CatalogContentGUID,
                                Content = html
                            };
-
-                           AddBookCatalogToDatabase(item);
-                           AddBookCatalogContentToDatabase(content);
-                           //Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
-                           //Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+                           lock (isAdd2)
+                           {
+                               Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
+                               Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+                           }
                        }
                        catch (Exception ex)
                        {
@@ -171,7 +186,6 @@ namespace Sodu.ViewModel
                    if (result)
                    {
                        AddBookEntityToDatabase(temp.Entity);
-                       //  Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                        {
                            this.DownLoadList.Remove(temp);
@@ -179,6 +193,7 @@ namespace Sodu.ViewModel
                            {
                                this.IsDownLoading = false;
                            }
+                           ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
                            Services.CommonMethod.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
                        });
                    }
@@ -201,56 +216,54 @@ namespace Sodu.ViewModel
            });
         }
 
-        bool isAdd1 = false;
-        bool isAdd2 = false;
-        bool isAdd3 = false;
-        public void AddBookEntityToDatabase(BookEntity entity)
+        private static readonly object isAdd1 = new object();
+        private static readonly object isAdd2 = new object();
+        private static readonly object isAdd3 = new object();
+
+        public async void AddBookEntityToDatabase(BookEntity entity)
         {
             this.downLoadedBookList.Add(entity);
-
-            if (isAdd1)
+            while (true)
             {
-                return;
+                if (downLoadedBookList.Count > 0)
+                {
+                    while (downLoadedBookList.Count > 0)
+                    {
+                        Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), downLoadedBookList[0]);
+                        downLoadedBookList.RemoveAt(0);
+                    }
+                }
+                else
+                {
+                    await Task.Delay(3000);
+                }
             }
-            while (downLoadedBookList.Count > 0)
-            {
-                isAdd1 = true;
-                Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), downLoadedBookList[0]);
-                downLoadedBookList.RemoveAt(0);
-            }
-            isAdd1 = false;
         }
 
         public void AddBookCatalogToDatabase(BookCatalog entity)
         {
-            this.downLoadedBookCatalogList.Add(entity);
-            if (isAdd2)
+
+            try
             {
-                return;
+                bool result = Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), entity);
             }
-            while (downLoadedBookCatalogList.Count > 0)
+            catch (Exception ex)
             {
-                isAdd2 = true;
-                Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), downLoadedBookCatalogList[0]);
-                downLoadedBookCatalogList.RemoveAt(0);
+
             }
-            isAdd2 = false;
         }
+
 
         public void AddBookCatalogContentToDatabase(BookCatalogContent entity)
         {
-            this.downLoadedBookContentList.Add(entity);
-            if (isAdd3)
+            try
             {
-                return;
+                var result = Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), entity);
             }
-            while (downLoadedBookContentList.Count > 0)
+            catch (Exception ex)
             {
-                isAdd3 = true;
-                Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), downLoadedBookContentList[0]);
-                downLoadedBookContentList.RemoveAt(0);
+
             }
-            isAdd3 = false;
         }
 
         private async Task<string> GetHtmlData(string catalogUrl)

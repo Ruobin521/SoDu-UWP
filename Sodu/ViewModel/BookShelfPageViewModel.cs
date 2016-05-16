@@ -276,14 +276,14 @@ namespace Sodu.ViewModel
                 OnEditCommand();
             }
         }
-        public async void RemoveBookList(List<BookEntity> removeBookList)
+        public void RemoveBookList(List<BookEntity> removeBookList)
+        {
+            Task.Run(async () =>
         {
             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 IsLoading = true;
             });
-            Task.Run(async () =>
-        {
             bool result = true;
             foreach (var item in removeBookList)
             {
@@ -312,6 +312,7 @@ namespace Sodu.ViewModel
        {
            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
            {
+               IsLoading = false;
                if (!result.Result)
                {
                    CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
@@ -320,8 +321,8 @@ namespace Sodu.ViewModel
                {
                    CommonMethod.ShowMessage("操作完毕");
                    removeBookList.Clear();
+                   OnEditCommand();
                }
-               IsLoading = false;
            }
            );
        });
