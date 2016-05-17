@@ -181,13 +181,8 @@ namespace Sodu.ViewModel
             set
             {
                 this.SetProperty(ref this.m_BookEntity, value);
-                if (this.m_BookEntity != null)
-                {
-                    this.ContentTitle = this.m_BookEntity.NewestChapterName;
-                }
             }
         }
-
 
         public BookContentPageViewModel()
         {
@@ -266,6 +261,9 @@ namespace Sodu.ViewModel
                   if (html != null)
                   {
                       SetTextContent(html);
+                      this.BookEntity.LastReadChapterName = this.CurrentCatalog.CatalogName;
+                      this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogUrl;
+                      this.ContentTitle = this.BookEntity.BookName + "_" + BookEntity.LastReadChapterName;
                       if (!IsLocal)
                       {
                           Services.CommonMethod.ShowMessage("正文加载完毕");

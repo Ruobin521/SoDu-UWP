@@ -111,18 +111,19 @@ namespace Sodu.ViewModel
                 return;
             }
 
-            this.CurrentBookEntity = new BookEntity()
-            {
-                BookID = temp.BookID,
-                BookName = temp.BookName,
-                NewestChapterName = temp.NewestChapterName,
-                NewestChapterUrl = temp.NewestChapterUrl,
-                CatalogListUrl = temp.CatalogListUrl,
-                UpdateCatalogUrl = temp.UpdateCatalogUrl,
-                LyWeb = temp.LyWeb,
-                UpdateTime = temp.UpdateTime,
-                CatalogList = temp.CatalogList,
-            };
+            this.CurrentBookEntity = temp;
+            //this.CurrentBookEntity = new BookEntity()
+            //{
+            //    BookID = temp.BookID,
+            //    BookName = temp.BookName,
+            //    NewestChapterName = temp.NewestChapterName,
+            //    NewestChapterUrl = temp.NewestChapterUrl,
+            //    CatalogListUrl = temp.CatalogListUrl,
+            //    UpdateCatalogUrl = temp.UpdateCatalogUrl,
+            //    LyWeb = temp.LyWeb,
+            //    UpdateTime = temp.UpdateTime,
+            //    CatalogList = temp.CatalogList,
+            //};
 
             this.ContentTitle = CurrentBookEntity.BookName + "  目录";
 
@@ -168,8 +169,6 @@ namespace Sodu.ViewModel
                             BookCatalog catalog = str as BookCatalog;
                             if (catalog == null) return;
 
-                            CurrentBookEntity.LastReadChapterUrl = catalog.CatalogUrl;
-                            CurrentBookEntity.LastReadChapterName = catalog.CatalogName;
                             NavigationService.GoBack();
                             ViewModelInstance.Instance.BookContentPageViewModelInstance.OnSwtichCommand(catalog);
                         }
@@ -192,7 +191,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnRefreshCommand(object obj)
+        private void OnRefreshCommand(object obj)
         {
             if (IsLoading)
             {
@@ -293,19 +292,17 @@ namespace Sodu.ViewModel
         }
 
 
-
-
         /// </summary>
         public RelayCommand<object> DwonLoadhCommand
         {
             get
             {
-                return new RelayCommand<object>(OnDwonLoadhCommandd);
+                return new RelayCommand<object>(OnDwonLoadhCommand);
             }
         }
 
 
-        private void OnDwonLoadhCommandd(object obj)
+        private void OnDwonLoadhCommand(object obj)
         {
             if (IsLoading) return;
             if (this.CurrentBookEntity != null && this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)

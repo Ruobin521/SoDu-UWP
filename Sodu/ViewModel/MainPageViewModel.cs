@@ -365,6 +365,8 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                     {
+                        IsLeftPanelOpen = false;
+
                         NavigationService.NavigateTo(typeof(SettingPage), null);
                     });
             }
@@ -380,6 +382,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                       {
+                          IsLeftPanelOpen = false;
                           NavigationService.NavigateTo(typeof(DownLoadCenterPage), null);
                       });
             }
@@ -395,6 +398,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                     {
+                        IsLeftPanelOpen = false;
                         NavigationService.NavigateTo(typeof(LocalBookPage), null);
                     });
             }
@@ -410,6 +414,7 @@ namespace Sodu.ViewModel
                 return new RelayCommand<bool>(
                       (str) =>
                       {
+                          IsLeftPanelOpen = false;
                           NavigationService.NavigateTo(typeof(EverReadPage), null);
                       });
             }

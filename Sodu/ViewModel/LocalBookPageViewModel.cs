@@ -299,7 +299,7 @@ namespace Sodu.ViewModel
                 }
 
                 ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = true;
-                NavigationService.NavigateTo(typeof(BookCatalogPage), entity);
+                NavigationService.NavigateTo(typeof(BookContentPage), entity);
 
             }
         }

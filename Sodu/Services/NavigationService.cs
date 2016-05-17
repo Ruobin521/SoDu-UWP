@@ -52,7 +52,7 @@ namespace Sodu.Services
                 }
             }
         }
-        public static void NavigateTo(Type type, object para)
+        public static void NavigateTo(Type type, object para = null)
         {
             ContentFrame.Navigate(type, para);
         }
