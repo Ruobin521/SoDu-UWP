@@ -71,18 +71,7 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_CurrentEntity, value);
             }
         }
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
-            }
-        }
+
 
         private bool m_IsLoading;
         public bool IsLoading
@@ -94,15 +83,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
             }
         }
 
@@ -197,11 +177,11 @@ namespace Sodu.ViewModel
              {
                  if (result.Result != null && await SetBookList(result.Result.ToString(), pageIndex))
                  {
-                     CommonMethod.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+                     ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
                  }
                  else
                  {
-                     CommonMethod.ShowMessage("未能获取最新章节数据");
+                     ToastHeplper.ShowMessage("未能获取最新章节数据");
                  }
              });
          });
@@ -267,7 +247,7 @@ namespace Sodu.ViewModel
         {
             if (!string.IsNullOrEmpty(html))
             {
-                List<BookEntity> arrary = GetBookListMethod.GetBookUpdateChapterList(html);
+                List<BookEntity> arrary = AnalysisSoduService.GetBookUpdateChapterList(html);
                 if (arrary == null)
                 {
                     return false;
@@ -317,17 +297,17 @@ namespace Sodu.ViewModel
                             {
                                 ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(CurrentEntity);
                                 IsAddBtnShow = false;
-                                CommonMethod.ShowMessage("收藏成功");
+                                ToastHeplper.ShowMessage("收藏成功");
                             }
                         }
                         else
                         {
-                            CommonMethod.ShowMessage("您已收藏过本书");
+                            ToastHeplper.ShowMessage("您已收藏过本书");
                         }
                     }
                     catch (Exception)
                     {
-                        CommonMethod.ShowMessage("收藏失败，请重新操作");
+                        ToastHeplper.ShowMessage("收藏失败，请重新操作");
                     }
                     finally
                     {
@@ -346,7 +326,7 @@ namespace Sodu.ViewModel
                    if (IsLoading) return;
                    if (PageIndex == 1)
                    {
-                       CommonMethod.ShowMessage("已经是第一页");
+                       ToastHeplper.ShowMessage("已经是第一页");
                        return;
                    }
                    SetData(1);
@@ -363,7 +343,7 @@ namespace Sodu.ViewModel
                     if (IsLoading) return;
                     if (PageIndex == PageCount)
                     {
-                        CommonMethod.ShowMessage("已经是最后一页");
+                        ToastHeplper.ShowMessage("已经是最后一页");
                         return;
                     }
                     SetData(PageCount);
@@ -425,7 +405,7 @@ namespace Sodu.ViewModel
 
             if (PageIndex == PageCount)
             {
-                CommonMethod.ShowMessage("已经是最后一页");
+                ToastHeplper.ShowMessage("已经是最后一页");
                 return;
             }
             SetData(PageIndex + 1);
@@ -445,7 +425,7 @@ namespace Sodu.ViewModel
 
             if (PageIndex == 1)
             {
-                CommonMethod.ShowMessage("已经是第一页");
+                ToastHeplper.ShowMessage("已经是第一页");
                 return;
             }
             SetData(PageIndex - 1);
@@ -475,7 +455,6 @@ namespace Sodu.ViewModel
                         BookEntity entity = obj as BookEntity;
                         if (entity != null)
                         {
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.IsLocal = false;
                             NavigationService.NavigateTo(typeof(BookContentPage), entity);
                         }
                     }

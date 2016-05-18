@@ -31,20 +31,6 @@ namespace Sodu.ViewModel
                 SetProperty(ref _ContentTitle, value);
             }
         }
-
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
-            }
-        }
-
         private bool m_IsLoading;
         public bool IsLoading
         {
@@ -55,14 +41,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
             }
         }
 
@@ -149,11 +127,11 @@ namespace Sodu.ViewModel
                          bool rs = await SetBookList(result.Result.ToString(), pageindex);
                          if (!rs)
                          {
-                             CommonMethod.ShowMessage(" 第" + pageindex + "页数据加载失败");
+                             ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
                          }
                          else
                          {
-                             CommonMethod.ShowMessage("已加载第" + pageindex + "页，共8页");
+                             ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
                          }
                      });
                 }
@@ -190,7 +168,7 @@ namespace Sodu.ViewModel
 
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> arrary = GetBookListMethod.GetRankListFromHtml(html);
+                ObservableCollection<BookEntity> arrary = AnalysisSoduService.GetRankListFromHtml(html);
                 if (arrary == null)
                 {
                     return false;
@@ -221,7 +199,7 @@ namespace Sodu.ViewModel
                     if (IsLoading) return;
                     if (PageIndex == 1)
                     {
-                        CommonMethod.ShowMessage("已经是第一页");
+                        ToastHeplper.ShowMessage("已经是第一页");
                         return;
                     }
                     SetData(1);
@@ -238,7 +216,7 @@ namespace Sodu.ViewModel
                     if (IsLoading) return;
                     if (PageIndex == PageCount)
                     {
-                        CommonMethod.ShowMessage("已经是最后一页");
+                        ToastHeplper.ShowMessage("已经是最后一页");
                         return;
                     }
                     SetData(PageCount);
@@ -285,7 +263,7 @@ namespace Sodu.ViewModel
             if (IsLoading) return;
             if (PageIndex == PageCount)
             {
-                CommonMethod.ShowMessage("已经是最后一页");
+                ToastHeplper.ShowMessage("已经是最后一页");
                 return;
             }
             SetData(PageIndex + 1);
@@ -305,7 +283,7 @@ namespace Sodu.ViewModel
             if (IsLoading) return;
             if (PageIndex == 1)
             {
-                CommonMethod.ShowMessage("已经是第一页");
+                ToastHeplper.ShowMessage("已经是第一页");
                 return;
             }
             SetData(PageIndex - 1);

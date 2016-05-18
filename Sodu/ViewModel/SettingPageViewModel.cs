@@ -159,11 +159,11 @@ namespace Sodu.ViewModel
                     {
                         if (result)
                         {
-                            CommonMethod.ShowMessage("已保存设置更改");
+                            ToastHeplper.ShowMessage("已保存设置更改");
                         }
                         else
                         {
-                            CommonMethod.ShowMessage("保存设置失败，请重新尝试");
+                            ToastHeplper.ShowMessage("保存设置失败，请重新尝试");
                         }
                     }
                 }

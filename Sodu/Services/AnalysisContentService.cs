@@ -109,7 +109,7 @@ namespace Sodu.Services
         public const string yssm = "www.youshishumeng.com";
 
     }
-    public class AnalysisContentHtmlService
+    public class AnalysisContentService
     {
         public async static Task<string> GetHtmlContent(HttpHelper http, string catalogUrl)
         {
@@ -122,7 +122,7 @@ namespace Sodu.Services
                 {
                     return null;
                 }
-                content = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalogUrl);
+                content = Services.AnalysisContentService.AnalysisContentHtml(html, catalogUrl);
                 if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
                 {
                     return null;
@@ -136,7 +136,7 @@ namespace Sodu.Services
                         temp = await http.WebRequestGet(url, false);
                         if (temp != null)
                         {
-                            temp = Services.AnalysisContentHtmlService.AnalysisContentHtml(temp, url);
+                            temp = Services.AnalysisContentService.AnalysisContentHtml(temp, url);
                         }
                         if (temp != null)
                         {
@@ -294,6 +294,7 @@ namespace Sodu.Services
             if (match != null)
             {
                 result = match.ToString();
+                result = Regex.Replace(result, "阅读本书最新章节请到.*?敬请记住我们最新网址.*?m", "");
                 result = ReplaceSymbol(result);
             }
             return result;
@@ -312,6 +313,7 @@ namespace Sodu.Services
             {
                 result = match.ToString();
                 result = ReplaceSymbol(result);
+                result = result.Replace("p class=\"pdp\">", "").Replace("pdp\">", "");
             }
             return result;
         }
@@ -755,6 +757,32 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogList
     {
+        public static async Task<List<BookCatalog>> GetCatalogList(string url, string bookid, HttpHelper http)
+        {
+            List<BookCatalog> catalogList = null;
+            if (string.IsNullOrEmpty(url))
+            {
+                return catalogList;
+            }
+            await Task.Run(async () =>
+            {
+                string html = await http.WebRequestGet(url, true);
+                if (html != null)
+                {
+                    catalogList = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
+                    if (catalogList != null)
+                    {
+                        foreach (var item in catalogList)
+                        {
+                            item.BookID = bookid;
+                            item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                        }
+                    }
+                }
+            });
+            return catalogList;
+        }
+
         public static List<BookCatalog> GetCatalogListByHtml(string html, string url)
         {
             List<BookCatalog> result = null;

@@ -15,7 +15,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <TextBlock x:Name="TextTitle"   Text="本地小说" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
         <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
@@ -27,8 +27,12 @@
         </ListView>
 
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding CancleUpdateCommand}"  />
+            <AppBarButton Icon="Download" Label="更新"  Command="{Binding UpdateCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>
             <AppBarButton Icon="Delete" Label="清空"  Command="{Binding RemoveBookCommand}"/>
         </CommandBar>
+
+        <!--<UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>-->
     </Grid>
 </Page>

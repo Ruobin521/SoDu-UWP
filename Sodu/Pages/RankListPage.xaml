@@ -50,7 +50,7 @@
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
             <!--<AppBarSeparator/>-->
             <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
-            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="70"  Command="{Binding RefreshCommand}"/>
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="70"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="70"  Command="{Binding PrePageCommand}"/>
             <AppBarButton Icon="Next" Label="下一页"  Width="70"  Command="{Binding  RequestCommand }"/>
             <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>

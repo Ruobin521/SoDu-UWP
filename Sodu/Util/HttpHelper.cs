@@ -41,7 +41,7 @@ namespace Sodu.Util
         }
 
 
-        public async Task<string> WebRequestGet(string url, bool isAddTime = false)
+        public async Task<string> WebRequestGet(string url, bool isAddTime = false, Encoding encoding = null)
         {
             if (isAddTime)
             {
@@ -60,15 +60,8 @@ namespace Sodu.Util
             Request.Proxy = null;
             Request.ContinueTimeout = 350;
 
-            ///大书包网
-            if (Request.RequestUri.ToString().Contains("dashubao"))
-            {
-                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
-                filter.CookieManager.SetCookie(new HttpCookie("security_session_mid_verify", cookieCollection[0].Domain, cookieCollection[0].Path) { Value = "71d9dcd1140e65842cff308a2f67c6d9" }, false);
-            }
 
-            string html = await GetReponseHtml(Request);
+            string html = await GetReponseHtml(Request, encoding);
             return html;
         }
 
@@ -95,7 +88,7 @@ namespace Sodu.Util
 
         }
 
-        public async Task<string> GetReponseHtml(WebRequest request)
+        public async Task<string> GetReponseHtml(WebRequest request, Encoding encoding = null)
         {
             string html = string.Empty;
             try
@@ -122,13 +115,12 @@ namespace Sodu.Util
                 }
                 var bytes = ms.ToArray();
 
-                var encoding = GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]);
-
+                encoding = encoding == null ? GetEncoding(bytes, response.Headers[HttpRequestHeader.ContentType]) : encoding;
                 html = encoding.GetString(bytes);
                 await stream.FlushAsync();
             }
             catch (Exception ex)
-             {
+            {
 
             }
             return html;

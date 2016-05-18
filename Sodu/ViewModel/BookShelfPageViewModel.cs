@@ -34,10 +34,31 @@ namespace Sodu.ViewModel
                 SetProperty(ref _ContentTitle, value);
             }
         }
+        private bool m_IsAllSelected;
+        public bool IsAllSelected
+        {
+            get
+            {
+                return m_IsAllSelected;
+            }
+            set
+            {
+                SetProperty(ref this.m_IsAllSelected, value);
+            }
+        }
 
-
-        public bool IsEditing = false;
-
+        private bool m_IsEditing;
+        public bool IsEditing
+        {
+            get
+            {
+                return m_IsEditing;
+            }
+            set
+            {
+                SetProperty(ref this.m_IsEditing, value);
+            }
+        }
 
         private bool m_IsShow = false;
 
@@ -63,28 +84,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
-            }
-        }
-
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
             }
         }
 
@@ -172,12 +171,12 @@ namespace Sodu.ViewModel
                         }
                         else if (html.Contains("您还没有登录"))
                         {
-                            CommonMethod.ShowMessage("您还没有登录");
+                            ToastHeplper.ShowMessage("您还没有登录");
                             ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
                         }
                         else
                         {
-                            CommonMethod.ShowMessage("获取数据失败");
+                            ToastHeplper.ShowMessage("获取数据失败");
                         }
                     });
                 }
@@ -219,7 +218,7 @@ namespace Sodu.ViewModel
             }
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> list = GetBookListMethod.GetBookShelftListFromHtml(html);
+                ObservableCollection<BookEntity> list = AnalysisSoduService.GetBookShelftListFromHtml(html);
 
                 if (list == null)
                 {
@@ -237,7 +236,7 @@ namespace Sodu.ViewModel
 
                         }
                     }
-                    CommonMethod.ShowMessage("个人收藏已更新");
+                    ToastHeplper.ShowMessage("个人收藏已更新");
                 }
 
             }
@@ -260,15 +259,15 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
-                        CommonMethod.ShowMessage(item.BookName + "取消收藏失败，请重新操作");
+                        ToastHeplper.ShowMessage(item.BookName + "取消收藏失败，请重新操作");
                     }
                 }
-                CommonMethod.ShowMessage("操作成功");
+                ToastHeplper.ShowMessage("操作成功");
                 removeBookList.Clear();
             }
             catch (Exception ex)
             {
-                CommonMethod.ShowMessage("操作失败，请重新尝试");
+                ToastHeplper.ShowMessage("操作失败，请重新尝试");
             }
             finally
             {
@@ -315,11 +314,11 @@ namespace Sodu.ViewModel
                IsLoading = false;
                if (!result.Result)
                {
-                   CommonMethod.ShowMessage("操作完毕，但有部分图书没有成功移除");
+                   ToastHeplper.ShowMessage("操作完毕，但有部分图书没有成功移除");
                }
                else
                {
-                   CommonMethod.ShowMessage("操作完毕");
+                   ToastHeplper.ShowMessage("操作完毕");
                    removeBookList.Clear();
                    OnEditCommand();
                }
@@ -350,7 +349,11 @@ namespace Sodu.ViewModel
         {
             if (IsLoading) return;
 
-            if (this.ShelfBookList == null || this.ShelfBookList.Count < 1) return;
+            if (this.ShelfBookList == null || this.ShelfBookList.Count < 1)
+            {
+                IsEditing = false;
+                return;
+            }
             if (!IsEditing)
             {
                 IsEditing = true;
@@ -384,19 +387,22 @@ namespace Sodu.ViewModel
         public void OnSelectAllCommand(object obj)
         {
             if (!IsEditing) return;
-            if (obj != null && obj.ToString().Equals("0"))
+
+            if (!IsAllSelected)
             {
                 foreach (var item in ShelfBookList)
                 {
                     item.IsSelected = true;
                 }
+                IsAllSelected = true;
             }
-            else if (obj != null && obj.ToString().Equals("1"))
+            else
             {
                 foreach (var item in ShelfBookList)
                 {
                     item.IsSelected = false;
                 }
+                IsAllSelected = false;
             }
         }
 
@@ -479,6 +485,16 @@ namespace Sodu.ViewModel
                 if (IsEditing)
                 {
                     entity.IsSelected = !entity.IsSelected;
+
+                    IsAllSelected = true;
+                    foreach (var item in ShelfBookList)
+                    {
+                        if (!item.IsSelected)
+                        {
+                            IsAllSelected = false;
+                            break;
+                        }
+                    }
                 }
                 else
                 {

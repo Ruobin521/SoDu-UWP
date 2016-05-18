@@ -130,6 +130,8 @@ namespace Sodu.ViewModel
             get { return m_CurrentMenu; }
             set
             {
+                if (m_CurrentMenu == value) return;
+
                 this.SetProperty(ref this.m_CurrentMenu, value);
                 if (CurrentMenu != null)
                 {
@@ -227,7 +229,7 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
-                CommonMethod.ShowMessage("未知错误");
+                ToastHeplper.ShowMessage("未知错误");
             }
         }
         public void RefreshData(object obj = null)
@@ -312,7 +314,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                CommonMethod.ShowMessage("数据有误，请重新尝试");
+                ToastHeplper.ShowMessage("数据有误，请重新尝试");
             }
         }
 

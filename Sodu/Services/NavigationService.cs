@@ -1,4 +1,5 @@
 ﻿using Sodu.Model;
+using Sodu.Util;
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,6 @@ namespace Sodu.Services
                 }
             }
         }
-
-
-
         public static void CancleHttpRequest()
         {
             Page page = ContentFrame.Content as Page;
@@ -54,15 +52,13 @@ namespace Sodu.Services
         }
         public static void NavigateTo(Type type, object para = null)
         {
+            if (ContentFrame.CurrentSourcePageType != null && ContentFrame.CurrentSourcePageType.Equals(type))
+            {
+                return;
+            }
             ContentFrame.Navigate(type, para);
         }
-
-        public static void GoBack()
-        {
-            GoBack(null, null);
-        }
-
-        public static void GoBack(object sender, BackPressedEventArgs e)
+        public static void GoBack(object sender = null, BackPressedEventArgs e = null)
         {
             if (e != null)
             {
@@ -70,7 +66,6 @@ namespace Sodu.Services
             }
             if (ContentFrame.CanGoBack)
             {
-                //     CancleHttpRequest();
                 ContentFrame.GoBack();
             }
             else
@@ -81,7 +76,7 @@ namespace Sodu.Services
                 }
                 else
                 {
-                    CommonMethod.ShowMessage("再按一次返回键退出");
+                    ToastHeplper.ShowMessage("再按一次返回键退出");
                 }
             }
         }
@@ -96,19 +91,18 @@ namespace Sodu.Services
             else if (FirstTime != DateTime.MinValue)
             {
                 SecondTime = DateTime.Now;
-                if ((SecondTime - FirstTime).TotalSeconds > 2.5)
+                if ((SecondTime - FirstTime).TotalSeconds > 2)
                 {
                     FirstTime = DateTime.Now;
                     return false;
                 }
-                else if ((SecondTime - FirstTime).TotalSeconds <= 2.5)
+                else if ((SecondTime - FirstTime).TotalSeconds < 2)
                 {
                     return true;
                 }
             }
             return false;
         }
-
 
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {

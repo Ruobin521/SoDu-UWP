@@ -16,15 +16,6 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="注销登陆" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
-
-        <!--<CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
-            -->
-        <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
-        <!--<AppBarSeparator/>-->
-        <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
-        <!--
-            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="70"  Command="{Binding RefreshCommand}"/>
-        </CommandBar>-->
         <UC:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding IsLoading}"  ></UC:UC_ProgressRing>
     </Grid>
 </Page>

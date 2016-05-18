@@ -12,7 +12,6 @@ namespace Sodu.ViewModel
         bool IsLoading { get; set; }
         string ContentTitle { get; set; }
 
-
         void CancleHttpRequest();
     }
 }

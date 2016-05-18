@@ -72,7 +72,7 @@ namespace Sodu.ViewModel
         {
             if (BookList == null || BookList.Count <= 0)
             {
-                CommonMethod.ShowMessage("你还没有阅读记录");
+                ToastHeplper.ShowMessage("你还没有阅读记录");
             }
         }
 

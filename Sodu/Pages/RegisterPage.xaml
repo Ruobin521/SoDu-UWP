@@ -5,6 +5,7 @@
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:UC="using:Sodu.UC"
     mc:Ignorable="d"
     DataContext="{Binding Instance.RegiserPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
@@ -18,59 +19,35 @@
             <RowDefinition Height="45"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
-        <Border Grid.Row="1"    VerticalAlignment="Center" Margin="15,0,15,0" BorderThickness="1" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
-            <Grid>
+        <TextBlock x:Name="TextTitle"   Text="用户注册" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Border Grid.Row="1"    VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
+
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="45"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="45"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="Auto" MinHeight="50"/>
+                    <RowDefinition Height="45" />
+                    <RowDefinition Height="Auto" MinHeight="50"/>
+                    <RowDefinition Height="60"   />
                 </Grid.RowDefinitions>
-                <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="0" HorizontalAlignment="Center"   Margin="10,0,0,0" Text="用户注册" VerticalAlignment="Center" FontSize="22"/>
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="45"/>
-                        <RowDefinition Height="45"/>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="Auto" MinHeight="50"/>
-                        <RowDefinition Height="45" />
-                        <RowDefinition Height="35" />
-                        <RowDefinition Height="45"   />
-                        <RowDefinition Height="45" />
-                        <RowDefinition Height="45"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="0" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="用户名：" VerticalAlignment="Center" FontSize="18"/>
-                    <TextBox x:Name="txtName" Text="{Binding  UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextboxStyle}" Grid.Row="1"  VerticalAlignment="Center"   />
-                    <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="2" Text="密　码：" FontSize="18" />
-                    <PasswordBox x:Name="txtPassword" Password="{Binding PassWord,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle}" Grid.Row="3"    VerticalAlignment="Center"  />
+                <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="0" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="用户名：" VerticalAlignment="Center" FontSize="18"/>
+                <TextBox x:Name="txtName" Text="{Binding  UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextBoxStyle1}" Grid.Row="1"  VerticalAlignment="Center"   />
+                <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="2" Text="密　码：" FontSize="18" />
+                <PasswordBox x:Name="txtPassword" Password="{Binding PassWord,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}" BorderBrush="Gray" Grid.Row="3"    VerticalAlignment="Center"  />
 
 
-                    <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="4" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="邮箱：" VerticalAlignment="Center" FontSize="18"/>
-                    <TextBox x:Name="txtEmail" Text="{Binding  EmailAddress,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextboxStyle}" Grid.Row="5"  VerticalAlignment="Center"   />
+                <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="4" Text="确认密码：" FontSize="18" />
+                <PasswordBox x:Name="txtPassword2" Password="{Binding PassWord2,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}" BorderBrush="Gray" Grid.Row="5"    VerticalAlignment="Center"  />
 
-                    <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="6" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="验证码：" VerticalAlignment="Center" FontSize="18"/>
-                    <Grid Grid.Row="7" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="50"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox x:Name="txtVC" Text="{Binding VerificationCode   ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextboxStyle}" Grid.Row="10"  VerticalAlignment="Center"   Grid.Column="0" />
-                        <Image  Grid.Column="1" Width="95" Height="25" Source="{Binding ImageSource}"></Image>
-                        <Button Style="{StaticResource ButtonStyle1}" Grid.Column="2" Width="40" Height="40" Foreground="Black"
-                             Background="Transparent" Command="{Binding  RefreshVCCommand}">
-                            <Image Source="/Images/refresh.png" Height="35" Width="35" Stretch="Uniform"></Image>
-                        </Button>
-                    </Grid>
-
-                    <StackPanel Grid.Row="8" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="btnSumbit" Content="确定"  Grid.Column="0" Style="{StaticResource   ButtonStyle1 }" Command="{Binding ConfirmCommand}" CommandParameter="" FontSize="16" Height="35" Width="75" Margin="10,0"  />
-                        <!--<Button  Grid.Column="1"  x:Name="btnCancle"  Content="取消" Style="{StaticResource ButtonStyle1}" FontSize="16" Height="35" Width="75" Margin="10,0" Command="{ Binding CancleCommand}"   />-->
-                    </StackPanel>
-                </Grid>
+                <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="btnSumbit" Content="确定"  Grid.Column="0" Style="{StaticResource   ButtonStyle1 }" Command="{Binding ConfirmCommand}" FontSize="16" Height="35" Width="75" Margin="10,0"  />
+                    <Button  Grid.Column="1"  x:Name="btnCancle"  Content="取消" Style="{StaticResource ButtonStyle1}" FontSize="16" Height="35" Width="75" Margin="10,0" Command="{ Binding CancleCommand}"   />
+                </StackPanel>
             </Grid>
-
         </Border>
-
+        <UC:UC_ProgressRing VerticalAlignment="Top" Margin="0,200,0,0" Canvas.ZIndex="999" Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>
 
 </Page>

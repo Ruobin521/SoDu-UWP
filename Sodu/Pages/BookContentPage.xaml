@@ -59,7 +59,7 @@
 
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
             <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
-            <AppBarButton Icon="{Binding RefreshIcon}" x:Name="refreshBtn" Label="刷新" Width="50"    Command="{Binding  RefreshCommand}"/>
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="50"    Command="{Binding  RefreshCommand}"/>
             <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="directionAppBarButton_Click"/>
             <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
