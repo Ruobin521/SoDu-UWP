@@ -19,22 +19,37 @@ namespace Sodu.Database
                 using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
                 {
                     db.CreateTable<BookCatalog>();
-                    db.RunInTransaction(() =>
+                    db.RunInTransaction(async () =>
                     {
                         var temp = (from m in db.Table<BookCatalog>()
                                     where m.BookID == catalog.BookID && m.Index == catalog.Index
                                     select m
                             ).FirstOrDefault();
-                        if (temp == null)
-                        {
-                            db.Insert(catalog);
-                        }
-                        else
-                        {
-                            db.Delete(temp);
-                            db.Insert(catalog);
-                        }
 
+                        try
+                        {
+                            if (temp == null)
+                            {
+                                db.Insert(catalog);
+                            }
+                            else
+                            {
+                                db.Delete(temp);
+                                db.Insert(catalog);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex.Message != null && ex.Message.ToLower().Equals("busy"))
+                            {
+                                await Task.Delay(500);
+                                bool value = DBBookCatalog.InsertOrUpdateBookCatalog(path, catalog);
+                                if (value)
+                                {
+                                    return;
+                                }
+                            }
+                        }
                     });
                 }
             }
@@ -97,6 +112,8 @@ namespace Sodu.Database
             }
             return result;
         }
+
+
         public static bool DeleteAllCatalog(string path)
         {
             bool result = true;
