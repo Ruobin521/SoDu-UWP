@@ -34,6 +34,8 @@ namespace Sodu
     /// </summary>
     sealed partial class App : Application
     {
+        public static Frame rootFrame;
+
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
@@ -229,11 +231,6 @@ namespace Sodu
                     {
                         if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.BackpressedHandler().Result)
                         {
-                            return;
-                        }
-                        else
-                        {
-                            NavigationService.GoBack(sender, e);
                             return;
                         }
                     }

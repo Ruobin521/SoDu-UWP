@@ -115,9 +115,12 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants\AppDataPath.cs" />
+    <Compile Include="Converter\AppBarLabelConverter.cs" />
     <Compile Include="Converter\DownItemIconConverter.cs" />
     <Compile Include="Converter\DownLoadPagePauseIconConverter.cs" />
     <Compile Include="Converter\PopupWindowWidthConverter.cs" />
+    <Compile Include="Converter\RefreshCancleIconConverter.cs" />
+    <Compile Include="Converter\RefreshCancleIconLabelConverter.cs" />
     <Compile Include="Database\DBBookCatalog.cs" />
     <Compile Include="Database\DBBookCatalogContent.cs" />
     <Compile Include="Database\DBHistory.cs" />
@@ -157,8 +160,7 @@
       <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Schema\DatabaseSchema.cs" />
-    <Compile Include="Services\AnalysisContentHtmlService.cs" />
-    <Compile Include="Services\CommonMethod.cs" />
+    <Compile Include="Services\AnalysisContentService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\NetworkManager.cs" />
     <Compile Include="Services\RefreshDataService.cs" />
@@ -178,8 +180,7 @@
     <Compile Include="UC\UC_ProgressRing.xaml.cs">
       <DependentUpon>UC_ProgressRing.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Util\GetBookListMethod.cs" />
-    <Compile Include="Control\NotificationBar.cs" />
+    <Compile Include="Services\AnalysisSoduService.cs" />
     <Compile Include="Control\PullToRefreshListView.cs" />
     <Compile Include="Control\RefreshProgressEventArgs.cs" />
     <Compile Include="Converter\BookNameForgroundConverter.cs" />

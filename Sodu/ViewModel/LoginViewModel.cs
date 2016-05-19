@@ -90,7 +90,7 @@ namespace Sodu.ViewModel
         }
 
 
-        private bool m_IsAutoLogin;
+        private bool m_IsAutoLogin = true;
         public bool IsAutoLogin
         {
             get
@@ -114,7 +114,7 @@ namespace Sodu.ViewModel
         #region  构造函数
         public LoginViewModel()
         {
-            this.m_IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
+            this.IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
         }
         #endregion
 
@@ -171,7 +171,7 @@ namespace Sodu.ViewModel
 #endif
 
 #if  !DEBUG
-                        CommonMethod.ShowMessage("用户名和密码不能为空。");
+                        ToastHeplper.ShowMessage("用户名和密码不能为空。");
 #endif
                     }
                     else
@@ -182,14 +182,14 @@ namespace Sodu.ViewModel
                     html = await HttpHelper.HttpClientPostLoginRequest(PageUrl.LoginPostPage, postdata, IsAutoLogin);
                     if (html.Contains("{\"success\":true}"))
                     {
-                        CommonMethod.ShowMessage("登陆成功");
+                        ToastHeplper.ShowMessage("登陆成功");
 
 
                         ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                     }
                     else
                     {
-                        CommonMethod.ShowMessage("账号或密码错误，请重新输入。");
+                        ToastHeplper.ShowMessage("账号或密码错误，请重新输入。");
                     }
                 }
                 catch (Exception ex)

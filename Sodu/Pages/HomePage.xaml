@@ -64,7 +64,7 @@
             <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
             <!--<AppBarSeparator/>-->
             <!--<AppBarButton Icon="Back" Label="返回"    Command="{Binding BackCommand}"/>-->
-            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Command="{Binding RefreshCommand}"/>
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  Command="{Binding RefreshCommand}"/>
             <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
             <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->

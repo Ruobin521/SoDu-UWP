@@ -31,9 +31,17 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsLoading;
         public bool IsLoading
         {
-            get; set;
+            get
+            {
+                return m_IsLoading;
+            }
+            set
+            {
+                SetProperty(ref m_IsLoading, value);
+            }
         }
 
         private BitmapImage m_ImageSource = new BitmapImage() { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(PageUrl.VerificationCodePage, UriKind.Absolute) };
@@ -49,7 +57,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private string m_UserName = "aaa";
+        private string m_UserName;
         public string UserName
         {
             get
@@ -62,7 +70,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private string m_PassWord = "123456";
+        private string m_PassWord;
         public string PassWord
         {
             get
@@ -74,29 +82,16 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_PassWord, value);
             }
         }
-        private string m_EmailAddress = "123@qq.com";
-        public string EmailAddress
+        private string m_PassWord2;
+        public string PassWord2
         {
             get
             {
-                return m_EmailAddress;
+                return m_PassWord2;
             }
             set
             {
-                SetProperty(ref this.m_EmailAddress, value);
-            }
-        }
-
-        private string m_VerificationCode;
-        public string VerificationCode
-        {
-            get
-            {
-                return m_VerificationCode;
-            }
-            set
-            {
-                SetProperty(ref this.m_VerificationCode, value);
+                SetProperty(ref this.m_PassWord2, value);
             }
         }
 
@@ -110,11 +105,10 @@ namespace Sodu.ViewModel
 
         public void RefreshData(object obj = null)
         {
-            IsLoading = false;
+
         }
 
-
-        async void RegisterMethod()
+        private async void RegisterMethod()
         {
             try
             {
@@ -123,33 +117,33 @@ namespace Sodu.ViewModel
                 {
                     return;
                 }
-                string uri = PageUrl.RegisterPostPage;
-                string postData = "username=" + ChineseGBKConverter.Utf8ToGb2312(UserName) + "&password1=" + PassWord + "&email=" + EmailAddress + "&yzm=" + VerificationCode + "&B1=%C8%B7%C8%CF%D7%A2%B2%E1&postcheck=true";
-                string html = await http.HttpClientPostRequest(uri, postData);
-                if (html.Contains("验证码输入错误，请重新注册"))
+                IsLoading = true;
+                string html = null;
+                await Task.Run(async () =>
+                 {
+                     string uri = PageUrl.RegisterPostPage;
+                     string postData = "username=" + ChineseGBKConverter.Utf8ToGb2312(UserName) + "&userpass=" + PassWord;
+                     html = await http.HttpClientPostRequest(uri, postData);
+                 });
+                IsLoading = false;
+                if (html.Contains("{\"success\":true}"))
                 {
-                    CommonMethod.ShowMessage("验证码输入错误，请重新注册");
+                    ToastHeplper.ShowMessage("注册成功");
+                    ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                 }
-
-                else if (html.Contains("您已经注册过了"))
+                else if (html.Contains("{\"success\":false}"))
                 {
-                    CommonMethod.ShowMessage("该账户已存在！");
-                }
-                else if (html.Contains("注册成功"))
-                {
-                    CommonMethod.ShowMessage("注册成功,请登录");
-                    //  NavigationService.NavigateTo(new Model.MenuModel() { MenuName = "登录", MenuType = typeof(Pages.LoginPage) }, null);
+                    throw new Exception("注册失败，该用户可能已经注册过");
                 }
                 else
                 {
-                    throw new Exception();
+                    throw new Exception("注册失败");
                 }
 
             }
             catch (Exception ex)
             {
-                CommonMethod.ShowMessage("获取数据有误，请重新尝试");
-
+                ToastHeplper.ShowMessage(ex.Message);
             }
             finally
             {
@@ -169,46 +163,55 @@ namespace Sodu.ViewModel
         }
         private void OnConfirmCommand(object obj)
         {
+            if (CheckInput())
+            {
+                RegisterMethod();
+            }
+        }
+
+        private bool CheckInput()
+        {
+            bool result = true;
+
             if (string.IsNullOrEmpty(this.UserName))
             {
-                CommonMethod.ShowMessage("请输入用户名");
-                return;
+                ToastHeplper.ShowMessage("请输入用户名");
+                return false;
             }
 
             if (string.IsNullOrEmpty(this.PassWord))
             {
-                CommonMethod.ShowMessage("请输入密码");
-                return;
+                ToastHeplper.ShowMessage("请输入密码");
+                return false;
+
             }
 
-            if (string.IsNullOrEmpty(this.EmailAddress))
+            if (string.IsNullOrEmpty(this.PassWord2))
             {
-                CommonMethod.ShowMessage("请输入邮箱地址");
-                return;
-            }
+                ToastHeplper.ShowMessage("请输入确认密码");
+                return false;
 
-            if (string.IsNullOrEmpty(this.VerificationCode))
+            }
+            if (!this.PassWord2.Equals(this.PassWord))
             {
-                CommonMethod.ShowMessage("请输入验证码");
-                return;
+                ToastHeplper.ShowMessage("两次密码不一致");
+                return false;
             }
-
-            RegisterMethod();
+            return result;
         }
 
         ///刷新验证码
         /// </summary>
-        public RelayCommand<object> RefreshVCCommand
+        public RelayCommand<object> CancleCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshVCCommand);
+                return new RelayCommand<object>(OnCancleCommand);
             }
         }
-        private void OnRefreshVCCommand(object obj)
+        private void OnCancleCommand(object obj)
         {
-            this.ImageSource = null;
-            this.ImageSource = new BitmapImage() { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(PageUrl.VerificationCodePage, UriKind.Absolute) };
+            CancleHttpRequest();
         }
     }
 }

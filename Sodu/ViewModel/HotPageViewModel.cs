@@ -63,19 +63,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
-            }
-        }
-
         private bool m_IsLoading;
         public bool IsLoading
         {
@@ -86,14 +73,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
             }
         }
         public HotPageViewModel()
@@ -131,11 +110,11 @@ namespace Sodu.ViewModel
                  {
                      if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
                      {
-                         CommonMethod.ShowMessage("热门小说数据已更新");
+                         ToastHeplper.ShowMessage("热门小说数据已更新");
                      }
                      else
                      {
-                         CommonMethod.ShowMessage("未能获取热门小说数据");
+                         ToastHeplper.ShowMessage("未能获取热门小说数据");
                      }
                  });
 
@@ -178,7 +157,7 @@ namespace Sodu.ViewModel
                 if (!string.IsNullOrEmpty(html))
                 {
 
-                    ObservableCollection<BookEntity>[] arraryList = GetBookListMethod.GetHomePageBookList(html);
+                    ObservableCollection<BookEntity>[] arraryList = AnalysisSoduService.GetHomePageBookList(html);
                     if (arraryList == null)
                     {
                         return false;

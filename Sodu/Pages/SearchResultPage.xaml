@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <RelativePanel Height="40" Margin="0,0,0,0"  Grid.Column="1"  MaxWidth="500">
                 <Button  x:Name="btnSearch"    RelativePanel.AlignRightWithPanel="True" HorizontalAlignment="Right" RelativePanel.AlignVerticalCenterWithPanel="True"   Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" Style="{StaticResource ButtonStyle1}" Height="38" Width="90" FontSize="16" VerticalAlignment="Center" Content="搜索" />
-                <TextBox  x:Name="txtSearchPara"  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"  Text="{Binding SearchPara,Mode=TwoWay}"   Style="{StaticResource TextboxStyle}" BorderThickness="1,1,0,1"   FontSize="22"  HorizontalAlignment="Stretch" Height="38" ></TextBox>
+                <TextBox  x:Name="txtSearchPara"  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"  Text="{Binding SearchPara,Mode=TwoWay}"   Style="{StaticResource  TextBoxStyle1}"  BorderThickness="1,1,0,1"  BorderBrush="#FF3388FF"  FontSize="22"  HorizontalAlignment="Stretch" Height="38" ></TextBox>
             </RelativePanel>
         </Grid>
         <ListView  Grid.Row="2" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}"        HorizontalAlignment="Stretch" Background="Transparent"   
@@ -37,15 +37,10 @@
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <Interactivity:Interaction.Behaviors >
-                <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  BookItemSelectedChangedCommand}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
-                </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>
         </ListView>
 
         <CommandBar  Grid.Row="3"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
-            <AppBarButton Icon="{Binding RefreshIcon}" Label="刷新"  Width="60"  Command="{Binding RefreshCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" />
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60"  Command="{Binding RefreshCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" />
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>

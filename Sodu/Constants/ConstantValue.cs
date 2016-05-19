@@ -14,9 +14,6 @@ namespace Sodu.Constants
 {
     public class ConstantValue
     {
-
-
-
         public static ObservableCollection<MenuModel> UnloadMenuList = new ObservableCollection<MenuModel>()
         {
             new MenuModel() { MenuName= "日点击排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
@@ -61,12 +58,10 @@ namespace Sodu.Constants
         //public const string LogoutPage = "http://www.soduso.com/logout.ashx";
         public const string LogoutPage = "http://www.sodu.cc/logout.html?callback=http://www.sodu.cc/home.html";
 
-        //注册页面
-        public const string RegisterPage = "http://www.soduso.com/register.aspx";
-
 
         //注册页面post
-        public const string RegisterPostPage = "http://www.soduso.com/reg.ashx ";
+        //public const string RegisterPostPage = "http://www.soduso.com/reg.ashx ";
+        public const string RegisterPostPage = "http://www.sodu.cc/handler/reg.html";
 
         /// <summary>
         /// 验证码地址

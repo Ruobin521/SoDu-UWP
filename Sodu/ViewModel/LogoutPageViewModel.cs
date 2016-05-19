@@ -1,5 +1,6 @@
 ﻿using Sodu.Constants;
 using Sodu.Services;
+using Sodu.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,11 +65,11 @@ namespace Sodu.ViewModel
                   if (html != null && html.Contains("to delete public domains' cookies"))
                   {
                       ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
-                      CommonMethod.ShowMessage("注销成功");
+                      ToastHeplper.ShowMessage("注销成功");
                   }
                   else
                   {
-                      CommonMethod.ShowMessage("注销失败请重新尝试");
+                      ToastHeplper.ShowMessage("注销失败请重新尝试");
                       NavigationService.GoBack();
                   }
               });

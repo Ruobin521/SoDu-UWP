@@ -19,21 +19,6 @@ namespace Sodu.ViewModel
 {
     public class BookContentPageViewModel : BaseViewModel, IViewModel
     {
-        public bool IsLocal { get; set; }
-
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
-            }
-        }
-
         private bool m_IsLoading;
         public bool IsLoading
         {
@@ -44,14 +29,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
             }
         }
         private bool m_IsLoadingCatalogList;
@@ -80,18 +57,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        //public bool m_IsCatalogMenuShow = true;
-        //public bool IsCatalogMenuShow
-        //{
-        //    get
-        //    {
-        //        return m_IsCatalogMenuShow;
-        //    }
-        //    set
-        //    {
-        //        SetProperty(ref m_IsCatalogMenuShow, value);
-        //    }
-        //}
 
         public StringBuilder m_TextContent;
         public StringBuilder TextContent
@@ -211,7 +176,7 @@ namespace Sodu.ViewModel
 
             // this.IsCatalogMenuShow = false;
 
-            if (!IsLocal)
+            if (!entity.IsLocal)
             {
                 this.IsSwitchButtonShow = false;
             }
@@ -228,7 +193,14 @@ namespace Sodu.ViewModel
 
             this.BookEntity = entity;
 
-            this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.LastReadChapterUrl).Authority };
+            if (this.BookEntity.IsLocal)
+            {
+                this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.LastReadChapterUrl).Authority };
+            }
+            else
+            {
+                this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.NewestChapterName, CatalogUrl = entity.NewestChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
+            }
 
             SetData(CurrentCatalog);
         }
@@ -237,7 +209,7 @@ namespace Sodu.ViewModel
         {
             Task.Run(async () =>
            {
-               if (IsLocal)
+               if (this.BookEntity.IsLocal)
                {
                    string html = await GetCatafromDatabase(catalog);
                    if (html == null)
@@ -260,19 +232,24 @@ namespace Sodu.ViewModel
               {
                   if (html != null)
                   {
+                      this.CurrentCatalog = catalog;
+                      this.BookEntity.LastReadChapterName = catalog.CatalogName;
+                      this.BookEntity.LastReadChapterUrl = catalog.CatalogUrl;
                       SetTextContent(html);
-                      this.BookEntity.LastReadChapterName = this.CurrentCatalog.CatalogName;
-                      this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogUrl;
                       this.ContentTitle = this.BookEntity.BookName + "_" + BookEntity.LastReadChapterName;
-                      if (!IsLocal)
+                      if (!this.BookEntity.IsLocal)
                       {
-                          Services.CommonMethod.ShowMessage("正文加载完毕");
+                          ToastHeplper.ShowMessage("正文加载完毕");
+                      }
+                      else
+                      {
+                          Database.DBLocalBook.InsertOrUpdateBookEntity(Constants.AppDataPath.GetLocalBookDBPath(), this.BookEntity);
                       }
                       rs = true;
                   }
                   else
                   {
-                      Services.CommonMethod.ShowMessage("未能获取正文内容");
+                      ToastHeplper.ShowMessage("未能获取正文内容");
                       rs = false;
                   }
               });
@@ -416,7 +393,7 @@ namespace Sodu.ViewModel
                     return null;
                 }
                 SetBookCataologListUrl(html, catalogUrl);
-                content = Services.AnalysisContentHtmlService.AnalysisContentHtml(html, catalogUrl);
+                content = Services.AnalysisContentService.AnalysisContentHtml(html, catalogUrl);
                 if (string.IsNullOrEmpty(content) || string.IsNullOrWhiteSpace(content))
                 {
                     return null;
@@ -429,7 +406,7 @@ namespace Sodu.ViewModel
                         string temp = await http.WebRequestGet(url, false);
                         if (temp != null)
                         {
-                            temp = Services.AnalysisContentHtmlService.AnalysisContentHtml(temp, url);
+                            temp = Services.AnalysisContentService.AnalysisContentHtml(temp, url);
                         }
                         if (temp != null)
                         {
@@ -676,7 +653,7 @@ namespace Sodu.ViewModel
                       {
                           IsLoading = true;
                       });
-                      CommonMethod.ShowMessage("正在加载目录");
+                      ToastHeplper.ShowMessage("正在加载目录");
                       return;
                   }
 
@@ -695,7 +672,7 @@ namespace Sodu.ViewModel
                   }
                   else
                   {
-                      CommonMethod.ShowMessage("目录加载失败");
+                      ToastHeplper.ShowMessage("目录加载失败");
                   }
               });
             }
@@ -726,7 +703,7 @@ namespace Sodu.ViewModel
             {
                 if (this.BookEntity.CatalogList.IndexOf(this.CurrentCatalog) == 0)
                 {
-                    Services.CommonMethod.ShowMessage("已经是第一章。");
+                    ToastHeplper.ShowMessage("已经是第一章。");
                     return;
                 }
                 if (this.BookEntity.CatalogList.Count < 2)
@@ -735,34 +712,34 @@ namespace Sodu.ViewModel
                 }
                 if (tempcatalog != null)
                 {
-                    this.CurrentCatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(tempcatalog) - 1];
+                    tempcatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(tempcatalog) - 1];
                 }
             }
             //下一章
             else if (str.ToString().Equals("1"))
             {
-                if (this.BookEntity.CatalogList.IndexOf(this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == this.CurrentCatalog.CatalogUrl)) == this.BookEntity.CatalogList.Count - 1)
-                {
-                    Services.CommonMethod.ShowMessage("已经是最后一章。");
-                    return;
-                }
                 if (this.BookEntity.CatalogList.Count < 2)
                 {
                     return;
                 }
-                this.CurrentCatalog = this.BookEntity.CatalogList[index + 1];
+                else if (this.BookEntity.CatalogList.IndexOf(tempcatalog) == this.BookEntity.CatalogList.Count - 1)
+                {
+                    ToastHeplper.ShowMessage("已经是最后一章。");
+                    return;
+                }
+
+                tempcatalog = this.BookEntity.CatalogList[index + 1];
             }
             else if (str is BookCatalog)
             {
                 BookCatalog catalog = str as BookCatalog;
-                this.CurrentCatalog = catalog;
+                tempcatalog = catalog;
             }
 
-            if (this.CurrentCatalog != null && CurrentCatalog.CatalogName != null && this.CurrentCatalog.CatalogUrl != null)
+            if (tempcatalog != null && tempcatalog.CatalogName != null && tempcatalog.CatalogUrl != null)
             {
-                this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogName;
-                this.BookEntity.LastReadChapterUrl = this.CurrentCatalog.CatalogUrl;
-                SetData(CurrentCatalog);
+
+                SetData(tempcatalog);
             }
         }
 

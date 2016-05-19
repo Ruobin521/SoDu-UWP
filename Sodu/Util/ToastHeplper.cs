@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
+using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -38,31 +39,9 @@ namespace Sodu.Util
         }
         public static void ShowMessage(string message)
         {
+
             UC.PopupWindow popup = new UC.PopupWindow(message);
             popup.ShowWindow();
-        }
-        public static void ShowMessage_1(string message)
-        {
-            Frame rootFrame = Window.Current.Content as Frame;
-
-            if (rootFrame == null) return;
-            Page page = rootFrame.Content as Page;
-            if (page == null) return;
-            Grid grid = page.Content as Grid;
-            if (grid == null) return;
-
-            NotificationBar notiBar = new NotificationBar();
-            notiBar.Message = message;
-            notiBar.Margin = new Thickness(0, 40, 0, 0);
-            notiBar.GridParent = grid;
-            notiBar.AnimationCompleted += NotiBar_AnimationCompleted;
-            grid.Children.Add(notiBar);
-            Grid.SetRowSpan(notiBar, grid.RowDefinitions.Count);
-        }
-
-        private static void NotiBar_AnimationCompleted(object sender, EventArgs e)
-        {
-            (sender as NotificationBar).GridParent.Children.Remove(sender as UIElement);
 
         }
     }

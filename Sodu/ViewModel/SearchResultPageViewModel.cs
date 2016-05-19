@@ -96,18 +96,6 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_MaxPageIndex, value);
             }
         }
-        private IconElement m_RefreshIcon = new SymbolIcon(Symbol.Refresh);
-        public IconElement RefreshIcon
-        {
-            get
-            {
-                return m_RefreshIcon;
-            }
-            set
-            {
-                SetProperty(ref m_RefreshIcon, value);
-            }
-        }
 
         private bool m_IsLoading;
         public bool IsLoading
@@ -119,14 +107,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsLoading, value);
-                if (m_IsLoading == false)
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Refresh);
-                }
-                else
-                {
-                    this.RefreshIcon = new SymbolIcon(Symbol.Cancel);
-                }
             }
         }
 
@@ -173,7 +153,7 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
-                CommonMethod.ShowMessage("获取数据有误，请重新尝试");
+                ToastHeplper.ShowMessage("获取数据有误，请重新尝试");
             }
         }
 
@@ -192,11 +172,11 @@ namespace Sodu.ViewModel
               {
                   if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
                   {
-                      CommonMethod.ShowMessage("共返回" + this.SearchResultList.Count + "条结果");
+                      ToastHeplper.ShowMessage("共返回" + this.SearchResultList.Count + "条结果");
                   }
                   else
                   {
-                      CommonMethod.ShowMessage("无搜索结果");
+                      ToastHeplper.ShowMessage("无搜索结果");
                   }
               });
 
@@ -211,7 +191,7 @@ namespace Sodu.ViewModel
             {
                 if (!string.IsNullOrEmpty(html))
                 {
-                    ObservableCollection<BookEntity> arraryList = GetBookListMethod.GetRankListFromHtml(html);
+                    ObservableCollection<BookEntity> arraryList = AnalysisSoduService.GetRankListFromHtml(html);
                     if (arraryList == null)
                     {
                         return false;

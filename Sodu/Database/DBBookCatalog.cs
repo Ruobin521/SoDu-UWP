@@ -135,5 +135,50 @@ namespace Sodu.Database
             }
             return result;
         }
+
+        public static List<BookCatalog> DeteleBookCatalogByBookID(string path, string bookID)
+        {
+            List<BookCatalog> result = null;
+            try
+            {
+                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
+                {
+                    db.CreateTable<BookCatalog>();
+                    db.CreateTable<BookCatalogContent>();
+                    db.RunInTransaction(() =>
+                    {
+                        var temp = (from m in db.Table<BookCatalog>()
+                                    where m.BookID == bookID
+                                    select m
+                            );
+
+                        var temp2 = (from m in db.Table<BookCatalogContent>()
+                                     where m.BookID == bookID
+                                     select m
+                            );
+
+                        if (temp != null && temp.Count() > 0)
+                        {
+                            foreach (var item in temp)
+                            {
+                                db.Delete(item);
+                            }
+                        }
+                        if (temp2 != null && temp2.Count() > 0)
+                        {
+                            foreach (var item in temp2)
+                            {
+                                db.Delete(item);
+                            }
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                result = null;
+            }
+            return result;
+        }
     }
 }

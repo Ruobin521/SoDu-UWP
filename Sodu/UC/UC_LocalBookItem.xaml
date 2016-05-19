@@ -22,8 +22,11 @@
                     <RowDefinition Height="40*"/>
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="{Binding BookName}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis"></TextBlock>
-                <TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>
+                <TextBlock   Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+                    <Run Text="{Binding BookName}"/>
+                    <Run Text="{Binding UnReadCountData}" Foreground="Red" FontSize="16"/>
+                </TextBlock>
+                <!--<TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>-->
                 <TextBlock  Grid.Row="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
             <Run Text="本地最新章节:  "></Run>
             <Run Text="{Binding NewestChapterName}"></Run>

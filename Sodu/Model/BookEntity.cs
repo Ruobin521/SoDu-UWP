@@ -31,10 +31,23 @@ namespace Sodu.Model
         ///书名
         /// </summary>
         public string BookName { get; set; }
+
+
+        public string m_NewestChapterName;
         /// <summary>
         ///章节名称
         /// </summary>
-        public string NewestChapterName { get; set; }
+        public string NewestChapterName
+        {
+            get
+            {
+                return m_NewestChapterName;
+            }
+            set
+            {
+                SetProperty(ref m_NewestChapterName, value);
+            }
+        }
 
         /// <summary>
         ///当前章节正文地址
@@ -76,10 +89,23 @@ namespace Sodu.Model
             }
         }
 
+        private string m_UnReadCountData;
         /// <summary>
         ///未读提示
         /// </summary>
-        public string UnReadCountData { get; set; }
+        [Ignore]
+
+        public string UnReadCountData
+        {
+            get
+            {
+                return m_UnReadCountData;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_UnReadCountData, value);
+            }
+        }
         /// <summary>   
         ///更新时间
         /// </summary>
@@ -108,6 +134,22 @@ namespace Sodu.Model
         ///来源网站
         /// </summary>
         public string LyWeb { get; set; }
+
+        /// <summary>
+        /// 是否是本地图书
+        /// </summary>
+        private bool m_IsLocal;
+        public bool IsLocal
+        {
+            get
+            {
+                return m_IsLocal;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_IsLocal, value);
+            }
+        }
 
         [Ignore]
         public ObservableCollection<BookCatalog> CatalogList { get; set; }
