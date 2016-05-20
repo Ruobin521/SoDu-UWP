@@ -284,7 +284,7 @@ namespace Sodu.ViewModel
                                       }
                                       else
                                       {
-                                          IsSwitchButtonShow = true;
+                                          IsSwitchButtonShow = false;
                                       }
                                   });
                       }
@@ -297,6 +297,7 @@ namespace Sodu.ViewModel
                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                       {
                           IsLoadingCatalogList = false;
+                          IsLoading = false;
                       });
                   }
               }
@@ -597,12 +598,12 @@ namespace Sodu.ViewModel
             {
                 return new RelayCommand<bool>(async (str) =>
               {
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  {
+                      IsLoading = true;
+                  });
                   if (IsLoadingCatalogList)
                   {
-                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                      {
-                          IsLoading = true;
-                      });
                       ToastHeplper.ShowMessage("正在加载目录,请稍候");
                       return;
                   }
@@ -614,6 +615,7 @@ namespace Sodu.ViewModel
                   }
                   else
                   {
+
                       ToastHeplper.ShowMessage("正在加载目录,请稍候");
                       rs = await SetBookCatalogList();
                   }
@@ -625,6 +627,11 @@ namespace Sodu.ViewModel
                   {
                       ToastHeplper.ShowMessage("目录加载失败");
                   }
+
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  {
+                      IsLoading = false;
+                  });
               });
             }
         }

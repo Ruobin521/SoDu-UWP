@@ -527,25 +527,22 @@ namespace Sodu.ViewModel
                 await Task.Run(async () =>
                 {
                     var list = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), entity.BookID);
-                    if (list != null)
-                    {
-                        foreach (var catalog in list)
-                        {
-                            if (entity.CatalogList == null)
-                            {
-                                entity.CatalogList = new ObservableCollection<BookCatalog>();
-                            }
-                            entity.CatalogList.Add(catalog);
-                        }
-                    }
-                    else
-                    {
-                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            ToastHeplper.ShowMessage("获取章节数据有误");
-                            return;
-                        });
-                    }
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                           {
+                                               if (list != null)
+                                               {
+                                                   entity.CatalogList = new ObservableCollection<BookCatalog>();
+                                                   foreach (var catalog in list)
+                                                   {
+                                                       entity.CatalogList.Add(catalog);
+                                                   }
+                                               }
+                                               else
+                                               {
+                                                   ToastHeplper.ShowMessage("获取章节数据有误");
+                                                   return;
+                                               }
+                                           });
                 });
 
 
