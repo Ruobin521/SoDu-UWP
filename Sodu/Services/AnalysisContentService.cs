@@ -84,6 +84,11 @@ namespace Sodu.Services
         public const string qubige = "www.qbiquge.com";
 
         /// <summary>
+        /// 倚天中文
+        /// </summary>
+        public const string ytzww = "www.ytzww.com";
+
+        /// <summary>
         /// 书路小说
         /// </summary>
         public const string shu6 = "www.shu6.cc";
@@ -107,6 +112,11 @@ namespace Sodu.Services
         ///幼狮书盟
         /// </summary>
         public const string yssm = "www.youshishumeng.com";
+
+        /// <summary>
+        ///80小说
+        /// </summary>
+        public const string su80 = "www.su80.net";
 
     }
     public class AnalysisContentService
@@ -232,7 +242,6 @@ namespace Sodu.Services
                     break;
 
 
-
                 //趣笔阁
                 case WebSet.qubige:
                     result = AnalysisBxzw5(html);
@@ -261,6 +270,15 @@ namespace Sodu.Services
                     result = Analysis4kzw(html);
                     break;
 
+                //倚天中文网
+                case WebSet.ytzww:
+                    result = AnalysisYtzww(html);
+                    break;
+
+                //倚天中文网
+                case WebSet.su80:
+                    result = AnalysisSu80(html);
+                    break;
 
                 case "书旗小说":
                     result = AnalysisSq(html);
@@ -354,6 +372,23 @@ namespace Sodu.Services
             return result;
         }
 
+        /// <summary>
+        /// 倚天中文网
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisYtzww(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<!--章节内容开始-->.*?<!--章节内容结束-->", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
 
 
         /// <summary>
@@ -452,6 +487,26 @@ namespace Sodu.Services
             }
             return result;
         }
+
+
+        /// <summary>
+        /// 80书屋
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisSu80(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"txtright\">.*?<center>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
         /// <summary>
         /// 无弹窗
         /// </summary>

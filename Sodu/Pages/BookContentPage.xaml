@@ -16,11 +16,13 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Border x:Name="border" Height="45">
+            <TextBlock x:Name="TextTitle"    VerticalAlignment="Center" Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        </Border>
         <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent" d:IsLocked="True" d:IsHidden="True"   
             >
             <ListView.ItemTemplate>
@@ -31,30 +33,6 @@
                     </Button>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  
-           RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
-            <control:PullToRefreshListView.ItemTemplate>
-                <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"  />
-                </DataTemplate>
-            </control:PullToRefreshListView.ItemTemplate>-->
-            <!--<control:PullToRefreshListView.RefreshIndicatorContent>
-                <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↑</Run>
-                        <Run>释放刷新</Run>
-                    </TextBlock>
-                    <TextBlock FontSize="16" x:Name="downText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↓</Run>
-                        <Run>下拉刷新</Run>
-                    </TextBlock>
-                </Grid>
-            </control:PullToRefreshListView.RefreshIndicatorContent>-->
-            <!--<Interactivity:Interaction.Behaviors >
-                <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  CatalogSelectedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
-                </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>-->
         </ListView>
 
         <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
@@ -64,11 +42,15 @@
             <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
             <AppBarButton Icon="Bullets" Label="目录"      Command="{Binding CatalogCommand}"/>
+
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="FontIncrease" Label="字体+"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"      Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Stretch"/>
                 <AppBarButton Icon="FontDecrease" Label="字体-"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"   Command="{Binding FontDecreaseCommand}" HorizontalAlignment="Stretch"/>
-                <AppBarButton Icon="Page2" Label="单页显示"   Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Stretch"/>
-                <AppBarButton Icon="TwoPage" Label="分页显示" Width="{Binding ElementName=commandbar,Path=ActualWidth}"   Command="{Binding FontDecreaseCommand}" HorizontalAlignment="Stretch"/>
+                <!--<AppBarButton Icon="Page2" Label="单页显示"   Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Stretch"/>
+                <AppBarButton Icon="TwoPage" Label="分页显示" Width="{Binding ElementName=commandbar,Path=ActualWidth}"   Command="{Binding FontDecreaseCommand}" HorizontalAlignment="Stretch"/>-->
+                <AppBarButton x:Name="btnFullScreen" Icon="FullScreen" Label="全屏显示" Width="{Binding ElementName=commandbar,Path=ActualWidth}"    
+                          Click="fuullScreen_Click"     HorizontalAlignment="Stretch"/>
+
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>

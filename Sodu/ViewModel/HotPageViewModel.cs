@@ -89,7 +89,7 @@ namespace Sodu.ViewModel
             http.HttpClientCancleRequest();
             IsLoading = false;
         }
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             if (this.BookList.Count > 0)
             {
@@ -232,8 +232,8 @@ namespace Sodu.ViewModel
         private void OnRequestCommand(object obj)
         {
             if (IsLoading) return;
-            //RefreshData(PageIndex + 1);            
-            RefreshData(1);
+            //InitData(PageIndex + 1);            
+            InitData(1);
         }
 
         public RelayCommand<object> BackCommand

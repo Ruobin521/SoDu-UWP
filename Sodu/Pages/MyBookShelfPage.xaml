@@ -37,11 +37,10 @@
         </ListView>
 
         <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"  >
-            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  Width="65"  Command="{Binding RefreshCommand}"/>
-            <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>
             <AppBarButton x:Name="btnSelectAll" Icon="SelectAll" Width="65"    Command="{Binding  SelectAllCommand }"  Label="{Binding IsAllSelected,Converter={StaticResource AppBarLabelConverter},Mode=OneWay}" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}" CommandParameter="0"/>
-            <!--<AppBarButton Icon="Undo" Label="全不选"  Width="65"  Command="{Binding  SelectAllCommand}" CommandParameter="1"/>-->
-            <AppBarButton Icon="Delete" Label="下架"  Width="65"  Command="{Binding RemoveBookFromShelfCommand}"/>
+            <AppBarButton Icon="Delete" Label="下架"  Width="65" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookFromShelfCommand}"/>
+            <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  Width="65"  Command="{Binding RefreshCommand}"/>
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
 

@@ -173,6 +173,7 @@ namespace Sodu.ViewModel
                            });
                            string html = await GetHtmlData(item.CatalogUrl);
                            //  item.CatalogContent = html;
+
                            // item.CatalogContentGUID = item.BookID + item.Index.ToString();
                            BookCatalogContent content = new BookCatalogContent()
                            {
@@ -182,15 +183,18 @@ namespace Sodu.ViewModel
                            };
                            lock (isAdd2)
                            {
-                               Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
-                               Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+                               if (!string.IsNullOrEmpty(item.CatalogUrl))
+                               {
+                                   Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
+                               }
+                               if (!string.IsNullOrEmpty(content.CatalogContentGUID))
+                               {
+                                   Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+                               }
                            }
 
-                           if (i == count - 1)
-                           {
-                               temp.Entity.NewestChapterName = item.CatalogName;
-                               temp.Entity.NewestChapterUrl = item.CatalogUrl;
-                           }
+                           temp.Entity.NewestChapterName = item.CatalogName;
+                           temp.Entity.NewestChapterUrl = item.CatalogUrl;
                        }
                        catch (Exception ex)
                        {

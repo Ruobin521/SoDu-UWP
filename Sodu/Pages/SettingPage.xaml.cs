@@ -28,5 +28,6 @@ namespace Sodu.Pages
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
+
     }
 }

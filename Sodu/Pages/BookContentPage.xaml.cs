@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -26,8 +27,52 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-
         }
+
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.IsFullScreen)
+            {
+                SetFullScreen(true);
+            }
+            else
+            {
+                SetFullScreen(false);
+            }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            SetFullScreen(false);
+        }
+
+        private async void SetFullScreen(bool value)
+        {
+            if (!value)
+            {
+                StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                await statusBar.ShowAsync();
+
+                this.border.Visibility = Visibility.Visible;
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                btnFullScreen.Label = "全屏显示";
+
+                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
+            }
+            else
+            {
+                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(false);
+                StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                await statusBar.HideAsync();
+                this.border.Visibility = Visibility.Collapsed;
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+                btnFullScreen.Label = "退出全屏";
+            }
+        }
+
+
+
         public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
         {
             List<T> visualCollection = new List<T>();
@@ -73,10 +118,20 @@ namespace Sodu.Pages
             }
         }
 
+        private void fuullScreen_Click(object sender, RoutedEventArgs e)
+        {
 
-        //private void txtContent_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        //{
-        //    this.scrollViewer.ScrollToVerticalOffset(0);
-        //}
+            if (ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.IsFullScreen)
+            {
+                ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SetFullScreen(false, false);
+                SetFullScreen(false);
+            }
+            else
+            {
+                ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SetFullScreen(true, false);
+
+                SetFullScreen(true);
+            }
+        }
     }
 }

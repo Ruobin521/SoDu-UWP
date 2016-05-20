@@ -79,7 +79,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             BookEntity temp = obj as BookEntity;
             if (temp == null)

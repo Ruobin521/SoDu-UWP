@@ -37,7 +37,7 @@
             <Grid.Background>
                 <SolidColorBrush Color="Transparent" Opacity="1"></SolidColorBrush>
             </Grid.Background>
-            <ToggleButton Style="{StaticResource ToggleButtonStyle1}" Grid.Column="0"  Command="{Binding IsLeftPanelOpenCommand}" VerticalAlignment="Stretch" Foreground="{ThemeResource ApplicationForegroundThemeBrush}">
+            <ToggleButton Style="{StaticResource ToggleButtonStyle1}" Grid.Column="0" Visibility="{Binding IsButtonVisiable,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding IsLeftPanelOpenCommand}" VerticalAlignment="Stretch" Foreground="Black" Background="Transparent">
                 <ToggleButton.Content>
                     <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
                 </ToggleButton.Content>

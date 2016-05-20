@@ -130,7 +130,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
 
         }

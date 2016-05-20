@@ -11,12 +11,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.Web.Http;
 
 namespace Sodu.ViewModel
 {
     public class SettingPageViewModel : BaseViewModel
     {
+        [IgnoreDataMember]
+        private static object obj = new object();
+
+
+        private bool _isShowMessage = true;
+
         [IgnoreDataMember]
         private bool IsLoading { get; set; }
 
@@ -70,10 +77,7 @@ namespace Sodu.ViewModel
             {
                 if (value == m_IfAutoLogin) return;
                 SetProperty(ref m_IfAutoLogin, value);
-                // SaveSetting();
-
             }
-
         }
 
         private bool m_IfAutAddToShelf = true;
@@ -88,8 +92,8 @@ namespace Sodu.ViewModel
             }
             set
             {
+                if (value == IfAutAddToShelf) return;
                 SetProperty(ref m_IfAutAddToShelf, value);
-                // SaveSetting();
             }
 
         }
@@ -106,10 +110,28 @@ namespace Sodu.ViewModel
             }
             set
             {
+                if (value == m_IfDownloadInWAAN) return;
                 SetProperty(ref m_IfDownloadInWAAN, value);
-                // SaveSetting();
             }
 
+        }
+
+
+        private bool m_IsFullScreen = false;
+        /// <summary>
+        /// 全屏阅读
+        /// </summary>
+        public bool IsFullScreen
+        {
+            get
+            {
+                return m_IsFullScreen;
+            }
+            set
+            {
+                if (value == m_IsFullScreen) return;
+                SetProperty(ref m_IsFullScreen, value);
+            }
         }
 
 
@@ -123,7 +145,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_UserCookie, value);
-
             }
         }
 
@@ -133,6 +154,13 @@ namespace Sodu.ViewModel
             {
                16,18,20,22,24,26,28
             };
+        }
+
+
+        public void SetFullScreen(bool value, bool isShowMessage = false)
+        {
+            this.IsFullScreen = value;
+            this._isShowMessage = isShowMessage;
         }
 
         [IgnoreDataMember]
@@ -147,15 +175,31 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async void SaveSetting(bool showMessage = true)
+        public async void SaveSetting()
         {
+            bool result = false;
             try
             {
-                if (!IsLoading)
+                await Task.Run(() =>
+               {
+                   lock (obj)
+                   {
+                       string fileName = AppDataPath.SettingFileName;
+                       result = SerializeHelper.WriteAsync(this, fileName).Result;
+                   }
+               });
+
+            }
+            catch (Exception)
+            {
+
+            }
+            finally
+            {
+                IsLoading = false;
+                if (_isShowMessage)
                 {
-                    string fileName = AppDataPath.SettingFileName;
-                    bool result = await SerializeHelper.WriteAsync(this, fileName);
-                    if (showMessage)
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
                         if (result)
                         {
@@ -165,14 +209,13 @@ namespace Sodu.ViewModel
                         {
                             ToastHeplper.ShowMessage("保存设置失败，请重新尝试");
                         }
-                    }
+                    });
                 }
-            }
-            catch (Exception)
-            {
-                IsLoading = false;
+                _isShowMessage = true;
             }
         }
+
+
 
 
         public void SetFontSize(bool isAdd, bool isShowMessage = true)
@@ -183,7 +226,8 @@ namespace Sodu.ViewModel
                 {
 
                     this.TextFontSzie += 2;
-                    SaveSetting(isShowMessage);
+                    _isShowMessage = isShowMessage;
+
                 }
 
             }
@@ -192,7 +236,7 @@ namespace Sodu.ViewModel
                 if (this.TextFontSzie > 16)
                 {
                     this.TextFontSzie -= 2;
-                    SaveSetting(isShowMessage);
+                    _isShowMessage = isShowMessage;
                 }
             }
         }

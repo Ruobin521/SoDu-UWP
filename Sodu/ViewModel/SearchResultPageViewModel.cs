@@ -134,7 +134,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             try
             {
@@ -273,7 +273,7 @@ namespace Sodu.ViewModel
         }
         private void OnSearchCommand(object obj)
         {
-            RefreshData(obj.ToString());
+            InitData(obj.ToString());
         }
 
 
@@ -297,7 +297,7 @@ namespace Sodu.ViewModel
             else
             {
                 if (obj == null) return;
-                RefreshData(obj.ToString());
+                InitData(obj.ToString());
             }
         }
 
@@ -314,7 +314,7 @@ namespace Sodu.ViewModel
 
         private void OnRequestCommand(object obj)
         {
-            //  RefreshData(this.CurrentPageIndex);
+            //  InitData(this.CurrentPageIndex);
         }
 
         public RelayCommand<object> PrePageCommand
@@ -327,7 +327,7 @@ namespace Sodu.ViewModel
 
         private void OnPrePageCommand(object obj)
         {
-            //RefreshData(this.CurrentPageIndex - 1);
+            //InitData(this.CurrentPageIndex - 1);
         }
 
 
@@ -341,7 +341,7 @@ namespace Sodu.ViewModel
 
         private void OnLastPageCommand(object obj)
         {
-            // RefreshData(this.MaxPageIndex);
+            // InitData(this.MaxPageIndex);
         }
 
 

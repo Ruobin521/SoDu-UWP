@@ -28,9 +28,10 @@
 
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding CancleUpdateCommand}"  />
-            <AppBarButton Icon="Download" Label="更新"  Command="{Binding UpdateCommand}"/>
+            <AppBarButton Icon="Delete" Label="清空"  Visibility="{Binding IsEditing,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>
-            <AppBarButton Icon="Delete" Label="清空"  Command="{Binding RemoveBookCommand}"/>
+            <AppBarButton Icon="Download" Label="更新"  Command="{Binding UpdateCommand}"/>
+
         </CommandBar>
 
         <!--<UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>-->

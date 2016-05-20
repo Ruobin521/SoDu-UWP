@@ -93,7 +93,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void RefreshData(object obj = null)
+        public async void InitData(object obj = null)
         {
             //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
             if (IsLoading || this.BookList.Count > 0)

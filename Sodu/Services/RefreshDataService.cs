@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sodu.Services
 {
-  public  class RefreshDataService
+  public  class InitDataService
     {
 
 

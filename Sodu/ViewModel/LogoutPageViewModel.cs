@@ -50,7 +50,7 @@ namespace Sodu.ViewModel
             return;
         }
 
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             Task.Run(async () =>
             {

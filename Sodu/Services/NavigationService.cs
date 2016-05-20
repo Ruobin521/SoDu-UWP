@@ -114,10 +114,11 @@ namespace Sodu.Services
                     IViewModel viewModel = page.DataContext as IViewModel;
                     if (viewModel != null)
                     {
-                        viewModel.RefreshData(e.Parameter);
+                        viewModel.InitData(e.Parameter);
                     }
                 }
             }
+
             ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
         }
 

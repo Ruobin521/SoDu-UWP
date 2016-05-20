@@ -68,7 +68,7 @@ namespace Sodu.ViewModel
         {
             return;
         }
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             if (BookList == null || BookList.Count <= 0)
             {

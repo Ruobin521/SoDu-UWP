@@ -141,7 +141,7 @@ namespace Sodu.ViewModel
             }
             return false;
         }
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
             this.IsShow = false;
             if (this.ShelfBookList.Count > 0)
@@ -154,6 +154,8 @@ namespace Sodu.ViewModel
 
         public void SetData()
         {
+            //设置编辑模式为false
+            IsEditing = false;
             Task.Run(async () =>
             {
                 string html = await GetHtmlData();
@@ -354,15 +356,15 @@ namespace Sodu.ViewModel
                 IsEditing = false;
                 return;
             }
-            if (!IsEditing)
-            {
-                IsEditing = true;
-                foreach (var item in ShelfBookList)
-                {
-                    item.IfBookshelf = true;
-                }
-            }
-            else
+
+            SetBookShelfEditStatus(!IsEditing);
+        }
+
+        private void SetBookShelfEditStatus(bool vale)
+        {
+            IsEditing = vale;
+
+            if (!vale)
             {
                 foreach (var item in ShelfBookList)
                 {
@@ -370,6 +372,14 @@ namespace Sodu.ViewModel
                     item.IsSelected = false;
                 }
                 IsEditing = false;
+            }
+            else
+            {
+                IsEditing = true;
+                foreach (var item in ShelfBookList)
+                {
+                    item.IfBookshelf = true;
+                }
             }
         }
 

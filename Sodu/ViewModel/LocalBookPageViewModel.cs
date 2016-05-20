@@ -16,7 +16,7 @@ namespace Sodu.ViewModel
 {
     public class LocalBookPageViewModel : BaseViewModel, IViewModel
     {
-        private bool IsEditing;
+
         private static readonly object obj = new object();
 
         private ObservableCollection<BookEntity> m_LocalBookList;
@@ -34,6 +34,18 @@ namespace Sodu.ViewModel
             set
             {
                 this.SetProperty(ref this.m_LocalBookList, value);
+            }
+        }
+        private bool m_IsEditing;
+        public bool IsEditing
+        {
+            get
+            {
+                return m_IsEditing;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_IsEditing, value);
             }
         }
 
@@ -62,16 +74,18 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_IsUpdating, value);
             }
         }
-        private bool m_IsChking;
-        public bool IsChking
+
+
+        private bool m_IsChecking;
+        public bool IsChecking
         {
             get
             {
-                return m_IsChking;
+                return m_IsChecking;
             }
             set
             {
-                this.SetProperty(ref this.m_IsChking, value);
+                this.SetProperty(ref this.m_IsChecking, value);
             }
         }
 
@@ -109,10 +123,22 @@ namespace Sodu.ViewModel
 
         }
 
-        public void RefreshData(object obj = null)
+        public void InitData(object obj = null)
         {
 
-            GetLocalBook();
+            if (IsLoading || IsChecking || IsUpdating)
+            {
+                return;
+            }
+
+            if (LocalBookList.Count == 0)
+            {
+                GetLocalBook();
+            }
+            else
+            {
+                CheckUpdate();
+            }
         }
 
         public void GetLocalBook()
@@ -132,31 +158,30 @@ namespace Sodu.ViewModel
                     }
                 });
             }
-            foreach (var item in result)
-            {
-                var list = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
-                if (list != null)
-                {
-                    foreach (var catalog in list)
-                    {
-                        if (item.CatalogList == null)
-                        {
-                            item.CatalogList = new ObservableCollection<BookCatalog>();
-                        }
-                        item.CatalogList.Add(catalog);
-                    }
-                }
-            }
+            //foreach (var item in result)
+            //{
+            //    var list = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
+            //    if (list != null)
+            //    {
+            //        foreach (var catalog in list)
+            //        {
+            //            if (item.CatalogList == null)
+            //            {
+            //                item.CatalogList = new ObservableCollection<BookCatalog>();
+            //            }
+            //            item.CatalogList.Add(catalog);
+            //        }
+            //    }
+            //}
         }).ContinueWith(obj =>
         {
-
             CheckUpdate();
         });
         }
 
         private void CheckUpdate()
         {
-            if (IsChking) return;
+            if (IsChecking) return;
             if (this.LocalBookList.Count < 1) return;
 
             Task.Run(async () =>
@@ -168,11 +193,10 @@ namespace Sodu.ViewModel
                        if (!string.IsNullOrEmpty(item.CatalogListUrl))
                        {
                            var list = await Services.AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
-                           if (list != null && list.Count > item.CatalogList.Count)
+                           if (list != null)
                            {
                                int result = 0;
-                               var catalog = item.CatalogList.LastOrDefault();
-                               var last = list.FirstOrDefault(p => p.CatalogUrl == catalog.CatalogUrl);
+                               var last = list.FirstOrDefault(p => p.CatalogUrl == item.NewestChapterUrl);
 
                                if (last != null)
                                {
@@ -181,12 +205,17 @@ namespace Sodu.ViewModel
                                }
                                else
                                {
-                                   result = list.Count - item.CatalogList.Count;
+                                   result = list.Count;
                                }
-                               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+
+                               if (result > 0)
                                {
-                                   item.UnReadCountData = "　可用更新（" + result + ")";
-                               });
+                                   await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                   {
+                                       item.UnReadCountData = "　可用更新（" + result + ")";
+                                   });
+                               }
+
                            }
                        }
                    }
@@ -197,7 +226,7 @@ namespace Sodu.ViewModel
                }
                finally
                {
-                   IsChking = false;
+                   IsChecking = false;
                }
            });
         }
@@ -273,78 +302,99 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnUpdateCommand()
+        private void OnUpdateCommand()
         {
             if (IsLoading) return;
-            IsLoading = true;
-            IsUpdating = true;
-            await Task.Run(async () =>
-            {
-                foreach (var item in LocalBookList)
-                {
 
-                    if (!string.IsNullOrEmpty(item.CatalogListUrl))
-                    {
-                        var list = await Services.AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
-                        if (list == null) continue;
-                        var catalog = item.CatalogList.LastOrDefault();
-                        var last = list.FirstOrDefault(p => p.CatalogUrl == catalog.CatalogUrl);
-                        if (catalog.CatalogUrl.Equals(last.CatalogUrl) && list.Count > item.CatalogList.Count)
-                        {
-                            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                            {
-                                ToastHeplper.ShowMessage("正在更新" + item.BookName);
-                            });
-                            int index = list.IndexOf(last);
-                            for (int i = index + 1; i < list.Count; i++)
-                            {
-                                if (!IsUpdating)
-                                {
-                                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                    {
-                                        item.UnReadCountData = "正在更新(" + (list.Count - i).ToString() + ")";
-                                    });
-                                    return;
-                                }
-                                else
-                                {
-                                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                    {
-                                        item.UnReadCountData = "可用更新(" + (list.Count - i).ToString() + ")";
-                                    });
-                                }
-                                string html = await AnalysisContentService.GetHtmlContent(new HttpHelper(), list[i].CatalogUrl);
-                                // item.CatalogContentGUID = item.BookID + item.Index.ToString();
-                                BookCatalogContent content = new BookCatalogContent()
-                                {
-                                    BookID = item.BookID,
-                                    CatalogContentGUID = list[i].CatalogContentGUID,
-                                    Content = html
-                                };
-                                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                                    {
-                                        item.CatalogList.Add(list[i]);
-                                        item.NewestChapterName = list[i].CatalogName;
-                                        item.NewestChapterUrl = list[i].CatalogUrl;
-                                        if (i == list.Count - 1)
-                                        {
-                                            item.UpdateTime = DateTime.Now.ToString();
-                                            item.UnReadCountData = null;
-                                        }
-                                    });
+            Task.Run(async () =>
+          {
+              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+              {
+                  IsLoading = true;
+                  IsUpdating = true;
+              });
+              try
+              {
+                  foreach (var item in LocalBookList)
+                  {
+                      if (string.IsNullOrEmpty(item.UnReadCountData))
+                      {
+                          continue;
+                      }
+                      if (!string.IsNullOrEmpty(item.CatalogListUrl))
+                      {
+                          var list = await Services.AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
+                          if (list == null) continue;
 
-                                lock (obj)
-                                {
-                                    Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), list[i]);
-                                    Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
-                                    Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), item);
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            IsLoading = false;
+                          var last = list.FirstOrDefault(p => p.CatalogUrl.Equals(item.NewestChapterUrl));
+                          if (last != null)
+                          {
+                              int index = list.IndexOf(last);
+                              for (int i = index + 1; i < list.Count; i++)
+                              {
+                                  if (!IsUpdating)
+                                  {
+                                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                      {
+                                          item.UnReadCountData = "可用更新(" + (list.Count - i).ToString() + ")";
+                                      });
+                                      return;
+                                  }
+                                  else
+                                  {
+                                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                      {
+                                          item.UnReadCountData = "正在更新(" + (list.Count - i).ToString() + ")";
+                                      });
+                                  }
+                                  string html = await AnalysisContentService.GetHtmlContent(new HttpHelper(), list[i].CatalogUrl);
+                                  // item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                                  BookCatalogContent content = new BookCatalogContent()
+                                  {
+                                      BookID = item.BookID,
+                                      CatalogContentGUID = list[i].CatalogContentGUID,
+                                      Content = html
+                                  };
+                                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                  {
+                                      //item.CatalogList.Add(list[i]);
+                                      item.NewestChapterName = list[i].CatalogName;
+                                      item.NewestChapterUrl = list[i].CatalogUrl;
+
+                                      item.UpdateTime = DateTime.Now.ToString();
+
+
+                                  });
+
+                                  lock (obj)
+                                  {
+                                      Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), list[i]);
+                                      Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
+                                      Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), item);
+                                  }
+                              }
+                              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                              {
+                                  item.UnReadCountData = null;
+                              });
+                          }
+                      }
+                  }
+              }
+              catch (Exception ex)
+              {
+
+              }
+              finally
+              {
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  {
+                      IsUpdating = false;
+                      IsLoading = false;
+                  });
+              }
+          });
+
         }
 
 
@@ -458,7 +508,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private void OnBookItemSelectedCommand(object obj)
+        private async void OnBookItemSelectedCommand(object obj)
         {
             BookEntity entity = obj as BookEntity;
             if (entity == null)
@@ -474,11 +524,30 @@ namespace Sodu.ViewModel
             }
             else
             {
-                if (entity.CatalogList == null || entity.CatalogList.Count < 1)
+                await Task.Run(async () =>
                 {
-                    ToastHeplper.ShowMessage("获取章节数据有误");
-                    return;
-                }
+                    var list = Database.DBBookCatalog.SelectBookCatalogs(Constants.AppDataPath.GetLocalBookDBPath(), entity.BookID);
+                    if (list != null)
+                    {
+                        foreach (var catalog in list)
+                        {
+                            if (entity.CatalogList == null)
+                            {
+                                entity.CatalogList = new ObservableCollection<BookCatalog>();
+                            }
+                            entity.CatalogList.Add(catalog);
+                        }
+                    }
+                    else
+                    {
+                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            ToastHeplper.ShowMessage("获取章节数据有误");
+                            return;
+                        });
+                    }
+                });
+
 
                 if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
                 {
@@ -489,9 +558,7 @@ namespace Sodu.ViewModel
                         entity.LastReadChapterName = item.CatalogName;
                     }
                 }
-
                 NavigationService.NavigateTo(typeof(BookContentPage), entity);
-
             }
         }
 
