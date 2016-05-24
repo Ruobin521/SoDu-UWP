@@ -229,10 +229,10 @@ namespace Sodu
                     IViewModel viewModel = page.DataContext as IViewModel;
                     if (viewModel == ViewModelInstance.Instance.MyBookShelfViewModelInstance)
                     {
-                        if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.BackpressedHandler().Result)
-                        {
+                        ViewModelInstance.Instance.MyBookShelfViewModelInstance.BackpressedHandler())
+                       
                             return;
-                        }
+
                     }
                 }
             }

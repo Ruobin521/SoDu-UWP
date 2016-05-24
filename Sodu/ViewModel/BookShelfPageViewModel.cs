@@ -118,28 +118,30 @@ namespace Sodu.ViewModel
         /// </summary>
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
-            IsLoading = false;
+            try
+            {
+                http.HttpClientCancleRequest();
+                IsLoading = false;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
 
-        public async Task<bool> BackpressedHandler()
+        public void BackpressedHandler()
         {
             if (IsEditing)
             {
                 OnEditCommand();
-                return true;
             }
 
             if (IsLoading)
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    CancleHttpRequest();
-                });
-                return true;
+                CancleHttpRequest();
             }
-            return false;
         }
         public void InitData(object obj = null)
         {
@@ -244,39 +246,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async void RemoveBook(List<BookEntity> removeBookList)
-        {
-            string html = string.Empty;
-            try
-            {
-                IsLoading = true;
-
-                foreach (var item in removeBookList)
-                {
-                    string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
-                    html = await http.WebRequestGet(url);
-                    if (html.Contains("取消收藏成功"))
-                    {
-                        ShelfBookList.Remove(item);
-                    }
-                    else
-                    {
-                        ToastHeplper.ShowMessage(item.BookName + "取消收藏失败，请重新操作");
-                    }
-                }
-                ToastHeplper.ShowMessage("操作成功");
-                removeBookList.Clear();
-            }
-            catch (Exception ex)
-            {
-                ToastHeplper.ShowMessage("操作失败，请重新尝试");
-            }
-            finally
-            {
-                IsLoading = false;
-                OnEditCommand();
-            }
-        }
         public void RemoveBookList(List<BookEntity> removeBookList)
         {
             Task.Run(async () =>
@@ -314,11 +283,7 @@ namespace Sodu.ViewModel
            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
            {
                IsLoading = false;
-               if (!result.Result)
-               {
-                   ToastHeplper.ShowMessage("操作完毕，但有部分图书没有成功移除");
-               }
-               else
+               if (result.Result)
                {
                    ToastHeplper.ShowMessage("操作完毕");
                    removeBookList.Clear();
