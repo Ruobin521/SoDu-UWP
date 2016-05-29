@@ -255,7 +255,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private void OnEditCommand()
+        public void OnEditCommand()
         {
             if (IsLoading) return;
 
@@ -269,14 +269,14 @@ namespace Sodu.ViewModel
                 IsEditing = true;
                 foreach (var item in LocalBookList)
                 {
-                    item.IfBookshelf = true;
+                    item.IsInEdit = true;
                 }
             }
             else
             {
                 foreach (var item in LocalBookList)
                 {
-                    item.IfBookshelf = false;
+                    item.IsInEdit = false;
                     item.IsSelected = false;
                 }
                 IsEditing = false;

@@ -158,18 +158,18 @@ namespace Sodu.Model
         /// <summary>
         /// 是否为编辑状态
         /// </summary>
-        private bool m_IfBookshelf;
+        private bool m_IsInEdit = false;
         [Ignore]
-        public bool IfBookshelf
+        public bool IsInEdit
         {
             get
             {
-                return m_IfBookshelf;
+                return m_IsInEdit;
             }
             set
             {
                 //RaisePropertyChanged("IfBookshelf");
-                this.SetProperty(ref this.m_IfBookshelf, value);
+                this.SetProperty(ref this.m_IsInEdit, value);
             }
         }
 

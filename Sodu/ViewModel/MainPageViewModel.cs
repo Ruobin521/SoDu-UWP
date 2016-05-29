@@ -322,13 +322,17 @@ namespace Sodu.ViewModel
                            string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, entity.BookID));
                            if (html.Contains("{\"success\":true}"))
                            {
-                               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                               {
-                                   if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
-                                   {
-                                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, entity);
-                                   }
-                               });
+                               //await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                               //{
+                               //    if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                               //    {
+                               //        ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, new BookEntity);
+                               //    }
+                               //});
+                           }
+                           else
+                           {
+
                            }
                        }
                    });

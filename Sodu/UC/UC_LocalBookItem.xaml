@@ -15,7 +15,7 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IfBookshelf,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
             <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>

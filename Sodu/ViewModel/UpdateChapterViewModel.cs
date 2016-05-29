@@ -173,17 +173,17 @@ namespace Sodu.ViewModel
 
            }).ContinueWith(async (result) =>
          {
-             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-             {
-                 if (result.Result != null && await SetBookList(result.Result.ToString(), pageIndex))
-                 {
-                     ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
-                 }
-                 else
-                 {
-                     ToastHeplper.ShowMessage("未能获取最新章节数据");
-                 }
-             });
+             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+           {
+               if (result.Result != null && SetBookList(result.Result.ToString(), pageIndex))
+               {
+                   ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+               }
+               else
+               {
+                   ToastHeplper.ShowMessage("未能获取最新章节数据");
+               }
+           });
          });
         }
 
@@ -243,7 +243,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async Task<bool> SetBookList(string html, int pageIndex)
+        public bool SetBookList(string html, int pageIndex)
         {
             if (!string.IsNullOrEmpty(html))
             {
@@ -267,6 +267,10 @@ namespace Sodu.ViewModel
 
                     foreach (var item in arrary)
                     {
+                        if (item.NewestChapterUrl.Contains("dashubao"))
+                        {
+                            continue;
+                        }
                         item.BookName = this.ContentTitle;
                         item.BookID = this.CurrentEntity.BookID;
                         this.ChapterList.Add(item);
@@ -321,16 +325,16 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<object>(async (obj) =>
-               {
-                   if (IsLoading) return;
-                   if (PageIndex == 1)
-                   {
-                       ToastHeplper.ShowMessage("已经是第一页");
-                       return;
-                   }
-                   SetData(1);
-               });
+                return new RelayCommand<object>((obj) =>
+              {
+                  if (IsLoading) return;
+                  if (PageIndex == 1)
+                  {
+                      ToastHeplper.ShowMessage("已经是第一页");
+                      return;
+                  }
+                  SetData(1);
+              });
             }
         }
 
@@ -338,16 +342,16 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<object>(async (obj) =>
-                {
-                    if (IsLoading) return;
-                    if (PageIndex == PageCount)
-                    {
-                        ToastHeplper.ShowMessage("已经是最后一页");
-                        return;
-                    }
-                    SetData(PageCount);
-                });
+                return new RelayCommand<object>((obj) =>
+              {
+                  if (IsLoading) return;
+                  if (PageIndex == PageCount)
+                  {
+                      ToastHeplper.ShowMessage("已经是最后一页");
+                      return;
+                  }
+                  SetData(PageCount);
+              });
             }
         }
 
@@ -362,7 +366,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnRefreshCommand(object obj)
+        private void OnRefreshCommand(object obj)
         {
             if (IsLoading)
             {
@@ -399,7 +403,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnNextPageCommand(object obj)
+        private void OnNextPageCommand(object obj)
         {
             if (IsLoading) return;
 
@@ -419,7 +423,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private async void OnPreviousPageCommand(object obj)
+        private void OnPreviousPageCommand(object obj)
         {
             if (IsLoading) return;
 

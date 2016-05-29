@@ -152,9 +152,9 @@ namespace Sodu.ViewModel
 
                    BookEntity entity = temp.Entity;
                    int count = temp.Entity.CatalogList.Count;
-#if DEBUG
-                   count = 20;
-#endif
+//#if DEBUG
+//                   count = 20;
+//#endif
                    for (int i = startIndex; i < count; i++)
                    {
                        if (temp.IsPause)

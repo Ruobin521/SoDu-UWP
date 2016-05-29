@@ -25,6 +25,16 @@ namespace Sodu.Pages
         public LocalBookPage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            if ((this.DataContext as ViewModel.LocalBookPageViewModel).IsEditing)
+            {
+                (this.DataContext as ViewModel.LocalBookPageViewModel).OnEditCommand();
+            }
         }
     }
 }

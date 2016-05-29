@@ -224,19 +224,15 @@ namespace Sodu
             if (NavigationService.ContentFrame != null)
             {
                 Page page = NavigationService.ContentFrame.Content as Page;
-                if (page != null)
+                if (page != null && (page.DataContext as BookShelfPageViewModel) != null && (page.DataContext as BookShelfPageViewModel).BackpressedHandler())
                 {
-                    IViewModel viewModel = page.DataContext as IViewModel;
-                    if (viewModel == ViewModelInstance.Instance.MyBookShelfViewModelInstance)
-                    {
-                        ViewModelInstance.Instance.MyBookShelfViewModelInstance.BackpressedHandler())
-                       
-                            return;
-
-                    }
+                    return;
+                }
+                else
+                {
+                    NavigationService.GoBack(sender, e);
                 }
             }
-            NavigationService.GoBack(sender, e);
         }
 
         /// <summary>

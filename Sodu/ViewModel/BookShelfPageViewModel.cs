@@ -20,6 +20,8 @@ namespace Sodu.ViewModel
     public class BookShelfPageViewModel : BaseViewModel, IViewModel
     {
 
+
+        #region  属性 字段
         private string _ContentTitle = "个人书架";
         public string ContentTitle
         {
@@ -108,10 +110,14 @@ namespace Sodu.ViewModel
 
         HttpHelper http = new HttpHelper();
 
+        #endregion
+
         public BookShelfPageViewModel()
         {
 
         }
+
+        #region 方法
 
         /// <summary>
         /// 取消请求
@@ -131,18 +137,23 @@ namespace Sodu.ViewModel
         }
 
 
-        public void BackpressedHandler()
+        public bool BackpressedHandler()
         {
             if (IsEditing)
             {
                 OnEditCommand();
+                return true;
             }
 
             if (IsLoading)
             {
                 CancleHttpRequest();
+                return true;
             }
+
+            return false;
         }
+
         public void InitData(object obj = null)
         {
             this.IsShow = false;
@@ -294,6 +305,12 @@ namespace Sodu.ViewModel
        });
         }
 
+
+        #endregion
+
+
+        #region  命令
+
         /// <summary>
         /// 全选，全不选
         /// </summary>
@@ -312,7 +329,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private void OnEditCommand()
+        public void OnEditCommand()
         {
             if (IsLoading) return;
 
@@ -325,7 +342,7 @@ namespace Sodu.ViewModel
             SetBookShelfEditStatus(!IsEditing);
         }
 
-        private void SetBookShelfEditStatus(bool vale)
+        public void SetBookShelfEditStatus(bool vale)
         {
             IsEditing = vale;
 
@@ -333,7 +350,7 @@ namespace Sodu.ViewModel
             {
                 foreach (var item in ShelfBookList)
                 {
-                    item.IfBookshelf = false;
+                    item.IsInEdit = false;
                     item.IsSelected = false;
                 }
                 IsEditing = false;
@@ -343,7 +360,7 @@ namespace Sodu.ViewModel
                 IsEditing = true;
                 foreach (var item in ShelfBookList)
                 {
-                    item.IfBookshelf = true;
+                    item.IsInEdit = true;
                 }
             }
         }
@@ -506,6 +523,9 @@ namespace Sodu.ViewModel
                 SetData();
             }
         }
+
+
+        #endregion
 
     }
 }
