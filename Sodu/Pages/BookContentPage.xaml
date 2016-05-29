@@ -23,14 +23,12 @@
         <Border x:Name="border" Height="45">
             <TextBlock x:Name="TextTitle"    VerticalAlignment="Center" Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="55,0,0,0"  FontSize="18"></TextBlock>
         </Border>
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent" d:IsLocked="True" d:IsHidden="True"   
+        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent" d:IsLocked="True" d:IsHidden="True"   
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Button Style="{StaticResource ContentButtonStyle}" Height="auto" >
-                        <TextBox   BorderThickness="0" TextWrapping="Wrap" Height="auto" IsReadOnly="True"  Text="{Binding}"    DataContext="{Binding }" AcceptsReturn="True" Margin="0" FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
-                        </TextBox>
-                    </Button>
+                    <TextBlock  Margin="10,0"    TextWrapping="Wrap" Height="auto"   Text="{Binding}"    DataContext="{Binding }"  LineHeight="24"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
+                    </TextBlock>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

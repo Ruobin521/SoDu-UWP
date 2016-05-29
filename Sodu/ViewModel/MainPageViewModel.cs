@@ -322,13 +322,27 @@ namespace Sodu.ViewModel
                            string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, entity.BookID));
                            if (html.Contains("{\"success\":true}"))
                            {
-                               //await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                               //{
-                               //    if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
-                               //    {
-                               //        ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, new BookEntity);
-                               //    }
-                               //});
+                               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                               {
+                                   if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                                   {
+                                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, new BookEntity()
+                                       {
+                                           AuthorName = entity.AuthorName,
+                                           BookID = entity.BookID,
+                                           BookName = entity.BookName,
+                                           CatalogListUrl = entity.CatalogListUrl,
+                                           LastReadChapterName = entity.LastReadChapterName,
+                                           LastReadChapterUrl = entity.LastReadChapterUrl,
+                                           NewestChapterName = entity.NewestChapterName,
+                                           NewestChapterUrl = entity.NewestChapterUrl,
+                                           UnReadCountData = entity.UnReadCountData,
+                                           UpdateTime = entity.UpdateTime,
+                                           UpdateCatalogUrl = entity.UpdateCatalogUrl,
+                                           LyWeb = entity.LyWeb
+                                       });
+                                   }
+                               });
                            }
                            else
                            {
