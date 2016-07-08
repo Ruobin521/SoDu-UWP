@@ -22,7 +22,7 @@ namespace Sodu.Database
                     db.RunInTransaction(() =>
                     {
                         var temp = (from m in db.Table<BookCatalogContent>()
-                                    where m.BookID == content.BookID && m.CatalogContentGUID == content.CatalogContentGUID
+                                    where m.BookID == content.BookID && m.CatalogUrl == content.CatalogUrl
                                     select m
                             ).FirstOrDefault();
                         if (temp == null)
@@ -44,7 +44,7 @@ namespace Sodu.Database
             return result;
         }
 
-        public static BookCatalogContent SelectBookCatalogContent(string path, string contentGuid)
+        public static BookCatalogContent SelectBookCatalogContent(string path, string catalogUrl)
         {
             BookCatalogContent result = null;
             try
@@ -55,7 +55,7 @@ namespace Sodu.Database
                     db.RunInTransaction(() =>
                     {
                         var temp = (from m in db.Table<BookCatalogContent>()
-                                    where m.CatalogContentGUID == contentGuid
+                                    where m.CatalogUrl == catalogUrl
                                     select m
                                 ).FirstOrDefault();
                         if (temp != null)

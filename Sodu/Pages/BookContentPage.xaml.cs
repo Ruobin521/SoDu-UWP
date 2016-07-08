@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,23 +24,42 @@ namespace Sodu.Pages
     /// </summary>
     public sealed partial class BookContentPage : Page
     {
+        double x = 0;//用来接收手势水平滑动的长度
+
         public BookContentPage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
+            ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
+            ManipulationDelta += The_ManipulationDelta;//订阅手势滑动事件
         }
 
+        private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
+        {
+            x = 0;
+        }
+
+        private void The_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            x += e.Delta.Translation.X;//将滑动的值赋给x
+        }
+
+        private void The_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+        {
+            if (x > 85)
+            {
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
+            }
+            else if (x < -85)
+            {
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
+            }
+        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.IsFullScreen)
-            {
-                SetFullScreen(true);
-            }
-            else
-            {
-                SetFullScreen(false);
-            }
+            SetFullScreen(true);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -49,28 +69,16 @@ namespace Sodu.Pages
 
         private async void SetFullScreen(bool value)
         {
-            if (!value)
+            if (value)
             {
-                StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                await statusBar.ShowAsync();
-
-                this.border.Visibility = Visibility.Visible;
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-                btnFullScreen.Label = "全屏显示";
-
-                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
+                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(false);
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
             }
             else
             {
-                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(false);
-                StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                await statusBar.HideAsync();
-                this.border.Visibility = Visibility.Collapsed;
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
-                btnFullScreen.Label = "退出全屏";
+                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
             }
         }
-
 
 
         public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
@@ -78,31 +86,6 @@ namespace Sodu.Pages
             List<T> visualCollection = new List<T>();
             GetVisualChildCollection(parent as DependencyObject, visualCollection);
             return visualCollection;
-        }
-
-        private void directionAppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            ScrollViewer scrllviewer = GetVisualChildCollection<ScrollViewer>(this.listview).FirstOrDefault();
-
-            if (scrllviewer == null)
-
-                return;
-
-            if (this.listview.Items != null && this.listview.Items.Count > 0)
-            {
-                if (this.direction.Label.Equals("回到顶部"))
-                {
-                    scrllviewer.ScrollToVerticalOffset(0);
-                    this.direction.Label = "转到底部";
-                }
-
-                else if (this.direction.Label.Equals("转到底部"))
-                {
-                    //this.listview.ScrollIntoView(this.listview.Items[this.listview.Items.Count - 1]);
-                    scrllviewer.ScrollToVerticalOffset(scrllviewer.ScrollableHeight);
-                    this.direction.Label = "回到顶部";
-                }
-            }
         }
 
         public static void GetVisualChildCollection<T>(DependencyObject parent, List<T> visualCollection) where T : UIElement
@@ -118,19 +101,47 @@ namespace Sodu.Pages
             }
         }
 
-        private void fuullScreen_Click(object sender, RoutedEventArgs e)
+
+        Point _startPint;
+        private void listview_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            _startPint = e.GetCurrentPoint(this.listview).Position;
+        }
 
-            if (ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.IsFullScreen)
+
+
+        private void listview_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            Point endPoint = e.GetCurrentPoint(this.listview).Position;
+
+
+        }
+
+        private void listview_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            Point endPoint = e.GetCurrentPoint(this.listview).Position;
+
+            if (_startPint.X - endPoint.X > 20)
             {
-                ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SetFullScreen(false, false);
-                SetFullScreen(false);
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
             }
-            else
+            else if (endPoint.X - _startPint.X > 20)
             {
-                ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SetFullScreen(true, false);
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
+            }
+        }
 
-                SetFullScreen(true);
+        private void listview_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            Point endPoint = e.GetCurrentPoint(this.listview).Position;
+
+            if (_startPint.X - endPoint.X > 20)
+            {
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
+            }
+            else if (endPoint.X - _startPint.X > 20)
+            {
+                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
             }
         }
     }

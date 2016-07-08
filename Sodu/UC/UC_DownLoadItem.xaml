@@ -38,16 +38,10 @@
             <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"  Margin="20,0"></ProgressBar>
 
             <TextBlock FontSize="16" Grid.Column="0" Margin="20,0,0,0" VerticalAlignment="Center"  Grid.Row="2" TextTrimming="WordEllipsis" >
-                
                 <Run  Text="{Binding CurrentCatalog.CatalogName}" FontSize="16"> </Run>
             </TextBlock>
 
 
-
-            <!--<TextBlock Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16">
-            <Run Text="{Binding ProgressValue}"></Run>
-            <Run Text="%"></Run>
-        </TextBlock>-->
             <Button x:Name="btnPause" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Click="btnPause_Click">
                 <Button.Content>
                     <SymbolIcon  Symbol="{Binding IsPause,Converter={StaticResource DownItemIconConverter},Mode=OneWay}"></SymbolIcon>

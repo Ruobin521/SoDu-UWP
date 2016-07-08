@@ -18,14 +18,12 @@ namespace Sodu.ViewModel
 {
     public class SettingPageViewModel : BaseViewModel
     {
-        [IgnoreDataMember]
-        private static object obj = new object();
-
-
-        private bool _isShowMessage = true;
-
-        [IgnoreDataMember]
-        private bool IsLoading { get; set; }
+        public static string n_IsAutoLogin = "IsAutoLogin";
+        public static string n_IfAutAddToShelf = "IfAutAddToShelf";
+        public static string n_IfDownloadInWAAN = "IfDownloadInWAAN";
+        public static string n_IsFullScreen = "IsFullScreen";
+        public static string n_TextFontSzie = "TextFontSzie";
+        public static string n_Cookie = "Cookie";
 
 
         private int m_TextFontSzie = 20;
@@ -40,10 +38,15 @@ namespace Sodu.ViewModel
             }
             set
             {
+                if (value == m_TextFontSzie)
+                {
+                    return;
+                }
                 SetProperty(ref m_TextFontSzie, value);
-                // SaveSetting();
+                SetTextSize(value, true);
             }
         }
+
 
         private List<int> m_FontSzieList;
         /// <summary>
@@ -75,8 +78,13 @@ namespace Sodu.ViewModel
             }
             set
             {
-                if (value == m_IfAutoLogin) return;
+
+                if (value == m_IfAutAddToShelf)
+                {
+                    return;
+                }
                 SetProperty(ref m_IfAutoLogin, value);
+                SetAutoLogin(value, true);
             }
         }
 
@@ -92,8 +100,12 @@ namespace Sodu.ViewModel
             }
             set
             {
-                if (value == IfAutAddToShelf) return;
+                if (value == m_IfAutAddToShelf)
+                {
+                    return;
+                }
                 SetProperty(ref m_IfAutAddToShelf, value);
+                SetAutoAddToShelf(value, true);
             }
 
         }
@@ -110,29 +122,16 @@ namespace Sodu.ViewModel
             }
             set
             {
-                if (value == m_IfDownloadInWAAN) return;
+                if (value == m_IfDownloadInWAAN)
+                {
+                    return;
+                }
                 SetProperty(ref m_IfDownloadInWAAN, value);
+                SetDownLoadInWAAN(value, true);
             }
 
         }
 
-
-        private bool m_IsFullScreen = false;
-        /// <summary>
-        /// 全屏阅读
-        /// </summary>
-        public bool IsFullScreen
-        {
-            get
-            {
-                return m_IsFullScreen;
-            }
-            set
-            {
-                if (value == m_IsFullScreen) return;
-                SetProperty(ref m_IsFullScreen, value);
-            }
-        }
 
 
         private UserCookie m_UserCookie;
@@ -154,14 +153,137 @@ namespace Sodu.ViewModel
             {
                16,18,20,22,24,26,28
             };
+
         }
 
 
-        public void SetFullScreen(bool value, bool isShowMessage = false)
+        public void InitSettingData()
         {
-            this.IsFullScreen = value;
-            this._isShowMessage = isShowMessage;
+            //自动登录
+            if (!SettingService.CheckKeyExist(n_IsAutoLogin))
+            {
+                SettingService.SetSetting(n_IsAutoLogin, "true");
+                IfAutoLogin = true;
+            }
+            else
+            {
+                string value = SettingService.GetSetting(n_IsAutoLogin);
+
+                if (value.Equals("true"))
+                {
+                    IfAutoLogin = true;
+                }
+                else
+                {
+                    IfAutoLogin = false;
+                }
+            }
+
+
+            //自动添加书架
+            if (!SettingService.CheckKeyExist(n_IfAutAddToShelf))
+            {
+                SettingService.SetSetting(n_IfAutAddToShelf, "true");
+                IfAutAddToShelf = true;
+            }
+            else
+            {
+                string value = SettingService.GetSetting(n_IfAutAddToShelf);
+
+                if (value.Equals("true"))
+                {
+                    IfAutAddToShelf = true;
+                }
+                else
+                {
+                    IfAutAddToShelf = false;
+                }
+            }
+
+            //在流量下下载
+            if (!SettingService.CheckKeyExist(n_IfDownloadInWAAN))
+            {
+                SettingService.SetSetting(n_IfDownloadInWAAN, "false");
+                IfDownloadInWAAN = false;
+            }
+            else
+            {
+                string value = SettingService.GetSetting(n_IfDownloadInWAAN);
+                if (value.Equals("true"))
+                {
+                    IfDownloadInWAAN = true;
+                }
+                else
+                {
+                    IfDownloadInWAAN = false;
+                }
+            }
+
+
+            //正文字体大小
+            if (!SettingService.CheckKeyExist(n_TextFontSzie))
+            {
+                SettingService.SetSetting(n_TextFontSzie, "20");
+                TextFontSzie = 20;
+            }
+            else
+            {
+                string value = SettingService.GetSetting(n_TextFontSzie);
+                TextFontSzie = Convert.ToInt32(value);
+            }
         }
+
+
+        public void SetAutoLogin(bool value, bool isShowMessage = true)
+        {
+            if (value)
+            {
+                SettingService.SetSetting(n_IsAutoLogin, "true");
+            }
+            else
+            {
+                SettingService.SetSetting(n_IsAutoLogin, "false");
+            }
+            IfAutoLogin = value;
+        }
+
+        public void SetAutoAddToShelf(bool value, bool isShowMessage = false)
+        {
+            if (value)
+            {
+                SettingService.SetSetting(n_IfAutAddToShelf, "true");
+            }
+            else
+            {
+                SettingService.SetSetting(n_IfAutAddToShelf, "false");
+            }
+            IfAutAddToShelf = value;
+
+        }
+
+        public void SetDownLoadInWAAN(bool value, bool isShowMessage = true)
+        {
+            if (value)
+            {
+                SettingService.SetSetting(n_IfDownloadInWAAN, "true");
+            }
+            else
+            {
+                SettingService.SetSetting(n_IfDownloadInWAAN, "false");
+            }
+
+            IfDownloadInWAAN = value;
+
+        }
+
+
+        public void SetTextSize(int value, bool isShowMessage = false)
+        {
+            SettingService.SetSetting(n_TextFontSzie, value);
+            TextFontSzie = value;
+        }
+
+
 
         [IgnoreDataMember]
         public RelayCommand<object> SaveCommand
@@ -175,70 +297,9 @@ namespace Sodu.ViewModel
             }
         }
 
-        public async void SaveSetting()
+        private void SaveSetting()
         {
-            bool result = false;
-            try
-            {
-                await Task.Run(() =>
-               {
-                   lock (obj)
-                   {
-                       string fileName = AppDataPath.SettingFileName;
-                       result = SerializeHelper.WriteAsync(this, fileName).Result;
-                   }
-               });
-
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                IsLoading = false;
-                if (_isShowMessage)
-                {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (result)
-                        {
-                            ToastHeplper.ShowMessage("已保存设置更改");
-                        }
-                        else
-                        {
-                            ToastHeplper.ShowMessage("保存设置失败，请重新尝试");
-                        }
-                    });
-                }
-                _isShowMessage = true;
-            }
-        }
-
-
-
-
-        public void SetFontSize(bool isAdd, bool isShowMessage = true)
-        {
-            if (isAdd)
-            {
-                if (this.TextFontSzie < 28)
-                {
-
-                    this.TextFontSzie += 2;
-                    _isShowMessage = isShowMessage;
-
-                }
-
-            }
-            else
-            {
-                if (this.TextFontSzie > 16)
-                {
-                    this.TextFontSzie -= 2;
-                    _isShowMessage = isShowMessage;
-                }
-            }
+            throw new NotImplementedException();
         }
     }
 

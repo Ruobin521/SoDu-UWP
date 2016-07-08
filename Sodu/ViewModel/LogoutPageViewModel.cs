@@ -30,19 +30,6 @@ namespace Sodu.ViewModel
             }
         }
 
-        private bool m_IsNeedRefresh = true;
-        public bool IsNeedRefresh
-        {
-            get
-            {
-                return true;
-            }
-            set
-            {
-                m_IsNeedRefresh = true;
-            }
-        }
-
         private Util.HttpHelper http = new Util.HttpHelper();
 
         public void CancleHttpRequest()

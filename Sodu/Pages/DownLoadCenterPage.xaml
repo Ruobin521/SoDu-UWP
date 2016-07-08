@@ -29,7 +29,7 @@
         </ListView>
         <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  >
             <AppBarButton Icon="{Binding IsDownLoading,Converter={StaticResource DownLoadPagePauseIconConverter}}" Label="全部暂停"  Command="{Binding PauseAllCommand}"  />
-            <AppBarButton Icon="Cancel" Label="全部删除" Width="65" Command="{Binding DeleteAllCommand}" />
+            <AppBarButton Icon="Cancel" Label="全部取消" Width="65" Command="{Binding DeleteAllCommand}" />
         </CommandBar>
     </Grid>
 </Page>

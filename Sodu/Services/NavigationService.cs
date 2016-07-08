@@ -58,12 +58,8 @@ namespace Sodu.Services
             }
             ContentFrame.Navigate(type, para);
         }
-        public static void GoBack(object sender = null, BackPressedEventArgs e = null)
+        public static void GoBack(object sender = null)
         {
-            if (e != null)
-            {
-                e.Handled = true;
-            }
             if (ContentFrame.CanGoBack)
             {
                 ContentFrame.GoBack();
@@ -120,6 +116,15 @@ namespace Sodu.Services
             }
 
             ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
+
+            if (ContentFrame.CanGoBack)
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+            else
+            {
+                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
         }
 
     }

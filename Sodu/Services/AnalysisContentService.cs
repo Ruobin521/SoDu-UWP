@@ -12,6 +12,10 @@ namespace Sodu.Services
 {
     public class WebSet
     {
+        /// 第七中文
+        /// </summary>
+        public const string dqzw = "www.d7zy.com";
+
         /// <summary>
         /// 7度书屋
         /// </summary>
@@ -69,11 +73,6 @@ namespace Sodu.Services
         public const string sqsxs = "www.sqsxs.com";
 
         /// <summary>
-        /// 大书包
-        /// </summary>
-        public const string dsb = "www.dashubao.cc";
-
-        /// <summary>
         /// 找书网
         /// </summary>
         public const string zsw = "www.zhaodaoshu.com";
@@ -117,6 +116,33 @@ namespace Sodu.Services
         ///80小说
         /// </summary>
         public const string su80 = "www.su80.net";
+
+        public static List<string> UrlList = new List<string>()
+        {
+            su80, yssm,  fourkzw, ylg,     fenghuaju,
+            shu6, ytzww, qubige,  zsw,     sqsxs,
+            snwx, kkks,  dhzw,    aszw520, fyxs,
+            xs55, wwxsw, qfxs,    bxwx5,   dijiuzww,
+            qdsw,
+            dqzw
+        };
+
+        public static bool CheckUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+
+            Uri tempUrl = new Uri(url);
+            string web = tempUrl.Authority;
+
+            if (UrlList.Contains(web))
+            {
+                return true;
+            }
+            return false;
+        }
 
     }
     public class AnalysisContentService
@@ -236,10 +262,6 @@ namespace Sodu.Services
                     result = AnalysisSlsxsw(html);
                     break;
 
-                //大书包
-                case WebSet.dsb:
-                    result = AnalysisDsb(html);
-                    break;
 
 
                 //趣笔阁
@@ -249,6 +271,11 @@ namespace Sodu.Services
 
                 //书路
                 case WebSet.shu6:
+                    result = AnalysisShu6(html);
+                    break;
+
+                //第七中文
+                case WebSet.dqzw:
                     result = AnalysisShu6(html);
                     break;
 
@@ -418,7 +445,7 @@ namespace Sodu.Services
         {
             string result = string.Empty;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            Match match = Regex.Match(html, "<div id=\"chapterContent\".*?<center>", RegexOptions.IgnoreCase);
+            Match match = Regex.Match(html, "<div id=\"htmlContent\".*?<div class=\"chapter_Turnpage\">", RegexOptions.IgnoreCase);
             if (match != null)
             {
                 result = match.ToString();
@@ -591,6 +618,9 @@ namespace Sodu.Services
 
             switch (web)
             {
+                case WebSet.dqzw:
+                    result = AnalysisCommonUrl(url);
+                    break;
                 //7度书屋
                 case WebSet.qdsw:
                     result = AnalysisCommonUrl(url);
@@ -656,10 +686,10 @@ namespace Sodu.Services
                     result = AnalysisCommonUrl(url);
                     break;
 
-                //大书包
-                case WebSet.dsb:
-                    result = AnalysisCommonUrl(url);
-                    break;
+                ////大书包
+                //case WebSet.dsb:
+                //    result = AnalysisCommonUrl(url);
+                //    break;
 
                 //趣笔阁
                 case WebSet.qubige:
@@ -830,7 +860,7 @@ namespace Sodu.Services
                         foreach (var item in catalogList)
                         {
                             item.BookID = bookid;
-                            item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                            item.CatalogUrl = item.CatalogUrl;
                         }
                     }
                 }
@@ -846,6 +876,11 @@ namespace Sodu.Services
 
             switch (web)
             {
+                //手牵手
+                case WebSet.dqzw:
+                    result = AnalysisdJzww(html, web);
+                    break;
+
                 //手牵手
                 case WebSet.sqsxs:
                     result = AnalysisSlsxsw(html, url);
@@ -910,10 +945,10 @@ namespace Sodu.Services
                     result = AnalysisSlsxsw(html, url);
                     break;
 
-                //大书包
-                case WebSet.dsb:
-                    result = AnalysisDefault(html);
-                    break;
+                ////大书包
+                //case WebSet.dsb:
+                //    result = AnalysisDefault(html);
+                //    break;
 
                 //趣笔阁
                 case WebSet.qubige:
@@ -922,7 +957,7 @@ namespace Sodu.Services
 
                 //书路
                 case WebSet.shu6:
-                    result = AnalysisSl(html, url);
+                    result = AnalysisSl(html, web);
                     break;
 
                 //风华居
@@ -1067,15 +1102,13 @@ namespace Sodu.Services
         /// <returns></returns>
         private static List<BookCatalog> AnalysisSl(string html, string baseUrl)
         {
-
             List<BookCatalog> list = null;
-
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"content\">.*?</div>");
             if (t_string != null)
             {
                 string str = Regex.Replace(t_string.ToString(), "<dt>.*?<dt>", "").ToString();
-                MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href='(.*?)'.*?>(.*?)</a></dd>");
+                MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href=[,\"](.*?)['\"].*?>(.*?)</a></dd>");
                 if (matches.Count == 0)
                 {
                     return list;
@@ -1095,7 +1128,7 @@ namespace Sodu.Services
                             BookCatalog catalog = new BookCatalog();
                             catalog.Index = i;
                             i++;
-                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }
@@ -1485,7 +1518,9 @@ namespace Sodu.Services
         {
             List<BookCatalog> list = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            MatchCollection matches = Regex.Matches(html, "(?<=<td class=\"chapterBean\".*?href=\")(.*?)(?=\".*?>(.*?)</a></td>)");
+            Match match = Regex.Match(html, "<div class=\"book_list\">.*?</div>");
+
+            MatchCollection matches = Regex.Matches(match.ToString(), "<li><a href=\"(.*?)\".*?>(.*?)</a></li>");
             if (matches != null && matches.Count < 1)
             {
                 return list;

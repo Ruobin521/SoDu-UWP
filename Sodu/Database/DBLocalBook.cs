@@ -103,14 +103,12 @@ namespace Sodu.Database
             return result;
         }
 
-        public static bool DeleteLocalBooksDataByBookID(string path, string bookid)
+        public static bool DeleteLocalBookByBookID(string path, string bookid)
         {
             bool result = true;
             using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
             {
                 db.CreateTable<BookEntity>();
-                db.CreateTable<BookCatalog>();
-                db.CreateTable<BookCatalogContent>();
                 db.RunInTransaction(() =>
                 {
                     try
@@ -123,33 +121,6 @@ namespace Sodu.Database
                         {
                             db.Delete(temp);
                         }
-                        var temp2 = (from m in db.Table<BookCatalog>()
-                                     where m.BookID == bookid
-                                     select m
-                               );
-
-                        if (temp2 != null)
-                        {
-                            foreach (var item in temp2)
-                            {
-                                db.Delete(item);
-
-                            }
-                        }
-                        var temp3 = (from m in db.Table<BookCatalogContent>()
-                                     where m.BookID == bookid
-                                     select m
-                              );
-
-                        if (temp3 != null)
-                        {
-                            foreach (var item in temp3)
-                            {
-                                db.Delete(item);
-
-                            }
-                        }
-
                     }
                     catch (Exception ex)
                     {

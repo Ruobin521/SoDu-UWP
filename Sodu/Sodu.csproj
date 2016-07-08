@@ -94,6 +94,17 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\Images\1.jpg" />
+    <Content Include="Assets\Images\10.jpg" />
+    <Content Include="Assets\Images\11.jpg" />
+    <Content Include="Assets\Images\2.jpeg" />
+    <Content Include="Assets\Images\3.jpg" />
+    <Content Include="Assets\Images\4.jpg" />
+    <Content Include="Assets\Images\5.jpg" />
+    <Content Include="Assets\Images\6.jpg" />
+    <Content Include="Assets\Images\7.jpg" />
+    <Content Include="Assets\Images\8.jpg" />
+    <Content Include="Assets\Images\9.jpg" />
     <Content Include="Assets\SplashScreen.scale-150.png" />
     <Content Include="Assets\Square150x150Logo.scale-100.png" />
     <Content Include="Assets\Square310x310Logo.scale-100.png" />
@@ -164,6 +175,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\NetworkManager.cs" />
     <Compile Include="Services\RefreshDataService.cs" />
+    <Compile Include="Services\SettingService.cs" />
     <Compile Include="Services\SqliteService.cs" />
     <Compile Include="UC\PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>

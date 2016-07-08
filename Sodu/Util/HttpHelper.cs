@@ -43,25 +43,33 @@ namespace Sodu.Util
 
         public async Task<string> WebRequestGet(string url, bool isAddTime = false, Encoding encoding = null)
         {
-            if (isAddTime)
+            string html = null;
+            try
             {
-                url = url + "?time=" + GetTimeStamp();
+                if (isAddTime)
+                {
+                    url = url + "?time=" + GetTimeStamp();
+                }
+                Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+                Request.Method = "GET";    //设置请求方式为GET : 
+                Request.Headers["Timeout"] = "15000";
+                Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
+                Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
+                Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, sdch"; //设置接收的编码 可以接受 gzip
+                Request.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.8";
+                Request.Headers[HttpRequestHeader.CacheControl] = "max-age=0";
+                Request.Headers[HttpRequestHeader.Connection] = "keep-alive";
+                Request.ContentType = "application/x-www-form-urlencoded";
+                Request.Proxy = null;
+                Request.ContinueTimeout = 350;
+
+                html = await GetReponseHtml(Request, encoding);
+
             }
-            Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
-            Request.Method = "GET";    //设置请求方式为GET : 
-            Request.Headers["Timeout"] = "15000";
-            Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
-            Request.Headers[HttpRequestHeader.UserAgent] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36";
-            Request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip, deflate, sdch"; //设置接收的编码 可以接受 gzip
-            Request.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.8";
-            Request.Headers[HttpRequestHeader.CacheControl] = "max-age=0";
-            Request.Headers[HttpRequestHeader.Connection] = "keep-alive";
-            Request.ContentType = "application/x-www-form-urlencoded";
-            Request.Proxy = null;
-            Request.ContinueTimeout = 350;
-
-
-            string html = await GetReponseHtml(Request, encoding);
+            catch (Exception ex)
+            {
+                html = null;
+            }
             return html;
         }
 
@@ -287,23 +295,20 @@ namespace Sodu.Util
                     {
                         ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
                         cookieItem.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
-                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie =
-                            new ViewModel.UserCookie()
-                            {
-                                Expires = cookieItem.Expires,
-                                Value = cookieItem.Value,
-                                Name = cookieItem.Name,
-                                Path = cookieItem.Path,
-                                Domain = cookieItem.Domain,
-                            };
-                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
+                        // ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie =
+                        //     new ViewModel.UserCookie()
+                        //     {
+                        //         Expires = cookieItem.Expires,
+                        //         Value = cookieItem.Value,
+                        //         Name = cookieItem.Name,
+                        //         Path = cookieItem.Path,
+                        //         Domain = cookieItem.Domain,
+                        //     };
+                        //ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
                     }
                     else
                     {
-                        ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie = null;
                         cookieItem.Expires = null;
-                        filter.CookieManager.SetCookie(cookieItem, false);
-
                     }
                     filter.CookieManager.SetCookie(cookieItem, false);
                 }

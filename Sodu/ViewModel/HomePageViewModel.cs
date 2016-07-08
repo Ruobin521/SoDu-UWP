@@ -110,17 +110,17 @@ namespace Sodu.ViewModel
                return html;
            }).ContinueWith(async (result) =>
           {
-              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-               {
-                   if (result.Result != null && await SetBookList(result.Result.ToString()))
-                   {
-                       ToastHeplper.ShowMessage("已更新" + BookList.Count + "条数据");
-                   }
-                   else
-                   {
-                       ToastHeplper.ShowMessage("未能获取推荐阅读数据");
-                   }
-               });
+              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 if (result != null && SetBookList(result.Result.ToString()))
+                 {
+                     ToastHeplper.ShowMessage("已更新" + BookList.Count + "条数据");
+                 }
+                 else
+                 {
+                     ToastHeplper.ShowMessage("未能获取推荐阅读数据");
+                 }
+             });
           });
         }
 
@@ -151,7 +151,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async Task<bool> SetBookList(string html)
+        public bool SetBookList(string html)
         {
             bool result = false;
             if (!string.IsNullOrEmpty(html))

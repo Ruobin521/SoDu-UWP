@@ -93,7 +93,7 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void InitData(object obj = null)
+        public void InitData(object obj = null)
         {
             //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
             if (IsLoading || this.BookList.Count > 0)
@@ -122,18 +122,18 @@ namespace Sodu.ViewModel
             {
                 if (result.Result != null)
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                     {
-                         bool rs = await SetBookList(result.Result.ToString(), pageindex);
-                         if (!rs)
-                         {
-                             ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
-                         }
-                         else
-                         {
-                             ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
-                         }
-                     });
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                   {
+                       bool rs = SetBookList(result.Result.ToString(), pageindex);
+                       if (!rs)
+                       {
+                           ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
+                       }
+                       else
+                       {
+                           ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
+                       }
+                   });
                 }
             });
         }
@@ -163,7 +163,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async Task<bool> SetBookList(string html, int pageIndex)
+        public bool SetBookList(string html, int pageIndex)
         {
 
             if (!string.IsNullOrEmpty(html))
