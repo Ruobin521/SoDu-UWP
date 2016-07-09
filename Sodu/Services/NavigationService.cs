@@ -56,6 +56,7 @@ namespace Sodu.Services
             {
                 return;
             }
+            CancleHttpRequest();
             ContentFrame.Navigate(type, para);
         }
         public static void GoBack(object sender = null, BackPressedEventArgs e = null)
@@ -66,6 +67,7 @@ namespace Sodu.Services
             }
             if (ContentFrame.CanGoBack)
             {
+                CancleHttpRequest();
                 ContentFrame.GoBack();
             }
             else

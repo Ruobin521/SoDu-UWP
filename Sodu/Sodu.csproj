@@ -106,6 +106,7 @@
     <Content Include="Images\Logo.jpg" />
     <Content Include="Images\Logout.png" />
     <Content Include="Images\refresh.png" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Reference\Microsoft.Xaml.Interactions.dll" />
     <Content Include="Reference\Microsoft.Xaml.Interactivity.dll" />
     <None Include="project.json" />
