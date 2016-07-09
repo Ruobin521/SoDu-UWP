@@ -62,6 +62,12 @@ namespace Sodu.ViewModel
 
         public async void AddNewDownloadItem(BookEntity entity)
         {
+            if (this.DownLoadList.ToList().FirstOrDefault(p => p.Entity.BookID == entity.BookID) != null)
+            {
+                ToastHeplper.ShowMessage("已经在下载队列中");
+                return;
+            }
+
             DowmLoadEntity temp = new DowmLoadEntity();
             temp.Entity = new BookEntity()
             {
@@ -80,13 +86,8 @@ namespace Sodu.ViewModel
                 UpdateCatalogUrl = entity.UpdateCatalogUrl,
                 UpdateTime = entity.UpdateTime,
             };
-
-            if (this.DownLoadList.ToList().FirstOrDefault(p => p.Entity.BookID == temp.Entity.BookID) != null)
-            {
-                ToastHeplper.ShowMessage("正在下载图书，请耐心等待。");
-                return;
-            }
-            if (NetworkManager.Current.Network == 4)  //无网络
+            //无网络
+            if (NetworkManager.Current.Network == 4)
             {
                 ToastHeplper.ShowMessage("无网络连接，请检查网络后重试");
                 return;
@@ -94,12 +95,9 @@ namespace Sodu.ViewModel
             //wifi
             else if (NetworkManager.Current.Network == 3)
             {
-                ToastHeplper.ShowMessage("开始下载图书，请耐心等待。");
-                this.DownLoadList.Add(temp);
-                StartNewDownLoadInstance(temp);
+                StartNew(temp);
             }
-            // else if (NetworkManager.Current.Network == 3)
-            //手机流量
+            //流量
             else
             {
                 if (!ViewModelInstance.Instance.SettingPageViewModelInstance.IfDownloadInWAAN)
@@ -107,9 +105,7 @@ namespace Sodu.ViewModel
                     var msgDialog = new Windows.UI.Popups.MessageDialog("你现在使用的是手机流量，确定下载？\n你可以在设置中取消此提示。") { Title = "使用流量下载" };
                     msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("我是土豪", uiCommand =>
                     {
-                        ToastHeplper.ShowMessage("开始下载图书，请耐心等待。");
-                        this.DownLoadList.Add(temp);
-                        StartNewDownLoadInstance(temp);
+                        StartNew(temp);
                     }));
                     msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("还是算了吧", uiCommand =>
                     {
@@ -119,13 +115,17 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    ToastHeplper.ShowMessage("开始下载图书，请耐心等待。");
-                    this.DownLoadList.Add(temp);
-                    StartNewDownLoadInstance(temp);
+                    StartNew(temp);
                 }
             }
         }
 
+        private void StartNew(DowmLoadEntity temp)
+        {
+            ToastHeplper.ShowMessage("开始下载图书，请耐心等待。");
+            this.DownLoadList.Add(temp);
+            StartNewDownLoadInstance(temp);
+        }
 
         public void StartNewDownLoadInstance(DowmLoadEntity temp)
         {
@@ -136,7 +136,6 @@ namespace Sodu.ViewModel
                try
                {
                    int startIndex = 0;
-
                    //适用于暂停然后重新开始
                    if (temp.CurrentCatalog != null)
                    {
@@ -152,15 +151,13 @@ namespace Sodu.ViewModel
 
                    BookEntity entity = temp.Entity;
                    int count = temp.Entity.CatalogList.Count;
-//#if DEBUG
-//                   count = 20;
-//#endif
+
                    for (int i = startIndex; i < count; i++)
                    {
                        if (temp.IsPause)
                        {
-                           return;
                            // break;
+                           return;
                        }
                        try
                        {
@@ -171,30 +168,30 @@ namespace Sodu.ViewModel
                                temp.CurrentIndex = i + 1;
                                temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
                            });
-                           string html = await GetHtmlData(item.CatalogUrl);
-                           //  item.CatalogContent = html;
 
-                           // item.CatalogContentGUID = item.BookID + item.Index.ToString();
+                           string html = await GetHtmlData(item.CatalogUrl);
+
                            BookCatalogContent content = new BookCatalogContent()
                            {
                                BookID = item.BookID,
-                               CatalogContentGUID = item.CatalogContentGUID,
+                               CatalogUrl = item.CatalogUrl,
                                Content = html
                            };
-                           lock (isAdd2)
+
+                           if (!string.IsNullOrEmpty(item.CatalogUrl))
                            {
-                               if (!string.IsNullOrEmpty(item.CatalogUrl))
-                               {
-                                   Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetLocalBookDBPath(), item);
-                               }
-                               if (!string.IsNullOrEmpty(content.CatalogContentGUID))
-                               {
-                                   Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetLocalBookDBPath(), content);
-                               }
+                               Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(temp.Entity.BookID), item);
+                           }
+                           if (!string.IsNullOrEmpty(content.CatalogUrl))
+                           {
+                               Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(temp.Entity.BookID), content);
                            }
 
-                           temp.Entity.NewestChapterName = item.CatalogName;
-                           temp.Entity.NewestChapterUrl = item.CatalogUrl;
+                           await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                           {
+                               temp.Entity.NewestChapterName = item.CatalogName;
+                               temp.Entity.NewestChapterUrl = item.CatalogUrl;
+                           });
                        }
                        catch (Exception ex)
                        {
@@ -323,8 +320,8 @@ namespace Sodu.ViewModel
             {
                 entity.IsPause = true;
                 await Task.Delay(500);
-                Database.DBBookCatalog.DeteleBookCatalogByBookID(Constants.AppDataPath.GetLocalBookDBPath(), entity.Entity.BookID);
                 this.DownLoadList.Remove(entity);
+                System.IO.File.Delete(Constants.AppDataPath.GetBookDBPath(entity.Entity.BookID));
                 if (this.DownLoadList.Count == 0)
                 {
                     IsDownLoading = false;
@@ -358,7 +355,7 @@ namespace Sodu.ViewModel
                                 await Task.Delay(500);
                                 foreach (var item in DownLoadList)
                                 {
-                                    Database.DBBookCatalog.DeteleBookCatalogByBookID(Constants.AppDataPath.GetLocalBookDBPath(), item.Entity.BookID);
+                                    System.IO.File.Delete(Constants.AppDataPath.GetBookDBPath(item.Entity.BookID));
                                 }
                                 this.DownLoadList.Clear();
                                 IsDownLoading = false;

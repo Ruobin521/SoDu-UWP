@@ -94,7 +94,6 @@ namespace Sodu.Model
         ///未读提示
         /// </summary>
         [Ignore]
-
         public string UnReadCountData
         {
             get
@@ -154,6 +153,8 @@ namespace Sodu.Model
         [Ignore]
         public ObservableCollection<BookCatalog> CatalogList { get; set; }
 
+        [Ignore]
+        public ObservableCollection<BookCatalog> UnDownloadCatalogList { get; set; }
 
         /// <summary>
         /// 是否为编辑状态

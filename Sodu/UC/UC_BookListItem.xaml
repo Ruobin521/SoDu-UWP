@@ -32,7 +32,8 @@
                     <ColumnDefinition Width="auto"  x:Name="gridOfCheckBox" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions> <!--//IsInEdit-->
+                </Grid.ColumnDefinitions>
+                <!--//IsInEdit-->
                 <!--IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"-->
                 <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
                 <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}" FontSize="18" Text="{Binding  BookName}"></TextBlock>
@@ -42,7 +43,7 @@
                 <Run x:Name="txtUnreadData" Foreground="Blue" Text="{Binding UnReadCountData}"></Run>
                 </TextBlock>
             </Grid>
-            <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="{Binding ElementName=btn,Path=ActualWidth}" StrokeDashArray="4" />
+            <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0"/>
         </Grid>
 
     </Button>

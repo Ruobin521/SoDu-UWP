@@ -26,6 +26,7 @@ using Windows.UI;
 using System.Threading.Tasks;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http;
+using Windows.UI.Core;
 
 namespace Sodu
 {
@@ -51,7 +52,12 @@ namespace Sodu
 
             EncodingProvider provider = CodePagesEncodingProvider.Instance;
             Encoding.RegisterProvider(provider);
+            UnhandledException += App_UnhandledException;
+        }
 
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            
         }
 
 
@@ -61,7 +67,7 @@ namespace Sodu
         /// 将在启动应用程序以打开特定文件等情况下使用。
         /// </summary>
         /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
+        protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
 
 #if DEBUG
@@ -72,16 +78,19 @@ namespace Sodu
 #endif
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
-                StatusBar statusBar = StatusBar.GetForCurrentView();
-                //statusBar.ForegroundColor = (Color)ColorHelper.FromArgb(255, 0, 77, 0);               
-                statusBar.ForegroundColor = Colors.Black;
-                //statusBar.BackgroundColor = Colors.Red;
-                statusBar.BackgroundOpacity = 1;
-                statusBar.BackgroundColor = Colors.White;
+                //StatusBar statusBar = StatusBar.GetForCurrentView();
+                ////statusBar.ForegroundColor = (Color)ColorHelper.FromArgb(255, 0, 77, 0);               
+                //statusBar.ForegroundColor = Colors.Black;
+                ////statusBar.BackgroundColor = Colors.Red;
+                //statusBar.BackgroundOpacity = 1;
+                //statusBar.BackgroundColor = Colors.White;
+
+                StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                await statusBar.HideAsync();
             }
 
-            //StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            //await statusBar.ShowAsync();
+
+
             Frame rootFrame = Window.Current.Content as Frame;
 
             // 不要在窗口已包含内容时重复应用程序初始化，
@@ -101,16 +110,18 @@ namespace Sodu
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
 
-
-                bool result = await ReadSettingData();
-                InitLocalBook();
+                InitSettingData();
 
                 if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
                 {
                     Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
                     Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
                 }
-
+                else
+                {
+                    SystemNavigationManager.GetForCurrentView().BackRequested -= App_BackRequested;
+                    SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+                }
             }
 
 
@@ -126,77 +137,32 @@ namespace Sodu
         }
 
 
-        public async Task<bool> ReadSettingData()
+        public void InitSettingData()
         {
-            //获取设置数据
-            SettingPageViewModel appSetingViewModel = null;
-            try
-            {
-                string settingName = AppDataPath.SettingFileName;
-                if (!File.Exists(AppDataPath.GetSettingFilePath()))
-                {
-                    ///初始化设置默认值
-                    appSetingViewModel = new SettingPageViewModel();
-                    await SerializeHelper.WriteAsync(appSetingViewModel, settingName);
-                }
-                else
-                {
-                    appSetingViewModel = await SerializeHelper.ReadAsync<SettingPageViewModel>(settingName);
-                    HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                    HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
-                    var cookieItem = cookieCollection.First(p => p.Name.Equals("sodu_user"));
+            var settingvm = ViewModelInstance.Instance.SettingPageViewModelInstance;
+            settingvm.InitSettingData();
 
-                    if (appSetingViewModel.IfAutoLogin)
-                    {
-                        if (cookieItem != null)
-                        {
-                            if (appSetingViewModel.UserCookie == null)
-                            {
-                                cookieItem.Expires = null;
-                                filter.CookieManager.SetCookie(cookieItem, false);
-                                ViewModelInstance.Instance.IsLogin = false;
-                            }
-                            else {
-                                if (cookieItem.Value.Equals(appSetingViewModel.UserCookie.Value))
-                                {
-                                    ViewModelInstance.Instance.IsLogin = true;
-                                }
-                                else
-                                {
-                                    cookieItem.Value = appSetingViewModel.UserCookie.Value;
-                                    filter.CookieManager.SetCookie(cookieItem);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (appSetingViewModel.UserCookie != null)
-                            {
-                                HttpCookie cookie = new HttpCookie(appSetingViewModel.UserCookie.Name, appSetingViewModel.UserCookie.Domain, appSetingViewModel.UserCookie.Path);
-                                cookie.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
-                                cookie.Value = appSetingViewModel.UserCookie.Value;
-                                filter.CookieManager.SetCookie(cookie);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (cookieItem != null)
-                        {
-                            ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
-                            cookieItem.Expires = null;
-                            filter.CookieManager.SetCookie(cookieItem, false);
-                            ViewModelInstance.Instance.IsLogin = false;
-                        }
-                    }
-                }
-                ViewModelInstance.Instance.SettingPageViewModelInstance = appSetingViewModel;
-            }
-            catch (Exception ex)
+            HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
+            var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
+
+            if (cookieItem == null)
             {
-                //  
+                ViewModelInstance.Instance.IsLogin = false;
+                return;
             }
-            return true;
+
+            if (settingvm.IfAutoLogin)
+            {
+                cookieItem.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
+                filter.CookieManager.SetCookie(cookieItem, false);
+                ViewModelInstance.Instance.IsLogin = true;
+            }
+            else
+            {
+                cookieItem.Expires = null;
+                filter.CookieManager.SetCookie(cookieItem);
+            }
         }
 
 
@@ -208,6 +174,30 @@ namespace Sodu
             //  Database.DBLocalBook.DeleteAllLocalBooksData(AppDataPath.GetLocalBookDBPath());
 
             ViewModelInstance.Instance.LocalBookPage.InitData(null);
+        }
+
+
+
+        private void App_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+
+            if (e != null)
+            {
+                e.Handled = true;
+            }
+
+            if (NavigationService.ContentFrame != null)
+            {
+                Page page = NavigationService.ContentFrame.Content as Page;
+                if (page != null && (page.DataContext as BookShelfPageViewModel) != null && (page.DataContext as BookShelfPageViewModel).BackpressedHandler())
+                {
+                    return;
+                }
+                else
+                {
+                    NavigationService.GoBack(sender);
+                }
+            }
         }
 
         /// <summary>
@@ -230,7 +220,7 @@ namespace Sodu
                 }
                 else
                 {
-                    NavigationService.GoBack(sender, e);
+                    NavigationService.GoBack();
                 }
             }
         }

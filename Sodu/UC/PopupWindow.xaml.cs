@@ -53,7 +53,7 @@ namespace Sodu.UC
 
             if (vertical == VerticalAlignment.Top)
             {
-                top = Windows.UI.ViewManagement.StatusBar.GetForCurrentView().OccludedRect.Height + 10;
+                top = 20;
             }
 
             else if (vertical == VerticalAlignment.Bottom)

@@ -198,6 +198,7 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
+                        this.SearchResultList.Clear();
                         if (arraryList.Count > 0)
                         {
                             foreach (var item in arraryList)

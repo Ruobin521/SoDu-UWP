@@ -43,6 +43,16 @@ namespace Sodu.Constants
             }
             return path;
         }
+
+        public static string GetBookDBPath(string bookid)
+        {
+            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, bookid + ".db");
+            if (!File.Exists(path))
+            {
+                File.Create(path).Dispose();
+            }
+            return path;
+        }
         public static string GetSettingFilePath()
         {
             string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.SettingFileName);

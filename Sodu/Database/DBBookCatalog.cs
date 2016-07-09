@@ -19,41 +19,33 @@ namespace Sodu.Database
                 using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
                 {
                     db.CreateTable<BookCatalog>();
-                    db.RunInTransaction(async () =>
-                    {
-                        var temp = (from m in db.Table<BookCatalog>()
-                                    where m.BookID == catalog.BookID && m.Index == catalog.Index
-                                    select m
-                            ).FirstOrDefault();
+                    db.RunInTransaction(() =>
+                  {
+                      var temp = (from m in db.Table<BookCatalog>()
+                                  where m.BookID == catalog.BookID && m.Index == catalog.Index
+                                  select m
+                          ).FirstOrDefault();
 
-                        try
-                        {
-                            if (temp == null)
-                            {
-                                db.Insert(catalog);
-                            }
-                            else
-                            {
-                                db.Delete(temp);
-                                db.Insert(catalog);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            if (ex.Message != null && ex.Message.ToLower().Equals("busy"))
-                            {
-                                await Task.Delay(500);
-                                bool value = DBBookCatalog.InsertOrUpdateBookCatalog(path, catalog);
-                                if (value)
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    });
+                      try
+                      {
+                          if (temp == null)
+                          {
+                              db.Insert(catalog);
+                          }
+                          else
+                          {
+                              db.Delete(temp);
+                              db.Insert(catalog);
+                          }
+                      }
+                      catch (Exception ex)
+                      {
+
+                      }
+                  });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = false;
             }
@@ -80,7 +72,7 @@ namespace Sodu.Database
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = null;
             }
@@ -106,7 +98,7 @@ namespace Sodu.Database
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = null;
             }
