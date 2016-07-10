@@ -1196,7 +1196,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListViewItem">
-                    <Grid x:Name="LayoutRoot" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                    <Grid x:Name="LayoutRoot" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="5">
                         <Grid.Resources>
                             <Style x:Key="BaseContentPresenterStyle" TargetType="ContentPresenter">
                                 <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -1291,7 +1291,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-  
+
     <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TabNavigation" Value="Local"/>
@@ -1319,7 +1319,7 @@
                                 <Setter Property="FontSize" Value="15"/>
                             </Style>
                         </Grid.Resources>
-                       
+
                         <Rectangle x:Name="PressedBackground" Fill="{TemplateBinding Background}" Control.IsTemplateFocusTarget="True"/>
                         <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" Style="{StaticResource BodyContentPresenterStyle}" TextWrapping="NoWrap" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Grid>
@@ -1327,7 +1327,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 
 
     <Style x:Key="ToggleButtonStyle1" TargetType="ToggleButton">
@@ -1557,7 +1557,9 @@
                                 <VisualState x:Name="Pressed">
                                     <Storyboard>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="RootGrid">
-                                            --><!--<DiscreteObjectKeyFrame KeyTime="0" Value="#FFE0E5EE"/> FFCFCFCF--><!--
+                                            -->
+                                <!--<DiscreteObjectKeyFrame KeyTime="0" Value="#FFE0E5EE"/> FFCFCFCF-->
+                                <!--
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="#FFCFCFCF"/>
                                         </ObjectAnimationUsingKeyFrames>
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ContentPresenter">

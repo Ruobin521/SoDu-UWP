@@ -178,13 +178,16 @@ namespace Sodu.ViewModel
                                Content = html
                            };
 
-                           if (!string.IsNullOrEmpty(item.CatalogUrl))
+                           lock (isAdd1)
                            {
-                               Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(temp.Entity.BookID), item);
-                           }
-                           if (!string.IsNullOrEmpty(content.CatalogUrl))
-                           {
-                               Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(temp.Entity.BookID), content);
+                               if (!string.IsNullOrEmpty(item.CatalogUrl))
+                               {
+                                   Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(temp.Entity.BookID), item);
+                               }
+                               if (!string.IsNullOrEmpty(content.CatalogUrl))
+                               {
+                                   Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(temp.Entity.BookID), content);
+                               }
                            }
 
                            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -210,7 +213,7 @@ namespace Sodu.ViewModel
                    {
                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                        {
-                           lock (isAdd1)
+                           lock (isAdd2)
                            {
                                temp.Entity.LastReadChapterName = null;
                                temp.Entity.LastReadChapterUrl = null;

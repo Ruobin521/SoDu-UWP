@@ -86,7 +86,7 @@ namespace Sodu.ViewModel
             {
                 return;
             }
-
+            this.CurrentBookEntity = null;
             this.CurrentBookEntity = temp;
 
 

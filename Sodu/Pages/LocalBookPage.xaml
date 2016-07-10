@@ -21,7 +21,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_LocalBookItem x:Name="item"  DataContext="{Binding}"  Margin="0,0,0,10" Command="{Binding  Instance.LocalBookPage.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                    <UC:UC_LocalBookItem x:Name="item"  DataContext="{Binding}" Command="{Binding  Instance.LocalBookPage.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

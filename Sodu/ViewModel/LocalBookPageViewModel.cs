@@ -150,6 +150,19 @@ namespace Sodu.ViewModel
                         {
                             item.IsLocal = true;
                             this.LocalBookList.Add(item);
+
+                            var list = Database.DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                            if (list != null)
+                            {
+                                foreach (var catalog in list)
+                                {
+                                    if (item.CatalogList == null)
+                                    {
+                                        item.CatalogList = new ObservableCollection<BookCatalog>();
+                                    }
+                                    item.CatalogList.Add(catalog);
+                                }
+                            }
                         }
                         else
                         {
@@ -157,22 +170,6 @@ namespace Sodu.ViewModel
                         }
                     }
                 });
-            }
-
-            foreach (var item in result)
-            {
-                var list = Database.DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
-                if (list != null)
-                {
-                    foreach (var catalog in list)
-                    {
-                        if (item.CatalogList == null)
-                        {
-                            item.CatalogList = new ObservableCollection<BookCatalog>();
-                        }
-                        item.CatalogList.Add(catalog);
-                    }
-                }
             }
         }).ContinueWith(obj =>
         {
@@ -348,6 +345,7 @@ namespace Sodu.ViewModel
                                  item.NewestChapterName = list[i].CatalogName;
                                  item.NewestChapterUrl = list[i].CatalogUrl;
                                  item.UpdateTime = DateTime.Now.ToString();
+                                 item.CatalogList.Add(list[i]);
                              });
 
                              Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(item.BookID), list[i]);

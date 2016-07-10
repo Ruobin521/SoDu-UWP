@@ -9,8 +9,8 @@
     x:Name="root"
     d:DesignHeight="130"
     d:DesignWidth="500">
-    <Button Margin="15,3"   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"    x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1"  Padding="0">
-        <Grid Background="Transparent" >
+    <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  Background="#FFFBFBFB"  x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1"  Padding="0">
+        <Grid Background="Transparent"  Margin="15,3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>

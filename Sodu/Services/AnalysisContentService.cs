@@ -224,7 +224,7 @@ namespace Sodu.Services
 
                 //找书网（需要分页）
                 case WebSet.zsw:
-                    result = AnalysisBxzw5(html);
+                    result = Analysis4kzw(html);
                     break;
 
                 //55小说（古古小说网）
@@ -362,6 +362,7 @@ namespace Sodu.Services
             }
             return result;
         }
+
 
         /// <summary>
         /// 云来阁
@@ -608,7 +609,7 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogUrl
     {
-        public static string GetBookCatalogListUrl(string html, string url)
+        public static string GetBookCatalogListUrl(string url)
         {
             string result = string.Empty;
 
@@ -878,7 +879,7 @@ namespace Sodu.Services
             {
                 //手牵手
                 case WebSet.dqzw:
-                    result = AnalysisdJzww(html, web);
+                    result = AnalysisDqzw(html, web);
                     break;
 
                 //手牵手
@@ -1258,6 +1259,42 @@ namespace Sodu.Services
             {
                 list = new List<BookCatalog>();
                 for (int i = 0; i < matches.Count - 4; i++)
+                {
+                    Match item = matches[i];
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        private static List<BookCatalog> AnalysisDqzw(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                for (int i = 0; i < matches.Count ; i++)
                 {
                     Match item = matches[i];
                     var groups = item.Groups;

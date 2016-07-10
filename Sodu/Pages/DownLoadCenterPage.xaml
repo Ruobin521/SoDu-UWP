@@ -23,7 +23,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:UC_DownLoadItem  DataContext="{Binding}" Margin="5,0,5,10" PasueCommand="{Binding Instance.DownLoadCenterViewModelInstance.PauseCommand,Source={StaticResource Locator} }" DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownLoadItem>
+                    <uc:UC_DownLoadItem  DataContext="{Binding}"  PasueCommand="{Binding Instance.DownLoadCenterViewModelInstance.PauseCommand,Source={StaticResource Locator} }" DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownLoadItem>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
