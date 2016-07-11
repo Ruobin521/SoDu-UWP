@@ -28,7 +28,7 @@
           >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Button  Background="Transparent" Style="{StaticResource ContentButtonStyle}"  Padding="15,3"  Height="65"
+                    <Button  Background="Transparent" Style="{StaticResource ContentButtonStyle}"   Height="65"
                              Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}">
                         <UC:UC_ChapterItem x:Name="item" DataContext="{Binding}"   />
                     </Button>
