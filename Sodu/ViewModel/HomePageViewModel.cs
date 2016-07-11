@@ -89,11 +89,16 @@ namespace Sodu.ViewModel
         /// </summary>
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
         public void InitData(object obj = null)
         {
+            CancleHttpRequest();
+
             if (this.BookList.Count > 0)
             {
                 return;

@@ -126,7 +126,10 @@ namespace Sodu.ViewModel
         {
             try
             {
-                http.HttpClientCancleRequest();
+                if (http != null)
+                {
+                    http.HttpClientCancleRequest();
+                }
                 IsLoading = false;
             }
             catch (Exception ex)
@@ -139,6 +142,8 @@ namespace Sodu.ViewModel
 
         public bool BackpressedHandler()
         {
+            CancleHttpRequest();
+
             if (IsEditing)
             {
                 OnEditCommand();

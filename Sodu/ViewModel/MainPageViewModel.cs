@@ -194,7 +194,6 @@ namespace Sodu.ViewModel
         {
             try
             {
-
                 if (!ViewModelInstance.Instance.IsLogin)
                 {
                     this.CurrentMenuList = this.UnloadMenuList;

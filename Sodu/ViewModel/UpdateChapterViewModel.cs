@@ -118,15 +118,19 @@ namespace Sodu.ViewModel
         public string CurrentPageUrl { get; set; }
 
 
-        HttpHelper http = new HttpHelper();
+        HttpHelper http;
         public void CancleHttpRequest()
         {
-            this.http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
 
         public void InitData(object obj = null)
         {
+            CancleHttpRequest();
 
             if (CurrentEntity == obj as BookEntity)
             {
@@ -206,7 +210,7 @@ namespace Sodu.ViewModel
                 {
                     url = CurrentPageUrl.Insert(CurrentPageUrl.Length - 5, "_" + nextPageIndex);
                 }
-
+                http = new HttpHelper();
                 html = await http.WebRequestGet(url, true);
                 if (html == null) return html;
                 await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

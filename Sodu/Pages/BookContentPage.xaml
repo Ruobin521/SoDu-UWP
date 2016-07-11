@@ -26,6 +26,7 @@
         <Border x:Name="border" Height="20">
             <TextBlock x:Name="TextTitle"    VerticalAlignment="Center" Text="{Binding ContentTitle}"   TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="10,0,0,0"  FontSize="16"></TextBlock>
         </Border>
+     
         <ListView x:Name="listview"   PointerEntered="listview_PointerEntered"    Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent" d:IsLocked="True" d:IsHidden="True"   
             >
             <ListView.ItemTemplate>

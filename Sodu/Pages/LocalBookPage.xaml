@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="本地小说" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
-        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox"    ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -34,6 +34,6 @@
 
         </CommandBar>
 
-        <!--<UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>-->
+        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>
 </Page>

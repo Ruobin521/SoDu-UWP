@@ -75,12 +75,17 @@ namespace Sodu.ViewModel
 
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
 
         public void InitData(object obj = null)
         {
+            CancleHttpRequest();
+
             BookEntity temp = obj as BookEntity;
             if (temp == null)
             {

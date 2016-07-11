@@ -130,36 +130,28 @@ namespace Sodu.ViewModel
         /// </summary>
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
 
         public void InitData(object obj = null)
         {
-            try
-            {
-                if (obj == null)
-                {
-                    SearchPara = "";
-                    this.SearchResultList.Clear();
-                    return;
-                }
-
-                if (SearchResultList != null)
-                {
-                    SearchResultList.Clear();
-                }
-                SetData(obj.ToString());
-            }
-            catch (Exception ex)
-            {
-                ToastHeplper.ShowMessage("获取数据有误，请重新尝试");
-            }
+            CancleHttpRequest();
         }
 
 
         public void SetData(string para)
         {
+            if (string.IsNullOrEmpty(para))
+            {
+                ToastHeplper.ShowMessage("请输入搜索条件");
+                return;
+            }
+            SearchResultList.Clear();
+            this.SearchPara = para;
             Task.Run(async () =>
             {
 
@@ -274,7 +266,7 @@ namespace Sodu.ViewModel
         }
         private void OnSearchCommand(object obj)
         {
-            InitData(obj.ToString());
+            SetData(obj.ToString());
         }
 
 
@@ -298,7 +290,7 @@ namespace Sodu.ViewModel
             else
             {
                 if (obj == null) return;
-                InitData(obj.ToString());
+                SetData(obj.ToString());
             }
         }
 

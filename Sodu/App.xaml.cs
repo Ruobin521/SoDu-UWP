@@ -57,9 +57,8 @@ namespace Sodu
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            
-        }
 
+        }
 
 
         /// <summary>
@@ -111,19 +110,20 @@ namespace Sodu
                 Window.Current.Content = rootFrame;
 
                 InitSettingData();
+                InitLocalBook();
+                var api = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily;
 
-                if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.UI.Input.HardwareButtons"))
-                {
-                    Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
-                    Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
-                }
-                else
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
                 {
                     SystemNavigationManager.GetForCurrentView().BackRequested -= App_BackRequested;
                     SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
                 }
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    Windows.Phone.UI.Input.HardwareButtons.BackPressed -= HardwareButtons_BackPressed;
+                    Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
+                }
             }
-
 
             if (rootFrame.Content == null)
             {
@@ -136,6 +136,35 @@ namespace Sodu
             Window.Current.Activate();
         }
 
+        /// <summary>
+        //当关闭窗口时
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Current_Closed(object sender, CoreWindowEventArgs e)
+        {
+            await CheckIfHasDownloadTasks();
+        }
+
+        public async static Task<bool> CheckIfHasDownloadTasks()
+        {
+            bool result = true;
+            if (ViewModelInstance.Instance.DownLoadCenterViewModelInstance.DownLoadList.Count > 0)
+            {
+                var msgDialog = new Windows.UI.Popups.MessageDialog("\n 你还有缓存任务没有完成，退出以后将不再保存下载任务，确定退出？") { Title = "退出" };
+                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                {
+                    result = true;
+                }));
+                msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
+                {
+                    result = false;
+                }));
+
+                await msgDialog.ShowAsync();
+            }
+            return result;
+        }
 
         public void InitSettingData()
         {
@@ -171,9 +200,25 @@ namespace Sodu
         /// </summary>
         private void InitLocalBook()
         {
-            //  Database.DBLocalBook.DeleteAllLocalBooksData(AppDataPath.GetLocalBookDBPath());
-
-            ViewModelInstance.Instance.LocalBookPage.InitData(null);
+            Task.Run(() =>
+            {
+                var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+                string dicPath = AppDataPath.GetLocalBookFolderPath();
+                DirectoryInfo folder = new DirectoryInfo(dicPath);
+                foreach (var file in folder.GetFiles())
+                {
+                    if (result == null || result.FirstOrDefault(p => (p.BookID + ".db").Equals(file.Name)) == null)
+                    {
+                        try
+                        {
+                            file.Delete();
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
+                }
+            });
         }
 
 

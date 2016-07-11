@@ -1,4 +1,5 @@
-﻿using Sodu.ViewModel;
+﻿using Sodu.Util;
+using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,12 +68,20 @@ namespace Sodu.Pages
             SetFullScreen(false);
         }
 
-        private async void SetFullScreen(bool value)
+        private void SetFullScreen(bool value)
         {
             if (value)
             {
                 ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(false);
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
+                {
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                }
+                else if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+                }
             }
             else
             {

@@ -24,6 +24,10 @@ namespace Sodu.Constants
         public const string SettingFileName = "SettingPageViewModel.xml";
 
 
+
+        public const string LocalBookFolderName = "LocalBooks";
+
+
         public static string GetHistoryDBPath()
         {
             string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.HistoryDBPath);
@@ -43,10 +47,18 @@ namespace Sodu.Constants
             }
             return path;
         }
-
+        public static string GetLocalBookFolderPath()
+        {
+            string folderPath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, LocalBookFolderName);
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            return folderPath;
+        }
         public static string GetBookDBPath(string bookid)
         {
-            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, bookid + ".db");
+            string path = Path.Combine(GetLocalBookFolderPath(), bookid + ".db");
             if (!File.Exists(path))
             {
                 File.Create(path).Dispose();

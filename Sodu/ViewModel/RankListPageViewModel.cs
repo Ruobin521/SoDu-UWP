@@ -69,11 +69,15 @@ namespace Sodu.ViewModel
                 SetProperty(ref this.m_PageCount, value);
             }
         }
-        private ObservableCollection<BookEntity> m_BookList = new ObservableCollection<BookEntity>();
+        private ObservableCollection<BookEntity> m_BookList;
         public ObservableCollection<BookEntity> BookList
         {
             get
             {
+                if (m_BookList == null)
+                {
+                    m_BookList = new ObservableCollection<BookEntity>();
+                }
                 return m_BookList;
             }
             set
@@ -89,14 +93,17 @@ namespace Sodu.ViewModel
         /// </summary>
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
 
         public void InitData(object obj = null)
         {
-            //  如果正在加载，或者提示不需要刷新 或者 obj为空 说明是从左侧菜单列表项从而导致刷新，这时候不需要刷新了
-            if (IsLoading || this.BookList.Count > 0)
+            CancleHttpRequest();
+            if (this.BookList.Count > 0)
             {
                 return;
             }

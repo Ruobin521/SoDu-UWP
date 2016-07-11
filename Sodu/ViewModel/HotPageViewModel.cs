@@ -80,13 +80,17 @@ namespace Sodu.ViewModel
         }
 
 
-        HttpHelper http = new HttpHelper();
+        HttpHelper http;
         /// <summary>
         /// 取消请求
         /// </summary>
         public void CancleHttpRequest()
         {
-            http.HttpClientCancleRequest();
+            if (http != null)
+            {
+                http.HttpClientCancleRequest();
+            }
+
             IsLoading = false;
         }
         public void InitData(object obj = null)
@@ -131,6 +135,7 @@ namespace Sodu.ViewModel
             });
             try
             {
+                http = new HttpHelper();
                 html = await http.WebRequestGet(PageUrl.HomePage, true);
             }
             catch (Exception ex)

@@ -63,8 +63,9 @@ namespace Sodu.Database
                     {
                         var temp = (from m in db.Table<BookCatalog>()
                                     where m.BookID == bookID
+                                    orderby m.Index
                                     select m
-                            );
+                                );
                         if (temp != null && temp.Count() > 0)
                         {
                             result = temp.OrderBy(p => p.Index).ToList();

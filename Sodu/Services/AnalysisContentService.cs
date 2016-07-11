@@ -923,7 +923,7 @@ namespace Sodu.Services
 
                 //找书网（需要分页）
                 case WebSet.zsw:
-                    result = AnalysisdJzww(html, web);
+                    result = AnalysisdQfxs(html, web);
                     break;
 
                 //55小说（古古小说网）
@@ -1294,7 +1294,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
-                for (int i = 0; i < matches.Count ; i++)
+                for (int i = 0; i < matches.Count; i++)
                 {
                     Match item = matches[i];
                     var groups = item.Groups;

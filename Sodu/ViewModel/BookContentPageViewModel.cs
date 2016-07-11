@@ -64,8 +64,8 @@ namespace Sodu.ViewModel
         }
 
 
-        public StringBuilder m_TextContent;
-        public StringBuilder TextContent
+        public string m_TextContent;
+        public string TextContent
         {
             get
             {
@@ -151,6 +151,9 @@ namespace Sodu.ViewModel
 
         public void InitData(object obj)
         {
+            CancleHttpRequest();
+
+
             BookEntity entity = obj as BookEntity;
             if (entity == null)
             {
@@ -205,6 +208,10 @@ namespace Sodu.ViewModel
                    if (this.BookEntity.IsLocal)
                    {
                        resultHtml = await GetCatafromDatabase(catalog);
+                       if (!string.IsNullOrEmpty(resultHtml))
+                       {
+                           return resultHtml;
+                       }
                    }
                    resultHtml = await AnalysisContentService.GetHtmlContent(htmlHttp, catalog.CatalogUrl);
                }
@@ -229,10 +236,13 @@ namespace Sodu.ViewModel
               {
                   if (html != null)
                   {
+
                       this.CurrentCatalog = catalog;
 
                       this.BookEntity.LastReadChapterName = catalog.CatalogName;
                       this.BookEntity.LastReadChapterUrl = catalog.CatalogUrl;
+
+                      //  TextContent = html;
 
                       SetTextContent(html);
                       this.ContentTitle = BookEntity.LastReadChapterName;
@@ -311,6 +321,7 @@ namespace Sodu.ViewModel
                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                    {
                        IsLoadingCatalogList = false;
+                       IsLoading = false;
                    });
                }
            });
@@ -411,8 +422,14 @@ namespace Sodu.ViewModel
         /// </summary>
         public void CancleHttpRequest()
         {
-            htmlHttp.HttpClientCancleRequest();
-            catalogsHttp.HttpClientCancleRequest();
+            if (htmlHttp != null)
+            {
+                htmlHttp.HttpClientCancleRequest();
+            }
+            if (catalogsHttp != null)
+            {
+                catalogsHttp.HttpClientCancleRequest();
+            }
             IsLoading = false;
         }
 

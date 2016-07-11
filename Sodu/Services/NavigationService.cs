@@ -59,7 +59,7 @@ namespace Sodu.Services
             CancleHttpRequest();
             ContentFrame.Navigate(type, para);
         }
-        public static void GoBack(object sender = null)
+        public async static void GoBack(object sender = null)
         {
             if (ContentFrame.CanGoBack)
             {
@@ -68,16 +68,24 @@ namespace Sodu.Services
             }
             else
             {
-                if (CheckIfShutDown())
+                //  bool result = await App.CheckIfHasDownloadTasks();
+
+                if (true)
                 {
-                    App.Current.Exit();
-                }
-                else
-                {
-                    ToastHeplper.ShowMessage("再按一次返回键退出");
+                    if (CheckIfShutDown())
+                    {
+                        App.Current.Exit();
+                    }
+                    else
+                    {
+                        ToastHeplper.ShowMessage("再按一次返回键退出");
+                    }
                 }
             }
         }
+
+
+
         private static bool CheckIfShutDown()
         {
             if (FirstTime == DateTime.MinValue)
