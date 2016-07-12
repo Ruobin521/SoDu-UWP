@@ -34,7 +34,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}" Margin="0,0,15,0"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
+                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

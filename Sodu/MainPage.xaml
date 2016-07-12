@@ -81,12 +81,17 @@
                             </AppBarButton>
                             <AppBarButton  Icon="Download"   Label="下载中心" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
-                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding DownLoadCenterCommadn}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
+                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding DownLoadCenterCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 
                             </AppBarButton>
                             <AppBarButton  Icon="Library"   Label="本地图书" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding LocalBooksCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
+
+                            </AppBarButton>
+                            <AppBarButton  Icon="Accept"   Label="给个好评" 
+                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
+                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding EvaluateCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 
                             </AppBarButton>
                             <AppBarButton    Label="设置"  Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"   IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding SettingCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">

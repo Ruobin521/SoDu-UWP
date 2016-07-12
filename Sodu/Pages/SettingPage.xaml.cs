@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -27,6 +28,15 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string str = "568856882";
+            DataPackage dp = new DataPackage();
+            dp.SetText(str);
+            Clipboard.SetContent(dp);
+            Util.ToastHeplper.ShowMessage("已复制群号到剪切板");
         }
 
     }

@@ -18,6 +18,7 @@ using Windows.UI.Core;
 using Sodu.Controls;
 using Windows.UI.Xaml;
 using Sodu.Services;
+using Windows.System;
 
 namespace Sodu.ViewModel
 {
@@ -417,7 +418,7 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 下载中心
         /// </summary>
-        public ICommand DownLoadCenterCommadn
+        public ICommand DownLoadCenterCommand
         {
             get
             {
@@ -447,6 +448,21 @@ namespace Sodu.ViewModel
         }
 
         /// <summary>
+        /// 本地图书
+        /// </summary>
+        public ICommand EvaluateCommand
+        {
+            get
+            {
+                return new RelayCommand<bool>(
+                     async (str) =>
+                      {
+                          await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9nblggh4sk4v"));
+                      });
+            }
+        }
+
+        /// <summary>
         /// 阅读记录
         /// </summary>
         public ICommand ReadHistoryCommand
@@ -457,7 +473,7 @@ namespace Sodu.ViewModel
                       (str) =>
                       {
                           IsLeftPanelOpen = false;
-                          NavigationService.NavigateTo(typeof(EverReadPage), null);
+                          NavigationService.NavigateTo(typeof(HistoryPage), null);
                       });
             }
         }

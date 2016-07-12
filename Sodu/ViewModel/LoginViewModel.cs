@@ -100,7 +100,7 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsAutoLogin, value);
-                ViewModelInstance.Instance.SettingPageViewModelInstance.SetAutoAddToShelf(value);
+                ViewModelInstance.Instance.SettingPageViewModelInstance.SetAutoLogin(value);
             }
         }
 

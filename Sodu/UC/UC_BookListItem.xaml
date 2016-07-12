@@ -11,19 +11,19 @@
     xmlns:converter ="using:Sodu.Converter"
     HorizontalAlignment="Stretch"
     d:DesignWidth="500"
-    Background="#FF5CCF1A"
+    
      >
     <UserControl.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converter:BookNameForgroundConverter x:Key="BookNameForgroundConverter"/>
     </UserControl.Resources>
-    <Button Style="{StaticResource  ContentButtonStyle}" x:Name="btn"  Command="{Binding ElementName=root,Path= Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
-        <Grid HorizontalAlignment="Stretch">
+    <Button Style="{StaticResource   ContentButtonStyle}" Padding="8,0,12,0" Margin="0,3,0,0"  x:Name="btn"  Command="{Binding ElementName=root,Path= Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
+        <Grid HorizontalAlignment="Stretch" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="AUTO"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="grid" Margin="0,3,0,0" >
+            <Grid x:Name="grid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -43,6 +43,7 @@
                 <Run x:Name="txtUnreadData" Foreground="Blue" Text="{Binding UnReadCountData}"></Run>
                 </TextBlock>
             </Grid>
+
             <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0"/>
         </Grid>
 

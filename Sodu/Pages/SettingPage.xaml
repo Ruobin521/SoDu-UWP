@@ -32,6 +32,7 @@
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -76,13 +77,19 @@
 
 
                 <TextBlock Grid.Column="1" Grid.Row="9"  Text="正文字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ComboBox x:Name="font" Grid.Column="1" Grid.Row="10" Foreground="Black" ItemsSource="{Binding FontSzieList}" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
+                <ComboBox x:Name="font" Grid.Column="1" Grid.Row="10" Foreground="Black" ItemsSource="{Binding FontSzieList}"  VerticalAlignment="Center" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
                     <!--<Interactivity:Interaction.Behaviors >
                         <Core:EventTriggerBehavior   EventName="SelectionChanged">
                             <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />
                         </Core:EventTriggerBehavior>
                     </Interactivity:Interaction.Behaviors>-->
                 </ComboBox>
+
+                <Button Style="{StaticResource  ContentButtonStyle}" Grid.Row="11" Grid.Column="1" Click="Button_Click" Padding="0" HorizontalAlignment="Left" Width="200" >
+                    <TextBlock   Text="QQ交流群：568856882" VerticalAlignment="Center" FontSize="18"  Foreground="Black"></TextBlock>
+                </Button>
+
+
             </Grid>
         </ScrollViewer>
 

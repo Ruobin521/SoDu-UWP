@@ -154,8 +154,8 @@
     <Compile Include="Pages\DownLoadCenterPage.xaml.cs">
       <DependentUpon>DownLoadCenterPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\EverReadPage.xaml.cs">
-      <DependentUpon>EverReadPage.xaml</DependentUpon>
+    <Compile Include="Pages\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\HotPage.xaml.cs">
       <DependentUpon>HotPage.xaml</DependentUpon>
@@ -302,7 +302,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\EverReadPage.xaml">
+    <Page Include="Pages\HistoryPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

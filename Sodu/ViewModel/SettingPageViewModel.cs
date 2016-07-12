@@ -84,7 +84,7 @@ namespace Sodu.ViewModel
                     return;
                 }
                 SetProperty(ref m_IfAutoLogin, value);
-                SetAutoLogin(value, true);
+                SetAutoLogin(value);
             }
         }
 
@@ -234,46 +234,54 @@ namespace Sodu.ViewModel
         }
 
 
-        public void SetAutoLogin(bool value, bool isShowMessage = true)
+        public void SetAutoLogin(bool value)
         {
-            if (value)
+            if (IfAutoLogin != value)
             {
-                SettingService.SetSetting(n_IsAutoLogin, "true");
+                if (value)
+                {
+                    SettingService.SetSetting(n_IsAutoLogin, "true");
+                }
+                else
+                {
+                    SettingService.SetSetting(n_IsAutoLogin, "false");
+                }
+                IfAutoLogin = value;
             }
-            else
-            {
-                SettingService.SetSetting(n_IsAutoLogin, "false");
-            }
-            IfAutoLogin = value;
         }
 
         public void SetAutoAddToShelf(bool value, bool isShowMessage = false)
         {
-            if (value)
+            if (IfAutAddToShelf != value)
             {
-                SettingService.SetSetting(n_IfAutAddToShelf, "true");
-            }
-            else
-            {
-                SettingService.SetSetting(n_IfAutAddToShelf, "false");
-            }
-            IfAutAddToShelf = value;
+                if (value)
+                {
+                    SettingService.SetSetting(n_IfAutAddToShelf, "true");
+                }
+                else
+                {
+                    SettingService.SetSetting(n_IfAutAddToShelf, "false");
+                }
 
+                IfAutAddToShelf = value;
+            }
         }
 
         public void SetDownLoadInWAAN(bool value, bool isShowMessage = true)
         {
-            if (value)
+            if (IfDownloadInWAAN != value)
             {
-                SettingService.SetSetting(n_IfDownloadInWAAN, "true");
-            }
-            else
-            {
-                SettingService.SetSetting(n_IfDownloadInWAAN, "false");
-            }
 
-            IfDownloadInWAAN = value;
-
+                if (value)
+                {
+                    SettingService.SetSetting(n_IfDownloadInWAAN, "true");
+                }
+                else
+                {
+                    SettingService.SetSetting(n_IfDownloadInWAAN, "false");
+                }
+                IfDownloadInWAAN = value;
+            }
         }
 
 

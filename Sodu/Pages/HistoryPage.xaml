@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Sodu.Pages.EverReadPage"
+    x:Class="Sodu.Pages.HistoryPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
@@ -25,11 +25,11 @@
         <!--<Border Grid.Row="1" Visibility="{Binding IsShow,Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock Text="还没有阅读记录" FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,10"/>
         </Border>-->
-        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}" ScrollViewer.VerticalScrollBarVisibility="Hidden"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item"  DataContext="{Binding}"  Margin="0,0,15,0" Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                    <UC:UC_BookListItem x:Name="item"  DataContext="{Binding}"   Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>
