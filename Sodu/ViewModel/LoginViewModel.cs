@@ -171,6 +171,7 @@ namespace Sodu.ViewModel
 
 #if  !DEBUG
                         ToastHeplper.ShowMessage("用户名和密码不能为空。");
+                        return;
 #endif
                     }
                     else

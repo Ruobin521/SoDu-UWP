@@ -59,7 +59,7 @@ namespace Sodu.Services
             CancleHttpRequest();
             ContentFrame.Navigate(type, para);
         }
-        public async static void GoBack(object sender = null)
+        public static void GoBack(object sender = null)
         {
             if (ContentFrame.CanGoBack)
             {

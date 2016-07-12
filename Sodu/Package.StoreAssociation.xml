@@ -358,11 +358,11 @@
     <Language Code="zu-za" InMinimumRequirementSet="true" />
   </SupportedLocales>
   <ProductReservedInfo>
-    <MainPackageIdentityName>54654Ruobin.63652CB8A2D10</MainPackageIdentityName>
+    <MainPackageIdentityName>54654Ruobin.UWP</MainPackageIdentityName>
     <ReservedNames>
-      <ReservedName>小说搜索阅读</ReservedName>
+      <ReservedName>小说搜索阅读 UWP</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames />
-  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9NBLGGH4WP0H" />
+  <PackageInfoList LandingUrl="https://dev.windows.com/dashboard/Application?appId=9NBLGGH4SK4V" />
 </StoreAssociation>
