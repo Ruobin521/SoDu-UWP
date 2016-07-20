@@ -1,5 +1,7 @@
-﻿using Sodu.Model;
+﻿using Sodu.Core.Model;
+using Sodu.Model;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -602,7 +604,6 @@ namespace Sodu.Services
             result = html;
             return result;
         }
-
 
     }
 

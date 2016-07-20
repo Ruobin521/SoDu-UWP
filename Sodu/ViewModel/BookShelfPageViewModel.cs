@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,6 +16,8 @@ using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using Microsoft.Practices.Unity;
+using SoDu.Core.API;
 
 namespace Sodu.ViewModel
 {
@@ -214,7 +218,7 @@ namespace Sodu.ViewModel
             });
             try
             {
-                html = await http.WebRequestGet(PageUrl.BookShelfPage, true);
+                html = await http.WebRequestGet(App.Container.Resolve<IURLService>().GetBookShelfPage(), true);
             }
             catch (Exception ex)
             {
@@ -278,7 +282,7 @@ namespace Sodu.ViewModel
                     result = false;
                     break;
                 }
-                string url = PageUrl.BookShelfPage + "?id=" + item.BookID;
+                string url = ViewModelInstance.Instance.UrlService.GetBookShelfPage() + "?id=" + item.BookID;
                 string html = await http.WebRequestGet(url);
                 if (html.Contains("取消收藏成功"))
                 {

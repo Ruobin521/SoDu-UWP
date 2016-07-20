@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Util;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,18 +46,18 @@ namespace Sodu.ViewModel
             }
         }
 
-        private BitmapImage m_ImageSource = new BitmapImage() { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(PageUrl.VerificationCodePage, UriKind.Absolute) };
-        public BitmapImage ImageSource
-        {
-            get
-            {
-                return m_ImageSource;
-            }
-            set
-            {
-                SetProperty(ref this.m_ImageSource, value);
-            }
-        }
+        //private BitmapImage m_ImageSource = new BitmapImage() { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = new Uri(PageUrl.VerificationCodePage, UriKind.Absolute) };
+        //public BitmapImage ImageSource
+        //{
+        //    get
+        //    {
+        //        return m_ImageSource;
+        //    }
+        //    set
+        //    {
+        //        SetProperty(ref this.m_ImageSource, value);
+        //    }
+        //}
 
         private string m_UserName;
         public string UserName
@@ -121,7 +123,7 @@ namespace Sodu.ViewModel
                 string html = null;
                 await Task.Run(async () =>
                  {
-                     string uri = PageUrl.RegisterPostPage;
+                     string uri = ViewModelInstance.Instance.UrlService.GetRegisterPostPage();
                      string postData = "username=" + ChineseGBKConverter.Utf8ToGb2312(UserName) + "&userpass=" + PassWord;
                      html = await http.HttpClientPostRequest(uri, postData);
                  });

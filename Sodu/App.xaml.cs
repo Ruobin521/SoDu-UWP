@@ -1,5 +1,5 @@
 ﻿using Sodu.Constants;
-using Sodu.Util;
+using Sodu.Core.Util;
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -27,6 +27,11 @@ using System.Threading.Tasks;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http;
 using Windows.UI.Core;
+using Sodu.Core.Database;
+using Sodu.Core.Config;
+using Microsoft.Practices.Unity;
+using SoDu.Core.API;
+using UmengSDK;
 
 namespace Sodu
 {
@@ -36,6 +41,11 @@ namespace Sodu
     sealed partial class App : Application
     {
         public static Frame rootFrame;
+
+        private static string key = "578de4e0e0f55ac2a3002519";
+        private static string chanel = "Marketplace";
+
+        public static IUnityContainer Container = new UnityContainer();
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -55,11 +65,17 @@ namespace Sodu
             UnhandledException += App_UnhandledException;
         }
 
+
+        protected async override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            await UmengAnalytics.StartTrackAsync(key, chanel);
+        }
+
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
 
         }
-
 
         /// <summary>
         /// 在应用程序由最终用户正常启动时进行调用。
@@ -75,7 +91,7 @@ namespace Sodu
                 this.DebugSettings.EnableFrameRateCounter = false;
             }
 #endif
-            if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
                 //StatusBar statusBar = StatusBar.GetForCurrentView();
                 ////statusBar.ForegroundColor = (Color)ColorHelper.FromArgb(255, 0, 77, 0);               
@@ -96,6 +112,7 @@ namespace Sodu
             // 只需确保窗口处于活动状态
             if (rootFrame == null)
             {
+
                 // 创建要充当导航上下文的框架，并导航到第一页
                 rootFrame = new Frame();
 
@@ -109,8 +126,12 @@ namespace Sodu
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
 
+                InitContainer();
+
+                //初始化程序数据
                 InitSettingData();
                 InitLocalBook();
+
                 var api = Windows.System.Profile.AnalyticsInfo.VersionInfo.DeviceFamily;
 
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
@@ -134,6 +155,8 @@ namespace Sodu
             }
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
+
+            await UmengAnalytics.StartTrackAsync(key, chanel);
         }
 
         /// <summary>
@@ -166,13 +189,18 @@ namespace Sodu
             return result;
         }
 
+        private void InitContainer()
+        {
+            Container.RegisterType<IURLService, URLService_CC>();
+        }
+
         public void InitSettingData()
         {
             var settingvm = ViewModelInstance.Instance.SettingPageViewModelInstance;
             settingvm.InitSettingData();
 
             HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(Constants.PageUrl.HomePage));
+            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(App.Container.Resolve<IURLService>().GetHomePage()));
             var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
 
             if (cookieItem == null)
@@ -202,7 +230,7 @@ namespace Sodu
         {
             Task.Run(() =>
             {
-                var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+                var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
                 string dicPath = AppDataPath.GetLocalBookFolderPath();
                 DirectoryInfo folder = new DirectoryInfo(dicPath);
                 foreach (var file in folder.GetFiles())
@@ -287,10 +315,12 @@ namespace Sodu
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: 保存应用程序状态并停止任何后台活动
+
+            // TODO: 保存应用程序状态并停止任何后台活动
+            await UmengAnalytics.EndTrackAsync();
             deferral.Complete();
         }
 

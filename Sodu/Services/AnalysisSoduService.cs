@@ -1,4 +1,5 @@
-﻿using Sodu.Model;
+﻿using Sodu.Core.Model;
+using Sodu.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -1,6 +1,7 @@
 ﻿using Sodu.Constants;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private Util.HttpHelper http = new Util.HttpHelper();
+        private HttpHelper http = new HttpHelper();
 
         public void CancleHttpRequest()
         {
@@ -73,7 +74,7 @@ namespace Sodu.ViewModel
                     IsLoading = true;
                 });
 
-                html = await http.WebRequestGet(PageUrl.LogoutPage);
+                html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetLogoutPage());
             }
             catch (Exception ex)
             {

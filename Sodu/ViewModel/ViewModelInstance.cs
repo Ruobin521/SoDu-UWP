@@ -1,9 +1,12 @@
-﻿using Sodu.Constants;
+﻿using Microsoft.Practices.Unity;
+using Sodu.Constants;
+using SoDu.Core.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Practices.Unity;
 using Windows.Storage;
 
 namespace Sodu.ViewModel
@@ -29,6 +32,7 @@ namespace Sodu.ViewModel
             }
         }
 
+
         private MainPageViewModel m_MainPageViewModelInstance;
         public MainPageViewModel MainPageViewModelInstance
         {
@@ -43,6 +47,19 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref this.m_MainPageViewModelInstance, value);
+            }
+        }
+
+        private IURLService m_UrlService;
+        public IURLService UrlService
+        {
+            get
+            {
+                if (m_UrlService == null)
+                {
+                    m_UrlService = App.Container.Resolve<IURLService>();
+                }
+                return m_UrlService;
             }
         }
 

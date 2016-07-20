@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.SettingHelper;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
@@ -24,6 +25,7 @@ namespace Sodu.ViewModel
         public static string n_IsFullScreen = "IsFullScreen";
         public static string n_TextFontSzie = "TextFontSzie";
         public static string n_Cookie = "Cookie";
+        public static string n_IsNightModel = "IsNightModel";
 
 
         private int m_TextFontSzie = 20;
@@ -79,7 +81,7 @@ namespace Sodu.ViewModel
             set
             {
 
-                if (value == m_IfAutAddToShelf)
+                if (value == m_IfAutoLogin)
                 {
                     return;
                 }
@@ -147,6 +149,30 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsNightModel = false;
+        /// <summary>
+        /// 是否开启夜晚模式
+        /// </summary>
+        public bool IsNightModel
+        {
+
+            get
+            {
+                return m_IsNightModel;
+            }
+            set
+            {
+
+                if (value == m_IsNightModel)
+                {
+                    return;
+                }
+                SetProperty(ref m_IsNightModel, value);
+                SetNightModel(value);
+            }
+        }
+
+
         public SettingPageViewModel()
         {
             this.FontSzieList = new List<int>()
@@ -160,16 +186,16 @@ namespace Sodu.ViewModel
         public void InitSettingData()
         {
             //自动登录
-            if (!SettingService.CheckKeyExist(n_IsAutoLogin))
+            if (!SettingHelper.CheckKeyExist(n_IsAutoLogin))
             {
-                SettingService.SetSetting(n_IsAutoLogin, "true");
+                SettingHelper.SetValue(n_IsAutoLogin, true);
                 IfAutoLogin = true;
             }
             else
             {
-                string value = SettingService.GetSetting(n_IsAutoLogin);
+                var value = (bool)SettingHelper.GetValue(n_IsAutoLogin);
 
-                if (value.Equals("true"))
+                if (value)
                 {
                     IfAutoLogin = true;
                 }
@@ -181,16 +207,16 @@ namespace Sodu.ViewModel
 
 
             //自动添加书架
-            if (!SettingService.CheckKeyExist(n_IfAutAddToShelf))
+            if (!SettingHelper.CheckKeyExist(n_IfAutAddToShelf))
             {
-                SettingService.SetSetting(n_IfAutAddToShelf, "true");
+                SettingHelper.SetValue(n_IfAutAddToShelf, true);
                 IfAutAddToShelf = true;
             }
             else
             {
-                string value = SettingService.GetSetting(n_IfAutAddToShelf);
+                var value = (bool)SettingHelper.GetValue(n_IfAutAddToShelf);
 
-                if (value.Equals("true"))
+                if (value)
                 {
                     IfAutAddToShelf = true;
                 }
@@ -200,16 +226,17 @@ namespace Sodu.ViewModel
                 }
             }
 
+
             //在流量下下载
-            if (!SettingService.CheckKeyExist(n_IfDownloadInWAAN))
+            if (!SettingHelper.CheckKeyExist(n_IfDownloadInWAAN))
             {
-                SettingService.SetSetting(n_IfDownloadInWAAN, "false");
+                SettingHelper.SetValue(n_IfDownloadInWAAN, false);
                 IfDownloadInWAAN = false;
             }
             else
             {
-                string value = SettingService.GetSetting(n_IfDownloadInWAAN);
-                if (value.Equals("true"))
+                var value = (bool)SettingHelper.GetValue(n_IfDownloadInWAAN);
+                if (value)
                 {
                     IfDownloadInWAAN = true;
                 }
@@ -221,73 +248,84 @@ namespace Sodu.ViewModel
 
 
             //正文字体大小
-            if (!SettingService.CheckKeyExist(n_TextFontSzie))
+            if (!SettingHelper.CheckKeyExist(n_TextFontSzie))
             {
-                SettingService.SetSetting(n_TextFontSzie, "20");
+                SettingHelper.SetValue(n_TextFontSzie, "20");
                 TextFontSzie = 20;
             }
             else
             {
-                string value = SettingService.GetSetting(n_TextFontSzie);
-                TextFontSzie = Convert.ToInt32(value);
+                string value = SettingHelper.GetValue(n_TextFontSzie).ToString();
+                int size = Convert.ToInt32(value);
+                if (size % 2 != 0)
+                {
+                    size = size - 1;
+                    SettingHelper.SetValue(n_TextFontSzie, size);
+
+                }
+
+                TextFontSzie = size;
+            }
+
+            //设置夜间模式
+            if (!SettingHelper.CheckKeyExist(n_IsNightModel))
+            {
+                SettingHelper.SetValue(n_IsNightModel, false);
+                IsNightModel = false;
+            }
+            else
+            {
+                var value = (bool)SettingHelper.GetValue(n_IsNightModel);
+                IsNightModel = value;
             }
         }
 
 
         public void SetAutoLogin(bool value)
         {
-            if (IfAutoLogin != value)
+            if (value)
             {
-                if (value)
-                {
-                    SettingService.SetSetting(n_IsAutoLogin, "true");
-                }
-                else
-                {
-                    SettingService.SetSetting(n_IsAutoLogin, "false");
-                }
-                IfAutoLogin = value;
+                SettingHelper.SetValue(n_IsAutoLogin, true);
             }
+            else
+            {
+                SettingHelper.SetValue(n_IsAutoLogin, false);
+            }
+            IfAutoLogin = value;
         }
 
         public void SetAutoAddToShelf(bool value, bool isShowMessage = false)
         {
-            if (IfAutAddToShelf != value)
+            if (value)
             {
-                if (value)
-                {
-                    SettingService.SetSetting(n_IfAutAddToShelf, "true");
-                }
-                else
-                {
-                    SettingService.SetSetting(n_IfAutAddToShelf, "false");
-                }
-
-                IfAutAddToShelf = value;
+                SettingHelper.SetValue(n_IfAutAddToShelf, true);
             }
+            else
+            {
+                SettingHelper.SetValue(n_IfAutAddToShelf, false);
+            }
+            IfAutAddToShelf = value;
         }
 
         public void SetDownLoadInWAAN(bool value, bool isShowMessage = true)
         {
-            if (IfDownloadInWAAN != value)
-            {
-
-                if (value)
-                {
-                    SettingService.SetSetting(n_IfDownloadInWAAN, "true");
-                }
-                else
-                {
-                    SettingService.SetSetting(n_IfDownloadInWAAN, "false");
-                }
-                IfDownloadInWAAN = value;
-            }
+            SettingHelper.SetValue(n_IfDownloadInWAAN, value);
+            IfDownloadInWAAN = value;
         }
 
+        public void SetNightModel(bool value, bool isShowMessage = true)
+        {
+            SettingHelper.SetValue(n_IsNightModel, value);
+            IsNightModel = value;
+        }
 
         public void SetTextSize(int value, bool isShowMessage = false)
         {
-            SettingService.SetSetting(n_TextFontSzie, value);
+            if (value > 28 || value < 16)
+            {
+                return;
+            }
+            SettingHelper.SetValue(n_TextFontSzie, value.ToString());
             TextFontSzie = value;
         }
 

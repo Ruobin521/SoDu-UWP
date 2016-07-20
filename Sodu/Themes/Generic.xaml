@@ -1,9 +1,8 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Sodu.Controls"
 	>
-    <Style TargetType="local:PullToRefreshListView">
+    <!--<Style TargetType="local:PullToRefreshListView">
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="TabNavigation" Value="Once"/>
         <Setter Property="IsSwipeEnabled" Value="True"/>
@@ -81,6 +80,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
 </ResourceDictionary>

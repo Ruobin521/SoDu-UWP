@@ -63,7 +63,7 @@ namespace Sodu.Services
         {
             if (ContentFrame.CanGoBack)
             {
-                CancleHttpRequest();
+                //CancleHttpRequest();
                 ContentFrame.GoBack();
             }
             else

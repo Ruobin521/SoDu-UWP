@@ -15,10 +15,11 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.Phone.UI.Input;
 using Windows.UI.Core;
-using Sodu.Controls;
 using Windows.UI.Xaml;
 using Sodu.Services;
 using Windows.System;
+using Sodu.Core.Model;
+using SoDu.Core.Util;
 
 namespace Sodu.ViewModel
 {
@@ -240,7 +241,7 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
-
+                ToastHeplper.ShowMessage("导航出现异常");
             }
         }
 
@@ -252,29 +253,18 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
-                ToastHeplper.ShowMessage("未知错误");
+                ToastHeplper.ShowMessage("导航出现异常");
             }
         }
         public void InitData(object obj = null)
         {
-            //throw new NotImplementedException();
-        }
-
-        public void StartLoading()
-        {
-            IsLoading = true;
-        }
-        public void StopLoading()
-        {
-            IsLoading = false;
+            return;
         }
 
         #endregion
 
-
         #region 命令 +命令方法
-
-
+        public ICommand m_IsLeftPanelOpenCommand;
         /// <summary>
         /// 打开或关闭左侧控制面板
         /// </summary>
@@ -282,10 +272,11 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    IsLeftPanelOpen = !IsLeftPanelOpen;
-                });
+                return m_IsLeftPanelOpenCommand ??
+             (m_IsLeftPanelOpenCommand = new RelayCommand<bool>((str) =>
+          {
+              IsLeftPanelOpen = !IsLeftPanelOpen;
+          }));
             }
         }
 
@@ -293,11 +284,13 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
-        public BaseCommand BookItemSelectedChangedCommand
+        private RelayCommand<object> m_BookItemSelectedChangedCommand;
+        public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new BaseCommand(OnBookItemSelectedChangedCommand);
+                return m_BookItemSelectedChangedCommand ??
+                    (new RelayCommand<object>(OnBookItemSelectedChangedCommand));
             }
         }
         public void OnBookItemSelectedChangedCommand(object obj)
@@ -319,7 +312,7 @@ namespace Sodu.ViewModel
                    {
                        if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
                        {
-                           string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, entity.BookID));
+                           string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), entity.BookID));
                            if (html.Contains("{\"success\":true}"))
                            {
                                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -361,27 +354,32 @@ namespace Sodu.ViewModel
 
         /// 注销
         /// </summary>
+        private ICommand m_LogoutCommand;
         public ICommand LogoutCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_LogoutCommand ?? (
+                    new RelayCommand<bool>(
                       (str) =>
                 {
                     IsLeftPanelOpen = false;
                     NavigationService.NavigateTo(typeof(LogoutPage), null);
-                });
+                }));
             }
         }
 
         /// <summary>
         /// 退出
         /// </summary>
+        private ICommand m_ExitCommand;
         public ICommand ExitCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_ExitCommand ??
+                    (
+                    new RelayCommand<bool>(
                     async (str) =>
                     {
                         var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定退出？") { Title = "退出" };
@@ -394,87 +392,95 @@ namespace Sodu.ViewModel
                             return;
                         }));
                         await msgDialog.ShowAsync();
-                    });
+                    }));
             }
         }
 
         /// <summary>
         /// 设置
         /// </summary>
+        private ICommand m_SettingCommand;
         public ICommand SettingCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_SettingCommand ??
+                    (
+                    new RelayCommand<bool>(
                       (str) =>
                     {
                         IsLeftPanelOpen = false;
 
                         NavigationService.NavigateTo(typeof(SettingPage), null);
-                    });
+                    }));
             }
         }
 
         /// <summary>
         /// 下载中心
         /// </summary>
+        private ICommand m_DownLoadCenterCommand;
         public ICommand DownLoadCenterCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_DownLoadCenterCommand ??
+                    (new RelayCommand<bool>(
                       (str) =>
                       {
                           IsLeftPanelOpen = false;
                           NavigationService.NavigateTo(typeof(DownLoadCenterPage), null);
-                      });
+                      }));
             }
         }
 
         /// <summary>
         /// 本地图书
         /// </summary>
+        private ICommand m_LocalBooksCommand;
         public ICommand LocalBooksCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_LocalBooksCommand ?? (new RelayCommand<bool>(
                       (str) =>
                     {
                         IsLeftPanelOpen = false;
                         NavigationService.NavigateTo(typeof(LocalBookPage), null);
-                    });
+                    }));
             }
         }
 
         /// <summary>
-        /// 本地图书
+        /// 应用商店评价
         /// </summary>
+        private ICommand m_EvaluateCommand;
         public ICommand EvaluateCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_EvaluateCommand ?? (new RelayCommand<bool>(
                      async (str) =>
                       {
                           await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9nblggh4sk4v"));
-                      });
+                      }));
             }
         }
 
         /// <summary>
         /// 阅读记录
         /// </summary>
+        private ICommand m_ReadHistoryCommand;
         public ICommand ReadHistoryCommand
         {
             get
             {
-                return new RelayCommand<bool>(
+                return m_ReadHistoryCommand ?? (new RelayCommand<bool>(
                       (str) =>
                       {
                           IsLeftPanelOpen = false;
                           NavigationService.NavigateTo(typeof(HistoryPage), null);
-                      });
+                      }));
             }
         }
 

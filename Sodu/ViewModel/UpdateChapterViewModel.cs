@@ -1,9 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -300,7 +302,7 @@ namespace Sodu.ViewModel
                         IsLoading = true;
                         if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
                         {
-                            string html = await (new HttpHelper()).WebRequestGet(string.Format(PageUrl.AddToShelfPage, CurrentEntity.BookID));
+                            string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), CurrentEntity.BookID));
                             if (html.Contains("{\"success\":true}"))
                             {
                                 ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(CurrentEntity);
@@ -452,11 +454,11 @@ namespace Sodu.ViewModel
             NavigationService.GoBack();
         }
 
-        public BaseCommand BookChapterSelectedChangedCommand
+        public RelayCommand<object> BookChapterSelectedChangedCommand
         {
             get
             {
-                return new BaseCommand((obj) =>
+                return new RelayCommand<object>((obj) =>
                 {
                     if (!IsLoading)
                     {

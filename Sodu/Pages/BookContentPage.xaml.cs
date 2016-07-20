@@ -1,4 +1,4 @@
-﻿using Sodu.Util;
+﻿using Sodu.Core.Util;
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -31,9 +31,35 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            //  ScrollViewer.SetVerticalScrollMode(listview, ScrollMode.Disabled);
+
             ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
             ManipulationDelta += The_ManipulationDelta;//订阅手势滑动事件
+
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            {
+                this.Loaded -= BookContentPage_Loaded;
+                this.Loaded += BookContentPage_Loaded;
+            }
+
+        }
+
+        private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
+            scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
+            scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+
+        }
+
+        private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
+            {
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+            }
         }
 
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
@@ -80,7 +106,7 @@ namespace Sodu.Pages
                 }
                 else if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
                 }
             }
             else
@@ -110,47 +136,54 @@ namespace Sodu.Pages
             }
         }
 
+        Point firstPoint = new Point();
+        DateTime firstTime = DateTime.MinValue;
+        DateTime secondTime = DateTime.MinValue;
 
-        Point _startPint;
         private void listview_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            _startPint = e.GetCurrentPoint(this.listview).Position;
-        }
-
-
-
-        private void listview_PointerMoved(object sender, PointerRoutedEventArgs e)
-        {
-            Point endPoint = e.GetCurrentPoint(this.listview).Position;
-
-
-        }
-
-        private void listview_PointerCanceled(object sender, PointerRoutedEventArgs e)
-        {
-            Point endPoint = e.GetCurrentPoint(this.listview).Position;
-
-            if (_startPint.X - endPoint.X > 20)
+            if (PlatformHelper.GetPlatform() != PlatformHelper.Platform.IsMobile)
             {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
+                e.Handled = true;
+                return;
             }
-            else if (endPoint.X - _startPint.X > 20)
-            {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
-            }
-        }
+            var p = e.GetCurrentPoint(this.listview).Position;
 
-        private void listview_PointerReleased(object sender, PointerRoutedEventArgs e)
-        {
-            Point endPoint = e.GetCurrentPoint(this.listview).Position;
+            double width = Window.Current.Bounds.Width;
+            double height = Window.Current.Bounds.Height;
 
-            if (_startPint.X - endPoint.X > 20)
+            if (p.X >= width * 0.33 && p.X <= width * 0.67 && p.Y >= height * 0.33 && p.Y <= height * 0.7)
             {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
-            }
-            else if (endPoint.X - _startPint.X > 20)
-            {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
+                if (firstTime == DateTime.MinValue)
+                {
+                    firstPoint = p;
+                    firstTime = DateTime.Now;
+                    return;
+                }
+
+                if ((DateTime.Now - firstTime).TotalMilliseconds < 500)
+                {
+                    if (this.commandbar.ClosedDisplayMode != AppBarClosedDisplayMode.Compact)
+                    {
+                        this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                    }
+                    else
+                    {
+                        this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                    }
+
+                    firstPoint = new Point();
+                    firstTime = DateTime.MinValue;
+                    return;
+                }
+                else
+                {
+                    firstPoint = p;
+                    firstTime = DateTime.Now;
+                    return;
+                }
+
+
             }
         }
     }

@@ -1,8 +1,13 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Config;
+using Sodu.Core.Database;
+using Sodu.Core.Model;
+using Sodu.Core.Util;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
@@ -87,13 +92,13 @@ namespace Sodu.ViewModel
                 UpdateTime = entity.UpdateTime,
             };
             //无网络
-            if (NetworkManager.Current.Network == 4)
+            if (NetworkHelper.Current.Network == 4)
             {
                 ToastHeplper.ShowMessage("无网络连接，请检查网络后重试");
                 return;
             }
             //wifi
-            else if (NetworkManager.Current.Network == 3)
+            else if (NetworkHelper.Current.Network == 3)
             {
                 StartNew(temp);
             }
@@ -182,11 +187,11 @@ namespace Sodu.ViewModel
                            {
                                if (!string.IsNullOrEmpty(item.CatalogUrl))
                                {
-                                   Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(temp.Entity.BookID), item);
+                                   DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(temp.Entity.BookID), item);
                                }
                                if (!string.IsNullOrEmpty(content.CatalogUrl))
                                {
-                                   Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(temp.Entity.BookID), content);
+                                   DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(temp.Entity.BookID), content);
                                }
                            }
 
@@ -217,7 +222,7 @@ namespace Sodu.ViewModel
                            {
                                temp.Entity.LastReadChapterName = null;
                                temp.Entity.LastReadChapterUrl = null;
-                               Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
+                               DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
                            }
                            this.DownLoadList.Remove(temp);
                            if (this.DownLoadList.Count == 0)
@@ -324,7 +329,7 @@ namespace Sodu.ViewModel
                 entity.IsPause = true;
                 await Task.Delay(500);
                 this.DownLoadList.Remove(entity);
-                System.IO.File.Delete(Constants.AppDataPath.GetBookDBPath(entity.Entity.BookID));
+                System.IO.File.Delete(AppDataPath.GetBookDBPath(entity.Entity.BookID));
                 if (this.DownLoadList.Count == 0)
                 {
                     IsDownLoading = false;
@@ -358,7 +363,7 @@ namespace Sodu.ViewModel
                                 await Task.Delay(500);
                                 foreach (var item in DownLoadList)
                                 {
-                                    System.IO.File.Delete(Constants.AppDataPath.GetBookDBPath(item.Entity.BookID));
+                                    System.IO.File.Delete(AppDataPath.GetBookDBPath(item.Entity.BookID));
                                 }
                                 this.DownLoadList.Clear();
                                 IsDownLoading = false;

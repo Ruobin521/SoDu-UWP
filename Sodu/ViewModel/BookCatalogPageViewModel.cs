@@ -1,8 +1,12 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using Sodu.Core.Config;
+using Sodu.Core.Database;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -110,7 +114,7 @@ namespace Sodu.ViewModel
         private bool CheckIfLoacalExist()
         {
             bool rs = false;
-            var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+            var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
 
             if (result != null && result.FirstOrDefault(p => p.BookID == this.CurrentBookEntity.BookID) != null)
             {
@@ -170,7 +174,7 @@ namespace Sodu.ViewModel
             else
             {
                 IsLoading = true;
-                var list = await AnalysisBookCatalogList.GetCatalogList(CurrentBookEntity.CatalogListUrl, this.CurrentBookEntity.BookID, http = new HttpHelper());
+                var list = await AnalysisBookCatalogList.GetCatalogList(CurrentBookEntity.CatalogListUrl, this.CurrentBookEntity.BookID, http = new SoDu.Core.Util.HttpHelper());
                 if (list != null && list.Count > 0)
                 {
                     this.CurrentBookEntity.CatalogList.Clear();
@@ -213,7 +217,7 @@ namespace Sodu.ViewModel
             if (IsLoading) return;
             if (this.CurrentBookEntity != null && this.CurrentBookEntity.CatalogList != null && this.CurrentBookEntity.CatalogList.Count > 0)
             {
-                var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
+                var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
                 if (result != null && result.FirstOrDefault(p => p.BookID == this.CurrentBookEntity.BookID) != null)
                 {
                     ToastHeplper.ShowMessage("该图书已经下载过");

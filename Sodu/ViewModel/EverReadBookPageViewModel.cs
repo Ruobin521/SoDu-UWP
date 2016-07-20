@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
-using Sodu.Database;
+using Sodu.Core.Config;
+using Sodu.Core.Database;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
@@ -78,7 +80,7 @@ namespace Sodu.ViewModel
 
         public EverReadBookPageViewModel()
         {
-            var list = Database.DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
+            var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
             if (list != null)
             {
                 list.ForEach(x => this.BookList.Add(x));
@@ -94,7 +96,7 @@ namespace Sodu.ViewModel
             else
             {
                 BookList.Add(entity);
-                bool result = Database.DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), entity);
+                bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), entity);
             }
         }
 

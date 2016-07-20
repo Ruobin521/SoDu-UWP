@@ -12,34 +12,46 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.BookContentPageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:control="using:Sodu.Controls">
-
-    <Grid  Background="White" x:Name="grid">
+    >
+    <Page.Resources>
+        <converter:NightModelBackgroundConverter x:Key="NightModelBackgroundConverter"></converter:NightModelBackgroundConverter>
+        <converter:NightModelForegroundConverter x:Key="NightModelForegroundConverter"></converter:NightModelForegroundConverter>
+    </Page.Resources>
+    <Grid  
+        Background="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModelBackgroundConverter}}" 
+        x:Name="grid"  ManipulationMode="System,TranslateX" >
+        <!--<Grid   x:Name="grid" Background="#FF151515"  ManipulationMode="System,TranslateX" >-->
         <!--<Grid.Background>
-            <ImageBrush ImageSource="../Assets/Images/11.jpg"/>
+            <ImageBrush ImageSource="../Assets/Images/5.jpg"/>
         </Grid.Background>-->
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Border x:Name="border" Height="20">
-            <TextBlock x:Name="TextTitle"    VerticalAlignment="Center" Text="{Binding ContentTitle}"   TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="10,0,0,0"  FontSize="16"></TextBlock>
+        <Border x:Name="border" Height="25">
+            <TextBlock x:Name="TextTitle"  Margin="10,0,0,0"   VerticalAlignment="Center" Text="{Binding ContentTitle}"   Foreground="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource   NightModelForegroundConverter}}">    TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="10,0,0,0"  FontSize="16"></TextBlock>
         </Border>
-     
-        <ListView x:Name="listview"   PointerEntered="listview_PointerEntered"    Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch" Background="Transparent" d:IsLocked="True" d:IsHidden="True"   
-            >
+        <TextBlock Foreground="#FF454545"></TextBlock>
+        <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"    PointerEntered="listview_PointerEntered" ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
+         VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Border  ManipulationMode="System,TranslateX" Background="Transparent">
-                        <TextBlock  Margin="10,0"    TextWrapping="Wrap" Height="auto"   Text="{Binding}"      DataContext="{Binding }"  LineHeight="36"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
+                    <Border  Background="Transparent" ManipulationMode="System,TranslateX" >
+                        <TextBlock  Margin="10,0"    TextWrapping="Wrap" Height="auto"   
+                                    Text="{Binding}"   
+                                    DataContext="{Binding }"  LineHeight="36"   
+                                    FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"
+                                    FontFamily="颜体"   
+                                    Foreground="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModelForegroundConverter}}">
                         </TextBlock>
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" >
+        <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Hidden"  IsOpen="False"  Grid.Row="2"
+                     >
             <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="50"    Command="{Binding  RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />

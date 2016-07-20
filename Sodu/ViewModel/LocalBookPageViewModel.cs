@@ -1,9 +1,13 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Config;
+using Sodu.Core.Database;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -141,10 +145,7 @@ namespace Sodu.ViewModel
         {
             try
             {
-                var result = Database.DBLocalBook.GetAllLocalBookList(Constants.AppDataPath.GetLocalBookDBPath());
-
-
-
+                var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
                 if (result != null)
                 {
                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -156,7 +157,7 @@ namespace Sodu.ViewModel
 
                             if (File.Exists(path))
                             {
-                                var list = Database.DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                                var list = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
                                 if (list != null && list.Count > 0)
                                 {
                                     item.NewestChapterName = list.LastOrDefault().CatalogName;
@@ -176,7 +177,7 @@ namespace Sodu.ViewModel
                             }
                             else
                             {
-                                Database.DBLocalBook.DeleteLocalBookByBookID(Constants.AppDataPath.GetLocalBookDBPath(), item.BookID);
+                                DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
                             }
                         }
                     });
@@ -216,10 +217,10 @@ namespace Sodu.ViewModel
                     {
                         if (!string.IsNullOrEmpty(item.CatalogListUrl))
                         {
-                            var list = await Services.AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
+                            var list = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
                             if (list != null)
                             {
-                                var last = Database.DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                                var last = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
 
                                 var undownLoad = list.FindAll(p => last.FirstOrDefault(m => m.CatalogUrl == p.CatalogUrl) == null);
 
@@ -385,9 +386,9 @@ namespace Sodu.ViewModel
 
                                 lock (obj)
                                 {
-                                    Database.DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(item.BookID), list[i]);
-                                    Database.DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(item.BookID), content);
-                                    Database.DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), item);
+                                    DBBookCatalog.InsertOrUpdateBookCatalog(AppDataPath.GetBookDBPath(item.BookID), list[i]);
+                                    DBBookCatalogContent.InsertOrUpdateBookCatalogContent(AppDataPath.GetBookDBPath(item.BookID), content);
+                                    DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), item);
                                 }
                             }
 
@@ -489,7 +490,7 @@ namespace Sodu.ViewModel
                  {
                      try
                      {
-                         System.IO.File.Delete(Constants.AppDataPath.GetBookDBPath(item.BookID));
+                         System.IO.File.Delete(AppDataPath.GetBookDBPath(item.BookID));
 
                          await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                          {

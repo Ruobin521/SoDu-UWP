@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -117,11 +119,11 @@ namespace Sodu.ViewModel
                 string url = null;
                 if (pageindex == 1)
                 {
-                    url = PageUrl.BookRankListPage;
+                    url = ViewModelInstance.Instance.UrlService.GetRankListPage();
                 }
                 else
                 {
-                    url = string.Format(PageUrl.BookRankListPage2, pageindex);
+                    url = string.Format(ViewModelInstance.Instance.UrlService.GetRankListPage(pageindex.ToString()), pageindex);
                 }
                 string html = await GetHtmlData(url);
                 return html;
@@ -197,47 +199,53 @@ namespace Sodu.ViewModel
             return false;
         }
 
+        private RelayCommand<object> _firstPageCommand;
         public RelayCommand<object> FirstPageCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    if (IsLoading) return;
-                    if (PageIndex == 1)
-                    {
-                        ToastHeplper.ShowMessage("已经是第一页");
-                        return;
-                    }
-                    SetData(1);
-                });
+                return _firstPageCommand ??
+                  (_firstPageCommand = new RelayCommand<object>((obj) =>
+                 {
+                     if (IsLoading) return;
+                     if (PageIndex == 1)
+                     {
+                         ToastHeplper.ShowMessage("已经是第一页");
+                         return;
+                     }
+                     SetData(1);
+                 }));
             }
         }
 
+        private RelayCommand<object> _lastPageCommand;
         public RelayCommand<object> LastPageCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    if (IsLoading) return;
-                    if (PageIndex == PageCount)
-                    {
-                        ToastHeplper.ShowMessage("已经是最后一页");
-                        return;
-                    }
-                    SetData(PageCount);
-                });
+                return _lastPageCommand ??
+               (_lastPageCommand = new RelayCommand<object>((obj) =>
+             {
+                 if (IsLoading) return;
+                 if (PageIndex == PageCount)
+                 {
+                     ToastHeplper.ShowMessage("已经是最后一页");
+                     return;
+                 }
+                 SetData(PageCount);
+             }));
             }
         }
 
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> _refreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return _refreshCommand ??
+                   (_refreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 
@@ -257,11 +265,13 @@ namespace Sodu.ViewModel
         /// <summary>
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> _requestCommand;
         public RelayCommand<object> RequestCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRequestCommand);
+                return _requestCommand ??
+                    (_requestCommand = new RelayCommand<object>(OnRequestCommand));
             }
         }
 
@@ -277,11 +287,13 @@ namespace Sodu.ViewModel
         }
 
 
+        private RelayCommand<object> _prePageCommand;
         public RelayCommand<object> PrePageCommand
         {
             get
             {
-                return new RelayCommand<object>(OnPrePageCommandd);
+                return _prePageCommand
+                    ?? (_prePageCommand = new RelayCommand<object>(OnPrePageCommandd));
             }
         }
 
@@ -296,11 +308,14 @@ namespace Sodu.ViewModel
             SetData(PageIndex - 1);
         }
 
+
+        private RelayCommand<object> _backCommand;
         public RelayCommand<object> BackCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBackCommand);
+                return _backCommand
+                    ?? (_backCommand = new RelayCommand<object>(OnBackCommand));
             }
         }
 
@@ -312,11 +327,13 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
-        public BaseCommand BookItemSelectedChangedCommand
+        private RelayCommand<object> _bookItemSelectedChangedCommand;
+        public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new BaseCommand(OnBookItemSelectedChangedCommand);
+                return _bookItemSelectedChangedCommand
+                    ?? (_bookItemSelectedChangedCommand = new RelayCommand<object>(OnBookItemSelectedChangedCommand));
             }
         }
 

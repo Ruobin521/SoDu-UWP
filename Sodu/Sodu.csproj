@@ -12,7 +12,7 @@
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -124,30 +124,19 @@
     <Content Include="Assets\StoreLogo.scale-125.png" />
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Images\coding.jpg" />
-    <Content Include="Images\Logo.jpg" />
-    <Content Include="Images\Logout.png" />
-    <Content Include="Images\refresh.png" />
     <None Include="Package.StoreAssociation.xml" />
-    <Content Include="Reference\Microsoft.Xaml.Interactions.dll" />
-    <Content Include="Reference\Microsoft.Xaml.Interactivity.dll" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Constants\AppDataPath.cs" />
     <Compile Include="Converter\AppBarLabelConverter.cs" />
     <Compile Include="Converter\DownItemIconConverter.cs" />
     <Compile Include="Converter\DownLoadPagePauseIconConverter.cs" />
-    <Compile Include="Converter\PopupWindowWidthConverter.cs" />
+    <Compile Include="Converter\NightModelColorConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconLabelConverter.cs" />
-    <Compile Include="Database\DBBookCatalog.cs" />
-    <Compile Include="Database\DBBookCatalogContent.cs" />
-    <Compile Include="Database\DBHistory.cs" />
-    <Compile Include="Database\DBLocalBook.cs" />
-    <Compile Include="Model\BookCatalog.cs" />
     <Compile Include="Pages\BookContentPage.xaml.cs">
       <DependentUpon>BookContentPage.xaml</DependentUpon>
     </Compile>
@@ -181,16 +170,8 @@
     <Compile Include="Pages\UpdateChapterPage.xaml.cs">
       <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Schema\DatabaseSchema.cs" />
     <Compile Include="Services\AnalysisContentService.cs" />
     <Compile Include="Services\NavigationService.cs" />
-    <Compile Include="Services\NetworkManager.cs" />
-    <Compile Include="Services\RefreshDataService.cs" />
-    <Compile Include="Services\SettingService.cs" />
-    <Compile Include="Services\SqliteService.cs" />
-    <Compile Include="UC\PopupWindow.xaml.cs">
-      <DependentUpon>PopupWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UC\UC_ChapterItem.xaml.cs">
       <DependentUpon>UC_ChapterItem.xaml</DependentUpon>
     </Compile>
@@ -204,10 +185,6 @@
       <DependentUpon>UC_ProgressRing.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AnalysisSoduService.cs" />
-    <Compile Include="Control\PullToRefreshListView.cs" />
-    <Compile Include="Control\RefreshProgressEventArgs.cs" />
-    <Compile Include="Converter\BookNameForgroundConverter.cs" />
-    <Compile Include="Model\SoduCookie.cs" />
     <Compile Include="Pages\MyBookShelfPage.xaml.cs">
       <DependentUpon>MyBookShelfPage.xaml</DependentUpon>
     </Compile>
@@ -217,16 +194,11 @@
     <Compile Include="UC\UC_SearchHearder.xaml.cs">
       <DependentUpon>UC_SearchHearder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Util\BaseCommand.cs" />
-    <Compile Include="Util\ChineseGBKConverter.cs" />
-    <Compile Include="Util\HttpHelper.cs" />
     <Compile Include="Constants\ConstantValue.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\BookEntity.cs" />
-    <Compile Include="Model\MenuModel.cs" />
     <Compile Include="Pages\CodingPage.xaml.cs">
       <DependentUpon>CodingPage.xaml</DependentUpon>
     </Compile>
@@ -243,9 +215,6 @@
     <Compile Include="UC\UC_ProgressBar.xaml.cs">
       <DependentUpon>UC_ProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Util\PlatformHelper.cs" />
-    <Compile Include="Util\SerializeHelper.cs" />
-    <Compile Include="Util\ToastHeplper.cs" />
     <Compile Include="ViewModel\BookCatalogPageViewModel.cs" />
     <Compile Include="ViewModel\BookContentPageViewModel.cs" />
     <Compile Include="ViewModel\DownLoadCenterViewModel.cs" />
@@ -362,10 +331,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UC\PopupWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="UC\UC_BookListItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -396,13 +361,20 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="SQLite.UWP.2015, Version=3.12.1">
-      <Name>SQLite for Universal Windows Platform</Name>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="WindowsMobile, Version=10.0.10586.0">
+    <SDKReference Include="WindowsMobile, Version=10.0.10240.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SoDu.Core\SoDu.Core.csproj">
+      <Project>{8fb82ba6-5509-4f77-809e-b53cea533ca3}</Project>
+      <Name>SoDu.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

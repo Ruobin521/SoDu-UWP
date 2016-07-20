@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,6 +19,8 @@ namespace Sodu.ViewModel
 {
     public class SearchResultPageViewModel : BaseViewModel, IViewModel
     {
+
+        #region 字段，属性
         private string _ContentTitle = "搜索";
         public string ContentTitle
         {
@@ -125,6 +129,8 @@ namespace Sodu.ViewModel
 
         HttpHelper http = new HttpHelper();
 
+        #endregion
+
         /// <summary>
         /// 取消请求
         /// </summary>
@@ -154,8 +160,7 @@ namespace Sodu.ViewModel
             this.SearchPara = para;
             Task.Run(async () =>
             {
-
-                string uri = string.Format(PageUrl.BookSearchPage, System.Net.WebUtility.UrlEncode(para));
+                string uri = string.Format(ViewModelInstance.Instance.UrlService.GetSearchPage(), System.Net.WebUtility.UrlEncode(para));
                 string html = await GetHtmlData(uri);
                 return html;
             }).ContinueWith(async (resultHtml) =>
@@ -347,18 +352,23 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
-        public BaseCommand BookItemSelectedChangedCommand
+        public RelayCommand<object> _bookItemSelectedChangedCommand;
+        public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new BaseCommand((obj) =>
+                if (_bookItemSelectedChangedCommand == null)
                 {
-                    if (!IsLoading)
+                    _bookItemSelectedChangedCommand = new RelayCommand<object>((obj) =>
                     {
-                        // this.IsNeedRefresh = false;
-                        ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
-                    }
-                });
+                        if (!IsLoading)
+                        {
+                            // this.IsNeedRefresh = false;
+                            ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+                        }
+                    });
+                }
+                return _bookItemSelectedChangedCommand;
             }
         }
 

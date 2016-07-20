@@ -2,6 +2,7 @@
 using Sodu.Constants;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,6 @@ namespace Sodu.ViewModel
     public class LoginViewModel : BaseViewModel, IViewModel
     {
         #region  属性
-
 
 
         private string _ContentTitle = "用户登录";
@@ -113,7 +113,7 @@ namespace Sodu.ViewModel
         #region  构造函数
         public LoginViewModel()
         {
-            this.IsAutoLogin = ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutoLogin;
+
         }
         #endregion
 
@@ -127,6 +127,38 @@ namespace Sodu.ViewModel
         {
             HttpHelper.HttpClientCancleRequest();
             IsLoading = false;
+        }
+
+        public void SetCookie(string url, bool ifAutoLogin)
+        {
+            HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(url));
+            foreach (var cookieItem in cookieCollection)
+            {
+                if (cookieItem.Name == "sodu_user")
+                {
+                    if (ifAutoLogin)
+                    {
+                        ///设置cookie存活时间，如果为null，则表示只在一个会话中生效。
+                        cookieItem.Expires = new DateTimeOffset(DateTime.Now.AddDays(365));
+                        // ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.UserCookie =
+                        //     new ViewModel.UserCookie()
+                        //     {
+                        //         Expires = cookieItem.Expires,
+                        //         Value = cookieItem.Value,
+                        //         Name = cookieItem.Name,
+                        //         Path = cookieItem.Path,
+                        //         Domain = cookieItem.Domain,
+                        //     };
+                        //ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.SaveSetting();
+                    }
+                    else
+                    {
+                        cookieItem.Expires = null;
+                    }
+                    filter.CookieManager.SetCookie(cookieItem, false);
+                }
+            }
         }
 
         public void InitData(object obj = null)
@@ -179,11 +211,13 @@ namespace Sodu.ViewModel
                         postdata = "username=" + this.UserName + "&userpass=" + this.Password;
                     }
 
-                    html = await HttpHelper.HttpClientPostLoginRequest(PageUrl.LoginPostPage, postdata, IsAutoLogin);
+                    html = await HttpHelper.HttpClientPostRequest(ViewModelInstance.Instance.UrlService.GetLoginPage(), postdata);
                     if (html.Contains("{\"success\":true}"))
                     {
                         ToastHeplper.ShowMessage("登陆成功");
 
+                        ViewModelInstance.Instance.SettingPageViewModelInstance.SetAutoLogin(IsAutoLogin);
+                        SetCookie(ViewModelInstance.Instance.UrlService.GetLoginPage(), IsAutoLogin);
 
                         ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
                     }

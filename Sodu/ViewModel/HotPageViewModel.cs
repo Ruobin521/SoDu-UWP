@@ -1,8 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
+using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
 using Sodu.Util;
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -136,7 +138,7 @@ namespace Sodu.ViewModel
             try
             {
                 http = new HttpHelper();
-                html = await http.WebRequestGet(PageUrl.HomePage, true);
+                html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetHomePage(), true);
             }
             catch (Exception ex)
             {
@@ -258,11 +260,11 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
-        public BaseCommand BookItemSelectedChangedCommand
+        public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new BaseCommand((obj) =>
+                return new RelayCommand<object>((obj) =>
                 {
                     if (!IsLoading)
                     {
