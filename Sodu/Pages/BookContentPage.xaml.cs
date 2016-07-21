@@ -32,7 +32,6 @@ namespace Sodu.Pages
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            //  ScrollViewer.SetVerticalScrollMode(listview, ScrollMode.Disabled);
 
             ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
@@ -42,6 +41,9 @@ namespace Sodu.Pages
             {
                 this.Loaded -= BookContentPage_Loaded;
                 this.Loaded += BookContentPage_Loaded;
+
+                this.listview.PointerEntered -= listview_PointerEntered;
+                this.listview.PointerEntered += listview_PointerEntered;
             }
 
         }
@@ -51,7 +53,6 @@ namespace Sodu.Pages
             var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
             scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
             scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
-
         }
 
         private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
@@ -152,38 +153,47 @@ namespace Sodu.Pages
             double width = Window.Current.Bounds.Width;
             double height = Window.Current.Bounds.Height;
 
-            if (p.X >= width * 0.33 && p.X <= width * 0.67 && p.Y >= height * 0.33 && p.Y <= height * 0.7)
+            if (true)
             {
-                if (firstTime == DateTime.MinValue)
-                {
-                    firstPoint = p;
-                    firstTime = DateTime.Now;
-                    return;
-                }
 
-                if ((DateTime.Now - firstTime).TotalMilliseconds < 500)
+                if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
                 {
-                    if (this.commandbar.ClosedDisplayMode != AppBarClosedDisplayMode.Compact)
-                    {
-                        this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-                    }
-                    else
-                    {
-                        this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-                    }
-
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
                     firstPoint = new Point();
                     firstTime = DateTime.MinValue;
                     return;
                 }
-                else
+                else if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Hidden)
                 {
-                    firstPoint = p;
-                    firstTime = DateTime.Now;
-                    return;
+                    if (firstTime == DateTime.MinValue)
+                    {
+                        firstPoint = p;
+                        firstTime = DateTime.Now;
+                        return;
+                    }
+
+                    if ((DateTime.Now - firstTime).TotalMilliseconds < 350)
+                    {
+                        if (this.commandbar.ClosedDisplayMode != AppBarClosedDisplayMode.Compact)
+                        {
+                            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                        }
+                        else
+                        {
+                            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                        }
+
+                        firstPoint = new Point();
+                        firstTime = DateTime.MinValue;
+                        return;
+                    }
+                    else
+                    {
+                        firstPoint = p;
+                        firstTime = DateTime.Now;
+                        return;
+                    }
                 }
-
-
             }
         }
     }

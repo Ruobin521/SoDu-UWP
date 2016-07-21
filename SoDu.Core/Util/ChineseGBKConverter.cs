@@ -61,7 +61,7 @@ namespace Sodu.Core.Util
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 tmp = str;
             }
@@ -88,7 +88,7 @@ namespace Sodu.Core.Util
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 res = true;
 

@@ -26,4 +26,25 @@ namespace Sodu.Converter
             throw new NotImplementedException();
         }
     }
+
+    public class NightModeAppBarLabelConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if ((bool)value)
+            {
+                return "关闭夜间模式";
+            }
+            else
+            {
+                return "开启夜间模式";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

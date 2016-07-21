@@ -38,7 +38,7 @@ namespace Sodu.Core.Database
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = false;
             }
@@ -66,7 +66,7 @@ namespace Sodu.Core.Database
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = null;
             }

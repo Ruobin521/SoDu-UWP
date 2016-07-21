@@ -183,7 +183,7 @@ namespace Sodu.ViewModel
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -237,7 +237,7 @@ namespace Sodu.ViewModel
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
 
                     }
@@ -403,7 +403,7 @@ namespace Sodu.ViewModel
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
 
                     }
@@ -420,11 +420,12 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 下架
         /// </summary>
+        private RelayCommand<object> m_RemoveBookCommand;
         public RelayCommand<object> RemoveBookCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRemoveBookFromShelfCommand);
+                return m_RemoveBookCommand ?? (m_RemoveBookCommand = new RelayCommand<object>(OnRemoveBookFromShelfCommand));
             }
         }
         private async void OnRemoveBookFromShelfCommand(object obj)
@@ -490,7 +491,11 @@ namespace Sodu.ViewModel
                  {
                      try
                      {
-                         System.IO.File.Delete(AppDataPath.GetBookDBPath(item.BookID));
+                         string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), item.BookID + ".db");
+                         if (File.Exists(path))
+                         {
+                             System.IO.File.Delete(path);
+                         }
 
                          await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                          {
@@ -513,11 +518,12 @@ namespace Sodu.ViewModel
 
         }
 
+        private RelayCommand<object> m_BookItemSelectedCommand;
         public RelayCommand<object> BookItemSelectedCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBookItemSelectedCommand);
+                return m_BookItemSelectedCommand ?? (m_BookItemSelectedCommand = new RelayCommand<object>(OnBookItemSelectedCommand));
             }
         }
 
@@ -547,11 +553,12 @@ namespace Sodu.ViewModel
             }
         }
 
+        private RelayCommand<object> m_CancleUpdateCommand;
         public RelayCommand<object> CancleUpdateCommand
         {
             get
             {
-                return new RelayCommand<object>(OnCancleUpdateCommand);
+                return m_CancleUpdateCommand ?? (m_CancleUpdateCommand = new RelayCommand<object>(OnCancleUpdateCommand));
             }
         }
         private async void OnCancleUpdateCommand(object obj)

@@ -12,6 +12,7 @@ using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -201,7 +202,7 @@ namespace Sodu.ViewModel
                                temp.Entity.NewestChapterUrl = item.CatalogUrl;
                            });
                        }
-                       catch (Exception ex)
+                       catch (Exception)
                        {
                            continue;
                        }
@@ -260,7 +261,7 @@ namespace Sodu.ViewModel
             {
                 html = await AnalysisContentService.GetHtmlContent(new HttpHelper(), catalogUrl);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -269,11 +270,12 @@ namespace Sodu.ViewModel
 
         ///暂停
         /// </summary>
+        private RelayCommand<object> m_PauseCommand;
         public RelayCommand<object> PauseCommand
         {
             get
             {
-                return new RelayCommand<object>(OnPauseCommand);
+                return m_PauseCommand ?? (m_PauseCommand = new RelayCommand<object>(OnPauseCommand));
             }
         }
 
@@ -307,11 +309,12 @@ namespace Sodu.ViewModel
         ///
         ///删除
         /// </summary>
+        private RelayCommand<object> m_DeleteCommand;
         public RelayCommand<object> DeleteCommand
         {
             get
             {
-                return new RelayCommand<object>(OnDeleteCommand);
+                return m_DeleteCommand ?? (m_DeleteCommand = new RelayCommand<object>(OnDeleteCommand));
             }
         }
 
@@ -327,9 +330,20 @@ namespace Sodu.ViewModel
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", async uiCommand =>
             {
                 entity.IsPause = true;
-                await Task.Delay(500);
+                await Task.Delay(800);
                 this.DownLoadList.Remove(entity);
-                System.IO.File.Delete(AppDataPath.GetBookDBPath(entity.Entity.BookID));
+                try
+                {
+                    string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), entity.Entity.BookID + ".db");
+                    if (File.Exists(path))
+                    {
+                        System.IO.File.Delete(AppDataPath.GetBookDBPath(entity.Entity.BookID));
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
                 if (this.DownLoadList.Count == 0)
                 {
                     IsDownLoading = false;
@@ -344,11 +358,12 @@ namespace Sodu.ViewModel
         ///
         ///删除全部
         /// </summary>
+        private RelayCommand<object> m_DeleteAllCommand;
         public RelayCommand<object> DeleteAllCommand
         {
             get
             {
-                return new RelayCommand<object>(
+                return m_DeleteAllCommand ?? (m_DeleteAllCommand = new RelayCommand<object>(
                   async (obj) =>
                     {
                         if (DownLoadList.Count > 0)
@@ -363,7 +378,19 @@ namespace Sodu.ViewModel
                                 await Task.Delay(500);
                                 foreach (var item in DownLoadList)
                                 {
-                                    System.IO.File.Delete(AppDataPath.GetBookDBPath(item.Entity.BookID));
+                                    try
+                                    {
+                                        string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), item.Entity.BookID + ".db");
+
+                                        if (File.Exists(path))
+                                        {
+                                            System.IO.File.Delete(path);
+                                        }
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                    }
                                 }
                                 this.DownLoadList.Clear();
                                 IsDownLoading = false;
@@ -374,17 +401,18 @@ namespace Sodu.ViewModel
                             }));
                             await msgDialog.ShowAsync();
                         }
-                    });
+                    }));
             }
         }
         ///
         ///暂停全部
         /// </summary>
+        private RelayCommand<object> m_PauseAllCommand;
         public RelayCommand<object> PauseAllCommand
         {
             get
             {
-                return new RelayCommand<object>(
+                return m_PauseAllCommand ?? (m_PauseAllCommand = new RelayCommand<object>(
                     (obj) =>
                     {
                         if (DownLoadList.Count == 0)
@@ -410,7 +438,7 @@ namespace Sodu.ViewModel
                             }
                             IsDownLoading = true;
                         }
-                    });
+                    }));
             }
         }
     }

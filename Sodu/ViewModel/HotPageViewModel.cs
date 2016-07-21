@@ -140,7 +140,7 @@ namespace Sodu.ViewModel
                 http = new HttpHelper();
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetHomePage(), true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -194,7 +194,7 @@ namespace Sodu.ViewModel
                     return result;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = false;
             }
@@ -205,11 +205,12 @@ namespace Sodu.ViewModel
 
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RefreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 
@@ -228,11 +229,12 @@ namespace Sodu.ViewModel
         /// <summary>
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RequestCommand;
         public RelayCommand<object> RequestCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRequestCommand);
+                return m_RequestCommand ?? (m_RequestCommand = new RelayCommand<object>(OnRequestCommand));
             }
         }
 
@@ -243,11 +245,12 @@ namespace Sodu.ViewModel
             InitData(1);
         }
 
+        private RelayCommand<object> m_BackCommand;
         public RelayCommand<object> BackCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBackCommand);
+                return m_BackCommand ?? (m_BackCommand = new RelayCommand<object>(OnBackCommand));
             }
         }
 
@@ -260,22 +263,21 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
+        private RelayCommand<object> m_BookItemSelectedChangedCommand;
         public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    if (!IsLoading)
-                    {
-                        // this.IsNeedRefresh = false;
-                        ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
-                    }
-                });
+                return m_BookItemSelectedChangedCommand ?? (m_BookItemSelectedChangedCommand = new RelayCommand<object>((obj) =>
+                   {
+                       if (!IsLoading)
+                       {
+                           // this.IsNeedRefresh = false;
+                           ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+                       }
+                   }));
             }
         }
-
-
 
     }
 }

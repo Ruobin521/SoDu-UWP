@@ -39,7 +39,7 @@ namespace Sodu.Core.Database
                               db.Insert(catalog);
                           }
                       }
-                      catch (Exception ex)
+                      catch (Exception)
                       {
 
                       }
@@ -121,7 +121,7 @@ namespace Sodu.Core.Database
                     {
                         db.DeleteAll<BookCatalog>();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         result = false;
                     }
@@ -168,7 +168,7 @@ namespace Sodu.Core.Database
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 result = null;
             }

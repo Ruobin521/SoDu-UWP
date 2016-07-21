@@ -16,6 +16,7 @@
     <Page.Resources>
         <converter:NightModelBackgroundConverter x:Key="NightModelBackgroundConverter"></converter:NightModelBackgroundConverter>
         <converter:NightModelForegroundConverter x:Key="NightModelForegroundConverter"></converter:NightModelForegroundConverter>
+        <converter:NightModeAppBarLabelConverter x:Key="NightModeAppBarLabelConverter"></converter:NightModeAppBarLabelConverter>
     </Page.Resources>
     <Grid  
         Background="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModelBackgroundConverter}}" 
@@ -33,7 +34,7 @@
             <TextBlock x:Name="TextTitle"  Margin="10,0,0,0"   VerticalAlignment="Center" Text="{Binding ContentTitle}"   Foreground="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource   NightModelForegroundConverter}}">    TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"     Margin="10,0,0,0"  FontSize="16"></TextBlock>
         </Border>
         <TextBlock Foreground="#FF454545"></TextBlock>
-        <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"    PointerEntered="listview_PointerEntered" ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
+        <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"    ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
          VerticalAlignment="Top">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -61,6 +62,7 @@
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="FontIncrease" Label="字体+"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Left"/>
                 <AppBarButton Icon="FontDecrease" Label="字体-"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontDecreaseCommand}" HorizontalAlignment="Left"/>
+                <AppBarButton Icon="FontDecrease" Label="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModeAppBarLabelConverter }}"   Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding  NightModeCommand}" HorizontalAlignment="Left"/>
             </CommandBar.SecondaryCommands>
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>

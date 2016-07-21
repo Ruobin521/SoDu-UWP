@@ -205,7 +205,7 @@ namespace Sodu.ViewModel
                     this.CurrentMenuList = this.LoadMenuList;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -239,7 +239,7 @@ namespace Sodu.ViewModel
                     NavigationService.NavigateTo(menu.MenuType, para);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ToastHeplper.ShowMessage("导航出现异常");
             }
@@ -251,7 +251,7 @@ namespace Sodu.ViewModel
             {
                 this.CurrentMenu = this.CurrentMenuList.ToList().FirstOrDefault(p => p.MenuType == type);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ToastHeplper.ShowMessage("导航出现异常");
             }
@@ -290,7 +290,7 @@ namespace Sodu.ViewModel
             get
             {
                 return m_BookItemSelectedChangedCommand ??
-                    (new RelayCommand<object>(OnBookItemSelectedChangedCommand));
+                    (m_BookItemSelectedChangedCommand = new RelayCommand<object>(OnBookItemSelectedChangedCommand));
             }
         }
         public void OnBookItemSelectedChangedCommand(object obj)
@@ -360,7 +360,7 @@ namespace Sodu.ViewModel
             get
             {
                 return m_LogoutCommand ?? (
-                    new RelayCommand<bool>(
+                 m_LogoutCommand = new RelayCommand<bool>(
                       (str) =>
                 {
                     IsLeftPanelOpen = false;
@@ -379,7 +379,7 @@ namespace Sodu.ViewModel
             {
                 return m_ExitCommand ??
                     (
-                    new RelayCommand<bool>(
+                m_ExitCommand = new RelayCommand<bool>(
                     async (str) =>
                     {
                         var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定退出？") { Title = "退出" };
@@ -406,7 +406,7 @@ namespace Sodu.ViewModel
             {
                 return m_SettingCommand ??
                     (
-                    new RelayCommand<bool>(
+               m_SettingCommand = new RelayCommand<bool>(
                       (str) =>
                     {
                         IsLeftPanelOpen = false;
@@ -425,7 +425,7 @@ namespace Sodu.ViewModel
             get
             {
                 return m_DownLoadCenterCommand ??
-                    (new RelayCommand<bool>(
+                    (m_DownLoadCenterCommand = new RelayCommand<bool>(
                       (str) =>
                       {
                           IsLeftPanelOpen = false;
@@ -442,7 +442,7 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return m_LocalBooksCommand ?? (new RelayCommand<bool>(
+                return m_LocalBooksCommand ?? (m_LocalBooksCommand = new RelayCommand<bool>(
                       (str) =>
                     {
                         IsLeftPanelOpen = false;
@@ -459,7 +459,7 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return m_EvaluateCommand ?? (new RelayCommand<bool>(
+                return m_EvaluateCommand ?? (m_EvaluateCommand = new RelayCommand<bool>(
                      async (str) =>
                       {
                           await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9nblggh4sk4v"));
@@ -475,7 +475,7 @@ namespace Sodu.ViewModel
         {
             get
             {
-                return m_ReadHistoryCommand ?? (new RelayCommand<bool>(
+                return m_ReadHistoryCommand ?? (m_ReadHistoryCommand = new RelayCommand<bool>(
                       (str) =>
                       {
                           IsLeftPanelOpen = false;

@@ -156,11 +156,12 @@ namespace Sodu.ViewModel
 
         ///点击确定
         /// </summary>
+        private RelayCommand<object> m_ConfirmCommand;
         public RelayCommand<object> ConfirmCommand
         {
             get
             {
-                return new RelayCommand<object>(OnConfirmCommand);
+                return m_ConfirmCommand ?? (m_ConfirmCommand = new RelayCommand<object>(OnConfirmCommand));
             }
         }
         private void OnConfirmCommand(object obj)
@@ -204,16 +205,24 @@ namespace Sodu.ViewModel
 
         ///刷新验证码
         /// </summary>
+        private RelayCommand<object> m_CancleCommand;
         public RelayCommand<object> CancleCommand
         {
             get
             {
-                return new RelayCommand<object>(OnCancleCommand);
+                return m_CancleCommand ?? (m_CancleCommand = new RelayCommand<object>(OnCancleCommand));
             }
         }
         private void OnCancleCommand(object obj)
         {
-            CancleHttpRequest();
+            if (IsLoading)
+            {
+                CancleHttpRequest();
+            }
+            else
+            {
+                NavigationService.GoBack();
+            }
         }
     }
 }

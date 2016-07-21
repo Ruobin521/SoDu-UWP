@@ -11,6 +11,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Windows.Graphics.Display;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.Web.Http;
@@ -26,6 +27,7 @@ namespace Sodu.ViewModel
         public static string n_TextFontSzie = "TextFontSzie";
         public static string n_Cookie = "Cookie";
         public static string n_IsNightModel = "IsNightModel";
+        public static string n_IsLandscape = "IsLandscape";
 
 
         private int m_TextFontSzie = 20;
@@ -168,7 +170,30 @@ namespace Sodu.ViewModel
                     return;
                 }
                 SetProperty(ref m_IsNightModel, value);
-                SetNightModel(value);
+                SetNightMode(value);
+            }
+        }
+
+        private bool m_IsLandscape = false;
+        /// <summary>
+        /// 是否开启横向模式
+        /// </summary>
+        public bool IsLandscape
+        {
+
+            get
+            {
+                return m_IsLandscape;
+            }
+            set
+            {
+
+                if (value == m_IsLandscape)
+                {
+                    return;
+                }
+                SetProperty(ref m_IsLandscape, value);
+                SetLandscape(value);
             }
         }
 
@@ -278,6 +303,21 @@ namespace Sodu.ViewModel
                 var value = (bool)SettingHelper.GetValue(n_IsNightModel);
                 IsNightModel = value;
             }
+
+
+            //设置横向模式
+            if (!SettingHelper.CheckKeyExist(n_IsLandscape))
+            {
+                SettingHelper.SetValue(n_IsLandscape, false);
+                IsLandscape = false;
+            }
+            else
+            {
+                var value = (bool)SettingHelper.GetValue(n_IsLandscape);
+                IsLandscape = value;
+            }
+            SetLandscape(IsLandscape);
+
         }
 
 
@@ -313,11 +353,26 @@ namespace Sodu.ViewModel
             IfDownloadInWAAN = value;
         }
 
-        public void SetNightModel(bool value, bool isShowMessage = true)
+        public void SetNightMode(bool value)
         {
             SettingHelper.SetValue(n_IsNightModel, value);
             IsNightModel = value;
         }
+
+        public void SetLandscape(bool value)
+        {
+            SettingHelper.SetValue(n_IsLandscape, value);
+            IsLandscape = value;
+            if (IsLandscape)
+            {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
+            }
+            else
+            {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            }
+        }
+
 
         public void SetTextSize(int value, bool isShowMessage = false)
         {
@@ -332,14 +387,15 @@ namespace Sodu.ViewModel
 
 
         [IgnoreDataMember]
+        private RelayCommand<object> m_SaveCommand;
         public RelayCommand<object> SaveCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    SaveSetting();
-                });
+                return m_SaveCommand ?? (m_SaveCommand = new RelayCommand<object>((obj) =>
+                  {
+                      SaveSetting();
+                  }));
             }
         }
 

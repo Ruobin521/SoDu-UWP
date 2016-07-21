@@ -36,7 +36,7 @@ namespace Sodu.Core.Database
                             db.Update(book);
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         result = false;
                     }
@@ -69,14 +69,14 @@ namespace Sodu.Core.Database
                                 list = temp.ToList();
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             list = null;
                         }
                     });
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 list = null;
             }
@@ -95,7 +95,7 @@ namespace Sodu.Core.Database
                     {
                         db.DeleteAll<BookEntity>();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         result = false;
                     }

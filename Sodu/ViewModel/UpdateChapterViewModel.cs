@@ -226,7 +226,7 @@ namespace Sodu.ViewModel
                             {
                                 PageCount = Convert.ToInt32(match.ToString().Trim());
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 PageCount = 1;
                             }
@@ -235,7 +235,7 @@ namespace Sodu.ViewModel
                 });
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -291,84 +291,88 @@ namespace Sodu.ViewModel
 
 
         /// </summary>
+        private RelayCommand<object> m_AddToShelfCommand;
         public RelayCommand<object> AddToShelfCommand
         {
             get
             {
-                return new RelayCommand<object>(async (obj) =>
-                {
-                    try
-                    {
-                        IsLoading = true;
-                        if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
-                        {
-                            string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), CurrentEntity.BookID));
-                            if (html.Contains("{\"success\":true}"))
-                            {
-                                ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(CurrentEntity);
-                                IsAddBtnShow = false;
-                                ToastHeplper.ShowMessage("收藏成功");
-                            }
-                        }
-                        else
-                        {
-                            ToastHeplper.ShowMessage("您已收藏过本书");
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        ToastHeplper.ShowMessage("收藏失败，请重新操作");
-                    }
-                    finally
-                    {
-                        IsLoading = false;
-                    }
-                });
+                return m_AddToShelfCommand ?? (m_AddToShelfCommand = new RelayCommand<object>(async (obj) =>
+                   {
+                       try
+                       {
+                           IsLoading = true;
+                           if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == CurrentEntity.BookID) == null)
+                           {
+                               string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), CurrentEntity.BookID));
+                               if (html.Contains("{\"success\":true}"))
+                               {
+                                   ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Add(CurrentEntity);
+                                   IsAddBtnShow = false;
+                                   ToastHeplper.ShowMessage("收藏成功");
+                               }
+                           }
+                           else
+                           {
+                               ToastHeplper.ShowMessage("您已收藏过本书");
+                           }
+                       }
+                       catch (Exception)
+                       {
+                           ToastHeplper.ShowMessage("收藏失败，请重新操作");
+                       }
+                       finally
+                       {
+                           IsLoading = false;
+                       }
+                   }));
             }
         }
 
+        private RelayCommand<object> m_FirstPageCommand;
         public RelayCommand<object> FirstPageCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-              {
-                  if (IsLoading) return;
-                  if (PageIndex == 1)
-                  {
-                      ToastHeplper.ShowMessage("已经是第一页");
-                      return;
-                  }
-                  SetData(1);
-              });
+                return m_FirstPageCommand ?? (m_FirstPageCommand = new RelayCommand<object>((obj) =>
+                {
+                    if (IsLoading) return;
+                    if (PageIndex == 1)
+                    {
+                        ToastHeplper.ShowMessage("已经是第一页");
+                        return;
+                    }
+                    SetData(1);
+                }));
             }
         }
 
+        private RelayCommand<object> m_LastPageCommand;
         public RelayCommand<object> LastPageCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-              {
-                  if (IsLoading) return;
-                  if (PageIndex == PageCount)
-                  {
-                      ToastHeplper.ShowMessage("已经是最后一页");
-                      return;
-                  }
-                  SetData(PageCount);
-              });
+                return m_LastPageCommand ?? (m_LastPageCommand = new RelayCommand<object>((obj) =>
+                 {
+                     if (IsLoading) return;
+                     if (PageIndex == PageCount)
+                     {
+                         ToastHeplper.ShowMessage("已经是最后一页");
+                         return;
+                     }
+                     SetData(PageCount);
+                 }));
             }
         }
 
 
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RefreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 
@@ -387,11 +391,12 @@ namespace Sodu.ViewModel
         /// <summary>
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RequestCommand;
         public RelayCommand<object> RequestCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRequestCommand);
+                return m_RequestCommand ?? (m_RequestCommand = new RelayCommand<object>(OnRequestCommand));
             }
         }
 
@@ -401,11 +406,12 @@ namespace Sodu.ViewModel
             await LoadPageDataByIndex(PageIndex + 1);
         }
 
+        private RelayCommand<object> m_NextPageCommand;
         public RelayCommand<object> NextPageCommand
         {
             get
             {
-                return new RelayCommand<object>(OnNextPageCommand);
+                return m_NextPageCommand ?? (m_NextPageCommand = new RelayCommand<object>(OnNextPageCommand));
             }
         }
 
@@ -421,11 +427,12 @@ namespace Sodu.ViewModel
             SetData(PageIndex + 1);
         }
 
+        private RelayCommand<object> m_PreviousPageCommand;
         public RelayCommand<object> PreviousPageCommand
         {
             get
             {
-                return new RelayCommand<object>(OnPreviousPageCommand);
+                return m_PreviousPageCommand ?? (m_PreviousPageCommand = new RelayCommand<object>(OnPreviousPageCommand));
             }
         }
 
@@ -441,11 +448,12 @@ namespace Sodu.ViewModel
             SetData(PageIndex - 1);
         }
 
+        private RelayCommand<object> m_BackCommand;
         public RelayCommand<object> BackCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBackCommand);
+                return m_BackCommand ?? (m_BackCommand = new RelayCommand<object>(OnBackCommand));
             }
         }
 
@@ -454,22 +462,23 @@ namespace Sodu.ViewModel
             NavigationService.GoBack();
         }
 
+        private RelayCommand<object> m_BookChapterSelectedChangedCommand;
         public RelayCommand<object> BookChapterSelectedChangedCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    if (!IsLoading)
-                    {
-                        BookEntity entity = obj as BookEntity;
-                        if (entity != null)
-                        {
-                            NavigationService.NavigateTo(typeof(BookContentPage), entity);
-                        }
-                    }
-                }
-                );
+                return m_BookChapterSelectedChangedCommand ?? (m_BookChapterSelectedChangedCommand = new RelayCommand<object>((obj) =>
+                   {
+                       if (!IsLoading)
+                       {
+                           BookEntity entity = obj as BookEntity;
+                           if (entity != null)
+                           {
+                               NavigationService.NavigateTo(typeof(BookContentPage), entity);
+                           }
+                       }
+                   }
+                ));
             }
         }
 

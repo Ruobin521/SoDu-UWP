@@ -226,7 +226,7 @@ namespace Sodu.ViewModel
                         ToastHeplper.ShowMessage("账号或密码错误，请重新输入。");
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return;
                 }
@@ -240,16 +240,24 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 取消
         /// </summary>
+        public RelayCommand<object> m_CancleCommand;
         public RelayCommand<object> CancleCommand
         {
             get
             {
-                return new RelayCommand<object>(OnCancleCommand);
+                return m_CancleCommand ?? (m_CancleCommand = new RelayCommand<object>(OnCancleCommand));
             }
         }
         private void OnCancleCommand(object obj)
         {
-            CancleHttpRequest();
+            if (IsLoading)
+            {
+                CancleHttpRequest();
+            }
+            else
+            {
+                NavigationService.GoBack();
+            }
         }
 
 

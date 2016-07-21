@@ -136,7 +136,7 @@ namespace Sodu.ViewModel
                 }
                 IsLoading = false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -220,7 +220,7 @@ namespace Sodu.ViewModel
             {
                 html = await http.WebRequestGet(App.Container.Resolve<IURLService>().GetBookShelfPage(), true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -323,18 +323,19 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 全选，全不选
         /// </summary>
+        private RelayCommand<object> m_EditCommand;
         public RelayCommand<object> EditCommand
         {
             get
             {
-                return new RelayCommand<object>(
+                return m_EditCommand ?? (m_EditCommand = new RelayCommand<object>(
                  (obj) =>
                  {
 
                      if (IsLoading) return;
                      OnEditCommand();
                  }
-                    );
+                    ));
             }
         }
 
@@ -378,11 +379,12 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 全选，全不选
         /// </summary>
+        private RelayCommand<object> m_SelectAllCommand;
         public RelayCommand<object> SelectAllCommand
         {
             get
             {
-                return new RelayCommand<object>(OnSelectAllCommand);
+                return m_SelectAllCommand ?? (m_SelectAllCommand = new RelayCommand<object>(OnSelectAllCommand));
             }
         }
         public void OnSelectAllCommand(object obj)
@@ -411,11 +413,12 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 下架
         /// </summary>
+        private RelayCommand<object> m_RemoveBookFromShelfCommand;
         public RelayCommand<object> RemoveBookFromShelfCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRemoveBookFromShelfCommand);
+                return m_RemoveBookFromShelfCommand ?? (m_RemoveBookFromShelfCommand = new RelayCommand<object>(OnRemoveBookFromShelfCommand));
             }
         }
         private async void OnRemoveBookFromShelfCommand(object obj)
@@ -470,11 +473,12 @@ namespace Sodu.ViewModel
         }
 
 
+        private RelayCommand<object> m_BookItemSelectedCommand;
         public RelayCommand<object> BookItemSelectedCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBookItemSelectedCommand);
+                return m_BookItemSelectedCommand ?? (m_BookItemSelectedCommand = new RelayCommand<object>(OnBookItemSelectedCommand));
             }
         }
         private void OnBookItemSelectedCommand(object obj)
@@ -512,11 +516,12 @@ namespace Sodu.ViewModel
 
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RefreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 

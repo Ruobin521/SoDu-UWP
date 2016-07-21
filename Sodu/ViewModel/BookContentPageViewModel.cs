@@ -222,7 +222,7 @@ namespace Sodu.ViewModel
                    }
                    resultHtml = await AnalysisContentService.GetHtmlContent(htmlHttp, catalog.CatalogUrl);
                }
-               catch (Exception ex)
+               catch (Exception)
                {
                    resultHtml = null;
                }
@@ -263,7 +263,7 @@ namespace Sodu.ViewModel
                           {
                               DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), BookEntity);
                           }
-                          catch (Exception ex)
+                          catch (Exception)
                           {
 
                           }
@@ -320,7 +320,7 @@ namespace Sodu.ViewModel
                        }
                    }
                }
-               catch (Exception ex)
+               catch (Exception)
                {
                }
                finally
@@ -407,7 +407,7 @@ namespace Sodu.ViewModel
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
 
                 }
@@ -447,63 +447,83 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 字体增大
         /// </summary>
+        private ICommand m_FontIncreaseCommand;
         public ICommand FontIncreaseCommand
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-              {
-                  ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie + 2);
-              });
+                return m_FontIncreaseCommand ?? (m_FontIncreaseCommand = new RelayCommand<bool>((str) =>
+                {
+                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie + 2);
+                }));
             }
         }
 
         /// <summary>
         /// 字体减小
         /// </summary>
+        private ICommand m_FontDecreaseCommand;
         public ICommand FontDecreaseCommand
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-             {
-                 ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie - 2);
-             });
+                return m_FontDecreaseCommand ?? (m_FontDecreaseCommand = new RelayCommand<bool>((str) =>
+               {
+                   ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie - 2);
+               }));
+            }
+        }
+
+        /// <summary>
+        /// 夜间模式
+        /// </summary>
+        public ICommand m_NightModeCommand;
+        public ICommand NightModeCommand
+        {
+            get
+            {
+                return m_NightModeCommand ??
+                   (m_NightModeCommand = new RelayCommand<bool>((str) =>
+                 {
+                     ViewModelInstance.Instance.SettingPageViewModelInstance.SetNightMode(!ViewModelInstance.Instance.SettingPageViewModelInstance.IsNightModel);
+                 }));
             }
         }
 
         /// <summary>
         /// 刷新
         /// </summary>
+        private ICommand m_RefreshCommand;
         public ICommand RefreshCommand
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    if (IsLoading)
-                    {
-                        CancleHttpRequest();
-                    }
-                    else
-                    {
-                        SetData(CurrentCatalog);
-                    }
-                });
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<bool>((str) =>
+                   {
+                       if (IsLoading)
+                       {
+                           CancleHttpRequest();
+                       }
+                       else
+                       {
+                           SetData(CurrentCatalog);
+                       }
+                   }));
             }
         }
 
         /// <summary>
         /// 返回
         /// </summary>
+        private ICommand m_GoBackCommand;
         public ICommand GoBackCommand
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    NavigationService.GoBack();
-                });
+                return m_GoBackCommand ?? (m_GoBackCommand = new RelayCommand<bool>((str) =>
+                 {
+                     NavigationService.GoBack();
+                 }));
             }
         }
 
@@ -511,70 +531,72 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 目录
         /// </summary>
+        private ICommand m_CatalogCommand;
         public ICommand CatalogCommand
         {
             get
             {
-                return new RelayCommand<bool>(async (str) =>
-              {
-                  try
-                  {
-                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                      {
-                          IsLoading = true;
-                      });
-                      if (IsLoadingCatalogList)
-                      {
-                          ToastHeplper.ShowMessage("正在加载目录,请稍候");
-                          isClickCtalog = true;
-                          return;
-                      }
+                return m_CatalogCommand ?? (m_CatalogCommand = new RelayCommand<bool>(async (str) =>
+                 {
+                     try
+                     {
+                         await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                         {
+                             IsLoading = true;
+                         });
+                         if (IsLoadingCatalogList)
+                         {
+                             ToastHeplper.ShowMessage("正在加载目录,请稍候");
+                             isClickCtalog = true;
+                             return;
+                         }
 
-                      bool rs = false;
-                      if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
-                      {
-                          rs = true;
-                      }
-                      else
-                      {
+                         bool rs = false;
+                         if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+                         {
+                             rs = true;
+                         }
+                         else
+                         {
 
-                          ToastHeplper.ShowMessage("正在加载目录,请稍候");
-                          isClickCtalog = true;
-                          SetBookCatalogList();
-                      }
-                      if (rs)
-                      {
-                          NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
-                      }
-                      else
-                      {
-                          ToastHeplper.ShowMessage("目录加载失败");
-                      }
+                             ToastHeplper.ShowMessage("正在加载目录,请稍候");
+                             isClickCtalog = true;
+                             SetBookCatalogList();
+                         }
+                         if (rs)
+                         {
+                             NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
+                         }
+                         else
+                         {
+                             ToastHeplper.ShowMessage("目录加载失败");
+                         }
 
-                      await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                      {
-                          IsLoading = false;
-                      });
-                  }
-                  catch (Exception ex)
-                  {
+                         await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                         {
+                             IsLoading = false;
+                         });
+                     }
+                     catch (Exception)
+                     {
 
-                  }
-              });
+                     }
+                 }));
             }
         }
 
         /// <summary>
         /// 切换章节
         /// </summary>
+        private ICommand m_SwitchCatalogCommand;
         public ICommand SwitchCatalogCommand
         {
             get
             {
-                return new RelayCommand<object>((str) =>
-                {
-                    OnSwtichCommand(str);
-                });
+                return m_SwitchCatalogCommand ?? (m_SwitchCatalogCommand = new RelayCommand<object>((str) =>
+                  {
+                      OnSwtichCommand(str);
+                  }));
             }
         }
 
@@ -635,7 +657,7 @@ namespace Sodu.ViewModel
                     SetData(tempcatalog);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

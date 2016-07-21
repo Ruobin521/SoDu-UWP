@@ -183,7 +183,7 @@ namespace Sodu.Services
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 content = null;
             }
@@ -1490,7 +1490,7 @@ namespace Sodu.Services
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 list = null;
             }
@@ -1540,7 +1540,7 @@ namespace Sodu.Services
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 list = null;
             }

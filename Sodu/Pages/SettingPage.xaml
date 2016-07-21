@@ -32,6 +32,8 @@
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -79,7 +81,10 @@
                 <TextBlock Grid.Column="1" Grid.Row="9"  Text="是否开启夜间模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                 <ToggleSwitch  Grid.Column="1"  Grid.Row="10" Foreground="Black"   IsOn="{Binding IsNightModel,Mode=TwoWay}"/>
 
-                <Button Style="{StaticResource  ContentButtonStyle}" Grid.Row="11" Grid.Column="1" Click="Button_Click" Padding="0" HorizontalAlignment="Left" Width="200" >
+                <TextBlock Grid.Column="1" Grid.Row="11"  Text="是否开启横屏模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                <ToggleSwitch  Grid.Column="1"  Grid.Row="12" Foreground="Black"   IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
+
+                <Button Style="{StaticResource  ContentButtonStyle}" Grid.Row="13" Grid.Column="1" Click="Button_Click" Padding="0" HorizontalAlignment="Left" Width="200" >
                     <TextBlock   Text="QQ交流群：568856882" VerticalAlignment="Center" FontSize="18"  Foreground="Black"></TextBlock>
                 </Button>
 

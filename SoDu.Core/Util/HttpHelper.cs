@@ -63,7 +63,7 @@ namespace SoDu.Core.Util
                 html = await GetReponseHtml(Request, encoding);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -124,7 +124,7 @@ namespace SoDu.Core.Util
                 html = encoding.GetString(bytes);
                 await stream.FlushAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }
@@ -176,13 +176,13 @@ namespace SoDu.Core.Util
 
                     }
                 }
-                catch (TaskCanceledException ex)
+                catch (TaskCanceledException)
                 {
                     return null;
                 }
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -227,7 +227,7 @@ namespace SoDu.Core.Util
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -291,7 +291,7 @@ namespace SoDu.Core.Util
                     Request.Abort();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

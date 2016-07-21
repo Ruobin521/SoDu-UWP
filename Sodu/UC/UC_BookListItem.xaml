@@ -16,7 +16,7 @@
     <UserControl.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
-    <Button Style="{StaticResource   ContentButtonStyle}" Padding="8,0,12,0" Margin="0,3,0,0"  x:Name="btn"  Command="{Binding ElementName=root,Path= Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
+    <Button  Style="{StaticResource   ContentButtonStyle}" Padding="8,0,12,0" Margin="0,3,0,0"  x:Name="btn"  Command="{Binding ElementName=root,Path= Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
         <Grid HorizontalAlignment="Stretch" Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

@@ -158,7 +158,7 @@ namespace Sodu.ViewModel
             {
                 html = await http.WebRequestGet(url, true);
             }
-            catch (Exception ex)
+            catch (Exception  )
             {
                 html = null;
             }

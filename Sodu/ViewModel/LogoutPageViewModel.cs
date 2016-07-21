@@ -76,7 +76,7 @@ namespace Sodu.ViewModel
 
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetLogoutPage());
             }
-            catch (Exception ex)
+            catch (Exception  )
             {
                 return null;
             }

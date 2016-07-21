@@ -24,7 +24,7 @@ namespace Sodu.ViewModel
 {
     public class HomePageViewModel : BaseViewModel, IViewModel
     {
-
+        #region 属性 字段
         private int m_PageIndex = 1;
         public int PageIndex
         {
@@ -85,7 +85,12 @@ namespace Sodu.ViewModel
         }
 
 
-        HttpHelper http = new HttpHelper();
+        HttpHelper http = null;
+
+        #endregion
+
+        #region 方法
+
         /// <summary>
         /// 取消请求
         /// </summary>
@@ -142,9 +147,10 @@ namespace Sodu.ViewModel
            });
             try
             {
+                http = new HttpHelper();
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetHomePage(), true);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 html = null;
             }
@@ -192,14 +198,19 @@ namespace Sodu.ViewModel
             }
         }
 
+        #endregion
+
+
+        #region 命令
 
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RefreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 
@@ -218,11 +229,12 @@ namespace Sodu.ViewModel
         /// <summary>
         ///跳转到相应页数
         /// </summary>
+        private RelayCommand<object> m_RequestCommand;
         public RelayCommand<object> RequestCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRequestCommand);
+                return m_RequestCommand ?? (m_RequestCommand = new RelayCommand<object>(OnRequestCommand));
             }
         }
 
@@ -233,11 +245,12 @@ namespace Sodu.ViewModel
             InitData(1);
         }
 
+        private RelayCommand<object> m_BackCommand;
         public RelayCommand<object> BackCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBackCommand);
+                return m_BackCommand ?? (m_BackCommand = new RelayCommand<object>(OnBackCommand));
             }
         }
 
@@ -250,21 +263,22 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中相应的bookitem
         /// </summary>
+        private RelayCommand<object> m_BookItemSelectedChangedCommand;
         public RelayCommand<object> BookItemSelectedChangedCommand
         {
             get
             {
-                return new RelayCommand<object>((obj) =>
-                {
-                    if (!IsLoading)
-                    {
-                        ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
-                    }
-                });
+                return m_BookItemSelectedChangedCommand ?? (m_BookItemSelectedChangedCommand = new RelayCommand<object>((obj) =>
+                  {
+                      if (!IsLoading)
+                      {
+                          ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+                      }
+                  }));
             }
         }
 
-
+        #endregion
 
     }
 }

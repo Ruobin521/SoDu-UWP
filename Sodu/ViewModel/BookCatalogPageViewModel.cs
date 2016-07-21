@@ -129,39 +129,41 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 选中目录
         /// </summary>
+        private ICommand m_CatalogSelectedCommand;
         public ICommand CatalogSelectedCommand
         {
             get
             {
-                return new RelayCommand<object>((str) =>
-                {
-                    if (IsLoading) return;
+                return m_CatalogSelectedCommand ?? (m_CatalogSelectedCommand = new RelayCommand<object>((str) =>
+                   {
+                       if (IsLoading) return;
 
-                    if (str != null)
-                    {
-                        try
-                        {
-                            BookCatalog catalog = str as BookCatalog;
-                            if (catalog == null) return;
+                       if (str != null)
+                       {
+                           try
+                           {
+                               BookCatalog catalog = str as BookCatalog;
+                               if (catalog == null) return;
 
-                            NavigationService.GoBack();
-                            ViewModelInstance.Instance.BookContentPageViewModelInstance.OnSwtichCommand(catalog);
-                        }
-                        catch (Exception)
-                        {
+                               NavigationService.GoBack();
+                               ViewModelInstance.Instance.BookContentPageViewModelInstance.OnSwtichCommand(catalog);
+                           }
+                           catch (Exception)
+                           {
 
-                        }
-                    }
-                });
+                           }
+                       }
+                   }));
             }
         }
 
         /// </summary>
+        public RelayCommand<object> m_RefreshCommand;
         public RelayCommand<object> RefreshCommand
         {
             get
             {
-                return new RelayCommand<object>(OnRefreshCommand);
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
             }
         }
 
@@ -190,24 +192,26 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 返回
         /// </summary>
+        private ICommand m_GoBackCommand;
         public ICommand GoBackCommand
         {
             get
             {
-                return new RelayCommand<bool>((str) =>
-                {
-                    NavigationService.GoBack();
-                });
+                return m_GoBackCommand ?? (m_GoBackCommand = new RelayCommand<bool>((str) =>
+                  {
+                      NavigationService.GoBack();
+                  }));
             }
         }
 
 
         /// </summary>
+        private RelayCommand<object> m_DwonLoadhCommand;
         public RelayCommand<object> DwonLoadhCommand
         {
             get
             {
-                return new RelayCommand<object>(OnDwonLoadhCommand);
+                return m_DwonLoadhCommand ?? (m_DwonLoadhCommand = new RelayCommand<object>(OnDwonLoadhCommand));
             }
         }
 

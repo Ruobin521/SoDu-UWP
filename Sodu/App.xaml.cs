@@ -32,6 +32,7 @@ using Sodu.Core.Config;
 using Microsoft.Practices.Unity;
 using SoDu.Core.API;
 using UmengSDK;
+using Windows.Graphics.Display;
 
 namespace Sodu
 {
@@ -157,6 +158,8 @@ namespace Sodu
             Window.Current.Activate();
 
             await UmengAnalytics.StartTrackAsync(key, chanel);
+
+
         }
 
         /// <summary>
@@ -230,22 +233,33 @@ namespace Sodu
         {
             Task.Run(() =>
             {
-                var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
-                string dicPath = AppDataPath.GetLocalBookFolderPath();
-                DirectoryInfo folder = new DirectoryInfo(dicPath);
-                foreach (var file in folder.GetFiles())
+                try
                 {
-                    if (result == null || result.FirstOrDefault(p => (p.BookID + ".db").Equals(file.Name)) == null)
+                    var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
+                    string dicPath = AppDataPath.GetLocalBookFolderPath();
+                    if (!Directory.Exists(dicPath)) return;
+
+                    DirectoryInfo folder = new DirectoryInfo(dicPath);
+                    foreach (var file in folder.GetFiles())
                     {
-                        try
+                        if (result == null || result.FirstOrDefault(p => (p.BookID + ".db").Equals(file.Name)) == null)
                         {
-                            file.Delete();
-                        }
-                        catch (Exception ex)
-                        {
+                            try
+                            {
+                                file.Delete();
+                            }
+                            catch (Exception)
+                            {
+                                continue;
+                            }
                         }
                     }
                 }
+                catch (Exception)
+                {
+
+                }
+
             });
         }
 

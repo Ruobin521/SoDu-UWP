@@ -100,11 +100,12 @@ namespace Sodu.ViewModel
             }
         }
 
+        private RelayCommand<object> m_BookItemSelectedCommand;
         public RelayCommand<object> BookItemSelectedCommand
         {
             get
             {
-                return new RelayCommand<object>(OnBookItemSelectedCommand);
+                return m_BookItemSelectedCommand ?? (m_BookItemSelectedCommand = new RelayCommand<object>(OnBookItemSelectedCommand));
             }
         }
         private void OnBookItemSelectedCommand(object obj)
@@ -112,11 +113,12 @@ namespace Sodu.ViewModel
             ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
         }
 
+        private RelayCommand<object> m_ClearCommand;
         public RelayCommand<object> ClearCommand
         {
             get
             {
-                return new RelayCommand<object>(OnClearCommand);
+                return m_ClearCommand ?? (m_ClearCommand = new RelayCommand<object>(OnClearCommand));
             }
         }
         private async void OnClearCommand(object obj)
