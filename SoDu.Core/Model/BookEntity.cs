@@ -150,6 +150,22 @@ namespace Sodu.Core.Model
             }
         }
 
+        /// <summary>
+        /// 是否为历史记录
+        /// </summary>
+        private bool m_IsHistory;
+        public bool IsHistory
+        {
+            get
+            {
+                return m_IsHistory;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_IsHistory, value);
+            }
+        }
+
         [Ignore]
         public ObservableCollection<BookCatalog> CatalogList { get; set; }
 

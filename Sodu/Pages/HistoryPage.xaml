@@ -12,7 +12,6 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.EverReadBookPageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:control="using:Sodu.Controls"
     >
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -29,7 +28,7 @@
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item"  DataContext="{Binding}"   Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                    <UC:UC_HistoryItem x:Name="item"  DataContext="{Binding}"  Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>
@@ -54,5 +53,7 @@
         <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
             <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
         </CommandBar>
+
+        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>
 </Page>

@@ -302,8 +302,7 @@ namespace Sodu.ViewModel
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
 
 
-                //添加小说到历史记录
-                ViewModelInstance.Instance.EverReadBookPageViewModelInstance.AddToHistoryList(entity);
+              
 
                 //判断是否自动添加书到收藏
                 if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
@@ -415,6 +414,27 @@ namespace Sodu.ViewModel
                     }));
             }
         }
+
+        /// <summary>
+        /// 使用帮助
+        /// </summary>
+        private ICommand m_HelpCommand;
+        public ICommand HelpCommand
+        {
+            get
+            {
+                return m_HelpCommand ??
+                    (
+               m_HelpCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          IsLeftPanelOpen = false;
+
+                          NavigationService.NavigateTo(typeof(HelpPage));
+                      }));
+            }
+        }
+
 
         /// <summary>
         /// 下载中心

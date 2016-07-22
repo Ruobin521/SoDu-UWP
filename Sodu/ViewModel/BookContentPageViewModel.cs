@@ -167,6 +167,8 @@ namespace Sodu.ViewModel
                 return;
             }
 
+
+
             this.TextContent = null;
 
             if (!entity.IsLocal)
@@ -186,21 +188,34 @@ namespace Sodu.ViewModel
 
             this.BookEntity = entity;
 
-            if (this.BookEntity.IsLocal)
+            try
             {
-                this.CurrentCatalog = entity.CatalogList.FirstOrDefault(p => p.CatalogUrl == entity.LastReadChapterUrl);
+                if (this.BookEntity.IsLocal)
+                {
+                    this.CurrentCatalog = entity.CatalogList.FirstOrDefault(p => p.CatalogUrl == entity.LastReadChapterUrl);
+                }
+
+                else if (this.BookEntity.IsHistory)
+                {
+                    this.BookEntity.CatalogList = null;
+                    this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.LastReadChapterName, CatalogUrl = entity.LastReadChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
+                }
+                else
+                {
+                    this.BookEntity.CatalogList = null;
+                    this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.NewestChapterName, CatalogUrl = entity.NewestChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
+                }
+
+                this.ContentTitle = CurrentCatalog.CatalogName;
+
+                SetData(CurrentCatalog);
+                BookEntity.CatalogListUrl = SetBookCataologListUrl(CurrentCatalog.CatalogUrl);
+                SetBookCatalogList();
             }
-            else
+            catch (Exception)
             {
-                this.BookEntity.CatalogList = null;
-                this.CurrentCatalog = new BookCatalog() { BookID = entity.BookID, CatalogName = entity.NewestChapterName, CatalogUrl = entity.NewestChapterUrl, LyWeb = new Uri(entity.NewestChapterUrl).Authority };
+                ToastHeplper.ShowMessage("正文加载失败");
             }
-
-            this.ContentTitle = CurrentCatalog.CatalogName;
-
-            SetData(CurrentCatalog);
-            BookEntity.CatalogListUrl = SetBookCataologListUrl(CurrentCatalog.CatalogUrl);
-            SetBookCatalogList();
         }
 
         public void SetData(BookCatalog catalog)
@@ -255,6 +270,9 @@ namespace Sodu.ViewModel
                       this.ContentTitle = BookEntity.LastReadChapterName;
                       if (!this.BookEntity.IsLocal)
                       {
+                          //添加小说到历史记录
+                          ViewModelInstance.Instance.EverReadBookPageViewModelInstance.AddToHistoryList(BookEntity);
+                          DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetHistoryDBPath(), BookEntity);
                           // ToastHeplper.ShowMessage("正文加载完毕");
                       }
                       else

@@ -167,14 +167,14 @@ namespace Sodu.ViewModel
             }
         }
 
-        private EverReadBookPageViewModel m_EverReadBookPageViewModelInstance;
-        public EverReadBookPageViewModel EverReadBookPageViewModelInstance
+        private HistoryPageViewModel m_EverReadBookPageViewModelInstance;
+        public HistoryPageViewModel EverReadBookPageViewModelInstance
         {
             get
             {
                 if (m_EverReadBookPageViewModelInstance == null)
                 {
-                    m_EverReadBookPageViewModelInstance = new EverReadBookPageViewModel();
+                    m_EverReadBookPageViewModelInstance = new HistoryPageViewModel();
                 }
                 return m_EverReadBookPageViewModelInstance;
             }

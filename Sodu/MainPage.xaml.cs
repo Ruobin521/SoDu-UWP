@@ -1,4 +1,5 @@
-﻿using Sodu.Services;
+﻿using Sodu.Pages;
+using Sodu.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +42,11 @@ namespace Sodu
                     this.menuListBox.SelectedIndex = 0;
                 }
             }
+        }
+
+        private void contentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+
         }
     }
 }

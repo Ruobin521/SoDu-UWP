@@ -4,6 +4,7 @@ using Sodu.Core.Config;
 using Sodu.Core.Database;
 using Sodu.Core.Model;
 using Sodu.Model;
+using Sodu.Pages;
 using Sodu.Services;
 using Sodu.Util;
 using System;
@@ -15,9 +16,9 @@ using System.Threading.Tasks;
 
 namespace Sodu.ViewModel
 {
-    public class EverReadBookPageViewModel : BaseViewModel, IViewModel
+    public class HistoryPageViewModel : BaseViewModel, IViewModel
     {
-        private string _ContentTitle = "阅读记录";
+        private string _ContentTitle = "历史记录";
         public string ContentTitle
         {
             get
@@ -72,19 +73,38 @@ namespace Sodu.ViewModel
         }
         public void InitData(object obj = null)
         {
-            if (BookList == null || BookList.Count <= 0)
+            if (IsLoading) return;
+
+            try
             {
-                ToastHeplper.ShowMessage("你还没有阅读记录");
+                IsLoading = true;
+
+                BookList.Clear();
+                var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
+                if (list != null)
+                {
+                    list.ForEach(x => this.BookList.Add(x));
+                }
+
+                if (BookList == null || BookList.Count <= 0)
+                {
+                    ToastHeplper.ShowMessage("你还没有阅读记录");
+                }
             }
+            catch (Exception)
+            {
+                ToastHeplper.ShowMessage("加载历史记录有误");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
         }
 
-        public EverReadBookPageViewModel()
+        public HistoryPageViewModel()
         {
-            var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
-            if (list != null)
-            {
-                list.ForEach(x => this.BookList.Add(x));
-            }
+
         }
 
         public void AddToHistoryList(BookEntity entity)
@@ -110,7 +130,13 @@ namespace Sodu.ViewModel
         }
         private void OnBookItemSelectedCommand(object obj)
         {
-            ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
+            BookEntity entity = obj as BookEntity;
+            if (entity != null)
+            {
+                entity.IsHistory = true;
+                NavigationService.NavigateTo(typeof(BookContentPage), entity);
+            }
+            //  ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
         }
 
         private RelayCommand<object> m_ClearCommand;

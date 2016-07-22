@@ -81,11 +81,7 @@
                                         </AppBarButton.Icon>
                                     </AppBarButton>
                                     <Border Height="1" Background="Gray"></Border>
-                                    <AppBarButton  Icon="Clock"   Label="阅读记录" 
-                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
-                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding ReadHistoryCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 
-                                    </AppBarButton>
                                     <AppBarButton  Icon="Download"   Label="下载中心" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding DownLoadCenterCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
@@ -94,11 +90,20 @@
                                     <AppBarButton  Icon="Library"   Label="本地图书" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding LocalBooksCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
-
+                                    </AppBarButton>
+                                    <AppBarButton  Icon="Clock"   Label="历史记录" 
+                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
+                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding ReadHistoryCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
                                     </AppBarButton>
                                     <AppBarButton  Icon="Accept"   Label="给个好评" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding EvaluateCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
+
+                                    </AppBarButton>
+
+                                    <AppBarButton  Icon="Help"   Label="使用帮助"  Command="{Binding HelpCommand}"
+                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
+                                           IsCompact="False"  HorizontalAlignment="Left"   Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 
                                     </AppBarButton>
                                     <AppBarButton    Label="设置"  Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"   IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding SettingCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
@@ -121,7 +126,7 @@
             </SplitView.Pane>
             <SplitView.Content>
                 <Grid Margin="0,0,0,0"  x:Name="rootGrid"  Visibility="Visible"  >
-                    <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2"  />
+                    <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Navigated="contentFrame_Navigated"  />
                     <!--<TextBlock RelativePanel.Below="content" FontSize="12" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Run>本站是一个小说搜索引擎，提供且仅提供各小说论坛以及书库的最新小说链接。</Run>
                     <LineBreak/>
