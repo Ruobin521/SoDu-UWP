@@ -66,7 +66,7 @@ namespace Sodu.Core.Database
                             }
                             else
                             {
-                                list = temp.ToList();
+                                list = temp.ToList().OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
                             }
                         }
                         catch (Exception)

@@ -56,7 +56,7 @@ namespace Sodu.Services
             {
                 return;
             }
-            CancleHttpRequest();
+          //  CancleHttpRequest();
             ContentFrame.Navigate(type, para);
         }
         public static void GoBack(object sender = null)

@@ -8,13 +8,12 @@
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
+            <vm:ViewModelInstance  x:Key="Locator"/>
+            <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
+            <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <vm:ViewModelInstance  x:Key="Locator"/>
-            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></converter:BooleanToVisibilityConverter>
-            <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
-            <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

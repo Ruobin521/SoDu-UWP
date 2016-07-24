@@ -18,10 +18,17 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock   Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock   Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
                     <Run Text="{Binding BookName}"/>
-                </TextBlock>
-                <!--<TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>-->
+                    </TextBlock>
+                    <TextBlock Text="{Binding UpdateTime}" Grid.Column="1" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,0"></TextBlock>
+                </Grid>
+
 
                 <TextBlock   Grid.Row="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
             <Run Text="最后阅读章节:  "></Run>

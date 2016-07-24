@@ -28,6 +28,7 @@ namespace Sodu.ViewModel
         public static string n_Cookie = "Cookie";
         public static string n_IsNightModel = "IsNightModel";
         public static string n_IsLandscape = "IsLandscape";
+        public static string n_IsPreLoad = "IsPreLoad";
 
 
         private int m_TextFontSzie = 20;
@@ -197,6 +198,29 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsPreLoad = false;
+        /// <summary>
+        /// 预读下一章
+        /// </summary>
+        public bool IsPreLoad
+        {
+
+            get
+            {
+                return m_IsPreLoad;
+            }
+            set
+            {
+
+                if (value == m_IsPreLoad)
+                {
+                    return;
+                }
+                SetProperty(ref m_IsPreLoad, value);
+                SetPreLoad(value);
+            }
+        }
+
 
         public SettingPageViewModel()
         {
@@ -210,114 +234,144 @@ namespace Sodu.ViewModel
 
         public void InitSettingData()
         {
-            //自动登录
-            if (!SettingHelper.CheckKeyExist(n_IsAutoLogin))
+            try
             {
-                SettingHelper.SetValue(n_IsAutoLogin, true);
-                IfAutoLogin = true;
-            }
-            else
-            {
-                var value = (bool)SettingHelper.GetValue(n_IsAutoLogin);
-
-                if (value)
+                //自动登录
+                if (!SettingHelper.CheckKeyExist(n_IsAutoLogin))
                 {
+                    SettingHelper.SetValue(n_IsAutoLogin, true);
                     IfAutoLogin = true;
                 }
                 else
                 {
-                    IfAutoLogin = false;
+                    var value = (bool)SettingHelper.GetValue(n_IsAutoLogin);
+
+                    if (value)
+                    {
+                        IfAutoLogin = true;
+                    }
+                    else
+                    {
+                        IfAutoLogin = false;
+                    }
                 }
-            }
 
 
-            //自动添加书架
-            if (!SettingHelper.CheckKeyExist(n_IfAutAddToShelf))
-            {
-                SettingHelper.SetValue(n_IfAutAddToShelf, true);
-                IfAutAddToShelf = true;
-            }
-            else
-            {
-                var value = (bool)SettingHelper.GetValue(n_IfAutAddToShelf);
-
-                if (value)
+                //自动添加书架
+                if (!SettingHelper.CheckKeyExist(n_IfAutAddToShelf))
                 {
+                    SettingHelper.SetValue(n_IfAutAddToShelf, true);
                     IfAutAddToShelf = true;
                 }
                 else
                 {
-                    IfAutAddToShelf = false;
+                    var value = (bool)SettingHelper.GetValue(n_IfAutAddToShelf);
+
+                    if (value)
+                    {
+                        IfAutAddToShelf = true;
+                    }
+                    else
+                    {
+                        IfAutAddToShelf = false;
+                    }
                 }
-            }
 
 
-            //在流量下下载
-            if (!SettingHelper.CheckKeyExist(n_IfDownloadInWAAN))
-            {
-                SettingHelper.SetValue(n_IfDownloadInWAAN, false);
-                IfDownloadInWAAN = false;
-            }
-            else
-            {
-                var value = (bool)SettingHelper.GetValue(n_IfDownloadInWAAN);
-                if (value)
+                //在流量下下载
+                if (!SettingHelper.CheckKeyExist(n_IfDownloadInWAAN))
                 {
-                    IfDownloadInWAAN = true;
+                    SettingHelper.SetValue(n_IfDownloadInWAAN, false);
+                    IfDownloadInWAAN = false;
                 }
                 else
                 {
-                    IfDownloadInWAAN = false;
+                    var value = (bool)SettingHelper.GetValue(n_IfDownloadInWAAN);
+                    if (value)
+                    {
+                        IfDownloadInWAAN = true;
+                    }
+                    else
+                    {
+                        IfDownloadInWAAN = false;
+                    }
                 }
-            }
 
 
-            //正文字体大小
-            if (!SettingHelper.CheckKeyExist(n_TextFontSzie))
-            {
-                SettingHelper.SetValue(n_TextFontSzie, "20");
-                TextFontSzie = 20;
-            }
-            else
-            {
-                string value = SettingHelper.GetValue(n_TextFontSzie).ToString();
-                int size = Convert.ToInt32(value);
-                if (size % 2 != 0)
+                //正文字体大小
+                if (!SettingHelper.CheckKeyExist(n_TextFontSzie))
                 {
-                    size = size - 1;
-                    SettingHelper.SetValue(n_TextFontSzie, size);
+                    SettingHelper.SetValue(n_TextFontSzie, "20");
+                    TextFontSzie = 20;
+                }
+                else
+                {
+                    string value = SettingHelper.GetValue(n_TextFontSzie).ToString();
+                    int size = Convert.ToInt32(value);
+                    if (size % 2 != 0)
+                    {
+                        size = size - 1;
+                        SettingHelper.SetValue(n_TextFontSzie, size);
 
+                    }
+
+                    TextFontSzie = size;
                 }
 
-                TextFontSzie = size;
-            }
-
-            //设置夜间模式
-            if (!SettingHelper.CheckKeyExist(n_IsNightModel))
-            {
-                SettingHelper.SetValue(n_IsNightModel, false);
-                IsNightModel = false;
-            }
-            else
-            {
-                var value = (bool)SettingHelper.GetValue(n_IsNightModel);
-                IsNightModel = value;
-            }
+                //设置夜间模式
+                if (!SettingHelper.CheckKeyExist(n_IsNightModel))
+                {
+                    SettingHelper.SetValue(n_IsNightModel, false);
+                    IsNightModel = false;
+                }
+                else
+                {
+                    var value = (bool)SettingHelper.GetValue(n_IsNightModel);
+                    IsNightModel = value;
+                }
 
 
-            //设置横向模式
-            if (!SettingHelper.CheckKeyExist(n_IsLandscape))
-            {
-                SettingHelper.SetValue(n_IsLandscape, false);
-                IsLandscape = false;
-            }
-            else
-            {
-                var value = (bool)SettingHelper.GetValue(n_IsLandscape);
-                IsLandscape = value;
-            }
-            SetLandscape(IsLandscape);
+                //设置横向模式
+                if (!SettingHelper.CheckKeyExist(n_IsLandscape))
+                {
+                    SettingHelper.SetValue(n_IsLandscape, false);
+                    IsLandscape = false;
+                }
+                else
+                {
+                    var value = (bool)SettingHelper.GetValue(n_IsLandscape);
+                    IsLandscape = value;
+                }
+                SetLandscape(IsLandscape);
 
+
+                //设置预读
+                if (!SettingHelper.CheckKeyExist(n_IsPreLoad))
+                {
+                    SettingHelper.SetValue(n_IsPreLoad, true);
+                    IsPreLoad = true;
+                }
+                else
+                {
+                    var value = (bool)SettingHelper.GetValue(n_IsPreLoad);
+                    IsPreLoad = value;
+                }
+            }
+            catch (Exception)
+            {
+                SetDefaultSetting();
+            }
+        }
+
+        private void SetDefaultSetting()
+        {
+            SettingHelper.SetValue(n_IsAutoLogin, true);
+            SettingHelper.SetValue(n_IfAutAddToShelf, true);
+            SettingHelper.SetValue(n_IfDownloadInWAAN, false);
+            SettingHelper.SetValue(n_IsNightModel, false);
+            SettingHelper.SetValue(n_IsLandscape, false);
+            SettingHelper.SetValue(n_TextFontSzie, "20");
+            SettingHelper.SetValue(n_IsPreLoad, true);
         }
 
 
@@ -371,6 +425,12 @@ namespace Sodu.ViewModel
             {
                 DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
             }
+        }
+
+        public void SetPreLoad(bool value)
+        {
+            SettingHelper.SetValue(n_IsPreLoad, value);
+            IsPreLoad = value;
         }
 
 

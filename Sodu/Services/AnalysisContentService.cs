@@ -261,7 +261,7 @@ namespace Sodu.Services
 
                 //手牵手
                 case WebSet.sqsxs:
-                    result = AnalysisSlsxsw(html);
+                    result = AnalysisSqsxsw(html);
                     break;
 
 
@@ -327,6 +327,25 @@ namespace Sodu.Services
             return result;
         }
 
+
+        /// <summary>
+        /// 解析手牵手小说网正文内容
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisSqsxsw(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"content\">.*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = Regex.Replace(result, "阅读本书最新章节请到.*?敬请记住我们最新网址.*?m", "");
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
 
         /// <summary>
         /// 解析手牵手小说网正文内容
@@ -885,7 +904,7 @@ namespace Sodu.Services
 
                 //手牵手
                 case WebSet.sqsxs:
-                    result = AnalysisSlsxsw(html, url);
+                    result = AnalysisSqsxsw(html, url);
                     break;
 
                 //7度
@@ -1004,7 +1023,53 @@ namespace Sodu.Services
             }
             return result;
         }
+        private static List<BookCatalog> AnalysisSqsxsw(string html, string baseUrl)
+        {
 
+            List<BookCatalog> list = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<div id=\"list\">.*?</div>");
+
+            if (t_string != null)
+            {
+                // <dd><a href="245129.html" class="f-green">序章 大荒</a></a></dd>
+
+                MatchCollection matches = Regex.Matches(html, "<dd><a href=\"(.*?)\".*?>(.*?)</a></a></dd>");
+                //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        //var url_Mathch = Regex.Match(item.ToString(), "(?<=href=\").*?(?=\")");
+                        //var title_Mathch = Regex.Match(item.ToString(), "(?<=title=\").*?(?=\")");
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
 
         private static List<BookCatalog> AnalysisSlsxsw(string html, string baseUrl)
         {

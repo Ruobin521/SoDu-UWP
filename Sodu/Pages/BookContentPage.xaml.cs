@@ -41,12 +41,12 @@ namespace Sodu.Pages
             {
                 this.Loaded -= BookContentPage_Loaded;
                 this.Loaded += BookContentPage_Loaded;
-
-                this.listview.PointerEntered -= listview_PointerEntered;
-                this.listview.PointerEntered += listview_PointerEntered;
+                this.grid.Tapped -= grid_Tapped;
+                this.grid.Tapped += grid_Tapped;
             }
-
         }
+
+
 
         private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -59,12 +59,20 @@ namespace Sodu.Pages
         {
             if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
             {
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                SetFullScreen(true);
             }
         }
 
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            {
+                if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
+                {
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                }
+            }
+
             x = 0;
         }
 
@@ -113,6 +121,7 @@ namespace Sodu.Pages
             else
             {
                 ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
             }
         }
 
@@ -137,64 +146,24 @@ namespace Sodu.Pages
             }
         }
 
-        Point firstPoint = new Point();
-        DateTime firstTime = DateTime.MinValue;
-        DateTime secondTime = DateTime.MinValue;
 
-        private void listview_PointerEntered(object sender, PointerRoutedEventArgs e)
+        private void grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (PlatformHelper.GetPlatform() != PlatformHelper.Platform.IsMobile)
             {
                 e.Handled = true;
                 return;
             }
-            var p = e.GetCurrentPoint(this.listview).Position;
 
-            double width = Window.Current.Bounds.Width;
-            double height = Window.Current.Bounds.Height;
-
-            if (true)
+            if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Hidden)
             {
-
-                if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
-                {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-                    firstPoint = new Point();
-                    firstTime = DateTime.MinValue;
-                    return;
-                }
-                else if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Hidden)
-                {
-                    if (firstTime == DateTime.MinValue)
-                    {
-                        firstPoint = p;
-                        firstTime = DateTime.Now;
-                        return;
-                    }
-
-                    if ((DateTime.Now - firstTime).TotalMilliseconds < 350)
-                    {
-                        if (this.commandbar.ClosedDisplayMode != AppBarClosedDisplayMode.Compact)
-                        {
-                            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-                        }
-                        else
-                        {
-                            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-                        }
-
-                        firstPoint = new Point();
-                        firstTime = DateTime.MinValue;
-                        return;
-                    }
-                    else
-                    {
-                        firstPoint = p;
-                        firstTime = DateTime.Now;
-                        return;
-                    }
-                }
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+            }
+            else if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
+            {
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
             }
         }
+
     }
 }

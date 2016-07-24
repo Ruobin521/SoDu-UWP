@@ -5,7 +5,8 @@
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+     >
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -16,15 +17,26 @@
 
         <ScrollViewer Grid.Row="1" Padding="10,0"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="1.在正文阅读页面，双击屏幕打开功能菜单，单击隐藏。" LineHeight="35"  Foreground="#FF004D00" TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="2.在正文阅读页面，点击左右切换按钮或手指（鼠标）在屏幕上左右滑动，会切换到上一章或者下一章。" Foreground="#FF004D00"  LineHeight="35"  TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="3.在正文阅读页面，在二级菜单中可以选择增加或则减小字体大小。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="4.在正文阅读页面，在二级菜单中可以选择选择开启或者关闭夜间模式。"  Foreground="#FF004D00" LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="5.在正文阅读页面，点击目录按钮加载目录数据并导航至目录列表页。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="6.在目录列表页面，点击下载按钮会下载当前小说。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="7.在下载中心页面，显示当前正在下载的小说。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="8.在本地图书页面，显示已下载的图书。"  Foreground="#FF004D00" LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
-                <TextBlock  Grid.ColumnSpan="3" Grid.Column="0"  Text="9.在本地图书页面，点击下载按钮会下载本地图书的更新数据。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="更新列表页" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.点击下方菜单中加号，添加当前小说到个人书架（如果设置中已经设置为自动添加或已经收藏过本书，该按钮将不显示）" LineHeight="35"  Foreground="#FF004D00" TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="阅读界面" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.单屏幕打开功能菜单,再次单击隐藏。" LineHeight="35"  Foreground="#FF004D00" TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="2.点击左右切换按钮或手指（鼠标）在屏幕上左右滑动，会切换到上一章或者下一章。" Foreground="#FF004D00"  LineHeight="35"  TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="3.在二级菜单中可以选择增加或则减小字体大小。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="4.在二级菜单中可以选择选择开启或者关闭夜间模式。"  Foreground="#FF004D00" LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="5.点击目录按钮加载目录数据并导航至目录列表页。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="目录界面" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.点击下载按钮会下载当前小说。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="2.点击目录项，加载相应章节内容。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="下载中心" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.显示当前正在下载的小说。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="2.点击相应按钮选择暂停，取消或者全部取消" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="本地图书" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.显示已下载的图书。"  Foreground="#FF004D00" LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="2.击菜单下载按钮会下载本地图书的更新数据。" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="历史记录" FontSize="22" LineHeight="35"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="1.记录小说最后阅读章节以及时间" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock   Grid.Column="0"  Text="2.点击列表项继续阅读" Foreground="#FF004D00"  LineHeight="35" TextWrapping="Wrap"    HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Sodu.ViewModel
 {
@@ -32,10 +33,19 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsLoading;
         public bool IsLoading
         {
-            get; set;
+            get
+            {
+                return m_IsLoading;
+            }
+            set
+            {
+                SetProperty(ref m_IsLoading, value);
+            }
         }
+
 
         private bool m_IsShow = true;
         public bool IsShow
@@ -75,49 +85,68 @@ namespace Sodu.ViewModel
         {
             if (IsLoading) return;
 
-            try
+            Task.Run(async () =>
             {
-                IsLoading = true;
-
-                BookList.Clear();
-                var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
-                if (list != null)
+                try
                 {
-                    list.ForEach(x => this.BookList.Add(x));
-                }
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        IsLoading = true;
+                        BookList.Clear();
+                    });
 
-                if (BookList == null || BookList.Count <= 0)
-                {
-                    ToastHeplper.ShowMessage("你还没有阅读记录");
+
+                    var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
+                    if (list != null)
+                    {
+                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                        {
+                            list.ForEach(x => this.BookList.Add(x));
+                        });
+
+                    }
+
                 }
-            }
-            catch (Exception)
-            {
-                ToastHeplper.ShowMessage("加载历史记录有误");
-            }
-            finally
-            {
-                IsLoading = false;
-            }
+                catch (Exception)
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        ToastHeplper.ShowMessage("加载历史记录有误");
+                    });
+                }
+                finally
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        IsLoading = false;
+                    });
+                }
+            });
+
 
         }
 
         public HistoryPageViewModel()
         {
-
+            //InitData();
         }
 
         public void AddToHistoryList(BookEntity entity)
         {
-            if (BookList.ToList().Find(p => p.BookID == entity.BookID) != null)
+            Task.Run(async () =>
             {
-                return;
-            }
-            else
-            {
-                BookList.Add(entity);
-                bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), entity);
-            }
+                var temp = entity.Clone();
+                temp.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+
+                if (BookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                {
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        BookList.Insert(0, temp);
+                    });
+                }
+                bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), temp);
+            });
         }
 
         private RelayCommand<object> m_BookItemSelectedCommand;

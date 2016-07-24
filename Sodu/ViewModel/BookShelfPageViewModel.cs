@@ -143,7 +143,6 @@ namespace Sodu.ViewModel
 
         }
 
-
         public bool BackpressedHandler()
         {
             CancleHttpRequest();
@@ -252,9 +251,10 @@ namespace Sodu.ViewModel
                 else
                 {
                     this.IsShow = false;
-                    if (list.Count > 0)
+                    if (list != null && list.Count > 0)
                     {
-                        foreach (var item in list)
+                        var temp = list.OrderBy(p => p.BookID).ToList();
+                        foreach (var item in temp)
                         {
                             this.ShelfBookList.Add(item);
 
@@ -364,6 +364,7 @@ namespace Sodu.ViewModel
                     item.IsSelected = false;
                 }
                 IsEditing = false;
+                IsAllSelected = false;
             }
             else
             {

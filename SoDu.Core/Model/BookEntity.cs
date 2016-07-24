@@ -209,5 +209,34 @@ namespace Sodu.Core.Model
             }
         }
 
+
+        public BookEntity Clone()
+        {
+            BookEntity entity = new BookEntity();
+
+            entity.AuthorName = this.AuthorName;
+            entity.BookID = this.BookID;
+            entity.BookName = this.BookName;
+            entity.CatalogList = this.CatalogList;
+            entity.CatalogListUrl = this.CatalogListUrl;
+            entity.Id = this.Id;
+            entity.IsHistory = this.IsHistory;
+            entity.IsInEdit = this.IsInEdit;
+            entity.IsLocal = this.IsLocal;
+            entity.IsSelected = this.IsSelected;
+            entity.LastReadChapterName = this.LastReadChapterName;
+            entity.LastReadChapterUrl = this.LastReadChapterUrl;
+            entity.LyWeb = this.LyWeb;
+            entity.NewestChapterName = this.NewestChapterName;
+            entity.NewestChapterUrl = this.NewestChapterUrl;
+            entity.UnDownloadCatalogList = this.UnDownloadCatalogList;
+            entity.UnReadCountData = this.UnReadCountData;
+            entity.UpdateCatalogUrl = this.UpdateCatalogUrl;
+            entity.UpdateTime = this.UpdateTime;
+
+            return entity;
+
+        }
+
     }
 }
