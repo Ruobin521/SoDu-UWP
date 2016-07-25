@@ -31,6 +31,22 @@ namespace Sodu.ViewModel
             }
         }
 
+        private IUnityContainer m_Container;
+        public IUnityContainer Container
+        {
+            get
+            {
+                if (m_Container == null)
+                {
+                    m_Container = new UnityContainer();
+                }
+                return m_Container;
+            }
+            set
+            {
+                SetProperty(ref this.m_Container, value);
+            }
+        }
 
         private MainPageViewModel m_MainPageViewModelInstance;
         public MainPageViewModel MainPageViewModelInstance
@@ -56,7 +72,7 @@ namespace Sodu.ViewModel
             {
                 if (m_UrlService == null)
                 {
-                    m_UrlService = App.Container.Resolve<IURLService>();
+                    m_UrlService = Container.Resolve<IURLService>();
                 }
                 return m_UrlService;
             }

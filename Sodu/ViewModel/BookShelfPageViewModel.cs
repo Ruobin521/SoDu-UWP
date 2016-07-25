@@ -217,7 +217,7 @@ namespace Sodu.ViewModel
             });
             try
             {
-                html = await http.WebRequestGet(App.Container.Resolve<IURLService>().GetBookShelfPage(), true);
+                html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetBookShelfPage(), true);
             }
             catch (Exception)
             {

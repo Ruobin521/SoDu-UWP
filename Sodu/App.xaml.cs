@@ -46,7 +46,6 @@ namespace Sodu
         private static string key = "578de4e0e0f55ac2a3002519";
         private static string chanel = "Marketplace";
 
-        public static IUnityContainer Container = new UnityContainer();
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -194,7 +193,7 @@ namespace Sodu
 
         private void InitContainer()
         {
-            Container.RegisterType<IURLService, URLService_CC>();
+            ViewModelInstance.Instance.Container.RegisterType<IURLService, URLService_CC>();
         }
 
         public void InitSettingData()
@@ -203,7 +202,7 @@ namespace Sodu
             settingvm.InitSettingData();
 
             HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(App.Container.Resolve<IURLService>().GetHomePage()));
+            HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(ViewModelInstance.Instance.UrlService.GetHomePage()));
             var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
 
             if (cookieItem == null)
