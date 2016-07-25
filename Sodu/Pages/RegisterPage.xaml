@@ -9,6 +9,11 @@
     mc:Ignorable="d"
     DataContext="{Binding Instance.RegiserPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0"/>

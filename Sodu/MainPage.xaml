@@ -59,14 +59,16 @@
                                     <!--"ms-appx:///Images/Logo.jpg\-->
                                     <!--<Image  x:Name="title"  Height="80"  Source="ms-appx:///Images/Logo.jpg"  ></Image>-->
                                     <!--<TextBlock x:Name="title" FontSize="18" Text="菜单"  RelativePanel.AlignTopWithPanel="True" Margin="10" Foreground="#FF0F0F0F"></TextBlock>-->
-                                    <ListBox x:Name="menuListBox" Margin="0" ItemsSource="{Binding CurrentMenuList}" SelectedItem="{Binding CurrentMenu,Mode=TwoWay}"  HorizontalAlignment="Stretch"  
-               VerticalAlignment="Top"  SelectionMode="Single"  Background="Transparent"   RelativePanel.AlignTopWithPanel="True"  >
-                                        <ListBox.ItemTemplate>
+                                    <ListView x:Name="menuListBox" ItemContainerStyle="{StaticResource  ListViewItemStyle}" Margin="0" ItemsSource="{Binding CurrentMenuList}" SelectedItem="{Binding CurrentMenu,Mode=TwoWay}"  HorizontalAlignment="Stretch"  
+                                 SelectionMode="Single"  Background="Transparent"   RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.AlignRightWithPanel="True"   >
+                                        <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding  MenuName}" Style="{StaticResource TextBlockButtonStyle}"/>
+                                                <Border Padding="15,0,0,0" Height="36">
+                                                    <TextBlock   Text="{Binding  MenuName}" Style="{StaticResource TextBlockButtonStyle}" VerticalAlignment="Center" />
+                                                </Border>
                                             </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
                                 </RelativePanel>
                             </Border>
 
@@ -126,7 +128,7 @@
             </SplitView.Pane>
             <SplitView.Content>
                 <Grid Margin="0,0,0,0"  x:Name="rootGrid"  Visibility="Visible"  >
-                    <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Navigated="contentFrame_Navigated"  />
+                    <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2"  />
                     <!--<TextBlock RelativePanel.Below="content" FontSize="12" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Run>本站是一个小说搜索引擎，提供且仅提供各小说论坛以及书库的最新小说链接。</Run>
                     <LineBreak/>

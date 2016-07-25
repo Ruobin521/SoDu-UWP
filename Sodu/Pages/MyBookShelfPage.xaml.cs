@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Sodu.Core.Model;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -37,5 +40,24 @@ namespace Sodu.Pages
                 (this.DataContext as ViewModel.BookShelfPageViewModel).OnEditCommand();
             }
         }
+
+        //protected async override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+        //    //ObservableCollection<BookEntity> temp = new ObservableCollection<BookEntity>();
+        //    //foreach (var item in (this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList)
+        //    //{
+        //    //    temp.Add(item);
+        //    //}
+
+        //    //(this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList.Clear();
+
+        //    //foreach (var item in temp)
+        //    //{
+        //    //    (this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList.Add(item);
+        //    //    await Task.Delay(TimeSpan.FromSeconds(0.001));
+        //    //}
+
+        //    this.DataContext = ViewModel.ViewModelInstance.Instance.MyBookShelfViewModelInstance;
+        //}
     }
 }

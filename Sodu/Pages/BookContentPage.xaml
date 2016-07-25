@@ -9,10 +9,16 @@
      xmlns:UC="using:Sodu.UC"
     xmlns:converter="using:Sodu.Converter"
     xmlns:vm="using:Sodu.ViewModel"  
+    
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.BookContentPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Page.Resources>
         <converter:NightModelBackgroundConverter x:Key="NightModelBackgroundConverter"></converter:NightModelBackgroundConverter>
         <converter:NightModelForegroundConverter x:Key="NightModelForegroundConverter"></converter:NightModelForegroundConverter>

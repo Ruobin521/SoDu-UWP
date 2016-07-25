@@ -19,39 +19,12 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Sodu.UC
 {
-    public sealed partial class UC_BookListItem : UserControl
+    public sealed partial class UC_BookListItem : Button
     {
-
-
-        public ICommand Command
-        {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CommandProperty =
-            DependencyProperty.Register("Command", typeof(ICommand), typeof(UC_BookListItem), new PropertyMetadata(null));
-
-
-
-
-        public object CommandParameter
-        {
-            get { return (object)GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CommandParameter.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CommandParameterProperty =
-            DependencyProperty.Register("CommandParameter", typeof(object), typeof(UC_BookListItem), new PropertyMetadata(null));
-
-
-
         public UC_BookListItem()
         {
             this.InitializeComponent();
-           
+
         }
     }
 }

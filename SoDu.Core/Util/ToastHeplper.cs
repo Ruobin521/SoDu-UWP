@@ -10,7 +10,7 @@ using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Sodu.Util
+namespace Sodu.Core.Util
 {
     public class ToastHeplper
     {

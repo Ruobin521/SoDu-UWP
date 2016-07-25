@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <vm:ViewModelInstance  x:Key="Locator"/>
             <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
+            <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/Styles.xaml"/>

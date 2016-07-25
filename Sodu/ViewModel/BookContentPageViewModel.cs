@@ -3,10 +3,10 @@ using Sodu.Constants;
 using Sodu.Core.Config;
 using Sodu.Core.Database;
 using Sodu.Core.Model;
+using Sodu.Core.Util;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
-using Sodu.Util;
 using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
@@ -487,7 +487,7 @@ namespace Sodu.ViewModel
             return catalogListUrl;
         }
 
-        private async void SetTextContent(string html)
+        private void SetTextContent(string html)
         {
             this.ContentTitle = this.BookEntity.BookName + "_" + this.CurrentCatalog.CatalogName;
 
@@ -504,7 +504,7 @@ namespace Sodu.ViewModel
             for (int i = 1; i < strList.Count; i++)
             {
                 this.ContentListt.Add(strList[i]);
-                await Task.Delay(1);
+                //  await Task.Delay(1);
             }
         }
 

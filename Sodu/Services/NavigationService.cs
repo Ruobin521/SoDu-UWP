@@ -1,5 +1,6 @@
-﻿using Sodu.Model;
-using Sodu.Util;
+﻿using Sodu.Core.Util;
+using Sodu.Model;
+
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace Sodu.Services
             {
                 return;
             }
-          //  CancleHttpRequest();
+            //  CancleHttpRequest();
             ContentFrame.Navigate(type, para);
         }
         public static void GoBack(object sender = null)
@@ -124,18 +125,23 @@ namespace Sodu.Services
                     }
                 }
             }
-
-            ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
-
-            if (ContentFrame.CanGoBack)
+            else if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back)
             {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
             }
-            else
+
+
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                if (ContentFrame.CanGoBack)
+                {
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                }
+                else
+                {
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                }
             }
         }
-
     }
 }

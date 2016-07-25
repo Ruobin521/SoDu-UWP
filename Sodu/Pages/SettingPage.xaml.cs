@@ -1,4 +1,5 @@
-﻿using Sodu.ViewModel;
+﻿using Sodu.Core.Util;
+using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -36,7 +37,7 @@ namespace Sodu.Pages
             DataPackage dp = new DataPackage();
             dp.SetText(str);
             Clipboard.SetContent(dp);
-            Util.ToastHeplper.ShowMessage("已复制群号到剪切板");
+            ToastHeplper.ShowMessage("已复制群号到剪切板");
         }
 
     }

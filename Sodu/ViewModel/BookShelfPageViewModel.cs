@@ -3,7 +3,7 @@ using Sodu.Constants;
 using Sodu.Core.Model;
 using Sodu.Model;
 using Sodu.Services;
-using Sodu.Util;
+
 using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
@@ -18,6 +18,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Practices.Unity;
 using SoDu.Core.API;
+using Sodu.Core.Util;
 
 namespace Sodu.ViewModel
 {

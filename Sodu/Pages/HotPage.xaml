@@ -14,6 +14,11 @@
     xmlns:control="using:Sodu.Controls"
     mc:Ignorable="d" 
     x:Name="root">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Page.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>

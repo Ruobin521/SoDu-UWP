@@ -44,9 +44,6 @@ namespace Sodu
             }
         }
 
-        private void contentFrame_Navigated(object sender, NavigationEventArgs e)
-        {
-
-        }
+        
     }
 }

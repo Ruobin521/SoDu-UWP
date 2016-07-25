@@ -3,10 +3,11 @@ using Sodu.Constants;
 using Sodu.Core.Config;
 using Sodu.Core.Database;
 using Sodu.Core.Model;
+using Sodu.Core.Util;
 using Sodu.Model;
 using Sodu.Pages;
 using Sodu.Services;
-using Sodu.Util;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -136,7 +137,7 @@ namespace Sodu.ViewModel
             Task.Run(async () =>
             {
                 var temp = entity.Clone();
-                temp.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                temp.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 if (BookList.ToList().Find(p => p.BookID == entity.BookID) == null)
                 {

@@ -12,6 +12,11 @@
     DataContext="{Binding Instance.BookCatalogPageViewModelInstance,Source={ StaticResource  Locator}}"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Page.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>

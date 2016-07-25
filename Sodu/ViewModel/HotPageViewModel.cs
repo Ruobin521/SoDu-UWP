@@ -1,9 +1,10 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
 using Sodu.Core.Model;
+using Sodu.Core.Util;
 using Sodu.Model;
 using Sodu.Services;
-using Sodu.Util;
+
 using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;

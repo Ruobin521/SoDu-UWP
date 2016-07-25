@@ -9,6 +9,11 @@
     xmlns:uc="using:Sodu.UC"
     xmlns:converter="using:Sodu.Converter"
     mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Page.Resources>
         <converter:DownLoadPagePauseIconConverter x:Key="DownLoadPagePauseIconConverter"></converter:DownLoadPagePauseIconConverter>
     </Page.Resources>

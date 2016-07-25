@@ -2,7 +2,6 @@
 using Sodu.Constants;
 using Sodu.Model;
 using Sodu.Pages;
-using Sodu.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +19,7 @@ using Sodu.Services;
 using Windows.System;
 using Sodu.Core.Model;
 using SoDu.Core.Util;
+using Sodu.Core.Util;
 
 namespace Sodu.ViewModel
 {
@@ -235,7 +235,7 @@ namespace Sodu.ViewModel
             {
                 if (menu != null)
                 {
-                    this.IsLeftPanelOpen = false;
+                    //   this.IsLeftPanelOpen = false;
                     NavigationService.NavigateTo(menu.MenuType, para);
                 }
             }
@@ -302,7 +302,7 @@ namespace Sodu.ViewModel
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
 
 
-              
+
 
                 //判断是否自动添加书到收藏
                 if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)

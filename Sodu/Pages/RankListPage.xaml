@@ -12,7 +12,12 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.RankListPageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:control="using:Sodu.Controls">
+    >
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
@@ -20,30 +25,13 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
+        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
 
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!--<control:PullToRefreshListView.RefreshIndicatorContent>
-                <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↑</Run>
-                        <Run>释放刷新</Run>
-                    </TextBlock>
-                    <TextBlock FontSize="16" x:Name="downText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↓</Run>
-                        <Run>下拉刷新</Run>
-                    </TextBlock>
-                </Grid>
-            </control:PullToRefreshListView.RefreshIndicatorContent>-->
-            <!--<Interactivity:Interaction.Behaviors >
-                <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  Instance.MainPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding ElementName=updateListBox,Path=SelectedItem}"/>
-                </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>-->
         </ListView>
 
         <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >

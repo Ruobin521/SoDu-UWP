@@ -6,7 +6,7 @@ using Sodu.Core.Model;
 using Sodu.Core.Util;
 using Sodu.Model;
 using Sodu.Services;
-using Sodu.Util;
+
 using SoDu.Core.Util;
 using SQLite.Net.Attributes;
 using System;

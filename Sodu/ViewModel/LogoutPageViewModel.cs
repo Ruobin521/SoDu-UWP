@@ -1,6 +1,7 @@
 ﻿using Sodu.Constants;
+using Sodu.Core.Util;
 using Sodu.Services;
-using Sodu.Util;
+
 using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,7 @@ namespace Sodu.ViewModel
                   if (html != null && html.Contains("to delete public domains' cookies"))
                   {
                       ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                      ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
                       ToastHeplper.ShowMessage("注销成功");
                   }
                   else
@@ -76,7 +78,7 @@ namespace Sodu.ViewModel
 
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetLogoutPage());
             }
-            catch (Exception  )
+            catch (Exception)
             {
                 return null;
             }

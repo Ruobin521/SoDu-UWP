@@ -8,9 +8,13 @@
     xmlns:UC="using:Sodu.UC"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:control="using:Sodu.Controls"
     DataContext="{Binding Instance.SearchResultPageViewModelInstance,Source={ StaticResource  Locator}}"
     mc:Ignorable="d">
+    <Page.Transitions>
+        <TransitionCollection>
+            <NavigationThemeTransition />
+        </TransitionCollection>
+    </Page.Transitions>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
