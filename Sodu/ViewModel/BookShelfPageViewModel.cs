@@ -163,11 +163,20 @@ namespace Sodu.ViewModel
             return false;
         }
 
-        public void InitData(object obj = null)
+        public async void InitData(object obj = null)
         {
             this.IsShow = false;
             if (this.ShelfBookList.Count > 0)
             {
+
+                var tempList = ShelfBookList;
+                ShelfBookList = new ObservableCollection<BookEntity>();
+
+                foreach (var item in tempList)
+                {
+                    ShelfBookList.Add(item);
+                    await Task.Delay(1);
+                }
                 return;
             }
 

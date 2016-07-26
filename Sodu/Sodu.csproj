@@ -17,10 +17,10 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Sodu_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <PackageCertificateKeyFile>Sodu_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxBundle>Never</AppxBundle>
-    <PackageCertificateThumbprint>5BA789AEA788ACCA504481DC60618011C3C381F9</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>2B8D089F0B7DA82638C670A1E47041CE707DD082</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -200,8 +200,8 @@
     <Compile Include="Pages\CodingPage.xaml.cs">
       <DependentUpon>CodingPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\HomePage.xaml.cs">
-      <DependentUpon>HomePage.xaml</DependentUpon>
+    <Compile Include="Pages\RecommendPage.xaml.cs">
+      <DependentUpon>RecommendPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -218,7 +218,6 @@
     <Compile Include="ViewModel\DownLoadCenterViewModel.cs" />
     <Compile Include="ViewModel\HistoryPageViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
-    <Compile Include="ViewModel\HotPageViewModel.cs" />
     <Compile Include="ViewModel\IViewModel.cs" />
     <Compile Include="ViewModel\LocalBookPageViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
@@ -295,7 +294,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\HomePage.xaml">
+    <Page Include="Pages\RecommendPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

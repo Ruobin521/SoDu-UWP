@@ -129,7 +129,7 @@ namespace Sodu.Services
             {
                 ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
             }
-
+            ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen = false;
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {

@@ -36,7 +36,7 @@ namespace Sodu.Converter
         {
             if ((bool)value)
             {
-                return new SolidColorBrush((Color)Color.FromArgb(255,69,69,69));
+                return new SolidColorBrush((Color)Color.FromArgb(255,140, 140, 140));
             }
             else
             {

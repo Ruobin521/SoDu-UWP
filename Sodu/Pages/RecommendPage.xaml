@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Sodu.Pages.HomePage"
+    x:Class="Sodu.Pages.RecommendPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
@@ -30,9 +30,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <TextBlock x:Name="TextTitle"   Text="推荐阅读" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding RecommendBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
             <ListView.ItemTemplate>
                 <DataTemplate>

@@ -59,7 +59,7 @@
                                     <!--"ms-appx:///Images/Logo.jpg\-->
                                     <!--<Image  x:Name="title"  Height="80"  Source="ms-appx:///Images/Logo.jpg"  ></Image>-->
                                     <!--<TextBlock x:Name="title" FontSize="18" Text="菜单"  RelativePanel.AlignTopWithPanel="True" Margin="10" Foreground="#FF0F0F0F"></TextBlock>-->
-                                    <ListView x:Name="menuListBox" ItemContainerStyle="{StaticResource  ListViewItemStyle}" Margin="0" ItemsSource="{Binding CurrentMenuList}" SelectedItem="{Binding CurrentMenu,Mode=TwoWay}"  HorizontalAlignment="Stretch"  
+                                    <ListView x:Name="menuListBox" ItemContainerStyle="{StaticResource   ListViewItemStyleLeft}" Margin="0" ItemsSource="{Binding CurrentMenuList}" SelectedItem="{Binding CurrentMenu,Mode=TwoWay}"  HorizontalAlignment="Stretch"  
                                  SelectionMode="Single"  Background="Transparent"   RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.AlignRightWithPanel="True"   >
                                         <ListView.ItemTemplate>
                                             <DataTemplate>

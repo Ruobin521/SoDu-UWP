@@ -3,6 +3,7 @@ using Sodu.Constants;
 using Sodu.Core.Model;
 using Sodu.Core.Util;
 using Sodu.Model;
+using Sodu.Pages;
 using Sodu.Services;
 
 using SoDu.Core.Util;
@@ -40,11 +41,12 @@ namespace Sodu.ViewModel
         }
 
         private ObservableCollection<BookEntity> m_BookList = new ObservableCollection<BookEntity>();
-        public ObservableCollection<BookEntity> BookList
+        public ObservableCollection<BookEntity> RecommendBookList
         {
             get
             {
-                return m_BookList;
+
+                return m_BookList ?? (m_BookList = new ObservableCollection<BookEntity>());
             }
             set
             {
@@ -52,8 +54,25 @@ namespace Sodu.ViewModel
             }
         }
 
+        private ObservableCollection<BookEntity> m_HotBookList;
+        public ObservableCollection<BookEntity> HotBookList
+        {
+            get
+            {
+                if (m_HotBookList == null)
+                {
+                    m_HotBookList = new ObservableCollection<BookEntity>();
+                }
+                return m_HotBookList;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_HotBookList, value);
+            }
+        }
 
-        private string _ContentTitle = "推荐阅读";
+
+        private string _ContentTitle = "";
         public string ContentTitle
         {
             get
@@ -103,14 +122,39 @@ namespace Sodu.ViewModel
             }
             IsLoading = false;
         }
-        public void InitData(object obj = null)
+        public async void InitData(object obj = null)
         {
             CancleHttpRequest();
 
-            if (this.BookList.Count > 0)
+            if (this.RecommendBookList.Count > 0 || this.HotBookList.Count > 0)
             {
+                if (NavigationService.ContentFrame.Content is RecommendPage)
+                {
+                    var tempList = RecommendBookList;
+                    RecommendBookList = new ObservableCollection<BookEntity>();
+
+                    foreach (var item in tempList)
+                    {
+                        RecommendBookList.Add(item);
+                        await Task.Delay(1);
+                    }
+                }
+
+                else if (NavigationService.ContentFrame.Content is HotPage)
+                {
+                    var tempList2 = HotBookList;
+                    HotBookList = new ObservableCollection<BookEntity>();
+
+                    foreach (var item in tempList2)
+                    {
+                        HotBookList.Add(item);
+                        await Task.Delay(1);
+                    }
+                }
+
                 return;
             }
+
             SetData();
         }
 
@@ -127,11 +171,14 @@ namespace Sodu.ViewModel
              {
                  if (result != null && SetBookList(result.Result.ToString()))
                  {
-                     ToastHeplper.ShowMessage("已更新" + BookList.Count + "条数据");
+                     ToastHeplper.ShowMessage("已更新" + RecommendBookList.Count + "条数据");
                  }
                  else
                  {
-                     ToastHeplper.ShowMessage("未能获取推荐阅读数据");
+                     if (NavigationService.ContentFrame.Content is Pages.RecommendPage)
+                     {
+                         ToastHeplper.ShowMessage("未能获取推荐阅读数据");
+                     }
                  }
              });
           });
@@ -182,14 +229,19 @@ namespace Sodu.ViewModel
                     {
                         return false;
                     }
-                    this.BookList.Clear();
+                    this.RecommendBookList.Clear();
                     foreach (var item in arraryList[1])
                     {
-                        this.BookList.Add(item);
+                        this.RecommendBookList.Add(item);
+                    }
+
+                    this.HotBookList.Clear();
+                    foreach (var item in arraryList[2])
+                    {
+                        this.HotBookList.Add(item);
                     }
                     result = true;
 
-                    ViewModelInstance.Instance.HotPageViewModelInstance.BookList = arraryList[2];
                     return result;
                 }
             }

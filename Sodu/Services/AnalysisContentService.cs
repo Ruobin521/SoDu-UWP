@@ -1574,7 +1574,7 @@ namespace Sodu.Services
             try
             {
                 html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-                Match match = Regex.Match(html, "<div class=\"dirtitone\">.*?<div class=\"blinebgs\"");
+                Match match = Regex.Match(html, "<div class=\"dirwraps\">.*?<div class=\"blinebgs\"");
                 if (match == null) return null;
                 MatchCollection matches = Regex.Matches(match.ToString(), "<li.*?href=\"(.*?)\".*?>(.*?)</a></li>");
                 if (matches != null && matches.Count < 1)

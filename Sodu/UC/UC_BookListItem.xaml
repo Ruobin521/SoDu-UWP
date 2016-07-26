@@ -12,7 +12,7 @@
     HorizontalAlignment="Stretch"
     d:DesignWidth="500"
     Margin="0,3,0,0"
-    Style="{StaticResource   ContentButtonStyle}" >
+    Style="{StaticResource   ContentButtonStyle}">
     <Grid HorizontalAlignment="Stretch" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

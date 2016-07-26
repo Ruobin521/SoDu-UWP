@@ -47,7 +47,7 @@
                 <TextBlock x:Name="TextTime"  Margin="0,5,15,0" FontFamily="颜体"  Grid.Column="1"  VerticalAlignment="Top" Text="{Binding CurrentTime}"   Foreground="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource   NightModelForegroundConverter}}"    HorizontalAlignment="Right"     FontSize="16"/>
             </Grid>
         </Border>
-        <TextBlock Foreground="#FF454545"></TextBlock>
+        <!--<TextBlock Foreground="Gainsboro" Grid.Row="1">啊时代发生的发生的 </TextBlock>-->
         <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"    ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
          VerticalAlignment="Top">
             <ListView.ItemTemplate>

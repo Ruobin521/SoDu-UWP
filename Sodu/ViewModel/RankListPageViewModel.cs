@@ -103,11 +103,19 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public void InitData(object obj = null)
+        public async void InitData(object obj = null)
         {
             CancleHttpRequest();
             if (this.BookList.Count > 0)
             {
+                var tempList = BookList;
+                BookList = new ObservableCollection<BookEntity>();
+
+                foreach (var item in tempList)
+                {
+                    BookList.Add(item);
+                    await Task.Delay(1);
+                }
                 return;
             }
             SetData(1);
@@ -159,7 +167,7 @@ namespace Sodu.ViewModel
             {
                 html = await http.WebRequestGet(url, true);
             }
-            catch (Exception  )
+            catch (Exception)
             {
                 html = null;
             }
