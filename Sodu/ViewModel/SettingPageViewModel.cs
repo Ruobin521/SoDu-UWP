@@ -423,7 +423,7 @@ namespace Sodu.ViewModel
             }
             else
             {
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
             }
         }
 

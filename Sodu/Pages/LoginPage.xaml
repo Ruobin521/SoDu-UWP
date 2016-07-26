@@ -326,7 +326,7 @@
             <ColumnDefinition Width="0"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="38"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="TextTitle"  Grid.ColumnSpan="3" Grid.Column="0"  Text="{Binding ContentTitle}" TextTrimming="WordEllipsis"    HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>

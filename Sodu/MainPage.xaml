@@ -25,7 +25,7 @@
     </Page.Resources>
     <Grid x:Name="HeaderGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
+            <RowDefinition Height="38"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid  Grid.Row="0" Grid.Column="0" Canvas.ZIndex="100"   BorderThickness="0">
@@ -46,7 +46,7 @@
         <SplitView x:Name="Splitter"    IsPaneOpen="{Binding IsLeftPanelOpen,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" OpenPaneLength="200" DisplayMode="Overlay" CompactPaneLength="70" Grid.Row="0" Grid.RowSpan="2" >
             <SplitView.Pane >
                 <RelativePanel Margin="0,0,0,0"  >
-                    <ScrollViewer VerticalAlignment="Stretch"  Margin="0,45,0,0" RelativePanel.AlignTopWithPanel="True"  RelativePanel.AlignBottomWithPanel="True"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalAlignment="Stretch"  Margin="0,40,0,0" RelativePanel.AlignTopWithPanel="True"  RelativePanel.AlignBottomWithPanel="True"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
@@ -97,13 +97,8 @@
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding ReadHistoryCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
                                     </AppBarButton>
-                                    <AppBarButton  Icon="Accept"   Label="给个好评" 
-                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
-                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding EvaluateCommand}" Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 
-                                    </AppBarButton>
-
-                                    <AppBarButton  Icon="Help"   Label="使用帮助"  Command="{Binding HelpCommand}"
+                                    <AppBarButton  Icon="Like"   Label="关于"  Command="{Binding HelpCommand}"
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"   Style="{StaticResource AppBarButtonStyle1}" Padding="15,0,0,0">
 

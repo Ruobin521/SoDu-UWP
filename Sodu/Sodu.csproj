@@ -129,6 +129,9 @@
     <Compile Include="Converter\PreLoadBtnForegroundConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconLabelConverter.cs" />
+    <Compile Include="Pages\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\BookContentPage.xaml.cs">
       <DependentUpon>BookContentPage.xaml</DependentUpon>
     </Compile>
@@ -253,6 +256,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\BookContentPage.xaml">
       <SubType>Designer</SubType>

@@ -429,8 +429,7 @@ namespace Sodu.ViewModel
                       (str) =>
                       {
                           IsLeftPanelOpen = false;
-
-                          NavigationService.NavigateTo(typeof(HelpPage));
+                          NavigationService.NavigateTo(typeof(AboutPage));
                       }));
             }
         }

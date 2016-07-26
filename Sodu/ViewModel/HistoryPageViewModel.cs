@@ -84,18 +84,25 @@ namespace Sodu.ViewModel
         }
         public void InitData(object obj = null)
         {
-            if (IsLoading) return;
+            return;
 
+
+        }
+
+
+        public void InitHitoryData()
+        {
+            if (IsLoading) return;
+            IsLoading = true;
             Task.Run(async () =>
             {
                 try
                 {
                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                     {
-                        IsLoading = true;
+
                         BookList.Clear();
                     });
-
 
                     var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
                     if (list != null)
@@ -104,9 +111,7 @@ namespace Sodu.ViewModel
                         {
                             list.ForEach(x => this.BookList.Add(x));
                         });
-
                     }
-
                 }
                 catch (Exception)
                 {
@@ -123,8 +128,6 @@ namespace Sodu.ViewModel
                     });
                 }
             });
-
-
         }
 
         public HistoryPageViewModel()

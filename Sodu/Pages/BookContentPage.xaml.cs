@@ -103,7 +103,7 @@ namespace Sodu.Pages
             SetFullScreen(false);
         }
 
-        private void SetFullScreen(bool value)
+        private async void SetFullScreen(bool value)
         {
             if (value)
             {
@@ -116,12 +116,21 @@ namespace Sodu.Pages
                 else if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
                     this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+
+                    //StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                    //await statusBar.HideAsync();
                 }
             }
             else
             {
                 ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
                 this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+
+                //if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                //{
+                //    StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+                //    await statusBar.ShowAsync();
+                //}
             }
         }
 

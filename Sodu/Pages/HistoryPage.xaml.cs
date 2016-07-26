@@ -31,7 +31,7 @@ namespace Sodu.Pages
 
         private void HistoryPage_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.ViewModelInstance.Instance.EverReadBookPageViewModelInstance.InitData();
+            ViewModel.ViewModelInstance.Instance.EverReadBookPageViewModelInstance.InitHitoryData();
         }
     }
 }
