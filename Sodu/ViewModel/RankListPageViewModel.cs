@@ -103,21 +103,28 @@ namespace Sodu.ViewModel
             IsLoading = false;
         }
 
-        public async void InitData(object obj = null)
+        public void InitData(object obj = null)
         {
             CancleHttpRequest();
-            if (this.BookList.Count > 0)
-            {
-                var tempList = BookList;
-                BookList = new ObservableCollection<BookEntity>();
+            BookList.Clear();
 
-                foreach (var item in tempList)
-                {
-                    BookList.Add(item);
-                    await Task.Delay(1);
-                }
-                return;
-            }
+            //if (this.BookList.Count > 0)
+            //{
+            //    var tempList = BookList;
+            //    BookList = new ObservableCollection<BookEntity>();
+
+            //    await Task.Delay(2);
+            //    for (int i = 0; i < tempList.Count; i++)
+            //    {
+            //        BookList.Add(tempList[i]);
+            //        if (i > 0 && i % 10 == 0)
+            //        {
+            //            await Task.Delay(1);
+            //        }
+            //    }
+
+            //    return;
+            //}
             SetData(1);
         }
 

@@ -235,7 +235,7 @@ namespace Sodu.ViewModel
             {
                 if (menu != null)
                 {
-                    //   this.IsLeftPanelOpen = false;
+                    this.IsLeftPanelOpen = false;
                     NavigationService.NavigateTo(menu.MenuType, para);
                 }
             }
@@ -274,9 +274,9 @@ namespace Sodu.ViewModel
             {
                 return m_IsLeftPanelOpenCommand ??
              (m_IsLeftPanelOpenCommand = new RelayCommand<bool>((str) =>
-          {
-              IsLeftPanelOpen = !IsLeftPanelOpen;
-          }));
+        {
+            IsLeftPanelOpen = !IsLeftPanelOpen;
+        }));
             }
         }
 

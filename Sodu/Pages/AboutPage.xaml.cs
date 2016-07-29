@@ -49,5 +49,20 @@ namespace Sodu.Pages
             Clipboard.SetContent(dp);
             ToastHeplper.ShowMessage("已复制群号到剪切板");
         }
+
+        private void VersionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.updateText.Visibility == Visibility.Collapsed)
+            {
+                this.updateText.Visibility = Visibility.Visible;
+
+                this.transform.Rotation = -90;
+            }
+            else
+            {
+                this.updateText.Visibility = Visibility.Collapsed;
+                this.transform.Rotation = 90;
+            }
+        }
     }
 }

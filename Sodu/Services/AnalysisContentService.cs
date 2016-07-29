@@ -1396,18 +1396,25 @@ namespace Sodu.Services
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<table.*?</table>");
             if (match == null) return null;
-            MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?href=\"(.*?)\".*?>(.*?)</a></td>)");
+            MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?</td>)");
             if (matches != null && matches.Count < 1)
             {
                 return list;
             }
             else
             {
+                Regex reg = new Regex("(<td>.*?href=\"(.*?)\".*?>(.*?)</a></td>)");
+
                 list = new List<BookCatalog>();
                 int i = 0;
                 foreach (Match item in matches)
                 {
-                    var groups = item.Groups;
+                    if (!reg.IsMatch(item.ToString()))
+                    {
+                        continue;
+                    }
+                    Match temp = reg.Match(item.ToString());
+                    var groups = temp.Groups;
                     if (groups != null && groups.Count > 2)
                     {
                         var url_Mathch = groups[2].ToString();
@@ -1424,7 +1431,6 @@ namespace Sodu.Services
                     }
                 }
             }
-
             return list;
         }
         /// <summary>

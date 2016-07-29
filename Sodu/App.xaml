@@ -5,6 +5,7 @@
     xmlns:local="using:Sodu"
     xmlns:vm="using:Sodu.ViewModel"
     xmlns:converter="using:Sodu.Converter"
+    xmlns:uc="using:Sodu.UC"
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
@@ -12,6 +13,17 @@
             <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
+
+            <DataTemplate x:Key="CommonDownLoadTemplate">
+                <uc:UC_DownLoadItem  DataContext="{Binding}"  PasueCommand="{Binding Instance.DownLoadCenterViewModelInstance.PauseCommand,Source={StaticResource Locator} }" DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownLoadItem>
+            </DataTemplate>
+
+            <DataTemplate x:Key="FastDownLoadTemplate">
+                <Grid  Margin="0,0,0,5" >
+                    <uc:UC_DownloadItem_Fast  DataContext="{Binding}"   DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownloadItem_Fast>
+                </Grid>
+            </DataTemplate>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>

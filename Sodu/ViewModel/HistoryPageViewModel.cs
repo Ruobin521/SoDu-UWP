@@ -94,16 +94,13 @@ namespace Sodu.ViewModel
         {
             if (IsLoading) return;
             IsLoading = true;
+
+            BookList.Clear();
+
             Task.Run(async () =>
             {
                 try
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-
-                        BookList.Clear();
-                    });
-
                     var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
                     if (list != null)
                     {

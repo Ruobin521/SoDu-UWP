@@ -48,14 +48,15 @@
             </Grid>
         </Border>
         <!--<TextBlock Foreground="Gainsboro" Grid.Row="1">啊时代发生的发生的 </TextBlock>-->
-        <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"    ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
-         VerticalAlignment="Top">
+        <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"  SelectedIndex="-1"    ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
+         VerticalAlignment="Top"  SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border  Background="Transparent" ManipulationMode="System,TranslateX" >
                         <TextBlock  Margin="10,0"    TextWrapping="Wrap" Height="auto"   
                                     Text="{Binding}"   
-                                    DataContext="{Binding }"  LineHeight="36"   
+                                    DataContext="{Binding }" 
+                                    LineHeight="36"   
                                     FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"
                                     FontFamily="颜体"   
                                     Foreground="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModelForegroundConverter}}">

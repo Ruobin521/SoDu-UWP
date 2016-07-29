@@ -429,7 +429,7 @@ namespace Sodu.ViewModel
                            return;
                        }
 
-                       List<BookCatalog> list = await Services.AnalysisBookCatalogList.GetCatalogList(BookEntity.CatalogListUrl, this.BookEntity.BookID, catalogsHttp);
+                        List<BookCatalog> list = await Services.AnalysisBookCatalogList.GetCatalogList(BookEntity.CatalogListUrl, this.BookEntity.BookID, catalogsHttp);
                        if (list != null && list.Count > 0)
                        {
                            if (this.BookEntity.CatalogList == null)
@@ -498,13 +498,12 @@ namespace Sodu.ViewModel
             {
                 this.ContentListt.Clear();
             }
+            this.ContentListt = null; ;
             List<string> strList = SplitString(html);
-            this.ContentListt.Add(strList[0]);
-
-            for (int i = 1; i < strList.Count; i++)
+            for (int i = 0; i < strList.Count; i++)
             {
                 this.ContentListt.Add(strList[i]);
-                //  await Task.Delay(1);
+                //  
             }
         }
 

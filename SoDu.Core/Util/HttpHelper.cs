@@ -124,7 +124,7 @@ namespace SoDu.Core.Util
                 html = encoding.GetString(bytes);
                 await stream.FlushAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }

@@ -30,7 +30,6 @@ namespace Sodu.Core.Model
         public string BookID { get; set; }
         public string Content { get; set; }
         public string CatalogUrl { get; set; }
-
     }
 
 }

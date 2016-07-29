@@ -52,6 +52,53 @@ namespace Sodu.Core.Database
             }
             return result;
         }
+
+        public static bool InsertOrUpdateBookCatalogs(string path, List<BookCatalog> catalogs)
+        {
+            bool result = true;
+            try
+            {
+                using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
+                {
+                    db.CreateTable<BookCatalog>();
+                    db.RunInTransaction(() =>
+                    {
+                        foreach (var catalog in catalogs)
+                        {
+                            //var temp = (from m in db.Table<BookCatalog>()
+                            //            where m.BookID == catalog.BookID && m.Index == catalog.Index
+                            //            select m
+                            //                           ).FirstOrDefault();
+
+                            try
+                            {
+                                //if (temp == null)
+                                //{
+                                //    db.Insert(catalog);
+                                //}
+                                //else
+                                //{
+                                //    db.Delete(temp);
+                                //    db.Insert(catalog);
+                                //}
+                                db.Execute("DELETE FROM BookCatalog WHERE  CatalogUrl =  ' " + catalog.CatalogUrl + "'");
+                                db.Insert(catalog);
+                            }
+                            catch (Exception ex)
+                            {
+
+                            }
+                        }
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
+
         public static List<BookCatalog> SelectBookCatalogs(string path, string bookID)
         {
             List<BookCatalog> result = null;

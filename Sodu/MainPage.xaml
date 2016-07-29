@@ -46,7 +46,7 @@
         <SplitView x:Name="Splitter"    IsPaneOpen="{Binding IsLeftPanelOpen,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" OpenPaneLength="200" DisplayMode="Overlay" CompactPaneLength="70" Grid.Row="0" Grid.RowSpan="2" >
             <SplitView.Pane >
                 <RelativePanel Margin="0,0,0,0"  >
-                    <ScrollViewer VerticalAlignment="Stretch"  Margin="0,40,0,0" RelativePanel.AlignTopWithPanel="True"  RelativePanel.AlignBottomWithPanel="True"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer VerticalAlignment="Stretch"  Margin="0,35,0,0" RelativePanel.AlignTopWithPanel="True"  RelativePanel.AlignBottomWithPanel="True"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
@@ -63,7 +63,7 @@
                                  SelectionMode="Single"  Background="Transparent"   RelativePanel.AlignTopWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.AlignRightWithPanel="True"   >
                                         <ListView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Padding="15,0,0,0" Height="36">
+                                                <Border Padding="14,0,0,0" Height="34">
                                                     <TextBlock   Text="{Binding  MenuName}" Style="{StaticResource TextBlockButtonStyle}" VerticalAlignment="Center" />
                                                 </Border>
                                             </DataTemplate>
@@ -114,7 +114,6 @@
                                             <PathIcon HorizontalAlignment="Center"  VerticalAlignment="Center" Data="M15.5781221389771,7.01874971389771L15.5924968719482,9.67687511444092 16.9287509918213,8.35500049591064 15.5781221389771,7.01874971389771z M14.7449951171875,5.03875017166138L18.0968780517578,8.35500049591064 14.7818698883057,11.6337509155273 14.76624584198,8.77000045776367 10.7312355041504,8.77000045776367 10.7312355041504,7.89812564849854 14.7612457275391,7.89812564849854 14.7449951171875,5.03875017166138z M0.883102357387543,1.33812427520752L0.883102357387543,15.8337545394897 7.50560808181763,18.6618766784668 7.50560808181763,4.16687536239624 0.883102357387543,1.33812427520752z M0,0L0.123748779296875,0.0531244277954102 12.6937494277954,0.0531244277954102 12.6937494277954,3.34687495231628 11.8106088638306,3.34687495231628 11.8106088638306,0.936250627040863 2.19123840332031,0.936250627040863 8.38874912261963,3.58249926567078 8.38874912261963,15.5806255340576 11.8106088638306,15.5806255340576 11.8106088638306,13.2331266403198 12.6937494277954,13.2331266403198 12.6937494277954,16.463752746582 8.38874912261963,16.463752746582 8.38874912261963,20 0.107498168945313,16.463752746582 0,16.463752746582 0,16.4175033569336 0,0.0531244277954102 0,0z" />
                                         </AppBarButton.Icon>
                                     </AppBarButton>
-                                    <!--<TextBlock Style="{StaticResource TextBlockButtonStyle}" Margin="15,0,0,0">设置</TextBlock>-->
                                 </StackPanel>
                             </Grid>
                         </Grid>
@@ -124,15 +123,6 @@
             <SplitView.Content>
                 <Grid Margin="0,0,0,0"  x:Name="rootGrid"  Visibility="Visible"  >
                     <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2"  />
-                    <!--<TextBlock RelativePanel.Below="content" FontSize="12" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Run>本站是一个小说搜索引擎，提供且仅提供各小说论坛以及书库的最新小说链接。</Run>
-                    <LineBreak/>
-                    <Run>倘若您认为本站的链接侵犯了您的版权，请将有效文件扫描发送给SoDu。</Run>
-                    <LineBreak/>
-                    <Run>SoDu将在第一时间将该链接删除。SoDu的Email:soduso2014#gmail.com 将#改为@即可。</Run>
-                </TextBlock>-->
-
-                    <!--<ProgressRing HorizontalAlignment="Center" Grid.Row="1"   VerticalAlignment="Center" Height="80" Width="80"   IsActive="{Binding IsLoading}" Foreground="#FF3388FF"  FontSize="1"  CharacterSpacing="0" Grid.ColumnSpan="2"  />-->
                 </Grid>
             </SplitView.Content>
 

@@ -124,6 +124,14 @@ namespace Sodu.Core.Util
                 {
                     return 3;
                 }
+                else
+                {
+                    NetworkConnectivityLevel cl = profile.GetNetworkConnectivityLevel();
+                    if (cl != NetworkConnectivityLevel.None)
+                    {
+                        return 3;
+                    }
+                }
                 return 4;
             }
             catch (Exception)

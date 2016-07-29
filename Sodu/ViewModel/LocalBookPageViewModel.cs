@@ -497,9 +497,11 @@ namespace Sodu.ViewModel
                          {
                              System.IO.File.Delete(path);
                          }
+                         DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
 
                          await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                          {
+                             DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
                              this.LocalBookList.Remove(item);
                          });
                      }
@@ -531,11 +533,6 @@ namespace Sodu.ViewModel
         private void OnBookItemSelectedCommand(object obj)
         {
             BookEntity entity = obj as BookEntity;
-            if (entity == null)
-            {
-                ToastHeplper.ShowMessage("获取数据有误");
-                return;
-            }
 
             if (IsEditing)
             {
@@ -544,6 +541,12 @@ namespace Sodu.ViewModel
             }
             else
             {
+                if (entity == null || entity.CatalogList == null || entity.CatalogList.Count == 0)
+                {
+                    ToastHeplper.ShowMessage("获取数据有误");
+                    return;
+                }
+
                 if (string.IsNullOrEmpty(entity.LastReadChapterUrl))
                 {
                     var item = entity.CatalogList.FirstOrDefault();
@@ -569,6 +572,20 @@ namespace Sodu.ViewModel
                 this.IsUpdating = false;
                 IsLoading = false;
             });
+        }
+
+        private RelayCommand<object> m_RefreshCommand;
+        public RelayCommand<object> RefreshCommand
+        {
+            get
+            {
+                return m_RefreshCommand ?? (m_RefreshCommand = new RelayCommand<object>(OnRefreshCommand));
+            }
+        }
+
+        private void OnRefreshCommand(object obj)
+        {
+            GetLocalBook();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Sodu.Services
         }
         public static void NavigateTo(Type type, object para = null)
         {
-            if (ContentFrame.CurrentSourcePageType != null && ContentFrame.CurrentSourcePageType.Equals(type))
+            if (ContentFrame.Content != null && ContentFrame.Content.GetType().Equals(type))
             {
                 return;
             }
@@ -125,11 +125,8 @@ namespace Sodu.Services
                     }
                 }
             }
-            else if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.Back)
-            {
-                ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
-            }
-            ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen = false;
+
+            ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,18 @@ namespace Sodu.Pages
         public DownLoadCenterPage()
         {
             this.InitializeComponent();
+            this.Loaded += DownLoadCenterPage_Loaded;
+            this.Unloaded += DownLoadCenterPage_Unloaded;
+        }
+
+        private void DownLoadCenterPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            ViewModelInstance.Instance.DownLoadCenterViewModelInstance.IsFrameContent = false;
+        }
+
+        private void DownLoadCenterPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModelInstance.Instance.DownLoadCenterViewModelInstance.IsFrameContent = true;
         }
     }
 }

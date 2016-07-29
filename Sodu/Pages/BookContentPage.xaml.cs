@@ -103,7 +103,7 @@ namespace Sodu.Pages
             SetFullScreen(false);
         }
 
-        private async void SetFullScreen(bool value)
+        private void SetFullScreen(bool value)
         {
             if (value)
             {

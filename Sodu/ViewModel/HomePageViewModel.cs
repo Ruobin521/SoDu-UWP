@@ -122,39 +122,48 @@ namespace Sodu.ViewModel
             }
             IsLoading = false;
         }
-        public async void InitData(object obj = null)
+        public void InitData(object obj = null)
         {
             CancleHttpRequest();
 
-            if (this.RecommendBookList.Count > 0 || this.HotBookList.Count > 0)
-            {
-                if (NavigationService.ContentFrame.Content is RecommendPage)
-                {
-                    var tempList = RecommendBookList;
-                    RecommendBookList = new ObservableCollection<BookEntity>();
+            //if (this.RecommendBookList.Count > 0 || this.HotBookList.Count > 0)
+            //{
+            //    if (NavigationService.ContentFrame.Content is RecommendPage)
+            //    {
+            //        var tempList = RecommendBookList;
+            //        RecommendBookList = new ObservableCollection<BookEntity>();
+            //        await Task.Delay(10);
+            //        for (int i = 0; i < tempList.Count; i++)
+            //        {
+            //            RecommendBookList.Add(tempList[i]);
+            //            if (i > 0 && i % 10 == 0)
+            //            {
+            //                await Task.Delay(1);
+            //            }
+            //        }
+            //    }
 
-                    foreach (var item in tempList)
-                    {
-                        RecommendBookList.Add(item);
-                        await Task.Delay(1);
-                    }
-                }
+            //    else if (NavigationService.ContentFrame.Content is HotPage)
+            //    {
+            //        var tempList2 = HotBookList;
+            //        HotBookList = new ObservableCollection<BookEntity>();
 
-                else if (NavigationService.ContentFrame.Content is HotPage)
-                {
-                    var tempList2 = HotBookList;
-                    HotBookList = new ObservableCollection<BookEntity>();
+            //        await Task.Delay(10);
+            //        for (int i = 0; i < tempList2.Count; i++)
+            //        {
+            //            HotBookList.Add(tempList2[i]);
+            //            if (i > 0 && i % 10 == 0)
+            //            {
+            //                await Task.Delay(1);
+            //            }
+            //        }
 
-                    foreach (var item in tempList2)
-                    {
-                        HotBookList.Add(item);
-                        await Task.Delay(1);
-                    }
-                }
+            //    }
 
-                return;
-            }
-
+            //    return;
+            //}
+            RecommendBookList.Clear();
+            HotBookList.Clear();
             SetData();
         }
 

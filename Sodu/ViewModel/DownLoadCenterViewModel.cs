@@ -5,6 +5,7 @@ using Sodu.Core.Database;
 using Sodu.Core.Model;
 using Sodu.Core.Util;
 using Sodu.Model;
+using Sodu.Pages;
 using Sodu.Services;
 
 using SoDu.Core.Util;
@@ -12,11 +13,14 @@ using SQLite.Net.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.ViewModel
@@ -27,6 +31,11 @@ namespace Sodu.ViewModel
         private static readonly object isAdd1 = new object();
         private static readonly object isAdd2 = new object();
 
+        private readonly TaskScheduler _syncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+        private int maxDownloadCount = 3;
+
+        public bool IsFrameContent = false;
 
         private bool m_IsDownLoading;
         public bool IsDownLoading
@@ -71,6 +80,12 @@ namespace Sodu.ViewModel
             if (this.DownLoadList.ToList().FirstOrDefault(p => p.Entity.BookID == entity.BookID) != null)
             {
                 ToastHeplper.ShowMessage("已经在下载队列中");
+                return;
+            }
+
+            if (this.DownLoadList.Count == maxDownloadCount)
+            {
+                ToastHeplper.ShowMessage("最多同时下载" + maxDownloadCount + "本");
                 return;
             }
 
@@ -130,13 +145,15 @@ namespace Sodu.ViewModel
         {
             ToastHeplper.ShowMessage("开始下载图书，请耐心等待。");
             this.DownLoadList.Add(temp);
-            StartNewDownLoadInstance(temp);
+            StartNewFastDownLoadInstance(temp);
         }
 
-        public void StartNewDownLoadInstance(DowmLoadEntity temp)
+        public void StartNewCommonDownLoadInstance(DowmLoadEntity temp)
         {
             bool result = false;
             IsDownLoading = true;
+            temp.IsFast = false;
+
             Task task = Task.Run(async () =>
            {
                try
@@ -157,7 +174,7 @@ namespace Sodu.ViewModel
 
                    BookEntity entity = temp.Entity;
                    int count = temp.Entity.CatalogList.Count;
-
+                   HttpHelper http = new HttpHelper();
                    for (int i = startIndex; i < count; i++)
                    {
                        if (temp.IsPause)
@@ -175,7 +192,7 @@ namespace Sodu.ViewModel
                                temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
                            });
 
-                           string html = await GetHtmlData(item.CatalogUrl);
+                           string html = await GetHtmlData(item.CatalogUrl, http);
 
                            BookCatalogContent content = new BookCatalogContent()
                            {
@@ -254,12 +271,159 @@ namespace Sodu.ViewModel
            });
         }
 
-        private async Task<string> GetHtmlData(string catalogUrl)
+
+        public async void StartNewFastDownLoadInstance(DowmLoadEntity temp)
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            IsDownLoading = true;
+
+            int count = 10;
+            temp.IsFast = true;
+
+            if (temp.Entity.CatalogList == null || temp.Entity.CatalogList.Count == 0)
+            {
+                return;
+            }
+            temp.ContentList = new List<BookCatalogContent>();
+
+            count = temp.Entity.CatalogList.Count >= count ? count : temp.Entity.CatalogList.Count;
+            Task[] tasks = new Task[count];
+
+            var groups = Split<BookCatalog>(temp.Entity.CatalogList, count);
+            int index = 0;
+
+            try
+            {
+                foreach (var list in groups)
+                {
+                    tasks[index] = await Task.Factory.StartNew(async () =>
+                   {
+                       HttpHelper http = new HttpHelper();
+                       foreach (var catalog in list)
+                       {
+                           if (temp.IsPause)
+                           {
+                               return;
+                           }
+                           if (string.IsNullOrEmpty(catalog.CatalogUrl))
+                           {
+                               continue;
+                           }
+                           try
+                           {
+                               string html = await GetHtmlData(catalog.CatalogUrl, http);
+                               Debug.WriteLine("下载完成 :" + temp.Entity.BookName + "  " + catalog.CatalogName + "   " + catalog.CatalogUrl);
+
+                               if (string.IsNullOrEmpty(html))
+                               {
+                                   html = GetHtmlData(catalog.CatalogUrl, http).Result;
+                               }
+
+                               BookCatalogContent content = new BookCatalogContent()
+                               {
+                                   BookID = catalog.BookID,
+                                   CatalogUrl = catalog.CatalogUrl,
+                                   Content = html,
+                               };
+                               temp.ContentList.Add(content);
+
+                               if (IsFrameContent)
+                               {
+                                   await Task.Factory.StartNew((obj) =>
+                                   {
+                                       temp.SetProcessValue();
+                                   }, null, new CancellationTokenSource().Token, TaskCreationOptions.None, _syncContextTaskScheduler);
+                               }
+                           }
+                           catch (Exception ex)
+                           {
+                               continue;
+                           }
+                       }
+                   });
+                    index++;
+                }
+            }
+            catch (Exception ex)
+            {
+                temp.IsPause = false;
+            }
+
+
+            await Task.Factory.ContinueWhenAll(tasks, async (obj) =>
+             {
+                 if (temp.IsPause)
+                 {
+                     if (DownLoadList.Contains(temp))
+                     {
+                         this.DownLoadList.Remove(temp);
+                     }
+                     return;
+                 }
+                 await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                 {
+                     temp.SetProcessValue();
+                     temp.Entity.LastReadChapterName = null;
+                     temp.Entity.LastReadChapterUrl = null;
+                     temp.Entity.IsLocal = true;
+
+                     var catalog = temp.Entity.CatalogList.OrderBy(p => p.Index).ToList().LastOrDefault();
+                     if (catalog != null)
+                     {
+                         temp.Entity.NewestChapterName = catalog.CatalogName;
+                         temp.Entity.NewestChapterUrl = catalog.CatalogUrl;
+                     }
+                 });
+
+                 DBBookCatalogContent.InsertOrUpdateBookCatalogContents(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.ContentList);
+                 DBBookCatalog.InsertOrUpdateBookCatalogs(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.Entity.CatalogList.ToList());
+                 lock (isAdd1)
+                 {
+                     DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
+                 }
+
+                 try
+                 {
+                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                     {
+                         this.DownLoadList.Remove(temp);
+                         ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
+                         ToastHeplper.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
+                     });
+                 }
+                 catch (Exception ex)
+                 {
+                     this.DownLoadList.Remove(temp);
+                     ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
+                 }
+                 finally
+                 {
+                     if (this.DownLoadList.Count == 0)
+                     {
+                         this.IsDownLoading = false;
+                     }
+                 }
+
+                 watch.Stop();
+                 Debug.WriteLine("共用时：" + watch.Elapsed.TotalSeconds);
+             });
+
+
+        }
+
+        public IEnumerable<IEnumerable<T>> Split<T>(IEnumerable<T> items, int numOfParts)
+        {
+            int i = 0;
+            return items.GroupBy(x => i++ % numOfParts);
+        }
+
+        private async Task<string> GetHtmlData(string catalogUrl, HttpHelper http)
         {
             string html = null;
             try
             {
-                html = await AnalysisContentService.GetHtmlContent(new HttpHelper(), catalogUrl);
+                html = await AnalysisContentService.GetHtmlContent(http, catalogUrl);
             }
             catch (Exception)
             {
@@ -267,6 +431,7 @@ namespace Sodu.ViewModel
             }
             return html;
         }
+
 
         ///暂停
         /// </summary>
@@ -303,7 +468,7 @@ namespace Sodu.ViewModel
             {
                 entity.IsPause = false;
 
-                StartNewDownLoadInstance(entity);
+                StartNewCommonDownLoadInstance(entity);
             }
         }
         ///
@@ -327,34 +492,45 @@ namespace Sodu.ViewModel
             }
 
             var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消下载 " + entity.Entity.BookName + "？") { Title = "取消下载" };
-            msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", async uiCommand =>
-            {
-                entity.IsPause = true;
-                await Task.Delay(800);
-                this.DownLoadList.Remove(entity);
-                try
-                {
-                    string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), entity.Entity.BookID + ".db");
-                    if (File.Exists(path))
-                    {
-                        System.IO.File.Delete(AppDataPath.GetBookDBPath(entity.Entity.BookID));
-                    }
-                }
-                catch (Exception)
-                {
-
-                }
-                if (this.DownLoadList.Count == 0)
-                {
-                    IsDownLoading = false;
-                }
-            }));
+            msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+          {
+              DeleteDownLoadItem(entity);
+          }));
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
             {
                 return;
             }));
             await msgDialog.ShowAsync();
         }
+
+        private async void DeleteDownLoadItem(DowmLoadEntity entity)
+        {
+            entity.IsPause = true;
+            await Task.Delay(800);
+            if (entity.IsCompleted)
+            {
+                ToastHeplper.ShowMessage(entity.Entity.BookName + "已下载完毕，正在处理数据，无法取消");
+                return;
+            }
+            this.DownLoadList.Remove(entity);
+            try
+            {
+                string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), entity.Entity.BookID + ".db");
+                if (File.Exists(path))
+                {
+                    System.IO.File.Delete(AppDataPath.GetBookDBPath(entity.Entity.BookID));
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            if (this.DownLoadList.Count == 0)
+            {
+                IsDownLoading = false;
+            }
+        }
+
         ///
         ///删除全部
         /// </summary>
@@ -369,32 +545,13 @@ namespace Sodu.ViewModel
                         if (DownLoadList.Count > 0)
                         {
                             var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定取消所有下载？") { Title = "取消下载" };
-                            msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", async uiCommand =>
-                            {
-                                foreach (var item in DownLoadList)
-                                {
-                                    item.IsPause = true;
-                                }
-                                await Task.Delay(500);
-                                foreach (var item in DownLoadList)
-                                {
-                                    try
-                                    {
-                                        string path = Path.Combine(AppDataPath.GetLocalBookFolderPath(), item.Entity.BookID + ".db");
-
-                                        if (File.Exists(path))
-                                        {
-                                            System.IO.File.Delete(path);
-                                        }
-                                    }
-                                    catch (Exception)
-                                    {
-
-                                    }
-                                }
-                                this.DownLoadList.Clear();
-                                IsDownLoading = false;
-                            }));
+                            msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
+                          {
+                              foreach (var item in DownLoadList)
+                              {
+                                  DeleteDownLoadItem(item);
+                              }
+                          }));
                             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
                             {
                                 return;
@@ -404,6 +561,8 @@ namespace Sodu.ViewModel
                     }));
             }
         }
+
+
         ///
         ///暂停全部
         /// </summary>
@@ -434,7 +593,7 @@ namespace Sodu.ViewModel
                             foreach (var item in DownLoadList)
                             {
                                 item.IsPause = false;
-                                StartNewDownLoadInstance(item);
+                                StartNewCommonDownLoadInstance(item);
                             }
                             IsDownLoading = true;
                         }
@@ -498,6 +657,20 @@ namespace Sodu.ViewModel
             }
         }
 
+        private int m_DownLoadCount;
+        public int DownLoadCount
+        {
+            get
+            {
+                return m_DownLoadCount;
+            }
+            set
+            {
+                SetProperty(ref m_DownLoadCount, value);
+            }
+        }
+
+
         /// <summary>
         /// 是否暂停
         /// </summary>
@@ -511,6 +684,59 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_IsPause, value);
+            }
+        }
+
+        /// <summary>
+        /// 快速下载模式
+        /// </summary>
+        private bool m_IsFast = false;
+        public bool IsFast
+        {
+            get
+            {
+                return m_IsFast;
+            }
+            set
+            {
+                SetProperty(ref m_IsFast, value);
+            }
+        }
+
+        public List<BookCatalogContent> ContentList { get; set; }
+
+        private string m_Note;
+        public string Note
+        {
+            get
+            {
+                return m_Note;
+            }
+            set
+            {
+                SetProperty(ref m_Note, value);
+            }
+        }
+
+        public bool IsCompleted = false;
+
+        public void SetProcessValue()
+        {
+            this.DownLoadCount = this.ContentList.Count;
+            this.ProgressValue = Math.Round(((double)this.DownLoadCount / (double)this.Entity.CatalogList.Count), 3) * 100;
+
+            if (this.DownLoadCount == 0)
+            {
+                this.Note = "数据初始化中...";
+            }
+            else if (this.DownLoadCount == this.Entity.CatalogList.Count)
+            {
+                this.IsCompleted = true;
+                this.Note = "下载完毕，数据处理中...";
+            }
+            else
+            {
+                this.Note = null;
             }
         }
     }

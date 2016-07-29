@@ -168,6 +168,7 @@
     <Compile Include="Pages\UpdateChapterPage.xaml.cs">
       <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Selector\DownloadItemDataTemplateSelector.cs" />
     <Compile Include="Services\AnalysisContentService.cs" />
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="UC\UC_ChapterItem.xaml.cs">
@@ -175,6 +176,9 @@
     </Compile>
     <Compile Include="UC\UC_DownLoadItem.xaml.cs">
       <DependentUpon>UC_DownLoadItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UC_DownloadItem_Fast.xaml.cs">
+      <DependentUpon>UC_DownloadItem_Fast.xaml</DependentUpon>
     </Compile>
     <Compile Include="UC\UC_HistoryItem.xaml.cs">
       <DependentUpon>UC_HistoryItem.xaml</DependentUpon>
@@ -346,6 +350,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UC_DownLoadItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UC_DownloadItem_Fast.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
