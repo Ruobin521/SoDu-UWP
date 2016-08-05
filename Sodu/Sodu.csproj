@@ -123,12 +123,14 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converter\AppBarLabelConverter.cs" />
+    <Compile Include="Converter\BackColorVisiablityConverter.cs" />
+    <Compile Include="Converter\RevertBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\DownItemIconConverter.cs" />
     <Compile Include="Converter\DownLoadPagePauseIconConverter.cs" />
-    <Compile Include="Converter\NightModelColorConverter.cs" />
     <Compile Include="Converter\PreLoadBtnForegroundConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconConverter.cs" />
     <Compile Include="Converter\RefreshCancleIconLabelConverter.cs" />
+    <Compile Include="Converter\TabControlSelectedForegroundConverter.cs" />
     <Compile Include="Pages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
     </Compile>
@@ -165,12 +167,18 @@
     <Compile Include="Pages\SettingPage.xaml.cs">
       <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\UpdateChapterPage.xaml.cs">
       <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Selector\DownloadItemDataTemplateSelector.cs" />
     <Compile Include="Services\AnalysisContentService.cs" />
     <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="UC\UC_BackColorPickerPanel.xaml.cs">
+      <DependentUpon>UC_BackColorPickerPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UC\UC_ChapterItem.xaml.cs">
       <DependentUpon>UC_ChapterItem.xaml</DependentUpon>
     </Compile>
@@ -329,9 +337,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\UpdateChapterPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\CustomStyleDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Styles\DarkThemeDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Styles\LightThemeDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -340,6 +367,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UC\UC_BackColorPickerPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UC_BookListItem.xaml">
       <SubType>Designer</SubType>

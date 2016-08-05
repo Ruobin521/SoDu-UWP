@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -126,7 +127,7 @@ namespace SoDu.Core.Util
             }
             catch (Exception ex)
             {
-
+                Debug.WriteLine(ex.Message);
             }
             return html;
         }

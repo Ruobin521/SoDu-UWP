@@ -1,4 +1,5 @@
 ﻿using Sodu.Core.Model;
+using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,23 +42,9 @@ namespace Sodu.Pages
             }
         }
 
-        //protected async override void OnNavigatedTo(NavigationEventArgs e)
-        //{
-        //    //ObservableCollection<BookEntity> temp = new ObservableCollection<BookEntity>();
-        //    //foreach (var item in (this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList)
-        //    //{
-        //    //    temp.Add(item);
-        //    //}
-
-        //    //(this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList.Clear();
-
-        //    //foreach (var item in temp)
-        //    //{
-        //    //    (this.DataContext as ViewModel.BookShelfPageViewModel).ShelfBookList.Add(item);
-        //    //    await Task.Delay(TimeSpan.FromSeconds(0.001));
-        //    //}
-
-        //    this.DataContext = ViewModel.ViewModelInstance.Instance.MyBookShelfViewModelInstance;
-        //}
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            (this.DataContext as IViewModel)?.InitData();
+        }
     }
 }

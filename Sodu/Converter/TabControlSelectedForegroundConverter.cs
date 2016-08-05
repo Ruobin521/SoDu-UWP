@@ -4,22 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace Sodu.Converter
 {
-    public class NightModelBackgroundConverter : IValueConverter
+    public class TabControlSelectedForegroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if ((bool)value)
             {
-                return new SolidColorBrush((Color)Color.FromArgb(255,21,21,21));
+                return App.Current.Resources["TabTitleTextBlockSelectedStyle"] as Style;
+
             }
             else
             {
-                return new SolidColorBrush((Color)Colors.White);
+                return App.Current.Resources["TabTitleTextBlockCommonStyle"] as Style;
             }
         }
 
@@ -29,18 +31,18 @@ namespace Sodu.Converter
         }
     }
 
-
-    public class NightModelForegroundConverter : IValueConverter
+    public class TabControlSelectedBackgroundConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if ((bool)value)
             {
-                return new SolidColorBrush((Color)Color.FromArgb(255,140, 140, 140));
+                return App.Current.Resources["TabBorderSelectedStyle"] as Style;
+
             }
             else
             {
-                return new SolidColorBrush((Color)Colors.Black);
+                return App.Current.Resources["TabBorderCommonStyle"] as Style;
             }
         }
 

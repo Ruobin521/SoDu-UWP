@@ -6,14 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Height="65"
+    Height="75"
     x:Name="root"
     xmlns:converter ="using:Sodu.Converter"
     HorizontalAlignment="Stretch"
     d:DesignWidth="500"
-    Margin="0,3,0,0"
-    Style="{StaticResource   ContentButtonStyle}">
-    <Grid HorizontalAlignment="Stretch" Background="Transparent">
+   Style="{StaticResource   ContentButtonStyle}" 
+   >
+    <Grid HorizontalAlignment="Stretch" Padding="8,0,10,0" Margin="0,0,0,3" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="AUTO"/>
@@ -28,15 +28,15 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CheckBoxStyle1}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
-            <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}" FontSize="18" Text="{Binding  BookName}"></TextBlock>
-            <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}" FontSize="18"  Text="{Binding UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
-            <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" FontSize="16" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
-                <Run x:Name="txtChapterName" Text="{Binding NewestChapterName}"></Run>
-                <Run x:Name="txtUnreadData" Foreground="Blue" Text="{Binding UnReadCountData}"></Run>
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <TextBlock x:Name="txtBookName"  Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding  BookName}"></TextBlock>
+            <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}"   Text="{Binding  UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
+            <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
+                <Run x:Name="txtChapterName" Text="{Binding NewestChapterName}" ></Run>
+                <Run x:Name="txtUnreadData"  Text="{Binding  UnReadCountData}" ></Run>
             </TextBlock>
         </Grid>
 
-        <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0"/>
+        <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0" />
     </Grid>
 </Button>

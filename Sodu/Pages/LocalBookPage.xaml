@@ -13,13 +13,25 @@
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="本地小说" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="本地小说" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
+        </Grid>
 
         <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox"    ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
@@ -30,7 +42,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}">
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding CancleUpdateCommand}"  />
             <AppBarButton Icon="Delete" Label="删除"  Visibility="{Binding IsEditing,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>

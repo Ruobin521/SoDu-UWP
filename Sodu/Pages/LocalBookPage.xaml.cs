@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,5 +37,11 @@ namespace Sodu.Pages
                 (this.DataContext as ViewModel.LocalBookPageViewModel).OnEditCommand();
             }
         }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            (this.DataContext as IViewModel)?.InitData();
+        }
+
     }
 }

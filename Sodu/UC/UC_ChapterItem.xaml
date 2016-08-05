@@ -1,4 +1,4 @@
-﻿<UserControl
+﻿<Button
     x:Class="Sodu.UC.UC_ChapterItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,11 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converter ="using:Sodu.Converter"
     mc:Ignorable="d" 
-    d:DesignHeight="65"
-    d:DesignWidth="400">
-    <UserControl.Resources>
+    Height="75"
+    d:DesignWidth="400"
+    Style="{StaticResource  ContentButtonStyle}">
+    <Button.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </UserControl.Resources>
+    </Button.Resources>
     <Grid HorizontalAlignment="Stretch" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -26,11 +27,11 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <TextBlock x:Name="txtBookName"  FontWeight="Black" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding   NewestChapterName}"  ></TextBlock>
+            <TextBlock x:Name="txtBookName"    Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding   NewestChapterName}"  ></TextBlock>
             <TextBlock x:Name="txtUpdateTime" Grid.Row="1" Grid.Column="1"  Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding UpdateTime}" HorizontalAlignment="Right" FontSize="16"    ></TextBlock>
-            <TextBlock x:Name="txtLy"  FontWeight="Black" Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" ></TextBlock>
+            <TextBlock x:Name="txtLy"    Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" ></TextBlock>
         </Grid>
         <Line x:Name="line"  Grid.Row="1" Style="{StaticResource LineStyle}" StrokeDashArray="3" X1="0" X2="2000"  />
 
     </Grid>
-</UserControl>
+</Button>

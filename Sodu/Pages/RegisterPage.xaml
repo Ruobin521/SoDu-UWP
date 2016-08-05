@@ -14,17 +14,29 @@
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0"/>
             <ColumnDefinition Width="9.5*"/>
             <ColumnDefinition Width="0"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="用户注册" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Grid Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="注册"   Grid.Column="1"  Style="{StaticResource TitleTextBlockStyle}" ></TextBlock>
+        </Grid>
         <Border Grid.Row="1"    VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
 
             <Grid Grid.Row="2">
@@ -37,13 +49,13 @@
                     <RowDefinition Height="Auto" MinHeight="50"/>
                     <RowDefinition Height="60"   />
                 </Grid.RowDefinitions>
-                <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="0" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="用户名：" VerticalAlignment="Center" FontSize="18"/>
+                <TextBlock  Grid.Row="0"  Text="用户名：" Style="{StaticResource TitleTextBlockStyle}" />
                 <TextBox x:Name="txtName" Text="{Binding  UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextBoxStyle1}" Grid.Row="1"  VerticalAlignment="Center"   />
-                <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="2" Text="密　码：" FontSize="18" />
+                <TextBlock  Grid.Row="2" Text="密　码："  Style="{StaticResource TitleTextBlockStyle}"  />
                 <PasswordBox x:Name="txtPassword" Password="{Binding PassWord,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}" BorderBrush="Gray" Grid.Row="3"    VerticalAlignment="Center"  />
 
 
-                <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="4" Text="确认密码：" FontSize="18" />
+                <TextBlock   Style="{StaticResource TitleTextBlockStyle}"  Grid.Row="4" Text="确认密码：" />
                 <PasswordBox x:Name="txtPassword2" Password="{Binding PassWord2,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}" BorderBrush="Gray" Grid.Row="5"    VerticalAlignment="Center"  />
 
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">

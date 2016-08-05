@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
 
 namespace Sodu.Converter
 {
-    public class PreLoadBtnForegroundConverter : IValueConverter
+    public class BackColorVisiablityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value == null)
+            if ((ElementTheme)value == ElementTheme.Dark)
             {
-                return App.Current.Resources["CustomPreLoadedBtnCommonAppBarButtonStyle"] as Style;
-
+                return Visibility.Collapsed;
             }
             else
             {
-                return App.Current.Resources["CustomPreLoadedAppBarButtonStyle"] as Style;
+                return Visibility.Visible;
             }
         }
 

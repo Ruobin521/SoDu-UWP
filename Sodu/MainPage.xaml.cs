@@ -30,20 +30,12 @@ namespace Sodu
             this.Loaded += MainPage_Loaded;
         }
 
-
-
         private void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             NavigationService.ContentFrame = NavigationService.ContentFrame ?? this.contentFrame;
-            if (this.menuListBox.Items != null && this.menuListBox.Items.Count > 0)
-            {
-                if (this.menuListBox.SelectedIndex == -1)
-                {
-                    this.menuListBox.SelectedIndex = 0;
-                }
-            }
+            NavigationService.NavigateTo(typeof(HomePage));
         }
 
-        
+
     }
 }

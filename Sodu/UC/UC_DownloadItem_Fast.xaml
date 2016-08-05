@@ -10,7 +10,7 @@
     d:DesignWidth="500"
     x:Name="root">
 
-    <Grid Background="#FFFBFBFB"  Padding="10,0,10,0" >
+    <Grid   Padding="10,0,10,0" >
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -24,7 +24,7 @@
 
             </Grid.RowDefinitions>
 
-            <TextBlock  Foreground="Black" VerticalAlignment="Center" TextWrapping="Wrap"  Grid.ColumnSpan="1">
+            <TextBlock   Grid.ColumnSpan="1" Style="{StaticResource  TitleTextBlockStyle}">
                 <Run Text="{Binding Entity.BookName}" FontSize="20"/>
                 <Run Text="(" FontSize="16"> </Run>
                 <Run Text="{Binding DownLoadCount}" FontSize="16"></Run>
@@ -34,7 +34,7 @@
                 <Run Text="  " FontSize="16"> </Run>
             </TextBlock>
 
-            <ProgressBar Foreground="#FF3388FF" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"   ></ProgressBar>
+            <ProgressBar Foreground="{ThemeResource HigntLightlBackColor}" Grid.Row="1" Background="#4C808080" Height="5" Value="{Binding ProgressValue}"   ></ProgressBar>
 
             <Button x:Name="btnDelete" Background="Transparent" BorderThickness="0" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  
                     Command="{Binding ElementName=root,Path=DeleteCommand}"  CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
@@ -44,9 +44,10 @@
             </Button>
 
             <TextBlock    VerticalAlignment="Center" TextWrapping="Wrap"  Grid.ColumnSpan="1" Grid.Row="2">
-                  <Run Text="{Binding Note}" FontSize="16" Foreground="#FF3388FF"></Run>
+                  <Run Text="{Binding Note}" FontSize="16" Foreground="{ThemeResource HigntLightlBackColor}"></Run>
             </TextBlock>
 
         </Grid>
+        <Line x:Name="line"  Grid.Row="3"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3" Stroke="{ThemeResource TitleTextFroeground}"   Margin="2,0,2,0"/>
     </Grid>
 </UserControl>

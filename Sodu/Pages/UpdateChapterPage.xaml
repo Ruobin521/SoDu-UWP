@@ -12,31 +12,42 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.UpdataChapterPageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:control="using:Sodu.Controls">
+    >
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18">
-            <Run Text="{Binding ContentTitle}"></Run>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Style="{StaticResource TitleTextBlockStyle}"    Grid.Column="1">
+            <Run Text="{Binding ContentTitle}"  ></Run>
             <Run Text=" 更新列表"></Run>
-        </TextBlock>
+            </TextBlock>
+        </Grid>
+
+
 
         <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}"   Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
           >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Button  Background="Transparent" Style="{StaticResource ContentButtonStyle}"   Height="65"  
-                             Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}">
-                        <UC:UC_ChapterItem x:Name="item" DataContext="{Binding}"   />
-                    </Button>
+                    <UC:UC_ChapterItem x:Name="item"  DataContext="{Binding}"   Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}"  />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView.RefreshIndicatorContent>
@@ -57,17 +68,11 @@
                 </Core:EventTriggerBehavior>
             </Interactivity:Interaction.Behaviors>-->
         </ListView>
-        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  >
-            <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
-            <!--<AppBarSeparator/>-->
-            <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
+        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  Style="{StaticResource CustomCommandBarStyle}">
             <AppBarButton Icon="Add" Label="添加收藏"  Width="60"  Command="{Binding AddToShelfCommand}" Visibility="{Binding IsAddBtnShow,Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"    Width="60"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="60"  Command="{Binding PreviousPageCommand}"/>
             <AppBarButton Icon="Next" Label="下一页"  Width="60"  Command="{Binding  NextPageCommand }"/>
-            <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->
 
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Page2" Width="{Binding ElementName=menu,Path=ActualWidth}" Label=" 首页" Command="{Binding FirstPageCommand}" />

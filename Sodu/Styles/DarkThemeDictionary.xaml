@@ -1,0 +1,38 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Sodu.Styles">
+
+    <!--页面背景颜色-->
+    <SolidColorBrush x:Key="PageBackground" Color="Black"/>
+
+    <!--左侧汉堡菜单背景色-->
+    <SolidColorBrush x:Key="LeftPanelBackground" Color="#FF171717"/>
+
+
+    <!--高亮蓝色-->
+    <SolidColorBrush x:Key="HigntLightlBackColor" Color="#FF3388FF"/>
+
+
+    <!--列表项字体颜色-->
+    <SolidColorBrush x:Key="ListItemTextFroeground"  Color="#FFCCCCCC"  />
+
+    <!--提示信息字体颜色-->
+    <SolidColorBrush x:Key="UnReadDataTextFroeground"  Color="Blue"  />
+
+    <!--标题字体字体颜色-->
+    <SolidColorBrush x:Key="TitleTextFroeground"  Color="WhiteSmoke"  />
+
+    <!--鼠标悬浮背景色-->
+    <SolidColorBrush x:Key="ContentButtonPointerOverBackground"  Color="#FF191919"  />
+
+    <!--鼠标点击背景色-->
+    <SolidColorBrush x:Key="ContentButtonPressedBackground"  Color="#FF454545"  />
+
+    <!--正文字体颜色-->
+    <SolidColorBrush x:Key="TextContentForeground"  Color="#FF8C8C8C"  />
+    <!--FFF0F0F0-->
+
+    <!--白色-->
+    <SolidColorBrush x:Key="BaseColor"  Color="White"  />
+</ResourceDictionary>

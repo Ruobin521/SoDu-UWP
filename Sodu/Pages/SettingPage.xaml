@@ -10,6 +10,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
    >
+    <Page.Resources>
+
+    </Page.Resources>
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition />
@@ -17,16 +20,27 @@
     </Page.Transitions>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="设置" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="设置" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
+        </Grid>
         <ScrollViewer  Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,5,0,10">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="5"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
@@ -49,35 +63,20 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="1" Grid.Row="1"  Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch x:Name="togAutoLogin" Grid.Column="1" Grid.Row="2" Foreground="Black" IsOn="{Binding IfAutoLogin,Mode=TwoWay}"  >
-                    <!--<Interactivity:Interaction.Behaviors >
-                        <Core:EventTriggerBehavior   EventName="Toggled">
-                            <Core:InvokeCommandAction Command="{Binding    SaveCommand}"  CommandParameter="0"/>
-                        </Core:EventTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>-->
+                <ToggleSwitch x:Name="togAutoLogin" Grid.Column="1" Grid.Row="2"  IsOn="{Binding IfAutoLogin,Mode=TwoWay}" Style="{StaticResource CustomToggleSwitchStyle}" >
                 </ToggleSwitch>
 
                 <TextBlock Grid.Column="1" Grid.Row="3"  Text="登陆后，自动添加点击小说到个人收藏" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch x:Name="togAutoAdd" Grid.Column="1"  Grid.Row="4" Foreground="Black"   IsOn="{Binding IfAutAddToShelf,Mode=TwoWay}">
-                    <!--<Interactivity:Interaction.Behaviors >
-                        <Core:EventTriggerBehavior   EventName="Toggled">
-                            <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />
-                        </Core:EventTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>-->
+                <ToggleSwitch x:Name="togAutoAdd" Grid.Column="1"  Grid.Row="4" Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IfAutAddToShelf,Mode=TwoWay}">
                 </ToggleSwitch>
 
                 <TextBlock Grid.Column="1" Grid.Row="5"  Text="是否在2G/3G/4G下缓存小说" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch x:Name="togDwonloadBook" Grid.Column="1"  Grid.Row="6" Foreground="Black"   IsOn="{Binding IfDownloadInWAAN,Mode=TwoWay}">
-                    <!--<Interactivity:Interaction.Behaviors >
-                        <Core:EventTriggerBehavior   EventName="Toggled">
-                            <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />
-                        </Core:EventTriggerBehavior>
-                    </Interactivity:Interaction.Behaviors>-->
+                <ToggleSwitch x:Name="togDwonloadBook" Grid.Column="1"  Grid.Row="6" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IfDownloadInWAAN,Mode=TwoWay}">
                 </ToggleSwitch>
 
 
                 <TextBlock Grid.Column="1" Grid.Row="7"  Text="正文字体大小" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ComboBox x:Name="font" Grid.Column="1" Grid.Row="8" Foreground="Black" ItemsSource="{Binding FontSzieList}"  VerticalAlignment="Center" SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
+                <ComboBox x:Name="font" Grid.Column="1" Grid.Row="8" Style="{StaticResource CustomComboBoxStyle}" ItemsSource="{Binding FontSzieList}"   SelectedItem="{Binding  TextFontSzie,Mode=TwoWay}"  FontSize="18">
                     <!--<Interactivity:Interaction.Behaviors >
                         <Core:EventTriggerBehavior   EventName="SelectionChanged">
                             <Core:InvokeCommandAction Command="{Binding    SaveCommand}" />
@@ -86,13 +85,13 @@
                 </ComboBox>
 
                 <TextBlock Grid.Column="1" Grid.Row="9"  Text="是否开启夜间模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch  Grid.Column="1"  Grid.Row="10" Foreground="Black"   IsOn="{Binding IsNightModel,Mode=TwoWay}"/>
+                <ToggleSwitch  Grid.Column="1"  Grid.Row="10" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsNightModel,Mode=TwoWay}"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="11"  Text="是否开启横屏模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch  Grid.Column="1"  Grid.Row="12" Foreground="Black"   IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
+                <ToggleSwitch  Grid.Column="1"  Grid.Row="12" Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="13"  Text="是否预读下一章" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
-                <ToggleSwitch  Grid.Column="1"  Grid.Row="14" Foreground="Black"   IsOn="{Binding IsPreLoad,Mode=TwoWay}"/>
+                <ToggleSwitch  Grid.Column="1"  Grid.Row="14" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsPreLoad,Mode=TwoWay}"/>
             </Grid>
         </ScrollViewer>
 

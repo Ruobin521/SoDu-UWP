@@ -338,6 +338,7 @@ namespace Sodu.ViewModel
                            }
                            catch (Exception ex)
                            {
+                               Debug.WriteLine(ex.Message);
                                continue;
                            }
                        }
@@ -347,6 +348,7 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 temp.IsPause = false;
             }
 
@@ -396,6 +398,7 @@ namespace Sodu.ViewModel
                  {
                      this.DownLoadList.Remove(temp);
                      ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
+                     Debug.WriteLine(ex.Message);
                  }
                  finally
                  {

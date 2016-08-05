@@ -319,18 +319,30 @@
 
 
     </Page.Resources>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0"/>
-            <ColumnDefinition Width="9.5*"/>
-            <ColumnDefinition Width="0"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="9.5*" MaxWidth="1000"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"  Grid.ColumnSpan="3" Grid.Column="0"  Text="{Binding ContentTitle}" TextTrimming="WordEllipsis"    HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
 
+        <Grid Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="用户登录"  Grid.Column="1" Style="{StaticResource TitleTextBlockStyle}" ></TextBlock>
+        </Grid>
         <Border Grid.Row="1"     VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
             <Grid   >
                 <Grid.RowDefinitions>
@@ -342,13 +354,13 @@
                     <RowDefinition Height="45"/>
                     <RowDefinition Height="45"/>
                 </Grid.RowDefinitions>
-                <TextBlock Style="{StaticResource LoginTextBlockStyle}"  Grid.Row="1" HorizontalAlignment="Left"   Margin="10,0,0,0" Text="用户名：" VerticalAlignment="Center" FontSize="22"/>
+                <TextBlock Style="{StaticResource TitleTextBlockStyle}"  Grid.Row="1" Text="用户名：" />
                 <TextBox x:Name="txtName" Text="{Binding UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default"   BorderThickness="1" Grid.Row="2"  VerticalAlignment="Center" Style="{StaticResource TextBoxStyle1}"   />
-                <TextBlock  Style="{StaticResource LoginTextBlockStyle}" HorizontalAlignment="Left"   Margin="10,0,0,0" VerticalAlignment="Center" Grid.Row="3" Text="密　码：" FontSize="22" />
+                <TextBlock    Grid.Row="3" Text="密　码：" Style="{StaticResource TitleTextBlockStyle}"  />
                 <PasswordBox x:Name="txtPassword" Password="{Binding Password,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0"   BorderBrush="Gray" Grid.Row="4"    VerticalAlignment="Center" Style="{StaticResource PasswordBoxStyle1}"  />
 
 
-                <CheckBox x:Name="AuotLoginCheckBox" Grid.Row="5" IsChecked="{Binding IsAutoLogin,Mode=TwoWay}" Height="20"  Style="{StaticResource CheckboxStyle}" FontSize="15" BorderThickness="2" HorizontalAlignment="Left"  Margin="20,0,0,0"  Content=" 下次自动登录" Foreground="Black" />
+                <CheckBox x:Name="AuotLoginCheckBox" Grid.Row="5" IsChecked="{Binding IsAutoLogin,Mode=TwoWay}" Height="20"  Style="{StaticResource CheckboxStyle}" FontSize="15" BorderThickness="2" HorizontalAlignment="Left"  Margin="20,0,0,0"  Content=" 下次自动登录" />
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="btnSumbit" Content="确定"  Grid.Column="0" Style="{StaticResource   ButtonStyle1 }" Command="{Binding LoginCommand}" CommandParameter="" FontSize="16" Height="35" Width="75" Margin="10,0"  />
 

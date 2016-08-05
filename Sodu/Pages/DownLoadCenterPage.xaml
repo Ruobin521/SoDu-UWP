@@ -18,22 +18,35 @@
     <Page.Resources>
         <converter:DownLoadPagePauseIconConverter x:Key="DownLoadPagePauseIconConverter"></converter:DownLoadPagePauseIconConverter>
         <selector:DownloadItemDataTemplateSelector x:Key="DownloadItemDataTemplateSelector"></selector:DownloadItemDataTemplateSelector>
-       
+
     </Page.Resources>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="下载中心" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch" Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="下载中心" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
+        </Grid>
+
         <ListView Grid.Row="1"   ItemTemplateSelector="{StaticResource  DownloadItemDataTemplateSelector}" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding DownLoadList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <!--<ListView.ItemTemplate>
 
             </ListView.ItemTemplate>-->
         </ListView>
-        <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  >
+        <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}">
             <!--<AppBarButton Icon="{Binding IsDownLoading,Converter={StaticResource DownLoadPagePauseIconConverter}}" Label="全部暂停"  Command="{Binding PauseAllCommand}"  />-->
             <AppBarButton Icon="Cancel" Label="全部取消" Width="65" Command="{Binding DeleteAllCommand}" />
         </CommandBar>

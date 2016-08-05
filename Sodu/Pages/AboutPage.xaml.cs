@@ -64,5 +64,14 @@ namespace Sodu.Pages
                 this.transform.Rotation = 90;
             }
         }
+
+        private void AlipayTextButton_Click(object sender, RoutedEventArgs e)
+        {
+            string str = "83250112@qq.com";
+            DataPackage dp = new DataPackage();
+            dp.SetText(str);
+            Clipboard.SetContent(dp);
+            ToastHeplper.ShowMessage("已复制支付婊账号到剪切板");
+        }
     }
 }

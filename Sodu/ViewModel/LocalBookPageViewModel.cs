@@ -135,6 +135,7 @@ namespace Sodu.ViewModel
             {
                 return;
             }
+
             GetLocalBook();
         }
 
@@ -149,39 +150,39 @@ namespace Sodu.ViewModel
                 var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
                 if (result != null)
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    foreach (var item in result)
                     {
+                        string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.LocalBookFolderName, item.BookID + ".db");
 
-                        foreach (var item in result)
+                        if (File.Exists(path))
                         {
-                            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.LocalBookFolderName, item.BookID + ".db");
-
-                            if (File.Exists(path))
+                            var list = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                            if (list != null && list.Count > 0)
                             {
-                                var list = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
-                                if (list != null && list.Count > 0)
-                                {
-                                    item.NewestChapterName = list.LastOrDefault().CatalogName;
-                                    item.NewestChapterUrl = list.LastOrDefault().CatalogUrl;
-                                    foreach (var catalog in list)
-                                    {
-                                        if (item.CatalogList == null)
-                                        {
-                                            item.CatalogList = new ObservableCollection<BookCatalog>();
-                                        }
-                                        item.CatalogList.Add(catalog);
-                                    }
-                                }
 
+
+                                foreach (var catalog in list)
+                                {
+                                    if (item.CatalogList == null)
+                                    {
+                                        item.CatalogList = new ObservableCollection<BookCatalog>();
+                                    }
+                                    item.CatalogList.Add(catalog);
+                                }
+                            }
+                            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                            {
+                                item.NewestChapterName = list.LastOrDefault().CatalogName;
+                                item.NewestChapterUrl = list.LastOrDefault().CatalogUrl;
                                 item.IsLocal = true;
                                 this.LocalBookList.Add(item);
-                            }
-                            else
-                            {
-                                DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
-                            }
+                            });
                         }
-                    });
+                        else
+                        {
+                            DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
+                        }
+                    }
                 }
             }
             catch (Exception)

@@ -69,7 +69,9 @@ namespace Sodu
         protected async override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
+#if !DEBUG
             await UmengAnalytics.StartTrackAsync(key, chanel);
+#endif
         }
 
         private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -155,8 +157,9 @@ namespace Sodu
             }
             // 确保当前窗口处于活动状态
             Window.Current.Activate();
-
+#if !DEBUG
             await UmengAnalytics.StartTrackAsync(key, chanel);
+#endif
 
 
         }
@@ -222,6 +225,8 @@ namespace Sodu
                 cookieItem.Expires = null;
                 filter.CookieManager.SetCookie(cookieItem);
             }
+
+
         }
 
 
@@ -332,8 +337,10 @@ namespace Sodu
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 
+#if !DEBUG
             // TODO: 保存应用程序状态并停止任何后台活动
             await UmengAnalytics.EndTrackAsync();
+#endif
             deferral.Complete();
         }
 

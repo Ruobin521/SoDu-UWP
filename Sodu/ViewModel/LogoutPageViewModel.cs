@@ -5,10 +5,13 @@ using Sodu.Services;
 using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Windows.Web.Http;
+using Windows.Web.Http.Filters;
 
 namespace Sodu.ViewModel
 {
@@ -41,6 +44,52 @@ namespace Sodu.ViewModel
 
         public void InitData(object obj = null)
         {
+            IsLoading = true;
+
+            Task.Run(async () =>
+          {
+              try
+              {
+                  HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                  HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(ViewModelInstance.Instance.UrlService.GetHomePage()));
+                  var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
+
+                  if (cookieItem == null)
+                  {
+                      ViewModelInstance.Instance.IsLogin = false;
+                  }
+                  else
+                  {
+                      cookieItem.Expires = null;
+                      filter.CookieManager.SetCookie(cookieItem);
+                  }
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  {
+                      ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                      ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
+                      ToastHeplper.ShowMessage("注销成功");
+                  });
+              }
+              catch (Exception ex)
+              {
+                  Debug.WriteLine(ex.Message);
+              }
+              finally
+              {
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  {
+                      IsLoading = false;
+                  });
+              }
+
+          });
+
+        }
+        public void InitData2(object obj = null)
+        {
+
+            IsLoading = true;
+
             Task.Run(async () =>
             {
                 string html = await GetHtmlData();
@@ -49,20 +98,34 @@ namespace Sodu.ViewModel
             }).ContinueWith(async (result) =>
             {
                 string html = result.Result;
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-              {
-                  if (html != null && html.Contains("to delete public domains' cookies"))
-                  {
-                      ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
-                      ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
-                      ToastHeplper.ShowMessage("注销成功");
-                  }
-                  else
-                  {
-                      ToastHeplper.ShowMessage("注销失败请重新尝试");
-                      NavigationService.GoBack();
-                  }
-              });
+                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+               {
+                   try
+                   {
+                       if (html != null && html.Contains("to delete public domains' cookies"))
+                       {
+                           ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                           ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
+                           ToastHeplper.ShowMessage("注销成功");
+                       }
+                       else
+                       {
+                           ToastHeplper.ShowMessage("注销失败请重新尝试");
+                           NavigationService.GoBack();
+                       }
+                   }
+                   catch (Exception ex)
+                   {
+                       Debug.WriteLine(ex.Message);
+                   }
+                   finally
+                   {
+                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                       {
+                           IsLoading = false;
+                       });
+                   }
+               });
             });
         }
 
@@ -71,23 +134,11 @@ namespace Sodu.ViewModel
             string html = null;
             try
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = true;
-                });
-
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetLogoutPage());
             }
             catch (Exception)
             {
                 return null;
-            }
-            finally
-            {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
             }
             return html;
         }

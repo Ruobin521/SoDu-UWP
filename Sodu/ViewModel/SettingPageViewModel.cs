@@ -3,9 +3,10 @@ using Sodu.Constants;
 using Sodu.Core.SettingHelper;
 using Sodu.Model;
 using Sodu.Services;
-
+using SoDu.Core.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -13,7 +14,10 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
 
 namespace Sodu.ViewModel
@@ -29,6 +33,9 @@ namespace Sodu.ViewModel
         public static string n_IsNightModel = "IsNightModel";
         public static string n_IsLandscape = "IsLandscape";
         public static string n_IsPreLoad = "IsPreLoad";
+        public static string n_ContentBackColor = "ContentBackColor";
+
+
 
 
         private int m_TextFontSzie = 20;
@@ -51,6 +58,8 @@ namespace Sodu.ViewModel
                 SetTextSize(value, true);
             }
         }
+
+
 
 
         private List<int> m_FontSzieList;
@@ -138,20 +147,6 @@ namespace Sodu.ViewModel
         }
 
 
-
-        private UserCookie m_UserCookie;
-        public UserCookie UserCookie
-        {
-            get
-            {
-                return m_UserCookie;
-            }
-            set
-            {
-                SetProperty(ref m_UserCookie, value);
-            }
-        }
-
         private bool m_IsNightModel = false;
         /// <summary>
         /// 是否开启夜晚模式
@@ -172,6 +167,19 @@ namespace Sodu.ViewModel
                 }
                 SetProperty(ref m_IsNightModel, value);
                 SetNightMode(value);
+            }
+        }
+
+        private ElementTheme m_Theme = ElementTheme.Default;
+        public ElementTheme Theme
+        {
+            get
+            {
+                return m_Theme;
+            }
+            set
+            {
+                this.SetProperty(ref this.m_Theme, value);
             }
         }
 
@@ -218,6 +226,36 @@ namespace Sodu.ViewModel
                 }
                 SetProperty(ref m_IsPreLoad, value);
                 SetPreLoad(value);
+            }
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        [IgnoreDataMember]
+        public List<SolidColorBrush> ColorList
+        {
+            get
+            {
+                return ConstantValue.BackColorList;
+            }
+        }
+
+        private SolidColorBrush m_ContentBackColor;
+        public SolidColorBrush ContentBackColor
+        {
+            get
+            {
+                return m_ContentBackColor;
+            }
+            set
+            {
+                if (value == m_ContentBackColor)
+                {
+                    return;
+                }
+                SetProperty(ref m_ContentBackColor, value);
+                SetBackColor(value);
             }
         }
 
@@ -356,12 +394,28 @@ namespace Sodu.ViewModel
                     var value = (bool)SettingHelper.GetValue(n_IsPreLoad);
                     IsPreLoad = value;
                 }
+
+                //设置背景色
+                if (!SettingHelper.CheckKeyExist(n_ContentBackColor))
+                {
+                    SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
+                    ContentBackColor = this.ColorList[0];
+                }
+                else
+                {
+                    var value = SettingHelper.GetValue(n_ContentBackColor);
+                    ContentBackColor = ColorBrushHelper.ConverterFromString(value.ToString());
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 SetDefaultSetting();
             }
         }
+
+
+
 
         private void SetDefaultSetting()
         {
@@ -411,6 +465,22 @@ namespace Sodu.ViewModel
         {
             SettingHelper.SetValue(n_IsNightModel, value);
             IsNightModel = value;
+
+            if (IsNightModel)
+            {
+                this.Theme = ElementTheme.Dark;
+            }
+            else
+            {
+                this.Theme = ElementTheme.Light;
+            }
+        }
+
+
+        public bool GetNightMode()
+        {
+            var value = (bool)SettingHelper.GetValue(n_IsNightModel);
+            return value;
         }
 
         public void SetLandscape(bool value)
@@ -445,80 +515,13 @@ namespace Sodu.ViewModel
         }
 
 
-
-        [IgnoreDataMember]
-        private RelayCommand<object> m_SaveCommand;
-        public RelayCommand<object> SaveCommand
+        public void SetBackColor(SolidColorBrush value)
         {
-            get
-            {
-                return m_SaveCommand ?? (m_SaveCommand = new RelayCommand<object>((obj) =>
-                  {
-                      SaveSetting();
-                  }));
-            }
+            SettingHelper.SetValue(n_ContentBackColor, value.Color.ToString());
+            ContentBackColor = value;
         }
 
-        private void SaveSetting()
-        {
-            throw new NotImplementedException();
-        }
-    }
 
-
-    public class UserCookie
-    {
-        //
-        // 摘要:
-        //     获取 HttpCookie 对其有效的域。
-        //
-        // 返回结果:
-        //     HttpCookie 对其有效的域。
-        public System.String Domain { get; set; }
-        //
-        // 摘要:
-        //     获取或设置 HttpCookie 的到期日期和时间。
-        //
-        // 返回结果:
-        //     HttpCookie 的过期日期和时间。
-        [IgnoreDataMember]
-        public DateTimeOffset? Expires { get; set; }
-        //
-        // 摘要:
-        //     获取或设置一个值，该值控制脚本或其他活动内容是否可访问此 HttpCookie。
-        //
-        // 返回结果:
-        //     脚本或其他活动内容是否可以访问此 HttpCookie。如果脚本或其他活动内容无法访问此 HTTP Cookie，则为 true；否则为 false。默认为
-        //     false。
-        public System.Boolean HttpOnly { get; set; }
-        //
-        // 摘要:
-        //     获取表示 HttpCookie 名称的标记。
-        //
-        // 返回结果:
-        //     表示 HttpCookie 名称的标记。
-        public System.String Name { get; set; }
-        //
-        // 摘要:
-        //     获取应用 HttpCookie 的 URI 路径部分。
-        //
-        // 返回结果:
-        //     应用 HttpCookie 的 URI 路径部分。
-        public System.String Path { get; set; }
-        //
-        // 摘要:
-        //     获取或设置 HttpCookie 的安全级别。
-        //
-        // 返回结果:
-        //     HttpCookie 的安全级别。如果客户端仅在使用 HTTPS 的后续请求中返回 Cookie，则为 true；否则为 false。默认为 false。
-        public System.Boolean Secure { get; set; }
-        //
-        // 摘要:
-        //     获取或设置 HttpCookie 的值。
-        //
-        // 返回结果:
-        //     HttpCookie 的值。
-        public System.String Value { get; set; }
 
     }
 }

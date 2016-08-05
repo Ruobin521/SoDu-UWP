@@ -47,6 +47,19 @@ namespace Sodu.ViewModel
             }
         }
 
+        private bool m_IsEditing;
+        public bool IsEditing
+        {
+            get
+            {
+                return m_IsEditing;
+            }
+            set
+            {
+                SetProperty(ref this.m_IsEditing, value);
+            }
+        }
+
 
         private bool m_IsShow = true;
         public bool IsShow
@@ -84,9 +97,8 @@ namespace Sodu.ViewModel
         }
         public void InitData(object obj = null)
         {
-            return;
-
-
+            if (IsLoading) return;
+            InitHitoryData();
         }
 
 
@@ -149,6 +161,48 @@ namespace Sodu.ViewModel
                 bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), temp);
             });
         }
+        /// <summary>
+        /// 全选，全不选
+        /// </summary>
+        private RelayCommand<object> m_EditCommand;
+        public RelayCommand<object> EditCommand
+        {
+            get
+            {
+                return m_EditCommand ?? (m_EditCommand = new RelayCommand<object>(
+                 (obj) =>
+                 {
+
+                     if (IsLoading) return;
+                     OnEditCommand();
+                 }
+                    ));
+            }
+        }
+
+        public void OnEditCommand()
+        {
+            if (IsLoading) return;
+
+            if (this.BookList == null || this.BookList.Count < 1)
+            {
+                IsEditing = false;
+                return;
+            }
+
+            SetBookEditStatus(!IsEditing);
+        }
+
+        private void SetBookEditStatus(bool value)
+        {
+            foreach (var item in BookList)
+            {
+                item.IsInEdit = value;
+                item.IsSelected = false;
+            }
+
+            IsEditing = value;
+        }
 
         private RelayCommand<object> m_BookItemSelectedCommand;
         public RelayCommand<object> BookItemSelectedCommand
@@ -161,12 +215,20 @@ namespace Sodu.ViewModel
         private void OnBookItemSelectedCommand(object obj)
         {
             BookEntity entity = obj as BookEntity;
+
             if (entity != null)
             {
-                entity.IsHistory = true;
-                NavigationService.NavigateTo(typeof(BookContentPage), entity);
+                if (IsEditing)
+                {
+                    entity.IsSelected = !entity.IsSelected;
+                }
+                else
+                {
+                    entity.IsHistory = true;
+                    NavigationService.NavigateTo(typeof(BookContentPage), entity);
+                }
+
             }
-            //  ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
         }
 
         private RelayCommand<object> m_ClearCommand;
@@ -181,11 +243,34 @@ namespace Sodu.ViewModel
         {
             if (this.BookList.Count < 1) return;
 
-            var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定清空历史记录？") { Title = "历史记录" };
+            if (!IsEditing) return;
+
+            int count = 0;
+
+            ObservableCollection<BookEntity> tempList = new ObservableCollection<BookEntity>();
+            foreach (var item in this.BookList)
+            {
+                if (item.IsSelected)
+                {
+                    tempList.Add(item);
+                    count++;
+                }
+            }
+            if (count == 0)
+            {
+                ToastHeplper.ShowMessage("请选择需要删除的记录");
+                return;
+            }
+
+            var msgDialog = new Windows.UI.Popups.MessageDialog("\n确定删除历史记录？") { Title = "历史记录" };
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("确定", uiCommand =>
             {
-                this.BookList.Clear();
-                DBHistory.ClearHistories(AppDataPath.GetHistoryDBPath());
+                foreach (var item in tempList)
+                {
+                    this.BookList.Remove(item);
+                    DBHistory.DeleteHistory(AppDataPath.GetHistoryDBPath(), item);
+                }
+
             }));
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>
             {

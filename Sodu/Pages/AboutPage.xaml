@@ -12,87 +12,112 @@
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
-    <Grid Background="White">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="关于小说搜索阅读 UWP"  Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="55"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <ScrollViewer   Grid.Row="1" Height="auto" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" >
-
-            <Grid Margin="0,5,0,10"  Height="auto" >
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+                <ToggleButton.Content>
+                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                </ToggleButton.Content>
+            </ToggleButton>
+            <TextBlock x:Name="TextTitle"   Text="关于小说搜索阅读"  Grid.Column="1"  Style="{StaticResource  TitleTextBlockStyle}" ></TextBlock>
+        </Grid>
+        <ScrollViewer   Grid.Row="1"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="0,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="90"/>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Image   HorizontalAlignment="Center" Source="../Assets/SplashScreen.scale-100.png"></Image>
-
-                <StackPanel Grid.Row="1" Background="White" Padding="10,0,0,0">
+                <StackPanel Grid.Row="1" Padding="10,0,0,0">
                     <Grid Height="50">
-                        <TextBlock  x:Name="txtDir" Grid.Row="2"  Text=">" Height="30"  HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20" Foreground="#FF004D00" RenderTransformOrigin="0.5,0.5" >
+                        <TextBlock  x:Name="txtDir" Grid.Row="2"  Text=">" Height="30" Style="{StaticResource ListItemTextBlockStyle}"  HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"   RenderTransformOrigin="0.5,0.5" >
                             <TextBlock.RenderTransform>
                                 <CompositeTransform x:Name="transform" Rotation="90"/>
                             </TextBlock.RenderTransform></TextBlock>
                         <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="VersionButton_Click" >
-                            <TextBlock   Text="版本号：1.3.2" VerticalAlignment="Center" FontSize="18" Foreground="#FF004D00" ></TextBlock>
+                            <TextBlock   Text="版本号：1.4.0" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"  ></TextBlock>
                         </Button>
                     </Grid>
-                    <Grid Height="Auto"  x:Name="updateText"  Visibility="Collapsed">
+                    <Grid Height="Auto"  x:Name="updateText"  Visibility="Visible">
                         <Border   Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Top" Opacity="0.3"  ></Border>
-                        <TextBlock LineHeight="32" Margin="0,2,0,0"  TextTrimming="WordEllipsis">
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}"  LineHeight="32" Margin="0,2,0,0">
                           <Run Text="本次更新："></Run>
                            <LineBreak/>
-                          <Run Text="1.更改下载逻辑，加快下载速度,添加限制同时最多只能下载3本"></Run>
+                          <Run Text="1.全新的导航逻辑"></Run>
                            <LineBreak/>
-                          <Run Text="2.修改删除本地图书后无法重新下载的bug"></Run>
+                          <Run Text="2.全新的主题"></Run>
                            <LineBreak/>
-                          <Run Text="3.优化页面切换"></Run>
+                          <Run Text="3.新增阅读背景设置"></Run>
+                           <LineBreak/>
+                          <Run Text="4.改动太多了，自己慢慢体会吧"></Run>
                         </TextBlock>
                     </Grid>
 
                     <Border   Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="2"  Text=">" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20" Foreground="#FF004D00" ></TextBlock>
+                        <TextBlock  Grid.Row="2"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                         <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="Button_Click" >
-                            <TextBlock   Text="给个好评" VerticalAlignment="Center" FontSize="18" Foreground="#FF004D00" ></TextBlock>
+                            <TextBlock   Text="给个好评"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"   ></TextBlock>
                         </Button>
                     </Grid>
 
                     <Border   Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="3"  Text=">" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20" Foreground="#FF004D00" ></TextBlock>
+                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                         <Button Grid.Row="3" Style="{StaticResource ContentButtonStyle}" Padding="0" Click="HelpButton_Click" >
-                            <TextBlock   Text="使用说明" VerticalAlignment="Center" FontSize="18" Foreground="#FF004D00" ></TextBlock>
+                            <TextBlock   Text="使用说明"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18" ></TextBlock>
                         </Button>
                     </Grid>
 
                     <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="3"  Text=">" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20" Foreground="#FF004D00" ></TextBlock>
+                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                         <Button  Style="{StaticResource  ContentButtonStyle}" Grid.Row="15" Grid.Column="1" Click="QQTextButton_Click" Padding="0" HorizontalAlignment="Stretch">
-                            <TextBlock   Text="QQ交流群：568856882" VerticalAlignment="Center" FontSize="18"   Foreground="#FF004D00" ></TextBlock>
+                            <TextBlock   Text="QQ交流群：568856882" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"   ></TextBlock>
                         </Button>
                     </Grid>
                     <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
+                    <Grid Height="55">
+                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
+                        <Button  Style="{StaticResource  ContentButtonStyle}" Grid.Row="15" Grid.Column="1" Click="AlipayTextButton_Click" Padding="0" HorizontalAlignment="Stretch">
+                            <TextBlock   Style="{StaticResource ListItemTextBlockStyle}" LineHeight="30" VerticalAlignment="Center" FontSize="18"     >
+                                <Run Text="支付婊账号：83250112@qq.com"></Run>
+                                <LineBreak/>
+                                <Run Text="有余粮的赞助一杯可乐吧。"></Run>
+                            </TextBlock>
+                        </Button>
+                    </Grid>
+                    <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
+
+
                 </StackPanel>
 
-                <TextBlock Margin="10,40,0,0"   Grid.Row="2"  TextWrapping="Wrap" LineHeight="32"  VerticalAlignment="Center" FontSize="16">
+                <TextBlock Margin="10,40,0,0"   Grid.Row="2" Style="{StaticResource TitleTextBlockStyle}"  TextWrapping="Wrap" LineHeight="32"  VerticalAlignment="Center" FontSize="16">
                     <Run Text="软件声明："></Run>
                     <LineBreak/>
                     <Run Text="1.本软件是一个小说搜索引擎，提供小说搜索、阅读以及缓存功能。"/>
                     <LineBreak/>
-                    <Run Text="2.开发本应用纯属个人爱好，所有数据都来自第三方，不代表本人的立场。应用使用方法请参使用说明。"/>
+                    <Run Text="2.开发本应用纯属个人爱好，所有数据都来自第三方，不代表本人的立场。"/>
                     <LineBreak/>
                     <Run Text="3.如果有侵权行为，请联系本人。如果你有好的意见或建议，请加QQ群：568856882。" />
+                    <LineBreak/>
+                    <Run Text="4.应用使用方法请参使用说明。" />
+                    <LineBreak/>
                 </TextBlock>
-
             </Grid>
         </ScrollViewer>
     </Grid>

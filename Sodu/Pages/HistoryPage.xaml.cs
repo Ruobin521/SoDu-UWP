@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,12 +27,13 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            this.Loaded += HistoryPage_Loaded;
         }
 
-        private void HistoryPage_Loaded(object sender, RoutedEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ViewModel.ViewModelInstance.Instance.EverReadBookPageViewModelInstance.InitHitoryData();
+            (this.DataContext as IViewModel)?.InitData();
         }
+
+
     }
 }

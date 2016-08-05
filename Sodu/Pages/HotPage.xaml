@@ -11,7 +11,6 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.HomePageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:control="using:Sodu.Controls"
     mc:Ignorable="d" 
     x:Name="root">
     <Page.Transitions>
@@ -23,16 +22,21 @@
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+    <Grid  >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <!--<RowDefinition Height="38"/>-->
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle"   Text="热门小说" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
+        <!--<TextBlock x:Name="TextTitle"   Text="热门小说" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>-->
 
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.HomePageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
@@ -64,19 +68,8 @@
             </Interactivity:Interaction.Behaviors>
         </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
-            <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
-            <!--<AppBarSeparator/>-->
-            <!--<AppBarButton Icon="Back" Label="返回"    Command="{Binding BackCommand}"/>-->
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" Style="{StaticResource CustomCommandBarStyle}" >
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"    Command="{Binding RefreshCommand}"/>
-            <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->
-
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Like" Label="Like"  />
-                <AppBarButton Icon="Dislike" Label="Dislike"  />
-            </CommandBar.SecondaryCommands>-->
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>

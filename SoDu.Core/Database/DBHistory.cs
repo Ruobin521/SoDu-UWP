@@ -105,5 +105,33 @@ namespace Sodu.Core.Database
             return result;
         }
 
+        public static bool DeleteHistory(string path, BookEntity entity)
+        {
+            bool result = true;
+            using (var db = new SQLiteConnection(new SQLitePlatformWinRT(), path))
+            {
+                db.CreateTable<BookEntity>();
+                db.RunInTransaction(() =>
+                {
+                    try
+                    {
+                        var temp = (from m in db.Table<BookEntity>()
+                                    where m.BookID == entity.BookID
+                                    select m
+                                   ).FirstOrDefault();
+                        if (temp != null)
+                        {
+                            db.Delete(temp);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        result = false;
+                    }
+                });
+            }
+            return result;
+        }
+
     }
 }

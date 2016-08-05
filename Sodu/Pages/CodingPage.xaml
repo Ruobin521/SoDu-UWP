@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid >
         <Image Source="/Images/coding.jpg" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform"  Height="200" Width="300"></Image>
     </Grid>
 </Page>

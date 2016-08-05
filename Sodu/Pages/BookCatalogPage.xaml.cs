@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sodu.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +26,15 @@ namespace Sodu.Pages
         public BookCatalogPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            //this.NavigationCacheMode = NavigationCacheMode.Required;
+        }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                return;
+            }
+          (this.DataContext as IViewModel)?.InitData(e.Parameter);
         }
 
         private void AppBarButton_Click(object sender, RoutedEventArgs e)

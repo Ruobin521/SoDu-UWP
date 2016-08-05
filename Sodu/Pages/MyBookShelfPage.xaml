@@ -24,27 +24,31 @@
         <converter:AppBarLabelConverter x:Key="AppBarLabelConverter"/>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+    <Grid  >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <!--<RowDefinition Height="38"/>-->
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>
-        <TextBlock Grid.Row="1" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
-        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList,Mode=OneWay}"     Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent">
+        <!--<TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>-->
+        <TextBlock Grid.Row="0" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
+        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList,Mode=OneWay}"      HorizontalAlignment="Stretch" Background="Transparent">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}" Background="Transparent">
-
                     </UC:UC_BookListItem>
                     <!--<TextBlock Text="测试测试测试测试测试测试测试测试测试测试"></TextBlock>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"  >
+        <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"   Style="{StaticResource CustomCommandBarStyle}">
             <AppBarButton x:Name="btnSelectAll" Icon="SelectAll" Width="65"    Command="{Binding  SelectAllCommand }"  Label="{Binding IsAllSelected,Converter={StaticResource AppBarLabelConverter},Mode=OneWay}" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}" CommandParameter="0"/>
             <AppBarButton Icon="Delete" Label="下架"  Width="65" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookFromShelfCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>

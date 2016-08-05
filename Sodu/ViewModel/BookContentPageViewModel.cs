@@ -202,6 +202,7 @@ namespace Sodu.ViewModel
         public void InitData(object obj)
         {
             CancleHttpRequest();
+            isClickCtalog = false;
 
             BookEntity entity = obj as BookEntity;
             if (entity == null)
@@ -429,7 +430,7 @@ namespace Sodu.ViewModel
                            return;
                        }
 
-                        List<BookCatalog> list = await Services.AnalysisBookCatalogList.GetCatalogList(BookEntity.CatalogListUrl, this.BookEntity.BookID, catalogsHttp);
+                       List<BookCatalog> list = await Services.AnalysisBookCatalogList.GetCatalogList(BookEntity.CatalogListUrl, this.BookEntity.BookID, catalogsHttp);
                        if (list != null && list.Count > 0)
                        {
                            if (this.BookEntity.CatalogList == null)
@@ -502,8 +503,7 @@ namespace Sodu.ViewModel
             List<string> strList = SplitString(html);
             for (int i = 0; i < strList.Count; i++)
             {
-                this.ContentListt.Add(strList[i]);
-                //  
+               this.ContentListt.Add(strList[i]);
             }
         }
 

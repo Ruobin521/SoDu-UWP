@@ -106,25 +106,10 @@ namespace Sodu.ViewModel
         public void InitData(object obj = null)
         {
             CancleHttpRequest();
-            BookList.Clear();
-
-            //if (this.BookList.Count > 0)
-            //{
-            //    var tempList = BookList;
-            //    BookList = new ObservableCollection<BookEntity>();
-
-            //    await Task.Delay(2);
-            //    for (int i = 0; i < tempList.Count; i++)
-            //    {
-            //        BookList.Add(tempList[i]);
-            //        if (i > 0 && i % 10 == 0)
-            //        {
-            //            await Task.Delay(1);
-            //        }
-            //    }
-
-            //    return;
-            //}
+            if (this.BookList.Count > 0)
+            {
+                return;
+            }
             SetData(1);
         }
 

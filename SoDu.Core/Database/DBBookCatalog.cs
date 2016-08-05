@@ -4,6 +4,7 @@ using SQLite.Net;
 using SQLite.Net.Platform.WinRT;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,32 +64,17 @@ namespace Sodu.Core.Database
                     db.CreateTable<BookCatalog>();
                     db.RunInTransaction(() =>
                     {
-                        foreach (var catalog in catalogs)
+
+                        try
                         {
-                            //var temp = (from m in db.Table<BookCatalog>()
-                            //            where m.BookID == catalog.BookID && m.Index == catalog.Index
-                            //            select m
-                            //                           ).FirstOrDefault();
-
-                            try
-                            {
-                                //if (temp == null)
-                                //{
-                                //    db.Insert(catalog);
-                                //}
-                                //else
-                                //{
-                                //    db.Delete(temp);
-                                //    db.Insert(catalog);
-                                //}
-                                db.Execute("DELETE FROM BookCatalog WHERE  CatalogUrl =  ' " + catalog.CatalogUrl + "'");
-                                db.Insert(catalog);
-                            }
-                            catch (Exception ex)
-                            {
-
-                            }
+                            db.Execute("DELETE FROM BookCatalog");
+                            db.InsertAll(catalogs);
                         }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+
                     });
                 }
             }

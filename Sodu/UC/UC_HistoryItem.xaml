@@ -13,24 +13,30 @@
     <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1" >
         <Grid Background="Transparent">
             <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid>
+
+                <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="5" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+
+                <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock   Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+                    <TextBlock   Grid.Row="0" Style="{StaticResource  ListItemTextBlockStyle}" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,0,0" TextTrimming="WordEllipsis">
                     <Run Text="{Binding BookName}"/>
                     </TextBlock>
-                    <TextBlock Text="{Binding UpdateTime}" Grid.Column="1" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,0"></TextBlock>
+                    <TextBlock Text="{Binding UpdateTime}" Style="{StaticResource  ListItemTextBlockStyle}" Grid.Column="1" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,0,0"></TextBlock>
                 </Grid>
 
-
-                <TextBlock   Grid.Row="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="15,0,0,0" TextTrimming="WordEllipsis">
+                <TextBlock   Grid.Row="1" FontSize="16"  Margin="0"  Style="{StaticResource  ListItemTextBlockStyle}" Grid.Column="1">
             <Run Text="最后阅读章节:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
                 </TextBlock>

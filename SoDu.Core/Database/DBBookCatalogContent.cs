@@ -56,23 +56,8 @@ namespace Sodu.Core.Database
                     db.CreateTable<BookCatalogContent>();
                     db.RunInTransaction(() =>
                     {
-                        foreach (var content in contents)
-                        {
-                            //var temp = (from m in db.Table<BookCatalogContent>()
-                            //            where m.BookID == content.BookID && m.CatalogUrl == content.CatalogUrl
-                            //            select m
-                            //).FirstOrDefault();
-
-                            //if (temp == null)
-                            //{
-                            //    db.Insert(content);
-                            //}
-                            //else
-                            //{
-                            db.Execute("DELETE FROM BookCatalogContent WHERE BookID = ? AND CatalogUrl = ?", content.BookID, content.CatalogUrl);
-                            db.Insert(content);
-                            //  }
-                        }
+                        db.Execute("DELETE FROM BookCatalogContent");
+                        db.InsertAll(contents);
                     });
                 }
             }

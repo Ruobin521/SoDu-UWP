@@ -4,6 +4,7 @@ using Sodu.Model;
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +52,15 @@ namespace Sodu.Services
                 }
             }
         }
+
+        public static void ClearStack()
+        {
+            if (ContentFrame.CanGoBack || ContentFrame.CanGoForward)
+            {
+                ContentFrame.BackStack.Clear();
+                ContentFrame.ForwardStack.Clear();
+            }
+        }
         public static void NavigateTo(Type type, object para = null)
         {
             if (ContentFrame.Content != null && ContentFrame.Content.GetType().Equals(type))
@@ -64,8 +74,15 @@ namespace Sodu.Services
         {
             if (ContentFrame.CanGoBack)
             {
-                //CancleHttpRequest();
-                ContentFrame.GoBack();
+                try
+                {
+                    //CancleHttpRequest();
+                    ContentFrame.GoBack();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
             else
             {
@@ -113,20 +130,20 @@ namespace Sodu.Services
 
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            Page page = ContentFrame.Content as Page;
-            if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.New)
-            {
-                if (page != null)
-                {
-                    IViewModel viewModel = page.DataContext as IViewModel;
-                    if (viewModel != null)
-                    {
-                        viewModel.InitData(e.Parameter);
-                    }
-                }
-            }
+            //Page page = ContentFrame.Content as Page;
+            //if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.New)
+            //{
+            //    if (page != null)
+            //    {
+            //        IViewModel viewModel = page.DataContext as IViewModel;
+            //        if (viewModel != null)
+            //        {
+            //            viewModel.InitData(e.Parameter);
+            //        }
+            //    }
+            //}
 
-            ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
+            //ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {
@@ -140,5 +157,6 @@ namespace Sodu.Services
                 }
             }
         }
+
     }
 }

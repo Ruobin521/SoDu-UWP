@@ -151,20 +151,19 @@ namespace Sodu.ViewModel
             set
             {
                 if (m_CurrentMenu == value) return;
+                if (m_CurrentMenu != null)
+                {
+                    m_CurrentMenu.IsSelected = false;
+                }
 
                 this.SetProperty(ref this.m_CurrentMenu, value);
-                if (CurrentMenu != null)
+                if (m_CurrentMenu != null)
                 {
-                    NavigateToPage(m_CurrentMenu, NavigatePara);
+                    m_CurrentMenu.IsSelected = true;
                 }
             }
         }
 
-
-        /// <summary>
-        /// 导航传递的参数
-        /// </summary>
-        public object NavigatePara { get; set; }
 
         #endregion
 
@@ -210,19 +209,24 @@ namespace Sodu.ViewModel
 
             }
         }
+
+
         public void ChangeLoginState(bool isLogin)
         {
             ViewModelInstance.Instance.IsLogin = isLogin;
+            this.CurrentMenuList = new ObservableCollection<MenuModel>();
+
             if (isLogin)
             {
-                this.CurrentMenuList = this.LoadMenuList;
+                this.LoadMenuList.ToList().ForEach(p => this.CurrentMenuList.Add(p));
             }
             else
             {
-                this.CurrentMenuList = this.UnloadMenuList;
+                this.UnloadMenuList.ToList().ForEach(p => this.CurrentMenuList.Add(p));
             }
             this.CurrentMenu = this.CurrentMenuList[0];
-            NavigationService.ContentFrame.BackStack.Clear();
+            NavigateToPage(typeof(HomePage));
+            NavigationService.ClearStack();
         }
 
         /// <summary>
@@ -244,6 +248,22 @@ namespace Sodu.ViewModel
                 ToastHeplper.ShowMessage("导航出现异常");
             }
         }
+        public void NavigateToPage(Type pageType, object para = null)
+        {
+            try
+            {
+                if (pageType != null)
+                {
+                    this.IsLeftPanelOpen = false;
+                    NavigationService.NavigateTo(pageType, para);
+                }
+            }
+            catch (Exception)
+            {
+                ToastHeplper.ShowMessage("导航出现异常");
+            }
+        }
+
 
         public void SetCurrentMenu(Type type)
         {
@@ -300,8 +320,6 @@ namespace Sodu.ViewModel
             if (entity != null)
             {
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
-
-
 
 
                 //判断是否自动添加书到收藏
@@ -362,11 +380,45 @@ namespace Sodu.ViewModel
                  m_LogoutCommand = new RelayCommand<bool>(
                       (str) =>
                 {
-                    IsLeftPanelOpen = false;
-                    NavigationService.NavigateTo(typeof(LogoutPage), null);
+                    NavigateToPage(typeof(LogoutPage));
                 }));
             }
         }
+
+        /// 登陆
+        /// </summary>
+        private ICommand m_LoginCommand;
+        public ICommand LoginCommand
+        {
+            get
+            {
+                return m_LoginCommand ?? (
+                 m_LoginCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          NavigateToPage(typeof(LoginPage));
+                      }));
+            }
+        }
+
+
+
+        /// 注册
+        /// </summary>
+        private ICommand m_RegisterCommand;
+        public ICommand RegisterCommand
+        {
+            get
+            {
+                return m_RegisterCommand ?? (
+                 m_RegisterCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          NavigateToPage(typeof(RegisterPage));
+                      }));
+            }
+        }
+
 
         /// <summary>
         /// 退出
@@ -408,9 +460,7 @@ namespace Sodu.ViewModel
                m_SettingCommand = new RelayCommand<bool>(
                       (str) =>
                     {
-                        IsLeftPanelOpen = false;
-
-                        NavigationService.NavigateTo(typeof(SettingPage), null);
+                        NavigateToPage(typeof(SettingPage));
                     }));
             }
         }
@@ -428,8 +478,41 @@ namespace Sodu.ViewModel
                m_HelpCommand = new RelayCommand<bool>(
                       (str) =>
                       {
-                          IsLeftPanelOpen = false;
-                          NavigationService.NavigateTo(typeof(AboutPage));
+                          NavigateToPage(typeof(AboutPage));
+                      }));
+            }
+        }
+        /// <summary>
+        /// 首页
+        /// </summary>
+        private ICommand m_HomePageCommand;
+        public ICommand HomePageCommand
+        {
+            get
+            {
+                return m_HomePageCommand ??
+                    (m_HomePageCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          NavigateToPage(typeof(HomePage));
+                      }));
+            }
+        }
+
+
+        /// <summary>
+        ///  搜索
+        /// </summary>
+        private ICommand m_SearchCommand;
+        public ICommand SearchCommand
+        {
+            get
+            {
+                return m_SearchCommand ??
+                    (m_SearchCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          NavigateToPage(typeof(SearchResultPage));
                       }));
             }
         }
@@ -447,8 +530,7 @@ namespace Sodu.ViewModel
                     (m_DownLoadCenterCommand = new RelayCommand<bool>(
                       (str) =>
                       {
-                          IsLeftPanelOpen = false;
-                          NavigationService.NavigateTo(typeof(DownLoadCenterPage), null);
+                          NavigateToPage(typeof(DownLoadCenterPage));
                       }));
             }
         }
@@ -464,8 +546,7 @@ namespace Sodu.ViewModel
                 return m_LocalBooksCommand ?? (m_LocalBooksCommand = new RelayCommand<bool>(
                       (str) =>
                     {
-                        IsLeftPanelOpen = false;
-                        NavigationService.NavigateTo(typeof(LocalBookPage), null);
+                        NavigateToPage(typeof(LocalBookPage));
                     }));
             }
         }
@@ -497,8 +578,7 @@ namespace Sodu.ViewModel
                 return m_ReadHistoryCommand ?? (m_ReadHistoryCommand = new RelayCommand<bool>(
                       (str) =>
                       {
-                          IsLeftPanelOpen = false;
-                          NavigationService.NavigateTo(typeof(HistoryPage), null);
+                          NavigateToPage(typeof(HistoryPage));
                       }));
             }
         }

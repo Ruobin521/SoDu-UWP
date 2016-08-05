@@ -124,46 +124,14 @@ namespace Sodu.ViewModel
         }
         public void InitData(object obj = null)
         {
+            if (IsLoading) return;
+
             CancleHttpRequest();
 
-            //if (this.RecommendBookList.Count > 0 || this.HotBookList.Count > 0)
-            //{
-            //    if (NavigationService.ContentFrame.Content is RecommendPage)
-            //    {
-            //        var tempList = RecommendBookList;
-            //        RecommendBookList = new ObservableCollection<BookEntity>();
-            //        await Task.Delay(10);
-            //        for (int i = 0; i < tempList.Count; i++)
-            //        {
-            //            RecommendBookList.Add(tempList[i]);
-            //            if (i > 0 && i % 10 == 0)
-            //            {
-            //                await Task.Delay(1);
-            //            }
-            //        }
-            //    }
-
-            //    else if (NavigationService.ContentFrame.Content is HotPage)
-            //    {
-            //        var tempList2 = HotBookList;
-            //        HotBookList = new ObservableCollection<BookEntity>();
-
-            //        await Task.Delay(10);
-            //        for (int i = 0; i < tempList2.Count; i++)
-            //        {
-            //            HotBookList.Add(tempList2[i]);
-            //            if (i > 0 && i % 10 == 0)
-            //            {
-            //                await Task.Delay(1);
-            //            }
-            //        }
-
-            //    }
-
-            //    return;
-            //}
-            RecommendBookList.Clear();
-            HotBookList.Clear();
+            if (this.RecommendBookList.Count > 0 && this.HotBookList.Count > 0)
+            {
+                return;
+            }
             SetData();
         }
 

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,13 +13,29 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
+
 namespace Sodu.UC
 {
-    public sealed partial class UC_ChapterItem : Button
+    public sealed partial class UC_BackColorPickerPanel : UserControl
     {
-        public UC_ChapterItem()
+        public UC_BackColorPickerPanel()
         {
             this.InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        public void Close()
+        {
+            CloseStoryboard.Begin();
+        }
+        public void Show()
+        {
+            ShowStoryboard.Begin();
         }
     }
 }

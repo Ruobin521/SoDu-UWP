@@ -126,6 +126,7 @@
     <Compile Include="Model\MenuModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\ChineseGBKConverter.cs" />
+    <Compile Include="Util\ColorHelper.cs" />
     <Compile Include="Util\HttpHelper.cs" />
     <Compile Include="Util\NetworkHelper.cs" />
     <Compile Include="Util\PlatformHelper.cs" />

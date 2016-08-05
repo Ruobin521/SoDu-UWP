@@ -213,7 +213,7 @@ namespace Sodu.ViewModel
                     }
 
                     html = await HttpHelper.HttpClientPostRequest(ViewModelInstance.Instance.UrlService.GetLoginPage(), postdata);
-                    if (html.Contains("{\"success\":true}"))
+                    if (html != null && html.Contains("{\"success\":true}"))
                     {
                         ToastHeplper.ShowMessage("登陆成功");
 

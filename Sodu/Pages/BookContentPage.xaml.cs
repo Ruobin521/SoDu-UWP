@@ -41,9 +41,9 @@ namespace Sodu.Pages
             {
                 this.Loaded -= BookContentPage_Loaded;
                 this.Loaded += BookContentPage_Loaded;
-                this.grid.Tapped -= grid_Tapped;
-                this.grid.Tapped += grid_Tapped;
             }
+            this.grid.Tapped -= grid_Tapped;
+            this.grid.Tapped += grid_Tapped;
         }
 
 
@@ -96,6 +96,12 @@ namespace Sodu.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             SetFullScreen(true);
+
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                return;
+            }
+            (this.DataContext as IViewModel)?.InitData(e.Parameter);
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -158,6 +164,13 @@ namespace Sodu.Pages
 
         private void grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (this.ColorPanel.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                this.ColorPanel.Close();
+                return;
+            }
+
             if (PlatformHelper.GetPlatform() != PlatformHelper.Platform.IsMobile)
             {
                 e.Handled = true;
@@ -172,7 +185,13 @@ namespace Sodu.Pages
             {
                 this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
             }
+
+
         }
 
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.ColorPanel.Show();
+        }
     }
 }

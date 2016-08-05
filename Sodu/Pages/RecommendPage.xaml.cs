@@ -29,5 +29,9 @@ namespace Sodu.Pages
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            (this.DataContext as IViewModel)?.InitData();
+        }
     }
 }

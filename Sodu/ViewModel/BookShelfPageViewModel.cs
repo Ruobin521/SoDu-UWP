@@ -166,22 +166,10 @@ namespace Sodu.ViewModel
         public void InitData(object obj = null)
         {
             this.IsShow = false;
-            //if (this.ShelfBookList.Count > 0)
-            //{
-            //    var tempList = ShelfBookList;
-            //    ShelfBookList = new ObservableCollection<BookEntity>();
-            //    await Task.Delay(1);
-
-            //    for (int i = 0; i < tempList.Count; i++)
-            //    {
-            //        ShelfBookList.Add(tempList[i]);
-            //        if (i > 0 && i % 10 == 0)
-            //        {
-            //            await Task.Delay(1);
-            //        }
-            //    }
-            //    return;
-            //}
+            if (this.ShelfBookList.Count > 0)
+            {
+                return;
+            }
             ShelfBookList.Clear();
             SetData();
         }
@@ -266,11 +254,10 @@ namespace Sodu.ViewModel
                     this.IsShow = false;
                     if (list != null && list.Count > 0)
                     {
-                        var temp = list.OrderBy(p => p.BookID).ToList();
+                        var temp = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
                         foreach (var item in temp)
                         {
                             this.ShelfBookList.Add(item);
-
                         }
                     }
                     ToastHeplper.ShowMessage("个人收藏已更新");
