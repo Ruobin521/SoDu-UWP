@@ -7,9 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converter ="using:Sodu.Converter"
     mc:Ignorable="d" 
-    Height="75"
     d:DesignWidth="400"
-    Style="{StaticResource  ContentButtonStyle}">
+    Style="{StaticResource  ContentButtonStyle}"
+     Height="75">
     <Button.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Button.Resources>

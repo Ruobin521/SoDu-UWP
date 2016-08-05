@@ -393,115 +393,9 @@
 
     <!--........................................自定义样式 ...........................................-->
 
- 
 
-    <Style x:Key="CheckboxStyle" TargetType="CheckBox">
-        <Style.Setters>
-            <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundThemeBrush}"/>
-            <Setter Property="BorderBrush" Value="{ThemeResource CheckBoxBorderThemeBrush}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilyNormal}"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="13"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <!--<Setter Property="Padding" Value="{ThemeResource CheckBoxAndRadioButtonTextPaddingThickness}"/>-->
-            <!--<Setter Property="MinWidth" Value="{ThemeResource CheckBoxAndRadioButtonMinWidthSize}"/>-->
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="CheckBox">
-                        <Grid Background="Transparent">
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualStateGroup.Transitions>
-                                        <VisualTransition From="Pressed" To="PointerOver">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
-                                            </Storyboard>
-                                        </VisualTransition>
-                                        <VisualTransition From="PointerOver" To="Normal">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
-                                            </Storyboard>
-                                        </VisualTransition>
-                                        <VisualTransition From="Pressed" To="Normal">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="Grid"/>
-                                            </Storyboard>
-                                        </VisualTransition>
-                                    </VisualStateGroup.Transitions>
-                                    <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="MouseOver"/>
-                                    <VisualState x:Name="PointerOver"/>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="Grid"/>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="CheckBackground">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxPressedBackgroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="CheckGlyph">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxPressedForegroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="NormalRectangle">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxPressedBackgroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="CheckBackground">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxDisabledBorderThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="CheckGlyph">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxDisabledForegroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Fill" Storyboard.TargetName="NormalRectangle">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxDisabledBackgroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentPresenter">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CheckBoxDisabledForegroundThemeBrush}"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="CheckStates">
-                                    <VisualState x:Name="Checked">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="CheckGlyph">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Unchecked"/>
-                                    <VisualState x:Name="Indeterminate">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="NormalRectangle">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="Visible"/>
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                            <Grid x:Name="Grid" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0" VerticalAlignment="Center" Margin="0,0,3,0">
-                                    <Border x:Name="CheckBackground" BorderBrush="Black" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" HorizontalAlignment="Left" Height="{TemplateBinding Height}" IsHitTestVisible="False" VerticalAlignment="Center" Width="{TemplateBinding Height}"/>
-                                    <Rectangle x:Name="NormalRectangle" Fill="{ThemeResource CheckBoxBackgroundThemeBrush}"  HorizontalAlignment="Center"   IsHitTestVisible="False" Visibility="Collapsed" VerticalAlignment="Center" Width="{TemplateBinding Height}" Height="{TemplateBinding Height}"/>
-                                    <Path x:Name="CheckGlyph" Data="M0,123 L39,93 L124,164 L256,18 L295,49 L124,240 z" Fill="Black" FlowDirection="LeftToRight" HorizontalAlignment="Center" Height="17" IsHitTestVisible="False" Stretch="Fill" StrokeThickness="2.5" StrokeLineJoin="Round" Visibility="Collapsed" VerticalAlignment="Center" Width="18.5"/>
-                                </Grid>
-                                <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Grid.Column="1" Foreground="{TemplateBinding Foreground}" FontWeight="Normal" FontSize="{TemplateBinding FontSize}" FontFamily="{ThemeResource PhoneFontFamilyNormal}" HorizontalAlignment="Left"  VerticalAlignment="Center"/>
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style.Setters>
-    </Style>
+
+   
 
     <Style x:Key="TextBoxStyle1" TargetType="TextBox">
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}"/>
@@ -890,11 +784,11 @@
         </Setter>
     </Style>
 
-   
 
-    
 
-  
+
+
+
 
     <Style x:Key="ListBoxItemStyle2" TargetType="ListBoxItem">
         <Setter Property="Background" Value="Transparent"/>
@@ -1219,7 +1113,7 @@
         </Setter>
     </Style>
 
-   
+
 
     <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
         <Setter Property="Background" Value="Transparent"/>
@@ -1259,7 +1153,7 @@
 
 
 
-   
+
 
     <Style x:Key="ButtonStyle2" TargetType="Button">
         <Setter Property="Background" Value="#FF3388FF"/>
@@ -1341,9 +1235,9 @@
 
 
 
-   
 
- 
+
+
 
 
     <SolidColorBrush x:Key="LightHeaderBackground"  Color="Transparent"   />

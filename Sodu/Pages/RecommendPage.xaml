@@ -26,11 +26,9 @@
 
     <Grid  >
         <Grid.RowDefinitions>
-            <!--<RowDefinition Height="38"/>-->
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <!--<TextBlock x:Name="TextTitle"   Text="推荐阅读" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>-->
 
         <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding RecommendBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >

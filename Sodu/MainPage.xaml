@@ -39,7 +39,7 @@
                                 </ToggleButton.Content>
                             </ToggleButton>
 
-                            <StackPanel BorderThickness="0"  x:Name="header"  RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,0"  Orientation="Vertical" Grid.Row="1" >
+                            <StackPanel BorderThickness="0"  RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,0"  Orientation="Vertical" Grid.Row="1" >
                                 <AppBarButton  Icon="Home"   Label="首页" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding HomePageCommand}" Style="{StaticResource CustomAppBarButtonStyle}" 

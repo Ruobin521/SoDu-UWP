@@ -20,11 +20,9 @@
     </Page.Transitions>
     <Grid >
         <Grid.RowDefinitions>
-            <!--<RowDefinition Height="38"/>-->
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <!--<TextBlock x:Name="TextTitle"   Text="{Binding ContentTitle}" TextTrimming="WordEllipsis" Grid.Column="1"  HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="55,0,0,0"  FontSize="18"></TextBlock>-->
         <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
