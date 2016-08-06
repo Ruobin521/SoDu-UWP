@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Xml.Serialization;
 using Windows.Graphics.Display;
 using Windows.Storage;
@@ -34,6 +35,7 @@ namespace Sodu.ViewModel
         public static string n_IsLandscape = "IsLandscape";
         public static string n_IsPreLoad = "IsPreLoad";
         public static string n_ContentBackColor = "ContentBackColor";
+        public static string n_LightValue = "LightValue";
 
 
 
@@ -59,25 +61,28 @@ namespace Sodu.ViewModel
             }
         }
 
-
-
-
-        private List<int> m_FontSzieList;
+        private double m_LightValue = 0;
         /// <summary>
-        /// 阅读显示字体大小  14-26
+        /// 阅读界面亮度
         /// </summary>
-        [IgnoreDataMember]
-        public List<int> FontSzieList
+        public double LightValue
         {
             get
             {
-                return m_FontSzieList;
+                return m_LightValue;
             }
             set
             {
-                SetProperty(ref m_FontSzieList, value);
+                if (value == m_LightValue)
+                {
+                    return;
+                }
+                SetProperty(ref m_LightValue, value);
+                SetLightValue(value, true);
             }
         }
+
+
 
         private bool m_IfAutoLogin = true;
         /// <summary>
@@ -262,10 +267,6 @@ namespace Sodu.ViewModel
 
         public SettingPageViewModel()
         {
-            this.FontSzieList = new List<int>()
-            {
-               16,18,20,22,24,26,28
-            };
 
         }
 
@@ -274,138 +275,191 @@ namespace Sodu.ViewModel
         {
             try
             {
-                //自动登录
-                if (!SettingHelper.CheckKeyExist(n_IsAutoLogin))
+                #region    //自动添加书架
+                try
                 {
-                    SettingHelper.SetValue(n_IsAutoLogin, true);
-                    IfAutoLogin = true;
-                }
-                else
-                {
-                    var value = (bool)SettingHelper.GetValue(n_IsAutoLogin);
-
-                    if (value)
+                    if (!SettingHelper.CheckKeyExist(n_IfAutAddToShelf))
                     {
-                        IfAutoLogin = true;
+                        SettingHelper.SetValue(n_IfAutAddToShelf, true);
+                        m_IfAutAddToShelf = true;
                     }
                     else
                     {
-                        IfAutoLogin = false;
+                        m_IfAutAddToShelf = (bool)SettingHelper.GetValue(n_IfAutAddToShelf);
                     }
                 }
-
-
-                //自动添加书架
-                if (!SettingHelper.CheckKeyExist(n_IfAutAddToShelf))
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_IfAutAddToShelf, true);
-                    IfAutAddToShelf = true;
+                    m_IfAutAddToShelf = true;
                 }
-                else
-                {
-                    var value = (bool)SettingHelper.GetValue(n_IfAutAddToShelf);
 
-                    if (value)
+                #endregion
+
+                #region  //在流量下下载
+                try
+                {
+                    if (!SettingHelper.CheckKeyExist(n_IfDownloadInWAAN))
                     {
-                        IfAutAddToShelf = true;
+                        SettingHelper.SetValue(n_IfDownloadInWAAN, false);
+                        m_IfDownloadInWAAN = false;
                     }
                     else
                     {
-                        IfAutAddToShelf = false;
+                        m_IfDownloadInWAAN = (bool)SettingHelper.GetValue(n_IfDownloadInWAAN);
                     }
                 }
-
-
-                //在流量下下载
-                if (!SettingHelper.CheckKeyExist(n_IfDownloadInWAAN))
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_IfDownloadInWAAN, false);
-                    IfDownloadInWAAN = false;
+                    m_IfDownloadInWAAN = false;
                 }
-                else
+
+                #endregion
+
+                #region  //正文字体大小
+                try
                 {
-                    var value = (bool)SettingHelper.GetValue(n_IfDownloadInWAAN);
-                    if (value)
+
+                    if (!SettingHelper.CheckKeyExist(n_TextFontSzie))
                     {
-                        IfDownloadInWAAN = true;
+                        SettingHelper.SetValue(n_TextFontSzie, "20");
+                        m_TextFontSzie = 20;
                     }
                     else
                     {
-                        IfDownloadInWAAN = false;
+                        string value = SettingHelper.GetValue(n_TextFontSzie).ToString();
+                        m_TextFontSzie = Convert.ToInt32(value);
                     }
                 }
-
-
-                //正文字体大小
-                if (!SettingHelper.CheckKeyExist(n_TextFontSzie))
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_TextFontSzie, "20");
-                    TextFontSzie = 20;
+                    m_TextFontSzie = 20;
                 }
-                else
+
+                #endregion
+
+                #region //设置夜间模式
+
+                try
                 {
-                    string value = SettingHelper.GetValue(n_TextFontSzie).ToString();
-                    int size = Convert.ToInt32(value);
-                    if (size % 2 != 0)
+
+                    if (!SettingHelper.CheckKeyExist(n_IsNightModel))
                     {
-                        size = size - 1;
-                        SettingHelper.SetValue(n_TextFontSzie, size);
-
+                        SettingHelper.SetValue(n_IsNightModel, false);
+                        m_IsNightModel = false;
                     }
-
-                    TextFontSzie = size;
+                    else
+                    {
+                        m_IsNightModel = (bool)SettingHelper.GetValue(n_IsNightModel);
+                    }
                 }
-
-                //设置夜间模式
-                if (!SettingHelper.CheckKeyExist(n_IsNightModel))
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_IsNightModel, false);
-                    IsNightModel = false;
+                    m_IsNightModel = false;
                 }
-                else
+                finally
                 {
-                    var value = (bool)SettingHelper.GetValue(n_IsNightModel);
-                    IsNightModel = value;
+                    SetNightMode(m_IsNightModel);
                 }
 
+                #endregion
 
-                //设置横向模式
-                if (!SettingHelper.CheckKeyExist(n_IsLandscape))
+                #region   //设置横向模式
+                try
+                {
+
+                    if (!SettingHelper.CheckKeyExist(n_IsLandscape))
+                    {
+                        SettingHelper.SetValue(n_IsLandscape, false);
+                        m_IsLandscape = false;
+                    }
+                    else
+                    {
+                        var value = (bool)SettingHelper.GetValue(n_IsLandscape);
+                        m_IsLandscape = value;
+                    }
+                }
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_IsLandscape, false);
-                    IsLandscape = false;
+                    m_IsLandscape = false;
                 }
-                else
+                finally
                 {
-                    var value = (bool)SettingHelper.GetValue(n_IsLandscape);
-                    IsLandscape = value;
+                    SetLandscape(m_IsLandscape);
                 }
-                SetLandscape(IsLandscape);
 
+                #endregion
 
-                //设置预读
-                if (!SettingHelper.CheckKeyExist(n_IsPreLoad))
+                #region   //设置预读
+                try
+                {
+
+                    if (!SettingHelper.CheckKeyExist(n_IsPreLoad))
+                    {
+                        SettingHelper.SetValue(n_IsPreLoad, true);
+                        m_IsPreLoad = true;
+                    }
+                    else
+                    {
+                        var value = (bool)SettingHelper.GetValue(n_IsPreLoad);
+                        m_IsPreLoad = value;
+                    }
+                }
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_IsPreLoad, true);
-                    IsPreLoad = true;
+                    m_IsPreLoad = true;
                 }
-                else
-                {
-                    var value = (bool)SettingHelper.GetValue(n_IsPreLoad);
-                    IsPreLoad = value;
-                }
+                #endregion
 
-                //设置背景色
-                if (!SettingHelper.CheckKeyExist(n_ContentBackColor))
+                #region   //设置阅读背景色
+                try
+                {
+
+                    if (!SettingHelper.CheckKeyExist(n_ContentBackColor))
+                    {
+                        SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
+                        m_ContentBackColor = this.ColorList[0];
+                    }
+                    else
+                    {
+                        var value = SettingHelper.GetValue(n_ContentBackColor);
+                        m_ContentBackColor = this.ColorList.ToList().FirstOrDefault(p => p.Color.ToString().Equals(value)) ??
+                                           this.ColorList[0];
+                    }
+                }
+                catch (Exception)
                 {
                     SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
-                    ContentBackColor = this.ColorList[0];
+                    m_ContentBackColor = this.ColorList[0];
                 }
-                else
+                #endregion
+
+                #region //亮度
+                try
                 {
-                    var value = SettingHelper.GetValue(n_ContentBackColor);
-                    ContentBackColor = ColorBrushHelper.ConverterFromString(value.ToString());
+
+                    if (!SettingHelper.CheckKeyExist(n_LightValue))
+                    {
+                        SettingHelper.SetValue(n_LightValue, 0);
+                        m_LightValue = 0;
+                    }
+                    else
+                    {
+                        string value = SettingHelper.GetValue(n_LightValue).ToString();
+                        m_LightValue = Convert.ToDouble(value);
+                    }
                 }
+                catch (Exception)
+                {
+                    SettingHelper.SetValue(n_LightValue, 0);
+                    m_LightValue = 0;
+                }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -413,8 +467,6 @@ namespace Sodu.ViewModel
                 SetDefaultSetting();
             }
         }
-
-
 
 
         private void SetDefaultSetting()
@@ -426,6 +478,8 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_IsLandscape, false);
             SettingHelper.SetValue(n_TextFontSzie, "20");
             SettingHelper.SetValue(n_IsPreLoad, true);
+            SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
+            SettingHelper.SetValue(n_LightValue, 1);
         }
 
 
@@ -465,15 +519,7 @@ namespace Sodu.ViewModel
         {
             SettingHelper.SetValue(n_IsNightModel, value);
             IsNightModel = value;
-
-            if (IsNightModel)
-            {
-                this.Theme = ElementTheme.Dark;
-            }
-            else
-            {
-                this.Theme = ElementTheme.Light;
-            }
+            this.Theme = IsNightModel ? ElementTheme.Dark : ElementTheme.Light;
         }
 
 
@@ -487,14 +533,7 @@ namespace Sodu.ViewModel
         {
             SettingHelper.SetValue(n_IsLandscape, value);
             IsLandscape = value;
-            if (IsLandscape)
-            {
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Landscape;
-            }
-            else
-            {
-                DisplayInformation.AutoRotationPreferences = DisplayOrientations.None;
-            }
+            DisplayInformation.AutoRotationPreferences = IsLandscape ? DisplayOrientations.Landscape : DisplayOrientations.None;
         }
 
         public void SetPreLoad(bool value)
@@ -520,8 +559,14 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_ContentBackColor, value.Color.ToString());
             ContentBackColor = value;
         }
+        private void SetLightValue(double value, bool v)
+        {
+            SettingHelper.SetValue(n_LightValue, value);
+            LightValue = value;
+        }
 
+        #region 命令
 
-
+        #endregion
     }
 }

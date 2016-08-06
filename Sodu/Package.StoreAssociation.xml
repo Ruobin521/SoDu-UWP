@@ -361,6 +361,8 @@
     <MainPackageIdentityName>54654Ruobin.UWP</MainPackageIdentityName>
     <ReservedNames>
       <ReservedName>小说搜索阅读 UWP</ReservedName>
+      <ReservedName>搜读 UWP</ReservedName>
+      <ReservedName>搜阅 UWP</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames />

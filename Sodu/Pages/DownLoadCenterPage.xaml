@@ -40,7 +40,7 @@
             <TextBlock x:Name="TextTitle"   Text="下载中心" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
         </Grid>
 
-        <ListView Grid.Row="1"   ItemTemplateSelector="{StaticResource  DownloadItemDataTemplateSelector}" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding DownLoadList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1"   ItemTemplateSelector="{StaticResource  DownloadItemDataTemplateSelector}" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding DownLoadList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <!--<ListView.ItemTemplate>
 

@@ -17,25 +17,32 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Sodu.UC
 {
-    public sealed partial class UC_BackColorPickerPanel : UserControl
+
+    public delegate void CloseHanlder();
+    public sealed partial class UC_ContentSettingPanel : UserControl
     {
-        public UC_BackColorPickerPanel()
+
+        public event CloseHanlder Closed;
+        public UC_ContentSettingPanel()
         {
             this.InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
 
         public void Close()
         {
             CloseStoryboard.Begin();
+            Closed?.Invoke();
         }
+
         public void Show()
         {
             ShowStoryboard.Begin();
+        }
+
+        private void BtnColose_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

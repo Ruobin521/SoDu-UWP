@@ -48,7 +48,7 @@
                 <TextBox  x:Name="txtSearchPara"  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"  Text="{Binding SearchPara,Mode=TwoWay}"   Style="{StaticResource  TextBoxStyle1}"  BorderThickness="1,1,0,1"  BorderBrush="#FF3388FF"  FontSize="22"  HorizontalAlignment="Stretch" Height="38" ></TextBox>
             </RelativePanel>
         </Grid>
-        <ListView  Grid.Row="2" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}" HorizontalAlignment="Stretch" Background="Transparent">
+        <ListView  Grid.Row="2" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}" HorizontalAlignment="Stretch" Background="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>

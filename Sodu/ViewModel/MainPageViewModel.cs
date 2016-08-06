@@ -46,24 +46,6 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_IsLeftPanelOpen, value);
             }
         }
-        private bool m_IsButtonVisiable = true;
-        /// <summary>
-        ///  控制按钮是否显示
-        /// </summary>
-        public bool IsButtonVisiable
-        {
-            get
-
-            {
-                return m_IsButtonVisiable;
-            }
-            set
-            {
-                this.SetProperty(ref this.m_IsButtonVisiable, value);
-            }
-        }
-
-
 
         private bool m_IsLoading = false;
         /// <summary>
@@ -184,12 +166,6 @@ namespace Sodu.ViewModel
         {
             IsLoading = false;
         }
-
-        public void SetLeftControlButtonVisiablity(bool value)
-        {
-            IsButtonVisiable = value;
-        }
-
 
         public void InitAppSettingData()
         {

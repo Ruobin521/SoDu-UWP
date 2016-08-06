@@ -1000,7 +1000,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="ListViewItemStyleLeft" TargetType="ListViewItem">
+    <Style x:Key="CustomListViewItemStyleLeft" TargetType="ListViewItem">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TabNavigation" Value="Local"/>
         <Setter Property="Padding" Value="0"/>
@@ -1115,7 +1115,7 @@
 
 
 
-    <Style x:Key="ListViewItemStyle1" TargetType="ListViewItem">
+    <Style x:Key="CustomListViewItemStyle1" TargetType="ListViewItem">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="TabNavigation" Value="Local"/>
         <Setter Property="Padding" Value="0"/>

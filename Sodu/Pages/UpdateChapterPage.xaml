@@ -43,7 +43,7 @@
 
 
 
-        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}"   Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
+        <ListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}"   Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
           >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -91,7 +91,7 @@
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding Instance.UpdataChapterPageViewModelInstance.IsLoading,Source={ StaticResource  Locator}}"  ></UC:UC_ProgressRing>
 
-        <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}" PullThreshold="50"    Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
+        <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}" PullThreshold="50"    Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
            RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
             <control:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>

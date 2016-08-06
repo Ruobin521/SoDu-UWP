@@ -35,6 +35,7 @@ namespace Sodu.ViewModel
 
         private bool isPreLoading = false;
 
+
         private bool m_IsLoading;
         public bool IsLoading
         {
@@ -313,6 +314,8 @@ namespace Sodu.ViewModel
 
         private async void SetCurrentContent(BookCatalog catalog, string html)
         {
+            if (!(NavigationService.ContentFrame.Content is BookContentPage)) return;
+            ;
             this.CurrentCatalog = catalog;
 
             this.BookEntity.LastReadChapterName = catalog.CatalogName;
@@ -503,18 +506,46 @@ namespace Sodu.ViewModel
             List<string> strList = SplitString(html);
             for (int i = 0; i < strList.Count; i++)
             {
-               this.ContentListt.Add(strList[i]);
+                this.ContentListt.Add(strList[i]);
             }
         }
 
         private List<string> SplitString(string str)
         {
             List<string> strList = new List<string>();
+            str = str.Replace("\n", "");
 
-            string[] lists = str.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < lists.Count(); i++)
+
+            //string[] lists = str.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            //for (int i = 0; i < lists.Count(); i++)
+            //{
+            //    strList.Add(lists[i]);
+            //}
+            if (NavigationService.ContentFrame.Content is BookContentPage)
             {
-                strList.Add(lists[i]);
+                int perCount = (NavigationService.ContentFrame.Content as BookContentPage).GetPerPageCount();
+                if (str.Length <= perCount)
+                {
+                    strList.Add(str);
+                }
+                else
+                {
+                    int pageCount = str.Length % perCount == 0
+                        ? (int)(str.Length / perCount)
+                        : (int)(str.Length / perCount + 1);
+
+                    for (int i = 0; i < pageCount; i++)
+                    {
+                        if (i != pageCount - 1)
+                        {
+                            strList.Add(str.Substring(i * perCount, perCount));
+                        }
+                        else
+                        {
+                            strList.Add(str.Substring(i * perCount, str.Length - i * perCount));
+                        }
+                    }
+                }
             }
             return strList;
         }
@@ -587,51 +618,6 @@ namespace Sodu.ViewModel
         #region 命令
 
 
-        /// <summary>
-        /// 字体增大
-        /// </summary>
-        private ICommand m_FontIncreaseCommand;
-        public ICommand FontIncreaseCommand
-        {
-            get
-            {
-                return m_FontIncreaseCommand ?? (m_FontIncreaseCommand = new RelayCommand<bool>((str) =>
-                {
-                    ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie + 2);
-                }));
-            }
-        }
-
-        /// <summary>
-        /// 字体减小
-        /// </summary>
-        private ICommand m_FontDecreaseCommand;
-        public ICommand FontDecreaseCommand
-        {
-            get
-            {
-                return m_FontDecreaseCommand ?? (m_FontDecreaseCommand = new RelayCommand<bool>((str) =>
-               {
-                   ViewModelInstance.Instance.SettingPageViewModelInstance.SetTextSize(ViewModelInstance.Instance.SettingPageViewModelInstance.TextFontSzie - 2);
-               }));
-            }
-        }
-
-        /// <summary>
-        /// 夜间模式
-        /// </summary>
-        public ICommand m_NightModeCommand;
-        public ICommand NightModeCommand
-        {
-            get
-            {
-                return m_NightModeCommand ??
-                   (m_NightModeCommand = new RelayCommand<bool>((str) =>
-                 {
-                     ViewModelInstance.Instance.SettingPageViewModelInstance.SetNightMode(!ViewModelInstance.Instance.SettingPageViewModelInstance.IsNightModel);
-                 }));
-            }
-        }
 
         /// <summary>
         /// 刷新
@@ -652,21 +638,6 @@ namespace Sodu.ViewModel
                            SetData(CurrentCatalog);
                        }
                    }));
-            }
-        }
-
-        /// <summary>
-        /// 返回
-        /// </summary>
-        private ICommand m_GoBackCommand;
-        public ICommand GoBackCommand
-        {
-            get
-            {
-                return m_GoBackCommand ?? (m_GoBackCommand = new RelayCommand<bool>((str) =>
-                 {
-                     NavigationService.GoBack();
-                 }));
             }
         }
 

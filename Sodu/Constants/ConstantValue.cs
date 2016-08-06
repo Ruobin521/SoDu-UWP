@@ -49,10 +49,6 @@ namespace Sodu.Constants
              App.Current.Resources["BackColor8"] as SolidColorBrush,
              App.Current.Resources["BackColor9"] as SolidColorBrush,
              App.Current.Resources["BackColor10"] as SolidColorBrush,
-             App.Current.Resources["BackColor11"] as SolidColorBrush,
-             App.Current.Resources["BackColor12"] as SolidColorBrush,
-             App.Current.Resources["BackColor13"] as SolidColorBrush,
-             App.Current.Resources["BackColor14"] as SolidColorBrush,
     };
 
     }

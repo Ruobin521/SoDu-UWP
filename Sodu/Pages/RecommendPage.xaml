@@ -30,7 +30,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding RecommendBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding RecommendBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -42,7 +42,7 @@
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.HomePageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  
+            <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  
            RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
             <control:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>

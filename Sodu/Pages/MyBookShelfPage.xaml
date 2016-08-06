@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
-        <ListView  ItemContainerStyle="{StaticResource ListViewItemStyle}"  x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList,Mode=OneWay}"      HorizontalAlignment="Stretch" Background="Transparent">
+        <ListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList,Mode=OneWay}"      HorizontalAlignment="Stretch" Background="Transparent">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>

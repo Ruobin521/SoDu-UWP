@@ -23,13 +23,14 @@
         <converter:NightModeAppBarLabelConverter x:Key="NightModeAppBarLabelConverter"></converter:NightModeAppBarLabelConverter>
         <converter:PreLoadBtnForegroundConverter x:Key="PreLoadBtnForegroundConverter"></converter:PreLoadBtnForegroundConverter>
         <converter:BackColorVisiablityConverter x:Key="BackColorVisiablityConverter"></converter:BackColorVisiablityConverter>
+        <converter:DoubleToPercentConverter x:Key="DoubleToPercentConverter"></converter:DoubleToPercentConverter>
     </Page.Resources>
-    <Grid>
-        <Grid  x:Name="grid"  ManipulationMode="System,TranslateX"     Background="Transparent" >
+    <Grid x:Name="rootGrid"   >
+        <Grid  x:Name="grid"    Tapped="grid_Tapped"    Background="Transparent" Grid.RowSpan="3"  >
+            <!--<Grid  x:Name="grid"  ManipulationMode="System,TranslateX"   Tapped="grid_Tapped"    Background="Transparent" Grid.RowSpan="3"  >-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Border x:Name="bakBorder"   Grid.RowSpan="3"  Background="{Binding  Instance.SettingPageViewModelInstance.ContentBackColor, Source={StaticResource Locator}}" 
                     Visibility="{Binding Instance.SettingPageViewModelInstance.Theme, Source={StaticResource Locator},Converter={StaticResource BackColorVisiablityConverter}}"></Border>
@@ -40,42 +41,49 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource CustomContentTextBlockStyle}"   TextTrimming="WordEllipsis"  HorizontalAlignment="Left"     FontSize="16"/>
-                    <TextBlock x:Name="TextTime"  Margin="0,5,15,0" FontFamily="颜体"  Grid.Column="1"  VerticalAlignment="Top" Text="{Binding CurrentTime}"   Style="{StaticResource CustomContentTextBlockStyle}"    HorizontalAlignment="Right"     FontSize="16"/>
+                    <TextBlock x:Name="TextTime"  Margin="0,5,15,0" FontFamily="颜体"  Grid.Column="1"  VerticalAlignment="Top"  Style="{StaticResource CustomContentTextBlockStyle}"    HorizontalAlignment="Right"     FontSize="16"/>
                 </Grid>
             </Border>
-            <!--<TextBlock Foreground="Gainsboro" Grid.Row="1">啊时代发生的发生的 </TextBlock>-->
-            <ListView x:Name="listview"  Background="Transparent" FontFamily="颜体"  SelectedIndex="-1"    ScrollViewer.HorizontalScrollMode="Disabled"  Grid.Row="1" ItemContainerStyle="{StaticResource ListViewItemStyle1}"   Margin="0,0,0,0"   ItemsSource="{Binding ContentListt}"        HorizontalAlignment="Stretch"   
-         VerticalAlignment="Top"  SelectionMode="None">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Border  Background="Transparent" ManipulationMode="System,TranslateX" >
-                            <TextBlock  Text="{Binding}" Style="{StaticResource CustomContentTextBlockStyle}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"/>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <Grid  x:Name="ContentGrid"  Grid.Row="1"  IsTapEnabled="False" Margin="10,0,10,0"  >
+                <ListView x:Name="listview" FontFamily="颜体"   ItemContainerStyle="{StaticResource   CustomColorListViewItemStyle}"    Margin="0,0,0,0"  Height="auto"    ItemsSource="{Binding ContentListt}"   HorizontalAlignment="Stretch"   
+         VerticalAlignment="Stretch"    >
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <ScrollViewer  HorizontalScrollBarVisibility="Visible"  VerticalScrollBarVisibility="Disabled">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="{Binding ActualWidth ,ElementName=ContentGrid}">
+                                <TextBlock Text="{Binding}" Style="{StaticResource CustomContentTextBlockStyle}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-            <CommandBar  x:Name="commandbar"  ClosedDisplayMode="Compact"  IsOpen="False"  Grid.Row="2" Style="{StaticResource CustomCommandBarStyle}"
+                <TextBlock  x:Name="txtTest"  Opacity="0" Text="国" Style="{StaticResource CustomContentTextBlockStyle}"  VerticalAlignment="Top" FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"  TextWrapping="Wrap"></TextBlock>
+
+            </Grid>
+
+
+            <CommandBar  x:Name="commandbar"  ClosedDisplayMode=" Hidden"  IsOpen="False"  Grid.Row="1" VerticalAlignment="Bottom" Style="{StaticResource CustomCommandBarStyle}"  
                      >
                 <!--<AppBarButton Icon="Back" Label="返回" Command="{Binding GoBackCommand}"  />-->
                 <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="50"    Command="{Binding  RefreshCommand}"/>
                 <AppBarButton Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  />
                 <AppBarButton Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"  Style="{Binding PreTextContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}" />
                 <AppBarButton Icon="Bullets" Label="目录"      Command="{Binding CatalogCommand}"/>
-
-                <CommandBar.SecondaryCommands>
-                    <AppBarButton Icon="FontIncrease" Label="阅读背景"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Click="AppBarButton_Click" HorizontalAlignment="Left"
-                                  Visibility="{Binding Instance.SettingPageViewModelInstance.Theme, Source={StaticResource Locator},Converter={StaticResource BackColorVisiablityConverter}}"/>
-                    <AppBarButton Icon="FontIncrease" Label="字体+"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontIncreaseCommand}" HorizontalAlignment="Left"/>
-                    <AppBarButton Icon="FontDecrease" Label="字体-"  Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding FontDecreaseCommand}" HorizontalAlignment="Left"/>
-                    <AppBarButton Icon="FontDecrease" Label="{Binding Instance.SettingPageViewModelInstance.IsNightModel,Source={StaticResource  Locator},Converter={StaticResource  NightModeAppBarLabelConverter }}"   Width="{Binding ElementName=commandbar,Path=ActualWidth}"  Command="{Binding  NightModeCommand}" HorizontalAlignment="Left"/>
-                </CommandBar.SecondaryCommands>
             </CommandBar>
-            <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
-
         </Grid>
-        <UC:UC_BackColorPickerPanel  x:Name="ColorPanel"   Grid.RowSpan="5" HorizontalAlignment="Stretch" MaxHeight="400" Visibility="Collapsed" VerticalAlignment="Center"  Margin="0,0,0,100">
-
-        </UC:UC_BackColorPickerPanel>
+        <UC:UC_ProgressRing IsActive="{Binding IsLoading}"  Grid.RowSpan="3"  VerticalAlignment="Center"/>
+        <Border  IsHitTestVisible="False"  IsTapEnabled="False" Visibility="Collapsed" Background="Black" Opacity="{Binding  Instance.SettingPageViewModelInstance.LightValue, Source={StaticResource Locator},Converter={StaticResource DoubleToPercentConverter}}"></Border>
+        <UC:UC_ContentSettingPanel  x:Name="ColorPanel" HorizontalAlignment="Stretch"  Visibility="Collapsed" VerticalAlignment="Center"   Grid.RowSpan="3"  Margin="10,10,10,50" />
     </Grid>
 </Page>

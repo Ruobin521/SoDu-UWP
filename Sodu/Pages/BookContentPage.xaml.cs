@@ -2,11 +2,14 @@
 using Sodu.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,6 +18,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Sodu.Services;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -39,27 +43,35 @@ namespace Sodu.Pages
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
-                this.Loaded -= BookContentPage_Loaded;
-                this.Loaded += BookContentPage_Loaded;
+                this.ColorPanel.Closed -= ColorPanel_Closed;
+                this.ColorPanel.Closed += ColorPanel_Closed;
             }
-            this.grid.Tapped -= grid_Tapped;
-            this.grid.Tapped += grid_Tapped;
+
+            this.Loaded -= BookContentPage_Loaded;
+            this.Loaded += BookContentPage_Loaded;
+
         }
 
-
+        private void ColorPanel_Closed()
+        {
+            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+        }
 
         private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
         {
-            var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
-            scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
-            scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            {
+                var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
+                scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
+                scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+            }
         }
 
         private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
             if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
             {
-                SetFullScreen(true);
+                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
             }
         }
 
@@ -85,17 +97,16 @@ namespace Sodu.Pages
         {
             if (x > 85)
             {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("0");
+                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
             }
             else if (x < -85)
             {
-                (this.DataContext as BookContentPageViewModel).OnSwtichCommand("1");
+                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
             }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            SetFullScreen(true);
 
             if (e.NavigationMode == NavigationMode.Back)
             {
@@ -104,40 +115,13 @@ namespace Sodu.Pages
             (this.DataContext as IViewModel)?.InitData(e.Parameter);
         }
 
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        public int GetPerPageCount()
         {
-            SetFullScreen(false);
-        }
-
-        private void SetFullScreen(bool value)
-        {
-            if (value)
-            {
-                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(false);
-
-                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
-                {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-                }
-                else if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
-                {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-
-                    //StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                    //await statusBar.HideAsync();
-                }
-            }
-            else
-            {
-                ViewModel.ViewModelInstance.Instance.MainPageViewModelInstance.SetLeftControlButtonVisiablity(true);
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
-
-                //if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
-                //{
-                //    StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-                //    await statusBar.ShowAsync();
-                //}
-            }
+            var width = this.txtTest.ActualWidth;
+            int height = 36;
+            int count1 = (int)(this.ContentGrid.ActualWidth / width);
+            int count2 = (int)(this.ContentGrid.ActualHeight / height);
+            return count1 * count2;
         }
 
 
@@ -164,34 +148,25 @@ namespace Sodu.Pages
 
         private void grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            e.Handled = true;
             if (this.ColorPanel.Visibility == Visibility.Visible)
             {
-                e.Handled = true;
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                }
                 this.ColorPanel.Close();
-                return;
             }
-
-            if (PlatformHelper.GetPlatform() != PlatformHelper.Platform.IsMobile)
+            else
             {
-                e.Handled = true;
-                return;
-            }
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                }
 
-            if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Hidden)
-            {
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                this.ColorPanel.Show();
             }
-            else if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
-            {
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-            }
-
-
         }
 
-        private void AppBarButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.ColorPanel.Show();
-        }
     }
 }
