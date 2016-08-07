@@ -13,7 +13,7 @@
     <Button.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Button.Resources>
-    <Grid HorizontalAlignment="Stretch" Background="Transparent">
+    <Grid HorizontalAlignment="Stretch" Background="Transparent" Padding="8,0,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>

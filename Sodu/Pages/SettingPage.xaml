@@ -2,9 +2,6 @@
     x:Class="Sodu.Pages.SettingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:local="using:Sodu.Pages"
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     DataContext="{Binding Instance.SettingPageViewModelInstance,Source={ StaticResource  Locator}}"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,49 +27,49 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  >
                 <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                    <FontIcon  FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
                 </ToggleButton.Content>
             </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="设置" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
+            <TextBlock  Text="设置" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
         </Grid>
         <ScrollViewer  Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,5,0,10">
                 <StackPanel  Padding="15,0,0,0">
                     <Border Height="40">
-                        <TextBlock  Grid.Column="1" Grid.Row="1"  Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock   Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
 
-                    <ToggleSwitch x:Name="togAutoLogin" Grid.Column="1" Grid.Row="2"  IsOn="{Binding IfAutoLogin,Mode=TwoWay}" Style="{StaticResource CustomToggleSwitchStyle}" />
+                    <ToggleSwitch    IsOn="{Binding IfAutoLogin,Mode=TwoWay}" Style="{StaticResource CustomToggleSwitchStyle}" />
                     <Border Height="40">
-                        <TextBlock Grid.Column="1" Grid.Row="3"  Text="登陆后，自动添加点击小说到个人收藏" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock  Text="登陆后，自动添加点击小说到个人收藏" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
-                    <ToggleSwitch x:Name="togAutoAdd" Grid.Column="1"  Grid.Row="4" Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IfAutAddToShelf,Mode=TwoWay}">
+                    <ToggleSwitch  Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IfAutAddToShelf,Mode=TwoWay}">
                     </ToggleSwitch>
 
                     <Border Height="40">
-                        <TextBlock Grid.Column="1" Grid.Row="13"  Text="是否预读下一章" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock  Text="是否预读下一章" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
-                    <ToggleSwitch  Grid.Column="1"  Grid.Row="14" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsPreLoad,Mode=TwoWay}"/>
+                    <ToggleSwitch  Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsPreLoad,Mode=TwoWay}"/>
 
                     <Border Height="40">
-                        <TextBlock Grid.Column="1" Grid.Row="5"  Text="是否在2G/3G/4G下缓存小说" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock   Text="是否在2G/3G/4G下缓存小说" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
-                    <ToggleSwitch x:Name="togDwonloadBook" Grid.Column="1"  Grid.Row="6" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IfDownloadInWAAN,Mode=TwoWay}">
+                    <ToggleSwitch  Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IfDownloadInWAAN,Mode=TwoWay}">
                     </ToggleSwitch>
 
 
 
                     <Border Height="40">
-                        <TextBlock Grid.Column="1" Grid.Row="9"  Text="是否开启夜间模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock   Text="是否开启夜间模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
-                    <ToggleSwitch  Grid.Column="1"  Grid.Row="10" Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsNightModel,Mode=TwoWay}"/>
+                    <ToggleSwitch   Style="{StaticResource CustomToggleSwitchStyle}"   IsOn="{Binding IsNightModel,Mode=TwoWay}"/>
 
                     <Border Height="40">
-                        <TextBlock Grid.Column="1" Grid.Row="11"  Text="是否开启横屏模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
+                        <TextBlock   Text="是否开启横屏模式" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
-                    <ToggleSwitch  Grid.Column="1"  Grid.Row="12" Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
+                    <ToggleSwitch   Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
 
 
                 </StackPanel>
@@ -80,10 +77,6 @@
         </ScrollViewer>
 
 
-
-        <!--<CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
-            <AppBarButton Icon="Save" Label="保存"  Command="{Binding SaveCommand}"/>
-        </CommandBar>-->
     </Grid>
 
 </Page>

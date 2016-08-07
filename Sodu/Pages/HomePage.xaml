@@ -62,7 +62,7 @@
             </Pivot.HeaderTemplate>
             <Pivot.ItemTemplate>
                 <DataTemplate>
-                    <Frame SourcePageType="{Binding MenuType}"  Margin="0" Padding="0" />
+                    <Frame SourcePageType="{Binding MenuType}"  Margin="0" Padding="8,0,10,0" />
                 </DataTemplate>
             </Pivot.ItemTemplate>
         </Pivot>

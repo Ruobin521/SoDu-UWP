@@ -54,7 +54,7 @@ namespace Sodu.Pages
 
         private void ColorPanel_Closed()
         {
-            this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+            SetCommandBarMode(false);
         }
 
         private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
@@ -67,22 +67,29 @@ namespace Sodu.Pages
             }
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            this.HightListBack.Visibility = Visibility.Visible;
+            MenuOpiton(false);
+            if (e.NavigationMode == NavigationMode.Back)
+            {
+                return;
+            }
+            (this.DataContext as IViewModel)?.InitData(e.Parameter);
+        }
+
+
+
         private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
-            {
-                this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-            }
+            MenuOpiton(false);
         }
 
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
-                if (this.commandbar.ClosedDisplayMode == AppBarClosedDisplayMode.Compact)
-                {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
-                }
+                MenuOpiton(false);
             }
 
             x = 0;
@@ -105,25 +112,31 @@ namespace Sodu.Pages
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        //public int GetPerLineCount()
+        //{
+        //    var width = this.txtTest.ActualWidth;
+        //    int count1 = (int)(this.ContentGrid.ActualWidth / width);
+        //    return count1;
+        //}
+
+        //public int GetTotalLineCount()
+        //{
+        //    int height = 36;
+        //    int count2 = (int)(this.ContentGrid.ActualHeight / height);
+        //    return count2;
+        //}
+
+
+        //public double GetTxtTestActualHeight()
+        //{
+        //    return this.txtTest.ActualHeight;
+        //}
+
+
+        public double GetContentAreatActualHeight()
         {
-
-            if (e.NavigationMode == NavigationMode.Back)
-            {
-                return;
-            }
-            (this.DataContext as IViewModel)?.InitData(e.Parameter);
+            return this.ContentGrid.ActualHeight;
         }
-
-        public int GetPerPageCount()
-        {
-            var width = this.txtTest.ActualWidth;
-            int height = 36;
-            int count1 = (int)(this.ContentGrid.ActualWidth / width);
-            int count2 = (int)(this.ContentGrid.ActualHeight / height);
-            return count1 * count2;
-        }
-
 
         public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
         {
@@ -149,11 +162,16 @@ namespace Sodu.Pages
         private void grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
-            if (this.ColorPanel.Visibility == Visibility.Visible)
+            MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+        }
+
+        private void MenuOpiton(bool value)
+        {
+            if (!value)
             {
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Hidden;
+                    SetCommandBarMode(false);
                 }
                 this.ColorPanel.Close();
             }
@@ -161,12 +179,21 @@ namespace Sodu.Pages
             {
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
-                    this.commandbar.ClosedDisplayMode = AppBarClosedDisplayMode.Compact;
+                    SetCommandBarMode(true);
                 }
-
                 this.ColorPanel.Show();
             }
         }
 
+
+        private void SetCommandBarMode(bool value)
+        {
+            this.commandbar.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+        }
     }
 }

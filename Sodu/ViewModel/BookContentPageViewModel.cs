@@ -513,38 +513,12 @@ namespace Sodu.ViewModel
         private List<string> SplitString(string str)
         {
             List<string> strList = new List<string>();
-            str = str.Replace("\n", "");
-
-
-            //string[] lists = str.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            //for (int i = 0; i < lists.Count(); i++)
-            //{
-            //    strList.Add(lists[i]);
-            //}
-            if (NavigationService.ContentFrame.Content is BookContentPage)
+            string[] lists = str.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < lists.Count(); i++)
             {
-                int perCount = (NavigationService.ContentFrame.Content as BookContentPage).GetPerPageCount();
-                if (str.Length <= perCount)
+                if (!string.IsNullOrEmpty(lists[i]))
                 {
-                    strList.Add(str);
-                }
-                else
-                {
-                    int pageCount = str.Length % perCount == 0
-                        ? (int)(str.Length / perCount)
-                        : (int)(str.Length / perCount + 1);
-
-                    for (int i = 0; i < pageCount; i++)
-                    {
-                        if (i != pageCount - 1)
-                        {
-                            strList.Add(str.Substring(i * perCount, perCount));
-                        }
-                        else
-                        {
-                            strList.Add(str.Substring(i * perCount, str.Length - i * perCount));
-                        }
-                    }
+                    strList.Add("　　" + lists[i].Trim());
                 }
             }
             return strList;

@@ -2,15 +2,10 @@
     x:Class="Sodu.Pages.UpdateChapterPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:UC="using:Sodu.UC"
-    xmlns:converter="using:Sodu.Converter"
-    xmlns:vm="using:Sodu.ViewModel"  
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:uc="using:Sodu.UC"
     DataContext="{Binding Instance.UpdataChapterPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
     <Page.Transitions>
@@ -30,56 +25,36 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
+            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch" >
                 <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
+                    <FontIcon   FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
                 </ToggleButton.Content>
             </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Style="{StaticResource TitleTextBlockStyle}"    Grid.Column="1">
+            <TextBlock    Style="{StaticResource TitleTextBlockStyle}"    Grid.Column="1">
             <Run Text="{Binding ContentTitle}"  ></Run>
             <Run Text=" 更新列表"></Run>
             </TextBlock>
         </Grid>
-
-
-
-        <ListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}"   Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
+        <ListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}"   Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
           >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_ChapterItem x:Name="item"  DataContext="{Binding}"   Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}"  />
+                    <uc:UC_ChapterItem x:Name="item"  DataContext="{Binding}"   Command="{Binding Instance.UpdataChapterPageViewModelInstance.BookChapterSelectedChangedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}"  />
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <!--<control:PullToRefreshListView.RefreshIndicatorContent>
-                <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↑</Run>
-                        <Run>释放刷新</Run>
-                    </TextBlock>
-                    <TextBlock FontSize="16" x:Name="downText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↓</Run>
-                        <Run>下拉刷新</Run>
-                    </TextBlock>
-                </Grid>
-            </control:PullToRefreshListView.RefreshIndicatorContent>-->
-            <!--<Interactivity:Interaction.Behaviors >
-                <Core:EventTriggerBehavior   EventName="SelectionChanged">
-                    <Core:InvokeCommandAction Command="{Binding  BookChapterSelectedChangedCommand}"  CommandParameter="{Binding ElementName=listview,Path=SelectedItem}"/>
-                </Core:EventTriggerBehavior>
-            </Interactivity:Interaction.Behaviors>-->
         </ListView>
-        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"  Style="{StaticResource CustomCommandBarStyle}">
+        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="Menu"  Style="{StaticResource CustomCommandBarStyle}">
             <AppBarButton Icon="Add" Label="添加收藏"  Width="60"  Command="{Binding AddToShelfCommand}" Visibility="{Binding IsAddBtnShow,Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"    Width="60"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="60"  Command="{Binding PreviousPageCommand}"/>
             <AppBarButton Icon="Next" Label="下一页"  Width="60"  Command="{Binding  NextPageCommand }"/>
 
             <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Page2" Width="{Binding ElementName=menu,Path=ActualWidth}" Label=" 首页" Command="{Binding FirstPageCommand}" />
-                <AppBarButton Icon="Page2" Width="{Binding ElementName=menu,Path=ActualWidth}" Label=" 末页"  Command="{Binding LastPageCommand}"/>
+                <AppBarButton Icon="Page2" Width="{Binding ElementName=Menu,Path=ActualWidth}" Label=" 首页" Command="{Binding FirstPageCommand}" />
+                <AppBarButton Icon="Page2" Width="{Binding ElementName=Menu,Path=ActualWidth}" Label=" 末页"  Command="{Binding LastPageCommand}"/>
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
-                <Border  Height="{Binding ElementName=menu,Path=ActualHeight}" Margin="10,0,0,0"  Width="Auto"  Padding="3">
+                <Border  Height="{Binding ElementName=Menu,Path=ActualHeight}" Margin="10,0,0,0"  Width="Auto"  Padding="3">
                     <TextBlock  FontSize="18"     VerticalAlignment="Center">
                     <Run Text="{Binding  PageIndex}"></Run>
                     <Run  Text=" / "></Run>
@@ -89,7 +64,7 @@
 
             </CommandBar.Content>
         </CommandBar>
-        <UC:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding Instance.UpdataChapterPageViewModelInstance.IsLoading,Source={ StaticResource  Locator}}"  ></UC:UC_ProgressRing>
+        <uc:UC_ProgressRing Grid.ColumnSpan="5" Grid.Row="0" Grid.RowSpan="2" IsActive="{Binding Instance.UpdataChapterPageViewModelInstance.IsLoading,Source={ StaticResource  Locator}}"  ></uc:UC_ProgressRing>
 
         <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding  ChapterList}" PullThreshold="50"    Grid.Row="1"     HorizontalAlignment="Stretch" Background="Transparent"  
            RefreshCommand="{Binding RefreshCommand}" RequestCommand="{Binding RequestCommand}">
