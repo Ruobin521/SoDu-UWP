@@ -274,10 +274,6 @@ namespace Sodu.ViewModel
 
                     foreach (var item in arrary)
                     {
-                        if (item.NewestChapterUrl.Contains("dashubao"))
-                        {
-                            continue;
-                        }
                         item.BookName = this.ContentTitle;
                         item.BookID = this.CurrentEntity.BookID;
                         this.ChapterList.Add(item);

@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Page="using:Sodu.Pages"  
+    xmlns:uc="using:Sodu.UC"
     xmlns:converter="using:Sodu.Converter"
     DataContext="{Binding Instance.MainPageViewModelInstance,Source={StaticResource Locator}}"
     mc:Ignorable="d"
@@ -22,34 +23,10 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="39"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <Grid Background="{ThemeResource LightHeaderBackground}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="50"/>
-            </Grid.ColumnDefinitions>
-
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Margin="5,0,0,0" Grid.Column="0"   Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0" />
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"  Style="{StaticResource TitleTextBlockStyle}"  Text="小说搜索阅读 UWP"  Grid.Column="1" ></TextBlock>
-
-            <Button Grid.Column="2"  Background="Transparent" Style="{StaticResource ContentButtonStyle}" Foreground="{ThemeResource TitleTextFroeground}" Command="{Binding SearchCommand}">
-                <Button.Content>
-                    <SymbolIcon  Symbol="Find" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" >
-                        <SymbolIcon.RenderTransform>
-                            <CompositeTransform Rotation="0"/>
-                        </SymbolIcon.RenderTransform>
-                    </SymbolIcon>
-                </Button.Content>
-            </Button>
-        </Grid>
+        <uc:UC_PageHeader Title="小说搜索阅读" SearchButtonVisibility="Visible"></uc:UC_PageHeader>
 
         <Pivot x:Name="pivot" Style="{StaticResource CustomPivotStyle}" ItemContainerStyle="{StaticResource CustomPivotItemStyle}"   SelectionChanged="pivot_SelectionChanged"  Grid.Row="1">
             <Pivot.HeaderTemplate>

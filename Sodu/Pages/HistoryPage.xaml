@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:UC="using:Sodu.UC"
+    xmlns:uc="using:Sodu.UC"
     xmlns:converter="using:Sodu.Converter"
     xmlns:vm="using:Sodu.ViewModel"  
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
@@ -24,25 +24,12 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"   Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="历史记录" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
-        </Grid>
-
+        <uc:UC_PageHeader   Title="历史纪录"></uc:UC_PageHeader>
         <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}" ScrollViewer.VerticalScrollBarVisibility="Hidden"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_HistoryItem x:Name="item"  DataContext="{Binding}"  Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
+                    <uc:UC_HistoryItem x:Name="item"  DataContext="{Binding}"  Command="{Binding  Instance.EverReadBookPageViewModelInstance.BookItemSelectedCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
 
@@ -53,6 +40,6 @@
             <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
         </CommandBar>
 
-        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
+        <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></uc:UC_ProgressRing>
     </Grid>
 </Page>

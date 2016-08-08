@@ -234,15 +234,17 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public void SetBookList(string html)
+        public async void SetBookList(string html)
         {
-            if (this.ShelfBookList != null)
-            {
-                this.ShelfBookList.Clear();
-            }
             if (!string.IsNullOrEmpty(html))
             {
                 ObservableCollection<BookEntity> list = AnalysisSoduService.GetBookShelftListFromHtml(html);
+
+                if (this.ShelfBookList != null)
+                {
+                    this.ShelfBookList.Clear();
+                    await Task.Delay(1);
+                }
 
                 if (list == null)
                 {
@@ -260,7 +262,7 @@ namespace Sodu.ViewModel
                             this.ShelfBookList.Add(item);
                         }
                     }
-                    ToastHeplper.ShowMessage("个人收藏已更新");
+                    ToastHeplper.ShowMessage("个人书架已更新");
                 }
 
             }

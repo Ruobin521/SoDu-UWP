@@ -10,7 +10,7 @@
     xmlns:vm="using:Sodu.ViewModel"  
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
-    DataContext="{Binding Instance.HomePageViewModelInstance,Source={ StaticResource  Locator}}"
+    DataContext="{Binding Instance.RecommendAndHotPageViewModelInstance,Source={ StaticResource  Locator}}"
     mc:Ignorable="d" 
     x:Name="root">
     <Page.Transitions>
@@ -37,7 +37,7 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.HomePageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
+                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.RecommendAndHotPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <!--<control:PullToRefreshListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding UpdateBookList}" PullThreshold="50"    Grid.Row="0"     HorizontalAlignment="Stretch" Background="Transparent"  

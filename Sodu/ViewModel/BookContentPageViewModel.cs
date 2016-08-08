@@ -498,15 +498,15 @@ namespace Sodu.ViewModel
             double width = Window.Current.Bounds.Width;
             double height = Window.Current.Bounds.Height;
 
-            if (this.ContentListt != null)
+            if (ContentListt != null)
             {
                 this.ContentListt.Clear();
             }
-            this.ContentListt = null; ;
-            List<string> strList = SplitString(html);
-            for (int i = 0; i < strList.Count; i++)
+            var strList = SplitString(html);
+
+            foreach (string str in strList)
             {
-                this.ContentListt.Add(strList[i]);
+                this.ContentListt.Add(str);
             }
         }
 

@@ -6,21 +6,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="95"
+    d:DesignHeight="81"
     d:DesignWidth="500"
     x:Name="root">
 
-    <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1" >
-        <Grid Background="Transparent">
-            <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
+    <Button Style="{StaticResource  ContentButtonStyle}"  x:Name="btn"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1" >
+        <Grid Background="Transparent" Padding="8,0,10,0">
+            <Grid  HorizontalAlignment="Stretch"  >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="1"/>
                 </Grid.RowDefinitions>
 
                 <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="5" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
@@ -40,8 +40,8 @@
             <Run Text="最后阅读章节:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
                 </TextBlock>
+                <Line x:Name="line"  Grid.Row="2"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0"/>
             </Grid>
-            <Line x:Name="line"  Grid.Row="3"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0"/>
         </Grid>
     </Button>
 </UserControl>

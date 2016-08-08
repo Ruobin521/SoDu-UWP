@@ -23,19 +23,9 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid Grid.ColumnSpan="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
 
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  >
-                <ToggleButton.Content>
-                    <FontIcon  FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock    Text="注册"   Grid.Column="1"  Style="{StaticResource TitleTextBlockStyle}" ></TextBlock>
-        </Grid>
+        <uc:UC_PageHeader Title="注册"  Grid.ColumnSpan="3"></uc:UC_PageHeader>
+
         <Border Grid.Row="1"    VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
 
             <Grid  >
@@ -58,7 +48,7 @@
                 <PasswordBox   Password="{Binding PassWord2,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}"  Grid.Row="5"    VerticalAlignment="Center"  />
 
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button   Content="确定"    Style="{StaticResource   ButtonStyle1 }" Command="{Binding ConfirmCommand}" FontSize="16" Height="35" Width="75" Margin="10,0"  />
+                    <Button x:Name="btnSumbit"   Content="确定"    Style="{StaticResource   ButtonStyle1 }" Command="{Binding ConfirmCommand}" FontSize="16" Height="35" Width="75" Margin="10,0"  />
                     <Button       Content="取消" Style="{StaticResource ButtonStyle1}" FontSize="16" Height="35" Width="75" Margin="10,0" Command="{ Binding CancleCommand}"   />
                 </StackPanel>
             </Grid>

@@ -33,6 +33,7 @@ using Microsoft.Practices.Unity;
 using SoDu.Core.API;
 using UmengSDK;
 using Windows.Graphics.Display;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu
 {
@@ -127,8 +128,9 @@ namespace Sodu
 
                 // 将框架放在当前窗口中
                 Window.Current.Content = rootFrame;
-
                 InitContainer();
+
+                DispatcherHelper.Initialize();
 
                 //初始化程序数据
                 InitSettingData();

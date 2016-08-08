@@ -24,7 +24,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Sodu.ViewModel
 {
-    public class HomePageViewModel : BaseViewModel, IViewModel
+    public class RecommendAndHotPageViewModel : BaseViewModel, IViewModel
     {
         #region 属性 字段
         private int m_PageIndex = 1;
@@ -100,7 +100,7 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_IsLoading, value);
             }
         }
-        public HomePageViewModel()
+        public RecommendAndHotPageViewModel()
         {
         }
 
@@ -146,16 +146,27 @@ namespace Sodu.ViewModel
           {
               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
              {
-                 if (result != null && SetBookList(result.Result.ToString()))
+                 try
                  {
-                     ToastHeplper.ShowMessage("已更新" + RecommendBookList.Count + "条数据");
-                 }
-                 else
-                 {
-                     if (NavigationService.ContentFrame.Content is Pages.RecommendPage)
+                     if (result != null)
                      {
-                         ToastHeplper.ShowMessage("未能获取推荐阅读数据");
+                         if (SetBookList(result.Result))
+                         {
+                             ToastHeplper.ShowMessage("数据已更新 ");
+                         }
+                         else
+                         {
+                             throw new Exception();
+                         }
                      }
+                     else
+                     {
+                         throw new Exception();
+                     }
+                 }
+                 catch (Exception)
+                 {
+                     ToastHeplper.ShowMessage("未能获取数据 ");
                  }
              });
           });
@@ -191,7 +202,6 @@ namespace Sodu.ViewModel
 
         public bool SetBookList(string html)
         {
-            bool result = false;
             if (!string.IsNullOrEmpty(html))
             {
 
@@ -217,15 +227,10 @@ namespace Sodu.ViewModel
                     {
                         this.HotBookList.Add(item);
                     }
-                    result = true;
-
-                    return result;
+                    return true;
                 }
             }
-            else
-            {
-                return result;
-            }
+            return false;
         }
 
         #endregion

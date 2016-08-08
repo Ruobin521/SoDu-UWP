@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <converter:DownItemIconConverter x:Key="DownItemIconConverter"></converter:DownItemIconConverter>
     </UserControl.Resources>
-    <Grid Background="#FFFBFBFB"  >
+    <Grid Background="#FFFBFBFB" Padding="8,0,10,0">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

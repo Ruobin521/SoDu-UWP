@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -328,13 +329,16 @@ namespace Sodu.ViewModel
                                };
                                temp.ContentList.Add(content);
 
-                               if (IsFrameContent)
-                               {
-                                   await Task.Factory.StartNew((obj) =>
-                                   {
-                                       temp.SetProcessValue();
-                                   }, null, new CancellationTokenSource().Token, TaskCreationOptions.None, _syncContextTaskScheduler);
-                               }
+                               DispatcherHelper.CheckBeginInvokeOnUI(temp.SetProcessValue);
+
+                               //if (IsFrameContent)
+                               //{
+
+                               //    await Task.Factory.StartNew((obj) =>
+                               //    {
+                               //       temp.SetProcessValue();
+                               //    }, null, new CancellationTokenSource().Token, TaskCreationOptions.None, _syncContextTaskScheduler);
+                               //}
                            }
                            catch (Exception ex)
                            {

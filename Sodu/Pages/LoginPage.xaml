@@ -330,19 +330,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.ColumnSpan="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <UC:UC_PageHeader Title="用户登陆"  Grid.ColumnSpan="3"></UC:UC_PageHeader>
 
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="用户登录"  Grid.Column="1" Style="{StaticResource TitleTextBlockStyle}" ></TextBlock>
-        </Grid>
         <Border Grid.Row="1"     VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
             <Grid   >
                 <Grid.RowDefinitions>

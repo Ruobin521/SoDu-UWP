@@ -9,13 +9,13 @@
     x:Name="root"
     d:DesignHeight="130"
     d:DesignWidth="500">
-    <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  x:Name="btn" Foreground="#FF004D00"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}" Grid.Column="1" >
-        <Grid Background="Transparent">
+    <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
+        <Grid Background="Transparent"  Padding="8,0,10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}" Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" Margin="0,0,5,0" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
             <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
@@ -23,21 +23,21 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="3"/>
                 </Grid.RowDefinitions>
-                <TextBlock   Grid.Row="0" FontSize="18"   Style="{StaticResource ListItemTextBlockStyle}" Margin="15,0,0,0">
+                <TextBlock   Grid.Row="0"   Style="{StaticResource ListItemTextBlockStyle}" >
                     <Run Text="{Binding BookName}"/>
                     <Run Text="{Binding UnReadCountData}" Foreground="Red" FontSize="16"/>
                 </TextBlock>
                 <!--<TextBlock Text="{Binding UpdateTime}" Grid.Row="0" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,15,0"></TextBlock>-->
-                <TextBlock  Grid.Row="1" FontSize="16"   Style="{StaticResource ListItemTextBlockStyle}" Margin="15,0,0,0" >
+                <TextBlock  Grid.Row="1" FontSize="16"   Style="{StaticResource ListItemTextBlockStyle}" >
             <Run Text="本地最新章节:  "></Run>
             <Run Text="{Binding NewestChapterName}"></Run>
                 </TextBlock>
-                <TextBlock   Grid.Row="2" FontSize="16"   Style="{StaticResource ListItemTextBlockStyle}" Margin="15,0,0,0" >
+                <TextBlock   Grid.Row="2" FontSize="16"   Style="{StaticResource ListItemTextBlockStyle}"  >
             <Run Text="最后阅读章节:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
                 </TextBlock>
             </Grid>
-            <Line x:Name="line"  Grid.Row="3"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="5,0,5,0"/>
+            <Line VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   />
         </Grid>
     </Button>
 </UserControl>

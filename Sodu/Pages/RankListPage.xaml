@@ -23,7 +23,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview"    ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
+        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
@@ -36,23 +36,18 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu" Style="{StaticResource CustomCommandBarStyle}" >
-            <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle" Click="AppBarButton_Click" />-->
-            <!--<AppBarSeparator/>-->
-            <!--<AppBarButton Icon="Back" Label="返回" Width="60"   Command="{Binding BackCommand}"/>-->
+        <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}" >
+
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}"  Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="70"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="70"  Command="{Binding PrePageCommand}"  />
             <AppBarButton Icon="Next" Label="下一页"  Width="70"  Command="{Binding  RequestCommand }"  />
-            <!--<AppBarButton Icon="Stop" Label="Stop" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Play" Label="Play" Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Forward" Label="Forward" Click="AppBarButton_Click"/>-->
 
             <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Page2" Width="{Binding ElementName=menu,Path=ActualWidth}" Label=" 首页" Command="{Binding FirstPageCommand}"    />
-                <AppBarButton Icon="Page2" Width="{Binding ElementName=menu,Path=ActualWidth}" Label=" 末页"  Command="{Binding LastPageCommand}"  />
+                <AppBarButton Icon="Page2" Width="{Binding ElementName=Menu,Path=ActualWidth}" Label=" 首页" Command="{Binding FirstPageCommand}"    />
+                <AppBarButton Icon="Page2" Width="{Binding ElementName=Menu,Path=ActualWidth}" Label=" 末页"  Command="{Binding LastPageCommand}"  />
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
-                <Border  Height="{Binding ElementName=menu,Path=ActualHeight}"  Width="Auto"  Padding="3" >
+                <Border  Height="{Binding ElementName=Menu,Path=ActualHeight}"  Width="Auto"  Padding="3" >
                     <TextBlock  FontSize="18"     VerticalAlignment="Center" Margin="10,0,0,0"   >
                     <Run Text="{Binding  PageIndex}"></Run>
                     <Run Text=" / "></Run>
@@ -62,6 +57,6 @@
 
             </CommandBar.Content>
         </CommandBar>
-        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
+        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.Row="0" Grid.RowSpan="2" ></UC:UC_ProgressRing>
     </Grid>
 </Page>

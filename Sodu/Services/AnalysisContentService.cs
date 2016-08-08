@@ -119,14 +119,41 @@ namespace Sodu.Services
         /// </summary>
         public const string su80 = "www.su80.net";
 
+        /// <summary>
+        ///木鱼哥
+        /// </summary>
+        public const string myg = "www.muyuge.com";
+
+        /// <summary>
+        ///VIVI小说网（顶点小说）
+        /// </summary>
+        public const string vivi = "www.zkvivi.com";
+
+        /// <summary>
+        ///轻语小说
+        /// </summary>
+        public const string qyxs = "www.qingyuxiaoshuo.com";
+
+        /// <summary>
+        /// 乐文(目录暂时没有解析)
+        /// </summary>
+        public const string lww = "www.lwtxt.net";
+
+        /// <summary>
+        /// 笔铺阁
+        /// </summary>
+        public const string bpg = "www.bipuge.com";
+
+
+
         public static List<string> UrlList = new List<string>()
         {
             su80, yssm,  fourkzw, ylg,     fenghuaju,
             shu6, ytzww, qubige,  zsw,     sqsxs,
             snwx, kkks,  dhzw,    aszw520, fyxs,
             xs55, wwxsw, qfxs,    bxwx5,   dijiuzww,
-            qdsw,
-            dqzw
+            qdsw, myg,   dqzw,    vivi,    qyxs,
+            lww , bpg
         };
 
         public static bool CheckUrl(string url)
@@ -264,8 +291,6 @@ namespace Sodu.Services
                     result = AnalysisSqsxsw(html);
                     break;
 
-
-
                 //趣笔阁
                 case WebSet.qubige:
                     result = AnalysisBxzw5(html);
@@ -309,13 +334,37 @@ namespace Sodu.Services
                     result = AnalysisSu80(html);
                     break;
 
+                //木鱼哥
+                case WebSet.myg:
+                    result = AnalysisMyg(html);
+                    break;
+
+                //vivi
+                case WebSet.vivi:
+                    result = AnalysisVivi(html);
+                    break;
+
+                //轻语
+                case WebSet.qyxs:
+                    result = AnalysisQysx(html);
+                    break;
+
+                //乐文网
+                case WebSet.lww:
+                    result = AnalysisLww(html);
+                    break;
+
+                //乐文网
+                case WebSet.bpg:
+                    result = AnalysisBpg(html);
+                    break;
+
+
                 case "书旗小说":
                     result = AnalysisSq(html);
                     break;
 
-                case "木鱼哥":
-                    result = AnalysisMyg(html);
-                    break;
+
 
                 case "无弹窗小说网":
                     result = AnalysisWtc(html);
@@ -515,6 +564,79 @@ namespace Sodu.Services
             {
                 result = match.ToString();
                 result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// vivi
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisVivi(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<DIV id=content NAME=\"content\">.*?</TBODY>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 轻语
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisQysx(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"content\">.*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 乐文
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisLww(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"txtright\">.*?<span id=\"endtips\">", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 笔铺阁
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisBpg(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<table align=center border=\"0\">.*?<center><script>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = ReplaceSymbol(result);
+                result = result.Replace("记住本站网址：笔铺阁（www.bipuge.com）", "");
             }
             return result;
         }
@@ -742,11 +864,27 @@ namespace Sodu.Services
                     result = AnalysisCommonUrl(url);
                     break;
 
+                case WebSet.vivi:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                case WebSet.qyxs:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+                case WebSet.lww:
+                    result = AnalysisLww(url);
+                    break;
+                case WebSet.bpg:
+                    result = AnalysisCommonUrl(url);
+                    break;
+
+
                 case "书旗小说":
                     result = AnalysisSq(url);
                     break;
 
-                case "木鱼哥":
+                case WebSet.myg:
                     result = AnalysisMyg(url);
                     break;
 
@@ -815,9 +953,11 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static string AnalysisMyg(string html)
+        private static string AnalysisMyg(string url)
         {
-            return null;
+            string result = url.Substring(0, url.LastIndexOf('/') + 1);
+
+            return result;
 
         }
 
@@ -840,6 +980,19 @@ namespace Sodu.Services
         private static string AnalysisAszw(string html)
         {
             return null;
+        }
+
+        /// <summary>
+        /// 乐文
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisLww(string url)
+        {
+            //http://www.lwtxt.net/html/994_15279861.html
+            string result = string.Empty;
+
+            return result;
         }
 
         /// <summary>
@@ -926,22 +1079,22 @@ namespace Sodu.Services
                     result = AnalysisYyzww(html);
                     break;
 
-                //第九中文网（有分页）
+                //第九中文网
                 case WebSet.dijiuzww:
                     result = AnalysisdJzww(html, web);
                     break;
 
-                //清风小说（有分页）
+                //清风小说
                 case WebSet.qfxs:
                     result = AnalysisdQfxs(html, web);
                     break;
 
-                //窝窝小说网（有分页）
+                //窝窝小说网
                 case WebSet.wwxsw:
                     result = AnalysisdWwxsw(html, web);
                     break;
 
-                //找书网（需要分页）
+                //找书网
                 case WebSet.zsw:
                     result = AnalysisdQfxs(html, web);
                     break;
@@ -1001,6 +1154,22 @@ namespace Sodu.Services
                     result = Analysis4k(html, url);
                     break;
 
+                //Vivi
+                case WebSet.vivi:
+                    result = AnalysisVivi(html, web);
+                    break;
+
+                //轻语
+                case WebSet.qyxs:
+                    result = AnalysisQysx(html, web);
+                    break;
+
+                //笔铺阁
+                case WebSet.bpg:
+                    result =AnalysisBpg(html, web);
+                    break;
+
+
 
                 case "少年文学":
                     result = AnalysisSlsxsw(html, url);
@@ -1010,7 +1179,8 @@ namespace Sodu.Services
                     result = AnalysisSq(html);
                     break;
 
-                case "木鱼哥":
+                //木鱼哥
+                case WebSet.myg:
                     result = AnalysisMyg(html);
                     break;
 
@@ -1254,7 +1424,121 @@ namespace Sodu.Services
 
         private static List<BookCatalog> AnalysisMyg(string html)
         {
-            return null;
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"xslist\">.*?</div>");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "<li><a href=\"(.*?)\".*?>(.*?)</a></li>");
+            //<li><a href="http://www.muyuge.com/55_55628/17752012.html" title="第001章 刺青生">第001章 刺青生</a></li><
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                int i = 0;
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = url_Mathch;
+                            catalog.CatalogName = title_Mathch;
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        private static List<BookCatalog> AnalysisVivi(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<TD vAlign=top>.*?<TABLE id=bgdiv cellSpacing=0 cellPadding=0>");
+            if (t_string != null)
+            {
+
+                MatchCollection matches = Regex.Matches(t_string.ToString(), "<A HREF=\"(.*?)\">(.*?)</A>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        private static List<BookCatalog> AnalysisQysx(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<div id=\"readerlist\">.*?<div class=\"clearfix\">");
+            if (t_string != null)
+            {
+
+                MatchCollection matches = Regex.Matches(t_string.ToString(), "<li><a href=\"(.*?)\">(.*?)</a></li>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
 
         }
 
@@ -1750,6 +2034,47 @@ namespace Sodu.Services
         private static List<BookCatalog> AnalysisDefault(string html)
         {
             return null;
+
+        }
+
+
+        private static List<BookCatalog> AnalysisBpg(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match t_string = Regex.Match(html, "<div id=\"content\">.*?</div>");
+            if (t_string != null)
+            {
+
+                MatchCollection matches = Regex.Matches(t_string.ToString(), "<dd><a href=\"(.*?)\">(.*?)</a></dd>");
+                if (matches.Count == 0)
+                {
+                    return list;
+                }
+                else
+                {
+                    list = new List<BookCatalog>();
+                    int i = 0;
+                    foreach (Match item in matches)
+                    {
+                        var groups = item.Groups;
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
 
         }
     }

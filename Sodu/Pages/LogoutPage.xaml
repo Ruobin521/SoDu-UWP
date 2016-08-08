@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
     DataContext="{Binding Instance.LogoutPageViewModelInstance,Source={ StaticResource  Locator}}"
-    xmlns:UC="using:Sodu.UC"
+    xmlns:uc="using:Sodu.UC"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -19,19 +19,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <uc:UC_PageHeader Title="注销登陆"></uc:UC_PageHeader>
 
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}"  VerticalAlignment="Stretch"  Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="注销登陆" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
-        </Grid>
-        <UC:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding IsLoading}"  ></UC:UC_ProgressRing>
+        <uc:UC_ProgressRing Grid.ColumnSpan="5"   Grid.RowSpan="5" IsActive="{Binding IsLoading}"  ></uc:UC_ProgressRing>
     </Grid>
 </Page>

@@ -77,11 +77,7 @@ namespace Sodu.ViewModel
         {
             get
             {
-                if (m_BookList == null)
-                {
-                    m_BookList = new ObservableCollection<BookEntity>();
-                }
-                return m_BookList;
+                return m_BookList ?? (m_BookList = new ObservableCollection<BookEntity>());
             }
             set
             {
@@ -132,18 +128,18 @@ namespace Sodu.ViewModel
             {
                 if (result.Result != null)
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                   {
-                       bool rs = SetBookList(result.Result.ToString(), pageindex);
-                       if (!rs)
-                       {
-                           ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
-                       }
-                       else
-                       {
-                           ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
-                       }
-                   });
+                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                    {
+                        bool rs = await SetBookList(result.Result.ToString(), pageindex);
+                        if (!rs)
+                        {
+                            ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
+                        }
+                        else
+                        {
+                            ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
+                        }
+                    });
                 }
             });
         }
@@ -173,7 +169,7 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public bool SetBookList(string html, int pageIndex)
+        public async Task<bool> SetBookList(string html, int pageIndex)
         {
 
             if (!string.IsNullOrEmpty(html))
@@ -185,13 +181,11 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
-                    if (this.BookList != null)
-                    {
-                        this.BookList.Clear();
-                    }
+                    this.BookList?.Clear();
+                    await Task.Delay(1);
                     foreach (var item in arrary)
                     {
-                        this.BookList.Add(item);
+                        BookList.Add(item);
                     }
                     this.PageIndex = pageIndex;
                     return true;

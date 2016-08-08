@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
+    xmlns:uc="using:Sodu.UC"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -17,19 +18,7 @@
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch"  Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="关于小说搜索阅读"  Grid.Column="1"  Style="{StaticResource  TitleTextBlockStyle}" ></TextBlock>
-        </Grid>
+        <uc:UC_PageHeader Title="小说搜索阅读"></uc:UC_PageHeader>
         <ScrollViewer   Grid.Row="1"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,0,0,0">
                 <Grid.RowDefinitions>
@@ -53,11 +42,11 @@
                         <TextBlock Style="{StaticResource TitleTextBlockStyle}"  LineHeight="32" Margin="0,2,0,0">
                           <Run Text="本次更新："></Run>
                            <LineBreak/>
-                          <Run Text="1.全新的导航逻辑"></Run>
+                          <Run Text="1.全新的阅读设置"></Run>
                            <LineBreak/>
-                          <Run Text="2.全新的主题"></Run>
+                          <Run Text="2.全局细节微调"></Run>
                            <LineBreak/>
-                          <Run Text="3.新增阅读背景设置"></Run>
+                          <Run Text="3.添加新的网站数据"></Run>
                            <LineBreak/>
                           <Run Text="4.改动不少，自己慢慢体会吧"></Run>
                         </TextBlock>

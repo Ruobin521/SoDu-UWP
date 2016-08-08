@@ -132,20 +132,20 @@ namespace Sodu.ViewModel
         }
 
 
-        private HomePageViewModel m_HomePageViewModelInstance;
-        public HomePageViewModel HomePageViewModelInstance
+        private RecommendAndHotPageViewModel m_RecommendAndHotPageViewModelInstance;
+        public RecommendAndHotPageViewModel RecommendAndHotPageViewModelInstance
         {
             get
             {
-                if (m_HomePageViewModelInstance == null)
+                if (m_RecommendAndHotPageViewModelInstance == null)
                 {
-                    m_HomePageViewModelInstance = new HomePageViewModel();
+                    m_RecommendAndHotPageViewModelInstance = new RecommendAndHotPageViewModel();
                 }
-                return m_HomePageViewModelInstance;
+                return m_RecommendAndHotPageViewModelInstance;
             }
             set
             {
-                SetProperty(ref this.m_HomePageViewModelInstance, value);
+                SetProperty(ref this.m_RecommendAndHotPageViewModelInstance, value);
             }
         }
 

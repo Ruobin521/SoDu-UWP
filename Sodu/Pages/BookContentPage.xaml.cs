@@ -70,7 +70,6 @@ namespace Sodu.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             this.HightListBack.Visibility = Visibility.Visible;
-            MenuOpiton(false);
             if (e.NavigationMode == NavigationMode.Back)
             {
                 return;
@@ -78,6 +77,11 @@ namespace Sodu.Pages
             (this.DataContext as IViewModel)?.InitData(e.Parameter);
         }
 
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            MenuOpiton(false);
+        }
 
 
         private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)

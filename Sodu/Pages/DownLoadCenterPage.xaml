@@ -26,19 +26,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="55"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0" Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}" VerticalAlignment="Stretch" Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-            <TextBlock x:Name="TextTitle"   Text="下载中心" TextTrimming="WordEllipsis" Grid.Column="1" TextAlignment="Left"  HorizontalAlignment="Left"  VerticalAlignment="Center"  FontSize="18"></TextBlock>
-        </Grid>
+        <uc:UC_PageHeader   Title="下载中心"></uc:UC_PageHeader>
 
         <ListView Grid.Row="1"   ItemTemplateSelector="{StaticResource  DownloadItemDataTemplateSelector}" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding DownLoadList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >

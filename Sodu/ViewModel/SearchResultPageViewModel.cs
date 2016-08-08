@@ -152,11 +152,7 @@ namespace Sodu.ViewModel
 
         public void SetData(string para)
         {
-            if (string.IsNullOrEmpty(para))
-            {
-                ToastHeplper.ShowMessage("请输入搜索条件");
-                return;
-            }
+
             SearchResultList.Clear();
             this.SearchPara = para;
             Task.Run(async () =>
@@ -273,9 +269,14 @@ namespace Sodu.ViewModel
         }
         private void OnSearchCommand(object obj)
         {
+            this.SearchResultList.Clear();
+            if (obj == null || string.IsNullOrEmpty(obj.ToString()))
+            {
+                ToastHeplper.ShowMessage("请输入搜索条件");
+                return;
+            }
             SetData(obj.ToString());
         }
-
 
 
         ///跳转到相应页数
