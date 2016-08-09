@@ -27,7 +27,13 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.Loaded += RegisterPage_Loaded;
             this.KeyUp += RegisterPage_KeyUp;
+        }
+
+        private void RegisterPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtName.Focus(FocusState.Pointer);
         }
 
         private void RegisterPage_KeyUp(object sender, KeyRoutedEventArgs e)

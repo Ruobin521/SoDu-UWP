@@ -9,10 +9,19 @@
     xmlns:UC="using:Sodu.UC"
     xmlns:converter="using:Sodu.Converter"
     xmlns:vm="using:Sodu.ViewModel"  
+    xmlns:ex="using:SoDu.Core.Extension"
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Instance.RankListPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
+    <Page.Resources>
+
+    </Page.Resources>
+    <!--<Page.Resources>
+        <Style x:Key="EllipsisButton" TargetType="Button">
+            <Setter  Property="Visibility"  Value="Visible"></Setter>
+        </Style>
+    </Page.Resources>-->
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition />
@@ -24,11 +33,11 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
-            <ListView.ItemsPanel>
+            <!--<ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+            </ListView.ItemsPanel>-->
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
@@ -36,8 +45,12 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}" >
-
+        <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Background="{ThemeResource LeftPanelBackground}" ex:CommandBarExtensions.HideMoreButton="False">
+            <CommandBar.Resources>
+                <Style TargetType="Button">
+                    <Setter  Property="Visibility"  Value="Visible"></Setter>
+                </Style>
+            </CommandBar.Resources>
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}"  Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="70"  Command="{Binding RefreshCommand}"/>
             <AppBarButton Icon="Previous" Label="上一页" Width="70"  Command="{Binding PrePageCommand}"  />
             <AppBarButton Icon="Next" Label="下一页"  Width="70"  Command="{Binding  RequestCommand }"  />
@@ -48,7 +61,7 @@
             </CommandBar.SecondaryCommands>
             <CommandBar.Content>
                 <Border  Height="{Binding ElementName=Menu,Path=ActualHeight}"  Width="Auto"  Padding="3" >
-                    <TextBlock  FontSize="18"     VerticalAlignment="Center" Margin="10,0,0,0"   >
+                    <TextBlock  FontSize="18"     VerticalAlignment="Center" Margin="12,0,0,0"   >
                     <Run Text="{Binding  PageIndex}"></Run>
                     <Run Text=" / "></Run>
                     <Run Text="{Binding  PageCount}"></Run>

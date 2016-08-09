@@ -11,6 +11,7 @@
     xmlns:vm="using:Sodu.ViewModel"  
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:extension="using:SoDu.Core.Extension"
     DataContext="{Binding Instance.EverReadBookPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
     <Page.Transitions>
@@ -35,7 +36,7 @@
 
         </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" Style="{StaticResource CustomCommandBarStyle}">
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True">
             <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>
             <AppBarButton Icon="Delete" Label="清空"  Command="{Binding ClearCommand}"/>
         </CommandBar>

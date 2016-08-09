@@ -36,7 +36,8 @@
         </Grid>
         <ScrollViewer  Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,5,0,10">
-                <StackPanel  Padding="15,0,0,0">
+
+                <StackPanel x:Name="StackPanel" Padding="15,0,0,0">
                     <Border Height="40">
                         <TextBlock   Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>
                     </Border>
@@ -71,7 +72,22 @@
                     </Border>
                     <ToggleSwitch   Style="{StaticResource CustomToggleSwitchStyle}"  IsOn="{Binding IsLandscape,Mode=TwoWay}"/>
 
+                    <Border Height="40" x:Name="title">
+                        <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Text="亮度" Margin="0,0,0,0"></TextBlock>
+                    </Border>
 
+                    <Grid  Height="50"  HorizontalAlignment="Stretch"    >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="70"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider  Style="{StaticResource CustomSliderStyle}"  HorizontalAlignment="Stretch"  Foreground="{ThemeResource HigntLightlBackColor}"   Margin="0,0,0,0" Grid.Column="0"  Minimum="20" Maximum="100" Value="{Binding LightValue,Mode=TwoWay}" Background="#FFCBCBCB"   IsThumbToolTipEnabled="False"   SmallChange="0.01"></Slider>
+                        <TextBlock x:Name="txtValue" Style="{StaticResource TitleTextBlockStyle}"    Grid.Column="1" Margin="10,0,0,0">
+                        <Run Text="{Binding LightValue,Mode=OneWay}"></Run>
+                        <Run Text="%"></Run>
+                        </TextBlock>
+
+                    </Grid>
                 </StackPanel>
             </Grid>
         </ScrollViewer>

@@ -9,6 +9,7 @@
     xmlns:uc="using:Sodu.UC"
     xmlns:selector="using:Sodu.Selector"
     xmlns:converter="using:Sodu.Converter"
+    xmlns:extension="using:SoDu.Core.Extension"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -34,7 +35,7 @@
 
             </ListView.ItemTemplate>-->
         </ListView>
-        <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}">
+        <CommandBar  Grid.Row="2"     ClosedDisplayMode="Compact"  IsOpen="False"  Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True">
             <!--<AppBarButton Icon="{Binding IsDownLoading,Converter={StaticResource DownLoadPagePauseIconConverter}}" Label="全部暂停"  Command="{Binding PauseAllCommand}"  />-->
             <AppBarButton Icon="Cancel" Label="全部取消" Width="65" Command="{Binding DeleteAllCommand}" />
         </CommandBar>

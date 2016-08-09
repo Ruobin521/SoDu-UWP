@@ -27,22 +27,28 @@ namespace Sodu.Pages
         public HomePage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Disabled;
+            this.NavigationCacheMode = NavigationCacheMode.Required;
+            //  this.Loaded += HomePage_Loaded;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
-            //var temp = this.DataContext;
-            //var items = this.pivot.ItemsSource;
-
-            //if (e.NavigationMode == NavigationMode.Back)
-            //{
-            //    this.UpdateLayout();
-            //    return;
-            //}
-            this.pivot.ItemsSource = (this.DataContext as MainPageViewModel).CurrentMenuList;
-            this.pivot.SelectedItem = (this.DataContext as MainPageViewModel).CurrentMenu;
+            if (this.pivot.ItemsSource != (this.DataContext as MainPageViewModel).CurrentMenuList)
+            {
+                this.pivot.ItemsSource = (this.DataContext as MainPageViewModel).CurrentMenuList;
+                this.pivot.SelectedItem = (this.DataContext as MainPageViewModel).CurrentMenu;
+            }
         }
+
+        //protected override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+        //if (this.pivot.ItemsSource != (this.DataContext as MainPageViewModel).CurrentMenuList)
+        //   {
+        //       this.pivot.ItemsSource = (this.DataContext as MainPageViewModel).CurrentMenuList;
+        //       this.pivot.SelectedItem = (this.DataContext as MainPageViewModel).CurrentMenu;
+        //   }
+        //}
+
 
         private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

@@ -5,7 +5,8 @@
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:UC="using:Sodu.UC"
+    xmlns:UC="using:Sodu.UC"  
+    xmlns:ex="using:SoDu.Core.Extension"
     xmlns:converter="using:Sodu.Converter"
     xmlns:vm="using:Sodu.ViewModel"  
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
@@ -31,12 +32,12 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
-        <ListView  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList,Mode=OneWay}"      HorizontalAlignment="Stretch" Background="Transparent">
-            <ListView.ItemsPanel>
+        <ListView   ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList}"      HorizontalAlignment="Stretch" Background="Transparent">
+            <!--<ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
                 </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+            </ListView.ItemsPanel>-->
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}" Background="Transparent">
@@ -46,7 +47,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"   Style="{StaticResource CustomCommandBarStyle}">
+        <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"   Background="{ThemeResource LeftPanelBackground}"  ex:CommandBarExtensions.HideMoreButton="True">
             <AppBarButton x:Name="btnSelectAll" Icon="SelectAll" Width="65"    Command="{Binding  SelectAllCommand }"  Label="{Binding IsAllSelected,Converter={StaticResource AppBarLabelConverter},Mode=OneWay}" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}" CommandParameter="0"/>
             <AppBarButton Icon="Delete" Label="下架"  Width="65" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookFromShelfCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>

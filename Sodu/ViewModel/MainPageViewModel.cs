@@ -187,7 +187,7 @@ namespace Sodu.ViewModel
         }
 
 
-        public void ChangeLoginState(bool isLogin)
+        public async void ChangeLoginState(bool isLogin)
         {
             ViewModelInstance.Instance.IsLogin = isLogin;
             this.CurrentMenuList = new ObservableCollection<MenuModel>();
@@ -201,8 +201,7 @@ namespace Sodu.ViewModel
                 this.UnloadMenuList.ToList().ForEach(p => this.CurrentMenuList.Add(p));
             }
             this.CurrentMenu = this.CurrentMenuList[0];
-            NavigateToPage(typeof(HomePage));
-            NavigationService.ClearStack();
+
         }
 
         /// <summary>

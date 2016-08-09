@@ -445,19 +445,19 @@ namespace Sodu.ViewModel
 
                     if (!SettingHelper.CheckKeyExist(n_LightValue))
                     {
-                        SettingHelper.SetValue(n_LightValue, 0);
-                        m_LightValue = 0;
+                        SettingHelper.SetValue(n_LightValue, 100);
+                        m_LightValue = 100;
                     }
                     else
                     {
                         string value = SettingHelper.GetValue(n_LightValue).ToString();
-                        m_LightValue = Convert.ToDouble(value);
+                        m_LightValue = Convert.ToDouble(value) < 20 ? 20 : Convert.ToDouble(value);
                     }
                 }
                 catch (Exception)
                 {
-                    SettingHelper.SetValue(n_LightValue, 0);
-                    m_LightValue = 0;
+                    SettingHelper.SetValue(n_LightValue, 100);
+                    m_LightValue = 100;
                 }
                 #endregion
             }

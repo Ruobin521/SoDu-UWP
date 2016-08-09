@@ -117,6 +117,7 @@
     <Compile Include="Database\DBBookCatalogContent.cs" />
     <Compile Include="Database\DBHistory.cs" />
     <Compile Include="Database\DBLocalBook.cs" />
+    <Compile Include="Extension\CommandBarExtensions.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisCatalogList.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisCatalogService.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisHtmlContentService.cs" />

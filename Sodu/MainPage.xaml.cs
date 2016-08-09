@@ -27,15 +27,7 @@ namespace Sodu
         public MainPage()
         {
             this.InitializeComponent();
-            this.Loaded += MainPage_Loaded;
-        }
-
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
             NavigationService.ContentFrame = NavigationService.ContentFrame ?? this.contentFrame;
-            NavigationService.NavigateTo(typeof(HomePage));
         }
-
-
     }
 }

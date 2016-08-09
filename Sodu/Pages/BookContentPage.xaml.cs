@@ -59,6 +59,8 @@ namespace Sodu.Pages
 
         private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
         {
+            MenuOpiton(false);
+
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
                 var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
@@ -69,7 +71,6 @@ namespace Sodu.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.HightListBack.Visibility = Visibility.Visible;
             if (e.NavigationMode == NavigationMode.Back)
             {
                 return;
@@ -198,6 +199,11 @@ namespace Sodu.Pages
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+        }
+
+        private void AppBar_Click(object sender, RoutedEventArgs e)
+        {
+            MenuOpiton(false);
         }
     }
 }

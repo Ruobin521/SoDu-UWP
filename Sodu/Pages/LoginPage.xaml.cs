@@ -28,6 +28,12 @@ namespace Sodu.Pages
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
             this.KeyUp += LoginPage_KeyUp;
+            this.Loaded += LoginPage_Loaded;
+        }
+
+        private void LoginPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtName.Focus(FocusState.Pointer);
         }
 
         private void LoginPage_KeyUp(object sender, KeyRoutedEventArgs e)

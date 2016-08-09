@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿ using GalaSoft.MvvmLight.Command;
 using Sodu.Constants;
 using Sodu.Core.Config;
 using Sodu.Core.Database;
@@ -263,7 +263,6 @@ namespace Sodu.ViewModel
         public void SetData(BookCatalog catalog)
         {
             IsLoading = true;
-
             preHtmlHttp.HttpClientCancleRequest();
             PreTextContent = null;
 
@@ -278,6 +277,35 @@ namespace Sodu.ViewModel
                {
                    resultHtml = null;
                }
+               return resultHtml;
+
+           }).ContinueWith(async (result) =>
+           {
+               try
+               {
+                   string html = result.Result;
+                   await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                   {
+                       if (html != null)
+                       {
+                           SetCurrentContent(catalog, html);
+                       }
+                       else
+                       {
+                           throw new Exception();
+                       }
+                   });
+               }
+               catch (Exception)
+               {
+                   await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                   {
+                       if (NavigationService.ContentFrame.Content is BookContentPage)
+                       {
+                           ToastHeplper.ShowMessage("未能获取正文内容");
+                       }
+                   });
+               }
                finally
                {
                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -285,29 +313,6 @@ namespace Sodu.ViewModel
                        IsLoading = false;
                    });
                }
-               return resultHtml;
-
-           }).ContinueWith(async (result) =>
-           {
-               string html = result.Result;
-               bool rs = false;
-               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-               {
-                   if (html != null)
-                   {
-                       SetCurrentContent(catalog, html);
-                       rs = true;
-                   }
-                   else
-                   {
-                       if (NavigationService.ContentFrame.Content is BookContentPage)
-                       {
-                           ToastHeplper.ShowMessage("未能获取正文内容");
-                       }
-                       rs = false;
-                   }
-               });
-               return rs;
            });
         }
 
@@ -460,9 +465,9 @@ namespace Sodu.ViewModel
                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                    {
                        IsLoadingCatalogList = false;
-                       IsLoading = false;
                        if (isClickCtalog && IsSwitchButtonShow)
                        {
+                           IsLoading = false;
                            NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
                            isClickCtalog = false;
                        }
@@ -484,14 +489,14 @@ namespace Sodu.ViewModel
 
         }
 
-        private string SetBookCataologListUrl(string catalogUrl)
+        private string SetBookCataologListUrl(string catalogUrl, string html = null)
         {
             var catalogListUrl = Services.AnalysisBookCatalogUrl.GetBookCatalogListUrl(catalogUrl);
 
             return catalogListUrl;
         }
 
-        private void SetTextContent(string html)
+        private async void SetTextContent(string html)
         {
             this.ContentTitle = this.BookEntity.BookName + "_" + this.CurrentCatalog.CatalogName;
 
@@ -507,6 +512,10 @@ namespace Sodu.ViewModel
             foreach (string str in strList)
             {
                 this.ContentListt.Add(str);
+                if (strList.IndexOf(str) > 0 && strList.IndexOf(str) % 5 == 0)
+                {
+                    await Task.Delay(1);
+                }
             }
         }
 

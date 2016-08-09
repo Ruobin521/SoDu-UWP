@@ -137,9 +137,13 @@
 
             <SplitView.Content>
                 <Grid Margin="0,0,0,0"  x:Name="rootGrid"  Visibility="Visible"   Background="Transparent"  >
-                    <Frame  x:Name="contentFrame"  HorizontalAlignment="Stretch"  Grid.Row="0"/>
+                    <Frame  x:Name="contentFrame"  SourcePageType="page:HomePage"  HorizontalAlignment="Stretch"  Grid.Row="0" Canvas.ZIndex="0" />
+                    <Border  x:Name="HightListBack" Visibility="Visible"  Canvas.ZIndex="999" IsHitTestVisible="False"  IsTapEnabled="False"   Background="Black" Opacity="{Binding  Instance.SettingPageViewModelInstance.LightValue, Source={StaticResource Locator},Converter={StaticResource DoubleToPercentConverter}}"
+                 Grid.Row="0"></Border>
                 </Grid>
             </SplitView.Content>
         </SplitView>
+
+
     </Grid>
 </Page>

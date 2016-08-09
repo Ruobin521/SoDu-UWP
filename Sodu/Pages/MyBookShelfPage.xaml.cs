@@ -46,5 +46,10 @@ namespace Sodu.Pages
         {
             (this.DataContext as IViewModel)?.InitData();
         }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.listview.ScrollIntoView(null);
+        }
     }
 }

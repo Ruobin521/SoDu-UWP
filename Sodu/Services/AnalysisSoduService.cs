@@ -184,8 +184,7 @@ namespace Sodu.Services
                 }
                 catch
                 {
-                    t_list = null;
-                    return t_list;
+                    return null;
                 }
             }
             return t_list;

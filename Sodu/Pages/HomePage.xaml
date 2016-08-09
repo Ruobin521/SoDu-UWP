@@ -23,12 +23,12 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="39"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <uc:UC_PageHeader Title="小说搜索阅读" SearchButtonVisibility="Visible"></uc:UC_PageHeader>
+        <uc:UC_PageHeader Title="小说搜索阅读" SearchButtonVisibility="Visible" Height="42"></uc:UC_PageHeader>
 
-        <Pivot x:Name="pivot" Style="{StaticResource CustomPivotStyle}" ItemContainerStyle="{StaticResource CustomPivotItemStyle}"   SelectionChanged="pivot_SelectionChanged"  Grid.Row="1">
+        <Pivot x:Name="pivot" Grid.Row="1" Style="{StaticResource CustomPivotStyle}"  ItemsSource="{Binding CurrentMenuList}" SelectedItem="{Binding CurrentMenu,Mode=TwoWay}" ItemContainerStyle="{StaticResource CustomPivotItemStyle}"   >
             <Pivot.HeaderTemplate>
                 <DataTemplate>
                     <Grid Height="35" Width="90" VerticalAlignment="Stretch" Margin="0,0,0,10">

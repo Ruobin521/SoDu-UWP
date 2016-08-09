@@ -131,7 +131,6 @@ namespace Sodu
                 InitContainer();
 
                 DispatcherHelper.Initialize();
-
                 //初始化程序数据
                 InitSettingData();
                 InitLocalBook();

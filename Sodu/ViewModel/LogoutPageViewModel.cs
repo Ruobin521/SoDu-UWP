@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
+using Sodu.Pages;
 
 namespace Sodu.ViewModel
 {
@@ -63,11 +64,14 @@ namespace Sodu.ViewModel
                       cookieItem.Expires = null;
                       filter.CookieManager.SetCookie(cookieItem);
                   }
-                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                   {
                       ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
                       ToastHeplper.ShowMessage("注销成功");
+                      await Task.Delay(500);
+                      NavigationService.ContentFrame.Navigate(typeof(HomePage));
+                      NavigationService.ClearStack();
                   });
               }
               catch (Exception ex)

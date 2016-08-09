@@ -13,7 +13,7 @@
             <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
-
+            <converter:DoubleToPercentConverter x:Key="DoubleToPercentConverter"></converter:DoubleToPercentConverter>
             <DataTemplate x:Key="CommonDownLoadTemplate">
                 <uc:UC_DownLoadItem  DataContext="{Binding}"  PasueCommand="{Binding Instance.DownLoadCenterViewModelInstance.PauseCommand,Source={StaticResource Locator} }" DeleteCommand="{Binding Instance.DownLoadCenterViewModelInstance.DeleteCommand,Source={StaticResource Locator}}" CommandParameter="{Binding}"   ></uc:UC_DownLoadItem>
             </DataTemplate>

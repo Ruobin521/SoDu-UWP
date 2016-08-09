@@ -15,6 +15,7 @@ using Windows.UI.Popups;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
 using Windows.Web.Http.Headers;
+using Sodu.Pages;
 
 namespace Sodu.ViewModel
 {
@@ -220,6 +221,9 @@ namespace Sodu.ViewModel
                         ViewModelInstance.Instance.SettingPageViewModelInstance.SetAutoLogin(IsAutoLogin);
                         SetCookie(ViewModelInstance.Instance.UrlService.GetLoginPage(), IsAutoLogin);
                         ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(true);
+
+                        NavigationService.ContentFrame.Navigate(typeof(HomePage));
+                        NavigationService.ClearStack();
                     }
                     else
                     {

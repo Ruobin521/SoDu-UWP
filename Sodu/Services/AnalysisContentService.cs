@@ -751,7 +751,7 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogUrl
     {
-        public static string GetBookCatalogListUrl(string url)
+        public static string GetBookCatalogListUrl(string url, string html = null)
         {
             string result = string.Empty;
 
@@ -899,7 +899,6 @@ namespace Sodu.Services
             return result;
         }
 
-
         /// <summary>
         /// 通用截取目录url的方法
         /// </summary>
@@ -928,8 +927,6 @@ namespace Sodu.Services
             }
             return result;
         }
-
-        //<a id = "hlBookName" href="http://www.yunlaige.com/book/4351.html">大主宰
 
         /// <summary>
         /// 无弹窗
@@ -989,9 +986,21 @@ namespace Sodu.Services
         /// <returns></returns>
         private static string AnalysisLww(string url)
         {
-            //http://www.lwtxt.net/html/994_15279861.html
+            //http://www.lwtxt.net/html/1213_694101.html
+            // http://www.lwtxt.net/modules/article/reader.php?aid=1213
             string result = string.Empty;
 
+            if (string.IsNullOrEmpty(url))
+            {
+                return null;
+            }
+            string temp = url.Split('/').LastOrDefault();
+            if (!string.IsNullOrEmpty(temp))
+            {
+                string bookid = temp.Split('_').FirstOrDefault();
+
+                result = "http://www.lwtxt.net/modules/article/reader.php?aid=" + bookid;
+            }
             return result;
         }
 
@@ -1166,10 +1175,18 @@ namespace Sodu.Services
 
                 //笔铺阁
                 case WebSet.bpg:
-                    result =AnalysisBpg(html, web);
+                    result = AnalysisBpg(html, web);
                     break;
 
+                //木鱼哥
+                case WebSet.myg:
+                    result = AnalysisMyg(html);
+                    break;
 
+                //乐文网
+                case WebSet.lww:
+                    result = AnalysisLww(html, web);
+                    break;
 
                 case "少年文学":
                     result = AnalysisSlsxsw(html, url);
@@ -1179,10 +1196,7 @@ namespace Sodu.Services
                     result = AnalysisSq(html);
                     break;
 
-                //木鱼哥
-                case WebSet.myg:
-                    result = AnalysisMyg(html);
-                    break;
+
 
                 case "无弹窗小说网":
                     result = AnalysisWtc(html);
@@ -1451,6 +1465,45 @@ namespace Sodu.Services
                             catalog.Index = i;
                             i++;
                             catalog.CatalogUrl = url_Mathch;
+                            catalog.CatalogName = title_Mathch;
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            return list;
+
+        }
+
+        private static List<BookCatalog> AnalysisLww(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<h2 class=\"bookTitle\">.*?<div id=\"uyan_frame\">");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "<a href=\"(.*?)\">(.*?)</a>");
+            if (matches != null && matches.Count < 1)
+            {
+                return list;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                int i = 0;
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch;
                             catalog.CatalogName = title_Mathch;
                             list.Add(catalog);
                         }

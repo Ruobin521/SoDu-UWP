@@ -16,6 +16,7 @@ using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.Unity;
 using SoDu.Core.API;
 using Sodu.Core.Util;
@@ -100,11 +101,7 @@ namespace Sodu.ViewModel
         {
             get
             {
-                if (m_ShelfBookList == null)
-                {
-                    m_ShelfBookList = new ObservableCollection<BookEntity>();
-                }
-                return m_ShelfBookList;
+                return m_ShelfBookList ?? (m_ShelfBookList = new ObservableCollection<BookEntity>());
             }
             set
             {
@@ -182,29 +179,29 @@ namespace Sodu.ViewModel
             {
                 string html = await GetHtmlData();
                 return html;
-            }).ContinueWith(async (result) =>
-            {
-                if (result.Result != null)
-                {
-                    string html = result.Result;
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
-                        {
-                            SetBookList(html);
-                        }
-                        else if (html.Contains("您还没有登录"))
-                        {
-                            ToastHeplper.ShowMessage("您还没有登录");
-                            ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
-                        }
-                        else
-                        {
-                            ToastHeplper.ShowMessage("获取数据失败");
-                        }
-                    });
-                }
-            });
+            }).ContinueWith((result) =>
+          {
+              if (result.Result != null)
+              {
+                  string html = result.Result;
+                  DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                  {
+                      if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
+                      {
+                          SetBookList(html);
+                      }
+                      else if (html.Contains("您还没有登录"))
+                      {
+                          ToastHeplper.ShowMessage("您还没有登录");
+                          ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                      }
+                      else
+                      {
+                          ToastHeplper.ShowMessage("获取数据失败");
+                      }
+                  });
+              }
+          });
         }
 
 
@@ -234,18 +231,11 @@ namespace Sodu.ViewModel
             return html;
         }
 
-        public async void SetBookList(string html)
+        public void SetBookList(string html)
         {
             if (!string.IsNullOrEmpty(html))
             {
-                ObservableCollection<BookEntity> list = AnalysisSoduService.GetBookShelftListFromHtml(html);
-
-                if (this.ShelfBookList != null)
-                {
-                    this.ShelfBookList.Clear();
-                    await Task.Delay(1);
-                }
-
+                var list = AnalysisSoduService.GetBookShelftListFromHtml(html);
                 if (list == null)
                 {
                     this.IsShow = true;
@@ -253,8 +243,10 @@ namespace Sodu.ViewModel
                 }
                 else
                 {
+                    this.ShelfBookList?.Clear();
                     this.IsShow = false;
-                    if (list != null && list.Count > 0)
+
+                    if (list.Count > 0)
                     {
                         var temp = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
                         foreach (var item in temp)

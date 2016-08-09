@@ -26,16 +26,16 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Image   HorizontalAlignment="Center" Source="../Assets/SplashScreen.scale-100.png"></Image>
+                <Image  HorizontalAlignment="Center"  Source="../Assets/SplashScreen.scale-400.png" Stretch=" Uniform  "></Image>
                 <StackPanel Grid.Row="1" Padding="10,0,0,0">
                     <Grid Height="50">
-                        <TextBlock  x:Name="txtDir" Grid.Row="2"  Text=">" Height="30" Style="{StaticResource ListItemTextBlockStyle}"  HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"   RenderTransformOrigin="0.5,0.5" >
+                        <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="VersionButton_Click" >
+                            <TextBlock   Text="版本号：1.4.1" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"  ></TextBlock>
+                        </Button>
+                        <TextBlock  x:Name="txtDir" IsTapEnabled="False"  IsHitTestVisible="False" Grid.Row="2"  Text=">" Height="30" Style="{StaticResource ListItemTextBlockStyle}"  HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"   RenderTransformOrigin="0.5,0.5" >
                             <TextBlock.RenderTransform>
                                 <CompositeTransform x:Name="transform" Rotation="90"/>
                             </TextBlock.RenderTransform></TextBlock>
-                        <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="VersionButton_Click" >
-                            <TextBlock   Text="版本号：1.4.0" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"  ></TextBlock>
-                        </Button>
                     </Grid>
                     <Grid Height="Auto"  x:Name="updateText"  Visibility="Visible">
                         <Border   Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Top" Opacity="0.3"  ></Border>
@@ -48,40 +48,41 @@
                            <LineBreak/>
                           <Run Text="3.添加新的网站数据"></Run>
                            <LineBreak/>
-                          <Run Text="4.改动不少，自己慢慢体会吧"></Run>
+                          <Run Text="4.为输入框添加回车快捷键"></Run>
+                           <LineBreak/>
+                          <Run Text="5.其他bug"></Run>
                         </TextBlock>
                     </Grid>
 
                     <Border   Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="2"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
-                        <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="Button_Click" >
+                        <Button    Style="{StaticResource ContentButtonStyle}" Padding="0" Click="Button_Click" >
                             <TextBlock   Text="给个好评"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"   ></TextBlock>
                         </Button>
+                        <TextBlock   Text=">"  IsTapEnabled="False"  IsHitTestVisible="False" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                     </Grid>
 
-                    <Border   Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
+                    <Border     BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
-                        <Button Grid.Row="3" Style="{StaticResource ContentButtonStyle}" Padding="0" Click="HelpButton_Click" >
+                        <Button  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="HelpButton_Click" >
                             <TextBlock   Text="使用说明"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18" ></TextBlock>
                         </Button>
+                        <TextBlock     IsTapEnabled="False"  IsHitTestVisible="False"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                     </Grid>
 
-                    <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
+                    <Border   BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="50">
-                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                         <Button  Style="{StaticResource  ContentButtonStyle}" Grid.Row="15" Grid.Column="1" Click="QQTextButton_Click" Padding="0" HorizontalAlignment="Stretch">
                             <TextBlock   Text="QQ交流群：568856882" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"   ></TextBlock>
                         </Button>
+                        <TextBlock   IsTapEnabled="False"  IsHitTestVisible="False"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                     </Grid>
-                    <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
+                    <Border    BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
 
                     <Grid Height="55">
-                        <TextBlock  Grid.Row="3"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                         <Button  Style="{StaticResource  ContentButtonStyle}" Grid.Row="15" Grid.Column="1" Click="AlipayTextButton_Click" Padding="0" HorizontalAlignment="Stretch">
                             <TextBlock   Style="{StaticResource ListItemTextBlockStyle}" LineHeight="30" VerticalAlignment="Center" FontSize="18"     >
                                 <Run Text="支付婊账号：83250112@qq.com"></Run>
@@ -89,10 +90,9 @@
                                 <Run Text="有余粮的赞助一杯可乐吧。"></Run>
                             </TextBlock>
                         </Button>
+                        <TextBlock  IsTapEnabled="False"  IsHitTestVisible="False"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                     </Grid>
-                    <Border   Grid.Row="3" BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
-
-
+                    <Border    BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
                 </StackPanel>
 
                 <TextBlock Margin="10,40,0,0"   Grid.Row="2" Style="{StaticResource TitleTextBlockStyle}"  TextWrapping="Wrap" LineHeight="32"  VerticalAlignment="Center" FontSize="16">

@@ -11,6 +11,7 @@
     xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     DataContext="{Binding Instance.BookCatalogPageViewModelInstance,Source={ StaticResource  Locator}}"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:extension="using:SoDu.Core.Extension"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -40,7 +41,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" >
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True" >
             <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="AppBarButton_Click"/>
             <AppBarButton Icon="Download" Label="下载图书" Visibility="{Binding CanDownLoad,Converter={StaticResource  BooleanToVisibilityConverter }}"   Command="{Binding DwonLoadhCommand}"/>
         </CommandBar>

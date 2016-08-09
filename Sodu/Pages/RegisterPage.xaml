@@ -15,9 +15,9 @@
     </Page.Transitions>
     <Grid >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0"/>
-            <ColumnDefinition Width="9.5*"/>
-            <ColumnDefinition Width="0"/>
+            <ColumnDefinition Width="1"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -26,9 +26,9 @@
 
         <uc:UC_PageHeader Title="注册"  Grid.ColumnSpan="3"></uc:UC_PageHeader>
 
-        <Border Grid.Row="1"    VerticalAlignment="Top" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
+        <Border Grid.Row="1"    VerticalAlignment="Top" HorizontalAlignment="Stretch"  MaxWidth="1000" Margin="15,30,15,0" BorderThickness="0" BorderBrush="#FF0B6CF8"   Grid.Column="1" >
 
-            <Grid  >
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="45"/>
                     <RowDefinition Height="45"/>
@@ -38,14 +38,14 @@
                     <RowDefinition Height="Auto" MinHeight="50"/>
                     <RowDefinition Height="60"   />
                 </Grid.RowDefinitions>
-                <TextBlock  Grid.Row="0"  Text="用户名：" Style="{StaticResource TitleTextBlockStyle}" />
-                <TextBox   Text="{Binding  UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource TextBoxStyle1}" Grid.Row="1"  VerticalAlignment="Center"   />
-                <TextBlock  Grid.Row="2" Text="密　码："  Style="{StaticResource TitleTextBlockStyle}"  />
-                <PasswordBox  Password="{Binding PassWord,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}" Grid.Row="3"    VerticalAlignment="Center"  />
+                <TextBlock  Grid.Row="0"  Text="用户名：" Style="{StaticResource TitleTextBlockStyle}" Margin="10,0,10,0"/>
+                <TextBox x:Name="txtName"  Text="{Binding  UserName,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" InputScope="Default" Style="{StaticResource  CusotmSearchTextBoxStyle}" Grid.Row="1"  VerticalAlignment="Center"   />
+                <TextBlock  Grid.Row="2" Text="密　码："  Style="{StaticResource TitleTextBlockStyle}"  Margin="10,0,10,0"/>
+                <PasswordBox  Password="{Binding PassWord,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource  CustomPasswordBoxStyle}" Grid.Row="3"    VerticalAlignment="Center"  />
 
 
-                <TextBlock   Style="{StaticResource TitleTextBlockStyle}"  Grid.Row="4" Text="确认密码：" />
-                <PasswordBox   Password="{Binding PassWord2,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource PasswordBoxStyle1}"  Grid.Row="5"    VerticalAlignment="Center"  />
+                <TextBlock   Style="{StaticResource TitleTextBlockStyle}"  Grid.Row="4" Text="确认密码：" Margin="10,0,10,0"/>
+                <PasswordBox   Password="{Binding PassWord2,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,10,0" Style="{StaticResource CustomPasswordBoxStyle}"  Grid.Row="5"    VerticalAlignment="Center"  />
 
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button x:Name="btnSumbit"   Content="确定"    Style="{StaticResource   ButtonStyle1 }" Command="{Binding ConfirmCommand}" FontSize="16" Height="35" Width="75" Margin="10,0"  />
