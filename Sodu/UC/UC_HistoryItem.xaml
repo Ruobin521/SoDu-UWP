@@ -40,7 +40,8 @@
             <Run Text="最后阅读章节:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
                 </TextBlock>
-                <Line x:Name="line"  Grid.Row="2"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0"/>
+                <!--<Line x:Name="line"  Grid.Row="2"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0"/>-->
+                <Border Height="2" Background="Gray" Grid.Row="2"  Grid.ColumnSpan="2" Grid.Column="0" Opacity="0.2" VerticalAlignment="Bottom"></Border>
             </Grid>
         </Grid>
     </Button>

@@ -1,16 +1,14 @@
 ﻿<Page
-    x:Class="Sodu.Pages.RankListPage"
+    x:Class="Sodu.Pages.UpdateBookPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    xmlns:UC="using:Sodu.UC"
-    xmlns:ex="using:SoDu.Core.Extension"
-     xmlns:selector="using:Sodu.Selector"
-    DataContext="{Binding Instance.RankListPageViewModelInstance,Source={ StaticResource  Locator}}"
-    >
+    xmlns:uc="using:Sodu.UC"
+    xmlns:extension="using:SoDu.Core.Extension"
+    mc:Ignorable="d">
+
     <Page.Transitions>
         <TransitionCollection>
             <NavigationThemeTransition />
@@ -29,12 +27,12 @@
             </ListView.ItemsPanel>-->
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
+                    <uc:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Background="{ThemeResource LeftPanelBackground}" ex:CommandBarExtensions.HideMoreButton="False">
+        <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Background="{ThemeResource LeftPanelBackground}" extension:CommandBarExtensions.HideMoreButton="False">
             <CommandBar.Resources>
                 <Style TargetType="Button">
                     <Setter  Property="Visibility"  Value="Visible"></Setter>
@@ -59,6 +57,6 @@
 
             </CommandBar.Content>
         </CommandBar>
-        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.Row="0" Grid.RowSpan="2" ></UC:UC_ProgressRing>
+        <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.Row="0" Grid.RowSpan="2" ></uc:UC_ProgressRing>
     </Grid>
 </Page>

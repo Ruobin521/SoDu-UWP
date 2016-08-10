@@ -17,6 +17,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Sodu.Services;
 using Windows.System;
+using GalaSoft.MvvmLight.Threading;
 using Sodu.Core.Model;
 using SoDu.Core.Util;
 using Sodu.Core.Util;
@@ -187,7 +188,7 @@ namespace Sodu.ViewModel
         }
 
 
-        public async void ChangeLoginState(bool isLogin)
+        public void ChangeLoginState(bool isLogin)
         {
             ViewModelInstance.Instance.IsLogin = isLogin;
             this.CurrentMenuList = new ObservableCollection<MenuModel>();
@@ -307,7 +308,7 @@ namespace Sodu.ViewModel
                            string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), entity.BookID));
                            if (html.Contains("{\"success\":true}"))
                            {
-                               await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                DispatcherHelper.CheckBeginInvokeOnUI( () =>
                                {
                                    if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
                                    {

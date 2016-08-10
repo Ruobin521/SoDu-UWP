@@ -15,7 +15,9 @@
 
 
     <!--列表项字体颜色-->
+
     <SolidColorBrush x:Key="ListItemTextFroeground"  Color="#FF004D00"  />
+    <!--51,51,51-->
     <!--<SolidColorBrush x:Key="ListItemTextFroeground"  Color="#FF333333"  />-->
 
     <!--提示信息字体颜色-->
@@ -36,5 +38,8 @@
 
     <!--白色-->
     <SolidColorBrush x:Key="BaseColor"  Color="Black"  />
+
+     
+    <SolidColorBrush x:Key="ListItemDifferentColor"  Color="#FFF5F5F7"  />
 
 </ResourceDictionary>

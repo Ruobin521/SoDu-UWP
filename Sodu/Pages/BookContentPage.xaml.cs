@@ -9,6 +9,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Phone.Devices.Power;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -31,6 +32,9 @@ namespace Sodu.Pages
     {
         double x = 0;//用来接收手势水平滑动的长度
 
+        //电池信息
+        private Battery _battery = null;
+
         public BookContentPage()
         {
             this.InitializeComponent();
@@ -45,10 +49,19 @@ namespace Sodu.Pages
             {
                 this.ColorPanel.Closed -= ColorPanel_Closed;
                 this.ColorPanel.Closed += ColorPanel_Closed;
+
+                BattaryStatus.Visibility = Visibility.Visible;
+                _battery = Battery.GetDefault();
+                _battery.RemainingChargePercentChanged += _battery_RemainingChargePercentChanged;
+            }
+            else
+            {
+                BattaryStatus.Visibility = Visibility.Collapsed;
             }
 
             this.Loaded -= BookContentPage_Loaded;
             this.Loaded += BookContentPage_Loaded;
+
 
         }
 
@@ -67,6 +80,11 @@ namespace Sodu.Pages
                 scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
                 scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
             }
+        }
+
+        private void _battery_RemainingChargePercentChanged(object sender, object e)
+        {
+            this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -107,10 +125,12 @@ namespace Sodu.Pages
 
         private void The_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
+            //上一章
             if (x > 85)
             {
                 (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
             }
+            // 下一章
             else if (x < -85)
             {
                 (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
@@ -167,7 +187,34 @@ namespace Sodu.Pages
         private void grid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
-            MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+
+            var point = e.GetPosition(this.ContentGrid);
+            if (point.X > this.ContentGrid.ActualWidth / 3 && point.X < this.ContentGrid.ActualWidth / 3 * 2)
+            {
+                MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+            }
+
+            //上一章
+            else if (point.X <= this.ContentGrid.ActualWidth / 3)
+            {
+                if (this.ColorPanel.Visibility == Visibility.Visible)
+                {
+                    MenuOpiton(false);
+                    return;
+                }
+                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
+            }
+            else if (point.X >= this.ContentGrid.ActualWidth / 3 * 2)
+            {
+                if (this.ColorPanel.Visibility == Visibility.Visible)
+                {
+                    MenuOpiton(false);
+                    return;
+                }
+               (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
+            }
+
+
         }
 
         private void MenuOpiton(bool value)

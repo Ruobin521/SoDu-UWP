@@ -49,6 +49,38 @@ namespace Sodu.Core.Model
             }
         }
 
+        public string m_Cover;
+        /// <summary>
+        ///封面
+        /// </summary>
+        public string Cover
+        {
+            get
+            {
+                return m_Cover;
+            }
+            set
+            {
+                SetProperty(ref m_Cover, value);
+            }
+        }
+
+        public string m_Description;
+        /// <summary>
+        ///简介
+        /// </summary>
+        public string Description
+        {
+            get
+            {
+                return m_Description;
+            }
+            set
+            {
+                SetProperty(ref m_Description, value);
+            }
+        }
+
         /// <summary>
         ///当前章节正文地址
         /// </summary>

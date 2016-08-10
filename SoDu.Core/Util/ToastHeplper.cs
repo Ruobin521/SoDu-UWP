@@ -9,6 +9,7 @@ using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.Core.Util
 {
@@ -39,8 +40,11 @@ namespace Sodu.Core.Util
         }
         public static void ShowMessage(string message)
         {
-            PopupWindow popup = new PopupWindow(message);
-            popup.ShowWindow();
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                PopupWindow popup = new PopupWindow(message);
+                popup.ShowWindow();
+            });
         }
     }
 }

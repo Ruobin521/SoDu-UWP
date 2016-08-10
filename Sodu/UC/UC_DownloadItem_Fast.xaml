@@ -48,6 +48,7 @@
             </TextBlock>
 
         </Grid>
-        <Line x:Name="line"  Grid.Row="3"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3" Stroke="{ThemeResource TitleTextFroeground}"   Margin="0"/>
+        <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2" VerticalAlignment="Bottom"></Border>
+        <!--<Line x:Name="line"  Grid.Row="3"  VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3" Stroke="{ThemeResource TitleTextFroeground}"   Margin="0"/>-->
     </Grid>
 </UserControl>

@@ -186,12 +186,12 @@ namespace Sodu.ViewModel
                        try
                        {
                            var item = temp.Entity.CatalogList[i];
-                           await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                           {
-                               temp.CurrentCatalog = item;
-                               temp.CurrentIndex = i + 1;
-                               temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
-                           });
+                           DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                         {
+                             temp.CurrentCatalog = item;
+                             temp.CurrentIndex = i + 1;
+                             temp.ProgressValue = Math.Round(((double)item.Index / (double)temp.Entity.CatalogList.Count), 3) * 100;
+                         });
 
                            string html = await GetHtmlData(item.CatalogUrl, http);
 
@@ -214,11 +214,11 @@ namespace Sodu.ViewModel
                                }
                            }
 
-                           await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                           {
-                               temp.Entity.NewestChapterName = item.CatalogName;
-                               temp.Entity.NewestChapterUrl = item.CatalogUrl;
-                           });
+                           DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                         {
+                             temp.Entity.NewestChapterName = item.CatalogName;
+                             temp.Entity.NewestChapterUrl = item.CatalogUrl;
+                         });
                        }
                        catch (Exception)
                        {
@@ -235,38 +235,38 @@ namespace Sodu.ViewModel
                {
                    if (result)
                    {
-                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                       {
-                           lock (isAdd2)
-                           {
-                               temp.Entity.LastReadChapterName = null;
-                               temp.Entity.LastReadChapterUrl = null;
-                               DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
-                           }
-                           this.DownLoadList.Remove(temp);
-                           if (this.DownLoadList.Count == 0)
-                           {
-                               this.IsDownLoading = false;
-                           }
-                           temp.Entity.IsLocal = true;
-                           ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
-                           ToastHeplper.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
-                       });
+                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                     {
+                         lock (isAdd2)
+                         {
+                             temp.Entity.LastReadChapterName = null;
+                             temp.Entity.LastReadChapterUrl = null;
+                             DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
+                         }
+                         this.DownLoadList.Remove(temp);
+                         if (this.DownLoadList.Count == 0)
+                         {
+                             this.IsDownLoading = false;
+                         }
+                         temp.Entity.IsLocal = true;
+                         ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
+                         ToastHeplper.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
+                     });
                    }
                    else
                    {
-                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                       {
-                           if (!temp.IsPause)
-                           {
-                               this.DownLoadList.Remove(temp);
-                               ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
-                           }
-                           else
-                           {
-                               //  Services.ToastHeplper.ShowMessage(temp.Entity.BookName + "下载已暂停");
-                           }
-                       });
+                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                     {
+                         if (!temp.IsPause)
+                         {
+                             this.DownLoadList.Remove(temp);
+                             ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
+                         }
+                         else
+                         {
+                             //  Services.ToastHeplper.ShowMessage(temp.Entity.BookName + "下载已暂停");
+                         }
+                     });
                    }
                }
            });
@@ -357,64 +357,64 @@ namespace Sodu.ViewModel
             }
 
 
-            await Task.Factory.ContinueWhenAll(tasks, async (obj) =>
-             {
-                 if (temp.IsPause)
-                 {
-                     if (DownLoadList.Contains(temp))
-                     {
-                         this.DownLoadList.Remove(temp);
-                     }
-                     return;
-                 }
-                 await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                 {
-                     temp.SetProcessValue();
-                     temp.Entity.LastReadChapterName = null;
-                     temp.Entity.LastReadChapterUrl = null;
-                     temp.Entity.IsLocal = true;
+            await Task.Factory.ContinueWhenAll(tasks, (obj) =>
+           {
+               if (temp.IsPause)
+               {
+                   if (DownLoadList.Contains(temp))
+                   {
+                       this.DownLoadList.Remove(temp);
+                   }
+                   return;
+               }
+               DispatcherHelper.CheckBeginInvokeOnUI(() =>
+               {
+                   temp.SetProcessValue();
+                   temp.Entity.LastReadChapterName = null;
+                   temp.Entity.LastReadChapterUrl = null;
+                   temp.Entity.IsLocal = true;
 
-                     var catalog = temp.Entity.CatalogList.OrderBy(p => p.Index).ToList().LastOrDefault();
-                     if (catalog != null)
-                     {
-                         temp.Entity.NewestChapterName = catalog.CatalogName;
-                         temp.Entity.NewestChapterUrl = catalog.CatalogUrl;
-                     }
-                 });
+                   var catalog = temp.Entity.CatalogList.OrderBy(p => p.Index).ToList().LastOrDefault();
+                   if (catalog != null)
+                   {
+                       temp.Entity.NewestChapterName = catalog.CatalogName;
+                       temp.Entity.NewestChapterUrl = catalog.CatalogUrl;
+                   }
+               });
 
-                 DBBookCatalogContent.InsertOrUpdateBookCatalogContents(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.ContentList);
-                 DBBookCatalog.InsertOrUpdateBookCatalogs(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.Entity.CatalogList.ToList());
-                 lock (isAdd1)
-                 {
-                     DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
-                 }
+               DBBookCatalogContent.InsertOrUpdateBookCatalogContents(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.ContentList);
+               DBBookCatalog.InsertOrUpdateBookCatalogs(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.Entity.CatalogList.ToList());
+               lock (isAdd1)
+               {
+                   DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), temp.Entity);
+               }
 
-                 try
-                 {
-                     await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                     {
-                         this.DownLoadList.Remove(temp);
-                         ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
-                         ToastHeplper.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
-                     });
-                 }
-                 catch (Exception ex)
-                 {
-                     this.DownLoadList.Remove(temp);
-                     ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
-                     Debug.WriteLine(ex.Message);
-                 }
-                 finally
-                 {
-                     if (this.DownLoadList.Count == 0)
-                     {
-                         this.IsDownLoading = false;
-                     }
-                 }
+               try
+               {
+                   DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                   {
+                       this.DownLoadList.Remove(temp);
+                       ViewModelInstance.Instance.LocalBookPage.LocalBookList.Add(temp.Entity);
+                       ToastHeplper.ShowMessage(temp.Entity.BookName + "下载完毕，点击“本地图书”查看");
+                   });
+               }
+               catch (Exception ex)
+               {
+                   this.DownLoadList.Remove(temp);
+                   ToastHeplper.ShowMessage(temp.Entity.BookName + "下载失败");
+                   Debug.WriteLine(ex.Message);
+               }
+               finally
+               {
+                   if (this.DownLoadList.Count == 0)
+                   {
+                       this.IsDownLoading = false;
+                   }
+               }
 
-                 watch.Stop();
-                 Debug.WriteLine("共用时：" + watch.Elapsed.TotalSeconds);
-             });
+               watch.Stop();
+               Debug.WriteLine("共用时：" + watch.Elapsed.TotalSeconds);
+           });
 
 
         }

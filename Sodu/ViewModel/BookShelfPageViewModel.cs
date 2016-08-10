@@ -16,6 +16,7 @@ using Windows.UI.Core;
 using Windows.UI.Notifications;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.Unity;
 using SoDu.Core.API;
@@ -147,7 +148,7 @@ namespace Sodu.ViewModel
 
             if (IsEditing)
             {
-                OnEditCommand();
+                OnEditCommand(false);
                 return true;
             }
 
@@ -163,11 +164,11 @@ namespace Sodu.ViewModel
         public void InitData(object obj = null)
         {
             this.IsShow = false;
-            if (this.ShelfBookList.Count > 0)
-            {
-                return;
-            }
-            ShelfBookList.Clear();
+            //if (this.ShelfBookList.Count > 0)
+            //{
+            //    return;
+            //}
+
             SetData();
         }
 
@@ -209,10 +210,10 @@ namespace Sodu.ViewModel
         {
             string html = null;
 
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                IsLoading = true;
-            });
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+          {
+              IsLoading = true;
+          });
             try
             {
                 html = await http.WebRequestGet(ViewModelInstance.Instance.UrlService.GetBookShelfPage(), true);
@@ -223,10 +224,10 @@ namespace Sodu.ViewModel
             }
             finally
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  IsLoading = false;
+              });
             }
             return html;
         }
@@ -264,10 +265,10 @@ namespace Sodu.ViewModel
         {
             Task.Run(async () =>
         {
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                IsLoading = true;
-            });
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+          {
+              IsLoading = true;
+          });
             bool result = true;
             foreach (var item in removeBookList)
             {
@@ -280,10 +281,10 @@ namespace Sodu.ViewModel
                 string html = await http.WebRequestGet(url);
                 if (html.Contains("取消收藏成功"))
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        ShelfBookList.Remove(item);
-                    });
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                  {
+                      ShelfBookList.Remove(item);
+                  });
                 }
                 else
                 {
@@ -292,20 +293,24 @@ namespace Sodu.ViewModel
             }
             return result;
 
-        }).ContinueWith(async (result) =>
-       {
-           await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-           {
-               IsLoading = false;
-               if (result.Result)
-               {
-                   ToastHeplper.ShowMessage("操作完毕");
-                   removeBookList.Clear();
-                   OnEditCommand();
-               }
-           }
-           );
-       });
+        }).ContinueWith((result) =>
+     {
+         DispatcherHelper.CheckBeginInvokeOnUI(() =>
+         {
+             IsLoading = false;
+             if (result.Result)
+             {
+                 //   ToastHeplper.ShowMessage("操作完毕");
+                 removeBookList.Clear();
+                 OnRefreshCommand(null);
+             }
+             else
+             {
+                 ToastHeplper.ShowMessage("取消收藏失败。");
+             }
+         }
+          );
+     });
         }
 
 
@@ -317,23 +322,23 @@ namespace Sodu.ViewModel
         /// <summary>
         /// 全选，全不选
         /// </summary>
-        private RelayCommand<object> m_EditCommand;
-        public RelayCommand<object> EditCommand
+        private RelayCommand<bool> m_EditCommand;
+        public RelayCommand<bool> EditCommand
         {
             get
             {
-                return m_EditCommand ?? (m_EditCommand = new RelayCommand<object>(
+                return m_EditCommand ?? (m_EditCommand = new RelayCommand<bool>(
                  (obj) =>
                  {
 
                      if (IsLoading) return;
-                     OnEditCommand();
+                     OnEditCommand(!IsEditing);
                  }
                     ));
             }
         }
 
-        public void OnEditCommand()
+        public void OnEditCommand(bool isEdit)
         {
             if (IsLoading) return;
 
@@ -342,8 +347,7 @@ namespace Sodu.ViewModel
                 IsEditing = false;
                 return;
             }
-
-            SetBookShelfEditStatus(!IsEditing);
+            SetBookShelfEditStatus(isEdit);
         }
 
         public void SetBookShelfEditStatus(bool vale)

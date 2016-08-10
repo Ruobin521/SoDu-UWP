@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -48,6 +49,8 @@ namespace Sodu.ViewModel
                 this.SetProperty(ref this.m_SearchPara, value);
             }
         }
+
+
 
         private ObservableCollection<BookEntity> m_SearchResultList;
         /// <summary>
@@ -147,8 +150,9 @@ namespace Sodu.ViewModel
         public void InitData(object obj = null)
         {
             CancleHttpRequest();
+            SearchResultList.Clear();
+            this.SearchPara = string.Empty;
         }
-
 
         public void SetData(string para)
         {
@@ -160,21 +164,21 @@ namespace Sodu.ViewModel
                 string uri = string.Format(ViewModelInstance.Instance.UrlService.GetSearchPage(), System.Net.WebUtility.UrlEncode(para));
                 string html = await GetHtmlData(uri);
                 return html;
-            }).ContinueWith(async (resultHtml) =>
+            }).ContinueWith((resultHtml) =>
+          {
+              DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-              {
-                  if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
-                  {
-                      ToastHeplper.ShowMessage("共返回" + this.SearchResultList.Count + "条结果");
-                  }
-                  else
-                  {
-                      ToastHeplper.ShowMessage("无搜索结果");
-                  }
-              });
-
+                if (resultHtml.Result != null && SetBookList(resultHtml.Result.ToString()))
+                {
+                    ToastHeplper.ShowMessage("共返回" + this.SearchResultList.Count + "条结果");
+                }
+                else
+                {
+                    ToastHeplper.ShowMessage("无搜索结果");
+                }
             });
+
+          });
         }
 
         public bool SetBookList(string html)
@@ -219,10 +223,10 @@ namespace Sodu.ViewModel
         {
             string html = string.Empty;
 
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                IsLoading = true;
-            });
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+          {
+              IsLoading = true;
+          });
             try
             {
                 html = await http.WebRequestGet(url, false);
@@ -233,10 +237,10 @@ namespace Sodu.ViewModel
             }
             finally
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  IsLoading = false;
+              });
             }
 
             return html;

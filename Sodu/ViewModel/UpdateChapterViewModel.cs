@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -178,19 +179,19 @@ namespace Sodu.ViewModel
                string html = await LoadPageDataByIndex(pageIndex);
                return html;
 
-           }).ContinueWith(async (result) =>
+           }).ContinueWith((result) =>
          {
-             await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-           {
-               if (result.Result != null && SetBookList(result.Result.ToString(), pageIndex))
-               {
-                   ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
-               }
-               else
-               {
-                   ToastHeplper.ShowMessage("未能获取最新章节数据");
-               }
-           });
+             DispatcherHelper.CheckBeginInvokeOnUI(() =>
+         {
+             if (result.Result != null && SetBookList(result.Result.ToString(), pageIndex))
+             {
+                 ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+             }
+             else
+             {
+                 ToastHeplper.ShowMessage("未能获取最新章节数据");
+             }
+         });
          });
         }
 
@@ -199,10 +200,10 @@ namespace Sodu.ViewModel
             string html = string.Empty;
             try
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = true;
-                });
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  IsLoading = true;
+              });
 
                 string url = null;
                 if (nextPageIndex == 1)
@@ -215,25 +216,26 @@ namespace Sodu.ViewModel
                 }
                 http = new HttpHelper();
                 html = await http.WebRequestGet(url, true);
-                if (html == null) return html;
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    if (PageCount == 1)
-                    {
-                        Match match = Regex.Match(html, @"(?<=总计.*?记录.*?共).*?(?=页)");
-                        if (match != null)
-                        {
-                            try
-                            {
-                                PageCount = Convert.ToInt32(match.ToString().Trim());
-                            }
-                            catch (Exception)
-                            {
-                                PageCount = 1;
-                            }
-                        }
-                    }
-                });
+                if (html == null) return null;
+                var html1 = html;
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  if (PageCount == 1)
+                  {
+                      Match match = Regex.Match(html1, @"(?<=总计.*?记录.*?共).*?(?=页)");
+                      if (match != null)
+                      {
+                          try
+                          {
+                              PageCount = Convert.ToInt32(match.ToString().Trim());
+                          }
+                          catch (Exception)
+                          {
+                              PageCount = 1;
+                          }
+                      }
+                  }
+              });
 
             }
             catch (Exception)
@@ -242,10 +244,10 @@ namespace Sodu.ViewModel
             }
             finally
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  IsLoading = false;
+              });
             }
             return html;
         }

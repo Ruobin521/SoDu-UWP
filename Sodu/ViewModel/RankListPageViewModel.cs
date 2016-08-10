@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -124,33 +125,33 @@ namespace Sodu.ViewModel
                 }
                 string html = await GetHtmlData(url);
                 return html;
-            }).ContinueWith(async (result) =>
-            {
-                if (result.Result != null)
+            }).ContinueWith((result) =>
+          {
+              if (result.Result != null)
+              {
+                  DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                  {
-                      bool rs = SetBookList(result.Result.ToString(), pageindex);
-                      if (!rs)
-                      {
-                          ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
-                      }
-                      else
-                      {
-                          ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
-                      }
-                  });
-                }
-            });
+                    bool rs = SetBookList(result.Result.ToString(), pageindex);
+                    if (!rs)
+                    {
+                        ToastHeplper.ShowMessage(" 第" + pageindex + "页数据加载失败");
+                    }
+                    else
+                    {
+                        ToastHeplper.ShowMessage("已加载第" + pageindex + "页，共8页");
+                    }
+                });
+              }
+          });
         }
 
         private async Task<string> GetHtmlData(string url)
         {
             string html = null;
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                IsLoading = true;
-            });
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+          {
+              IsLoading = true;
+          });
             try
             {
                 html = await http.WebRequestGet(url, true);
@@ -161,10 +162,10 @@ namespace Sodu.ViewModel
             }
             finally
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    IsLoading = false;
-                });
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+              {
+                  IsLoading = false;
+              });
             }
             return html;
         }

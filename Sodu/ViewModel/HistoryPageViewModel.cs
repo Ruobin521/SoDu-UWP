@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -109,34 +110,34 @@ namespace Sodu.ViewModel
 
             BookList.Clear();
 
-            Task.Run(async () =>
-            {
-                try
-                {
-                    var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
-                    if (list != null)
-                    {
-                        await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                        {
-                            list.ForEach(x => this.BookList.Add(x));
-                        });
-                    }
-                }
-                catch (Exception)
-                {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        ToastHeplper.ShowMessage("加载历史记录有误");
-                    });
-                }
-                finally
-                {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        IsLoading = false;
-                    });
-                }
-            });
+            Task.Run(() =>
+          {
+              try
+              {
+                  var list = DBHistory.GetBookHistories(AppDataPath.GetHistoryDBPath());
+                  if (list != null)
+                  {
+                      DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                      {
+                          list.ForEach(x => this.BookList.Add(x));
+                      });
+                  }
+              }
+              catch (Exception)
+              {
+                  DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                  {
+                      ToastHeplper.ShowMessage("加载历史记录有误");
+                  });
+              }
+              finally
+              {
+                  DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                  {
+                      IsLoading = false;
+                  });
+              }
+          });
         }
 
         public HistoryPageViewModel()
@@ -146,20 +147,20 @@ namespace Sodu.ViewModel
 
         public void AddToHistoryList(BookEntity entity)
         {
-            Task.Run(async () =>
-            {
-                var temp = entity.Clone();
-                temp.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            Task.Run(() =>
+          {
+              var temp = entity.Clone();
+              temp.UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                if (BookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+              if (BookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+              {
+                  DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
-                    await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        BookList.Insert(0, temp);
-                    });
-                }
-                bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), temp);
-            });
+                    BookList.Insert(0, temp);
+                });
+              }
+              bool result = DBHistory.InsertOrUpdateBookHistory(AppDataPath.GetHistoryDBPath(), temp);
+          });
         }
         /// <summary>
         /// 全选，全不选
@@ -270,6 +271,8 @@ namespace Sodu.ViewModel
                     this.BookList.Remove(item);
                     DBHistory.DeleteHistory(AppDataPath.GetHistoryDBPath(), item);
                 }
+
+                this.InitData();
 
             }));
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>

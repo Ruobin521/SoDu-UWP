@@ -26,25 +26,56 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <uc:UC_PageHeader   Title="{Binding ContentTitle}"></uc:UC_PageHeader>
-
-        <ListView  Grid.Row="1" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding CurrentBookEntity.CatalogList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <Pivot Grid.Row="1"  ItemContainerStyle="{StaticResource CustomPivotItemStyle}">
+            <PivotItem  Header="图书简介">
+                <Grid   Margin="10" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Background="AliceBlue" >
+                            <Image   Source="../Images/noimage.jpg"></Image>
+                            <Image x:Name="cover"   Source="{Binding CurrentBookEntity.Cover}"></Image>
+                        </Grid>
+                    </Grid>
+                    <TextBlock Text="{Binding CurrentBookEntity.Description}" Grid.Row="1" Style="{StaticResource TitleTextBlockStyle }" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,10,10,0"/>
+                </Grid>
+            </PivotItem>
+            <PivotItem  Header="目录">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="listview" Margin="0,0,0,0"   ItemsSource="{Binding CurrentBookEntity.CatalogList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Button Style="{StaticResource ContentButtonStyle}" Height="34"   Margin="0"  VerticalAlignment="Stretch" Command="{Binding  Instance.BookCatalogPageViewModelInstance.CatalogSelectedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}">
-                        <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  CustomCatalogTextBlockStyle}"  FontSize="18" VerticalAlignment="Center" ></TextBlock>
-                    </Button>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource ContentButtonStyle}" Height="34"   Margin="0"  VerticalAlignment="Stretch" Command="{Binding  Instance.BookCatalogPageViewModelInstance.CatalogSelectedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}">
+                                    <TextBlock Text="{Binding CatalogName}"  Style="{StaticResource  CustomCatalogTextBlockStyle}"  FontSize="18" VerticalAlignment="Center" ></TextBlock>
+                                </Button>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False" Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True" >
-            <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="AppBarButton_Click"/>
-            <AppBarButton Icon="Download" Label="下载图书" Visibility="{Binding CanDownLoad,Converter={StaticResource  BooleanToVisibilityConverter }}"   Command="{Binding DwonLoadhCommand}"/>
-        </CommandBar>
+                    <CommandBar  Grid.Row="1"   ClosedDisplayMode="Compact"  IsOpen="False" Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True" >
+                        <AppBarButton   x:Name="direction" Icon="Sort" Label="转到底部"   Click="AppBarButton_Click"/>
+                        <AppBarButton Icon="Download" Label="下载图书" Visibility="{Binding CanDownLoad,Converter={StaticResource  BooleanToVisibilityConverter }}"   Command="{Binding DwonLoadhCommand}"/>
+                    </CommandBar>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+
+
+
+
         <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></uc:UC_ProgressRing>
     </Grid>
 

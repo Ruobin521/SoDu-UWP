@@ -177,7 +177,8 @@ namespace Sodu.ViewModel
             else
             {
                 IsLoading = true;
-                var list = await AnalysisBookCatalogList.GetCatalogList(CurrentBookEntity.CatalogListUrl, this.CurrentBookEntity.BookID, http = new SoDu.Core.Util.HttpHelper());
+                var result = await AnalysisBookCatalogList.GetCatalogList(CurrentBookEntity.CatalogListUrl, this.CurrentBookEntity.BookID, http = new SoDu.Core.Util.HttpHelper());
+                var list = result.Item1;
                 if (list != null && list.Count > 0)
                 {
                     this.CurrentBookEntity.CatalogList.Clear();

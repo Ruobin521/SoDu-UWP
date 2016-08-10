@@ -43,10 +43,11 @@ namespace Sodu
     sealed partial class App : Application
     {
         public static Frame rootFrame;
-
+#if !DEBUG
         private static string key = "578de4e0e0f55ac2a3002519";
         private static string chanel = "Marketplace";
 
+#endif
 
         /// <summary>
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
@@ -67,7 +68,7 @@ namespace Sodu
         }
 
 
-        protected async override void OnActivated(IActivatedEventArgs args)
+        protected override void OnActivated(IActivatedEventArgs args)
         {
             base.OnActivated(args);
 #if !DEBUG
@@ -280,15 +281,7 @@ namespace Sodu
 
             if (NavigationService.ContentFrame != null)
             {
-                Page page = NavigationService.ContentFrame.Content as Page;
-                if (page != null && (page.DataContext as BookShelfPageViewModel) != null && (page.DataContext as BookShelfPageViewModel).BackpressedHandler())
-                {
-                    return;
-                }
-                else
-                {
-                    NavigationService.GoBack(sender);
-                }
+                NavigationService.GoBack(sender);
             }
         }
 
@@ -305,15 +298,7 @@ namespace Sodu
             }
             if (NavigationService.ContentFrame != null)
             {
-                Page page = NavigationService.ContentFrame.Content as Page;
-                if (page != null && (page.DataContext as BookShelfPageViewModel) != null && (page.DataContext as BookShelfPageViewModel).BackpressedHandler())
-                {
-                    return;
-                }
-                else
-                {
-                    NavigationService.GoBack();
-                }
+                NavigationService.GoBack(sender);
             }
         }
 
@@ -334,7 +319,7 @@ namespace Sodu
         /// </summary>
         /// <param name="sender">挂起的请求的源。</param>
         /// <param name="e">有关挂起请求的详细信息。</param>
-        private async void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
 

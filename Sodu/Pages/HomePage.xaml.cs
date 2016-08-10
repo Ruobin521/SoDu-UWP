@@ -28,8 +28,12 @@ namespace Sodu.Pages
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            //  this.Loaded += HomePage_Loaded;
+
+            this.pivot.SelectionChanged += pivot_SelectionChanged;
+            this.Unloaded += HomePage_Unloaded;
         }
+
+
 
         private void HomePage_Loaded(object sender, RoutedEventArgs e)
         {
@@ -49,10 +53,26 @@ namespace Sodu.Pages
         //   }
         //}
 
+        private void HomePage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SetBookShelfUnEditing();
+        }
+
 
         private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (this.DataContext as MainPageViewModel).CurrentMenu = this.pivot.SelectedItem as MenuModel;
+            SetBookShelfUnEditing();
+        }
+
+        private void SetBookShelfUnEditing()
+        {
+            if (ViewModelInstance.Instance.IsLogin)
+            {
+                if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.IsEditing)
+                {
+                    ViewModelInstance.Instance.MyBookShelfViewModelInstance.OnEditCommand(false);
+                }
+            }
         }
     }
 }

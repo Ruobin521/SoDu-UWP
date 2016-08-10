@@ -37,7 +37,8 @@
             <Run Text="{Binding LastReadChapterName}" ></Run>
                 </TextBlock>
             </Grid>
-            <Line VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   />
+          <!--<Line VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   />-->
+            <Border Height="2" Background="Gray"   Grid.ColumnSpan="2" Grid.Column="0" Opacity="0.2" VerticalAlignment="Bottom"></Border>
         </Grid>
     </Button>
 </UserControl>

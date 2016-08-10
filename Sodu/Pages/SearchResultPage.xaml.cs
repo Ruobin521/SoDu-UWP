@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Sodu.ViewModel;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -33,6 +34,7 @@ namespace Sodu.Pages
         private void SearchResultPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.txtSearch.Focus(FocusState.Pointer);
+            (this.DataContext as SearchResultPageViewModel)?.InitData();
         }
 
         private void TxtSearch_OnKeyUp(object sender, KeyRoutedEventArgs e)

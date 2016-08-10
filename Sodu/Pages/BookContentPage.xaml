@@ -42,7 +42,26 @@
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource CustomContentTextBlockStyle}"   TextTrimming="WordEllipsis"  HorizontalAlignment="Left"     FontSize="16"/>
-                    <TextBlock x:Name="TextTime"  Margin="0,5,15,0" FontFamily="颜体"  Grid.Column="1"  VerticalAlignment="Top"  Style="{StaticResource CustomContentTextBlockStyle}"    HorizontalAlignment="Right"     FontSize="16"/>
+
+                    <StackPanel  x:Name="BattaryStatus"  Grid.Column="1" Orientation="Horizontal">
+                        <Grid VerticalAlignment="Center">
+                            <Grid Name="backgroundGrid" Width="38" Height="0" Visibility="Collapsed" />
+                            <Path Opacity="0.9" Data="M15,4L17,4 17,10 15,10z M10,4L12,4 12,10 10,10z M5,4L7,4 7,10 5,10z M2,2L2,12 28,12 28,2z M0,0L30,0 30,4 32,4 32,10 30,10 30,14 0,14z" Stretch="Uniform" Fill="{ThemeResource TextContentForeground}" Width="26" Height="26" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <TransformGroup.Children>
+                                            <RotateTransform Angle="0" />
+                                            <ScaleTransform ScaleX="1" ScaleY="1" />
+                                        </TransformGroup.Children>
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+                            </Path>
+                        </Grid>
+                        <TextBlock x:Name="TextBattary"   FontFamily="颜体"  Text="100%"   Style="{StaticResource CustomContentTextBlockStyle}"  VerticalAlignment="Center"   HorizontalAlignment="Right"   Height="16"  FontSize="14"/>
+                        <TextBlock x:Name="TextTime"  Margin="5,0,10,0" FontFamily="颜体"     Text="{Binding CurrentTime}" Style="{StaticResource CustomContentTextBlockStyle}"    VerticalAlignment="Center" HorizontalAlignment="Right" Height="16"      FontSize="14"/>
+                    </StackPanel>
+
+                    <!--<SymbolIcon  Symbol="Back" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,0,0"/>-->
                 </Grid>
             </Border>
             <Grid  x:Name="ContentGrid"  Grid.Row="1"  IsTapEnabled="False" >

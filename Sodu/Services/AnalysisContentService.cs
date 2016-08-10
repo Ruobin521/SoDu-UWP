@@ -1025,22 +1025,23 @@ namespace Sodu.Services
 
     public class AnalysisBookCatalogList
     {
-        public static async Task<List<BookCatalog>> GetCatalogList(string url, string bookid, HttpHelper http)
+        public static async Task<Tuple<List<BookCatalog>, string, string>> GetCatalogList(string url, string bookid, HttpHelper http)
         {
-            List<BookCatalog> catalogList = null;
+            Tuple<List<BookCatalog>, string, string> result = null;
             if (string.IsNullOrEmpty(url))
             {
-                return catalogList;
+                return null;
             }
             await Task.Run(async () =>
             {
                 string html = await http.WebRequestGet(url, true);
                 if (html != null)
                 {
-                    catalogList = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
-                    if (catalogList != null)
+                    result = AnalysisBookCatalogList.GetCatalogListByHtml(html, url);
+
+                    if (result.Item1 != null)
                     {
-                        foreach (var item in catalogList)
+                        foreach (var item in result.Item1)
                         {
                             item.BookID = bookid;
                             item.CatalogUrl = item.CatalogUrl;
@@ -1048,18 +1049,19 @@ namespace Sodu.Services
                     }
                 }
             });
-            return catalogList;
+            return result;
         }
 
-        public static List<BookCatalog> GetCatalogListByHtml(string html, string url)
+        public static Tuple<List<BookCatalog>, string, string> GetCatalogListByHtml(string html, string url)
         {
-            List<BookCatalog> result = null;
+            Tuple<List<BookCatalog>, string, string> result = null;
+
             Uri tempUrl = new Uri(url);
             string web = tempUrl.Authority;
 
             switch (web)
             {
-                //手牵手
+                //第七中文
                 case WebSet.dqzw:
                     result = AnalysisDqzw(html, web);
                     break;
@@ -1098,9 +1100,9 @@ namespace Sodu.Services
                     result = AnalysisdQfxs(html, web);
                     break;
 
-                //窝窝小说网
+                //窝窝小说网（封面没有取）
                 case WebSet.wwxsw:
-                    result = AnalysisdWwxsw(html, web);
+                    result = AnalysisdWwxsw(html, web, url).Result;
                     break;
 
                 //找书网
@@ -1207,10 +1209,72 @@ namespace Sodu.Services
             }
             return result;
         }
-        private static List<BookCatalog> AnalysisSqsxsw(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisDqzw(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
+
+            if (matches != null && matches.Count > 0)
+            {
+                list = new List<BookCatalog>();
+                for (int i = 0; i < matches.Count; i++)
+                {
+                    Match item = matches[i];
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
+                            catalog.CatalogName = title_Mathch.ToString();
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<p class=\"intro\">.*?</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\"book_info_top_l\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
+        }
+        private static Tuple<List<BookCatalog>, string, string> AnalysisSqsxsw(string html, string baseUrl)
         {
 
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
 
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"list\">.*?</div>");
@@ -1223,7 +1287,7 @@ namespace Sodu.Services
                 //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1251,14 +1315,38 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div id=\"intro\">.*?</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
         }
 
-        private static List<BookCatalog> AnalysisSlsxsw(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisSlsxsw(string html, string baseUrl)
         {
 
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
 
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"list\">.*?</div>");
@@ -1269,7 +1357,7 @@ namespace Sodu.Services
                 //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1293,7 +1381,30 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div class=\"intro\">.*?</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
@@ -1303,10 +1414,12 @@ namespace Sodu.Services
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisQbg(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisQbg(string html, string baseUrl)
         {
 
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
 
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"list\">.*?</div>");
@@ -1316,7 +1429,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href=\"(.*?)\".*?>(.*?)</a></dd>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1341,7 +1454,29 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div id=\"intro\">.*?</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
@@ -1351,9 +1486,12 @@ namespace Sodu.Services
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisSl(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisSl(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"content\">.*?</div>");
             if (t_string != null)
@@ -1362,7 +1500,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(str.ToString(), "<dd.*?href=[,\"](.*?)['\"].*?>(.*?)</a></dd>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1387,13 +1525,15 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisAszw(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisAszw(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
 
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             if (html != null)
@@ -1401,7 +1541,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(html, "<td class=\"L\".*?href=\"(.*?)\".*?>(.*?)</a></td>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1426,19 +1566,49 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div class=\"js\">.*?<p><b>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\"pic\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
         }
 
 
-        private static List<BookCatalog> AnalysisSq(string html)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisSq(string html)
         {
-            return null;
+
+            List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisMyg(string html)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisMyg(string html)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<div id=\"xslist\">.*?</div>");
             if (match == null) return null;
@@ -1446,7 +1616,7 @@ namespace Sodu.Services
             //<li><a href="http://www.muyuge.com/55_55628/17752012.html" title="第001章 刺青生">第001章 刺青生</a></li><
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -1472,20 +1642,23 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisLww(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisLww(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<h2 class=\"bookTitle\">.*?<div id=\"uyan_frame\">");
             if (match == null) return null;
             MatchCollection matches = Regex.Matches(match.ToString(), "<a href=\"(.*?)\">(.*?)</a>");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -1511,13 +1684,16 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisVivi(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisVivi(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<TD vAlign=top>.*?<TABLE id=bgdiv cellSpacing=0 cellPadding=0>");
             if (t_string != null)
@@ -1526,7 +1702,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(t_string.ToString(), "<A HREF=\"(.*?)\">(.*?)</A>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1551,13 +1727,15 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisQysx(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisQysx(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"readerlist\">.*?<div class=\"clearfix\">");
             if (t_string != null)
@@ -1566,7 +1744,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(t_string.ToString(), "<li><a href=\"(.*?)\">(.*?)</a></li>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -1591,13 +1769,17 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisWtc(string html)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisWtc(string html)
         {
-            return null;
+            List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
         /// <summary>
@@ -1605,16 +1787,18 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisYyzww(string html)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisYyzww(string html)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
 
             //MatchCollection matches = Regex.Matches(html, "<div style=\"width:188px;float:left;\">.*?</div></div>");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -1640,7 +1824,7 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
@@ -1649,14 +1833,17 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisdJzww(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisdJzww(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
             if (matches != null && matches.Count < 4)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -1680,46 +1867,33 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div id=\"intro\">.*?</p>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
-            return list;
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+                cover = "http://" + baseUrl + cover;
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static List<BookCatalog> AnalysisDqzw(string html, string baseUrl)
-        {
-            List<BookCatalog> list = null;
-            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
-            MatchCollection matches = Regex.Matches(html, "(?<=<dd>.*?href=\")(.*?)(?=\".*?>(.*?)</a></dd>)");
-            if (matches != null && matches.Count < 1)
-            {
-                return list;
-            }
-            else
-            {
-                list = new List<BookCatalog>();
-                for (int i = 0; i < matches.Count; i++)
-                {
-                    Match item = matches[i];
-                    var groups = item.Groups;
-                    if (groups != null && groups.Count > 2)
-                    {
-                        var url_Mathch = groups[1].ToString();
-                        var title_Mathch = groups[2].ToString();
-                        if (url_Mathch != null && title_Mathch != null)
-                        {
-                            BookCatalog catalog = new BookCatalog();
-                            catalog.Index = i;
-                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
-                            catalog.CatalogName = title_Mathch.ToString();
-                            list.Add(catalog);
-                        }
-                    }
-                }
-            }
 
-            return list;
-
-        }
 
         /// <summary>
         /// 古古小说网
@@ -1727,16 +1901,18 @@ namespace Sodu.Services
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> Analysisggxs(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> Analysisggxs(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<table.*?</table>");
             if (match == null) return null;
             MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?</td>)");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -1768,24 +1944,56 @@ namespace Sodu.Services
                     }
                 }
             }
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div class=\"msgarea\">.*?</p>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\"img1\">.*?<img.*?src=\"(.*?)\".*?>");
+
+                Uri tempUrl = new Uri(baseUrl);
+                string web = tempUrl.Authority;
+                cover = "http://" + web + coverStr.Groups[1].ToString();
+
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
         }
+
+
         /// <summary>
         /// 4f
         /// </summary>
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> Analysis4k(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> Analysis4k(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<div class=\"book_list\".*?</div>");
             if (match == null) return null;
             MatchCollection matches = Regex.Matches(match.ToString(), "<li>.*?href=\"(.*?)\".*?>(.*?)</a></li>");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
+
             }
             else
             {
@@ -1811,20 +2019,24 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
         }
 
 
-        private static List<BookCatalog> AnalysisYlg(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisYlg(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match match = Regex.Match(html, "<table.*?</table>");
             if (match == null) return null;
             MatchCollection matches = Regex.Matches(match.ToString(), "(<td>.*?href=\"(.*?)\".*?>(.*?)</a>.*?</td>)");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
+
             }
             else
             {
@@ -1850,8 +2062,30 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<meta property=\"og:description\" content=\"(.*?)\"/>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
-            return list;
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
 
         }
 
@@ -1861,10 +2095,11 @@ namespace Sodu.Services
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisFyxs(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisFyxs(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
-            try
+            string despriction = null;
+            string cover = null; try
             {
                 html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
                 Match match = Regex.Match(html, "<div class=\"readerListShow\".*?</div>");
@@ -1872,7 +2107,8 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(match.ToString(), "<td.*?href=\"(.*?)\".*?>(.*?)</a></td>");
                 if (matches != null && matches.Count < 1)
                 {
-                    return list;
+                    list = null;
+
                 }
                 else
                 {
@@ -1902,7 +2138,9 @@ namespace Sodu.Services
             {
                 list = null;
             }
-            return list;
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
         }
 
         /// <summary>
@@ -1911,18 +2149,22 @@ namespace Sodu.Services
         /// <param name="html"></param>
         /// <param name="baseUrl"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisKkks(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisKkks(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             try
             {
                 html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+
                 Match match = Regex.Match(html, "<div class=\"dirwraps\">.*?<div class=\"blinebgs\"");
                 if (match == null) return null;
                 MatchCollection matches = Regex.Matches(match.ToString(), "<li.*?href=\"(.*?)\".*?>(.*?)</a></li>");
                 if (matches != null && matches.Count < 1)
                 {
-                    return list;
+                    list = null;
+
                 }
                 else
                 {
@@ -1952,7 +2194,30 @@ namespace Sodu.Services
             {
                 list = null;
             }
-            return list;
+
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<p id=\"intro\">.*?</p>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                cover = null;
+
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
         }
 
         /// <summary>
@@ -1960,16 +2225,20 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisdQfxs(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisdQfxs(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+
             Match match = Regex.Match(html, "<div class=\"book_list\">.*?</div>");
 
             MatchCollection matches = Regex.Matches(match.ToString(), "<li><a href=\"(.*?)\".*?>(.*?)</a></li>");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
+
             }
             else
             {
@@ -1994,8 +2263,31 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div class=\'upd\'>.*?</div>.*?<p>(.*?)</p>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
-            return list;
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\'pic\'>.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+                cover = "http://" + baseUrl + cover;
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
 
         }
 
@@ -2005,14 +2297,17 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisdWwxsw(string html, string baseUrl)
+        private async static Task<Tuple<List<BookCatalog>, string, string>> AnalysisdWwxsw(string html, string baseUrl, string url)
         {
             List<BookCatalog> list = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            string despriction = null;
+            string cover = null;
+
             MatchCollection matches = Regex.Matches(html, "(?<=<li>.*?href=\")(/books/.*?)(?=\".*?>(.*?)</a></li>)");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
             }
             else
             {
@@ -2037,8 +2332,30 @@ namespace Sodu.Services
                     }
                 }
             }
+            string tempUrl = url.Replace("/mulu.html", "") + ".html";
+            string iro = await (new HttpHelper()).WebRequestGet(url, true);
+            iro = iro.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(iro, "<meta name=\"description\" content=\"(.*?)各位书友.*?/>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
-            return list;
+            try
+            {
+                cover = null;
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
 
         }
 
@@ -2047,14 +2364,17 @@ namespace Sodu.Services
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<BookCatalog> AnalysisdZsw(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisdZsw(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             MatchCollection matches = Regex.Matches(html, "(?<=<li>.*?href=\")(/books/.*?)(?=\".*?>(.*?)</a></li>)");
             if (matches != null && matches.Count < 1)
             {
-                return list;
+                list = null;
+
             }
             else
             {
@@ -2080,20 +2400,23 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
 
         }
 
-        private static List<BookCatalog> AnalysisDefault(string html)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisDefault(string html)
         {
             return null;
-
         }
 
 
-        private static List<BookCatalog> AnalysisBpg(string html, string baseUrl)
+        private static Tuple<List<BookCatalog>, string, string> AnalysisBpg(string html, string baseUrl)
         {
             List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
             html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
             Match t_string = Regex.Match(html, "<div id=\"content\">.*?</div>");
             if (t_string != null)
@@ -2102,7 +2425,7 @@ namespace Sodu.Services
                 MatchCollection matches = Regex.Matches(t_string.ToString(), "<dd><a href=\"(.*?)\">(.*?)</a></dd>");
                 if (matches.Count == 0)
                 {
-                    return list;
+                    list = null;
                 }
                 else
                 {
@@ -2127,7 +2450,29 @@ namespace Sodu.Services
                 }
             }
 
-            return list;
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<p class=\"intro\">.*?</p>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\"book_info_top_l\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
     }

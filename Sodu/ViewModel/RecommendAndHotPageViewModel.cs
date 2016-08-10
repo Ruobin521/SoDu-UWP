@@ -21,6 +21,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu.ViewModel
 {
@@ -142,33 +143,33 @@ namespace Sodu.ViewModel
            {
                string html = await GetHtmlData();
                return html;
-           }).ContinueWith(async (result) =>
+           }).ContinueWith((result) =>
           {
-              await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 try
-                 {
-                     if (result != null)
-                     {
-                         if (SetBookList(result.Result))
-                         {
-                             ToastHeplper.ShowMessage("数据已更新 ");
-                         }
-                         else
-                         {
-                             throw new Exception();
-                         }
-                     }
-                     else
-                     {
-                         throw new Exception();
-                     }
-                 }
-                 catch (Exception)
-                 {
-                     ToastHeplper.ShowMessage("未能获取数据 ");
-                 }
-             });
+              DispatcherHelper.CheckBeginInvokeOnUI(() =>
+           {
+               try
+               {
+                   if (result != null)
+                   {
+                       if (SetBookList(result.Result))
+                       {
+                           ToastHeplper.ShowMessage("数据已更新 ");
+                       }
+                       else
+                       {
+                           throw new Exception();
+                       }
+                   }
+                   else
+                   {
+                       throw new Exception();
+                   }
+               }
+               catch (Exception)
+               {
+                   ToastHeplper.ShowMessage("未能获取数据 ");
+               }
+           });
           });
         }
 
@@ -177,7 +178,7 @@ namespace Sodu.ViewModel
         {
             string html = null;
 
-            await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             DispatcherHelper.CheckBeginInvokeOnUI( () =>
            {
                IsLoading = true;
            });
@@ -192,7 +193,7 @@ namespace Sodu.ViewModel
             }
             finally
             {
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                 DispatcherHelper.CheckBeginInvokeOnUI( () =>
                 {
                     IsLoading = false;
                 });

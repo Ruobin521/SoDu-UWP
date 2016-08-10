@@ -171,9 +171,13 @@
     <Compile Include="Pages\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\UpdateBookPage.xaml.cs">
+      <DependentUpon>UpdateBookPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\UpdateChapterPage.xaml.cs">
       <DependentUpon>UpdateChapterPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Selector\CustomListViewItemContainerStyleSelector.cs" />
     <Compile Include="Selector\DownloadItemDataTemplateSelector.cs" />
     <Compile Include="Services\AnalysisContentService.cs" />
     <Compile Include="Services\NavigationService.cs" />
@@ -260,6 +264,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\noimage.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\Square150x150Logo.scale-200.png" />
@@ -345,6 +350,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UpdateBookPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

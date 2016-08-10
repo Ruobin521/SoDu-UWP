@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.Web.Http;
 using Windows.Web.Http.Filters;
+using GalaSoft.MvvmLight.Threading;
 using Sodu.Pages;
 
 namespace Sodu.ViewModel
@@ -47,46 +48,46 @@ namespace Sodu.ViewModel
         {
             IsLoading = true;
 
-            Task.Run(async () =>
-          {
-              try
-              {
-                  HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
-                  HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(ViewModelInstance.Instance.UrlService.GetHomePage()));
-                  var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
+            Task.Run(() =>
+        {
+            try
+            {
+                HttpBaseProtocolFilter filter = new HttpBaseProtocolFilter();
+                HttpCookieCollection cookieCollection = filter.CookieManager.GetCookies(new Uri(ViewModelInstance.Instance.UrlService.GetHomePage()));
+                var cookieItem = cookieCollection.FirstOrDefault(p => p.Name.Equals("sodu_user"));
 
-                  if (cookieItem == null)
-                  {
-                      ViewModelInstance.Instance.IsLogin = false;
-                  }
-                  else
-                  {
-                      cookieItem.Expires = null;
-                      filter.CookieManager.SetCookie(cookieItem);
-                  }
-                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                  {
-                      ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
-                      ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
-                      ToastHeplper.ShowMessage("注销成功");
-                      await Task.Delay(500);
-                      NavigationService.ContentFrame.Navigate(typeof(HomePage));
-                      NavigationService.ClearStack();
-                  });
-              }
-              catch (Exception ex)
-              {
-                  Debug.WriteLine(ex.Message);
-              }
-              finally
-              {
-                  await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                  {
-                      IsLoading = false;
-                  });
-              }
+                if (cookieItem == null)
+                {
+                    ViewModelInstance.Instance.IsLogin = false;
+                }
+                else
+                {
+                    cookieItem.Expires = null;
+                    filter.CookieManager.SetCookie(cookieItem);
+                }
+                DispatcherHelper.CheckBeginInvokeOnUI(async () =>
+                {
+                    ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                    ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
+                    ToastHeplper.ShowMessage("注销成功");
+                    await Task.Delay(500);
+                    NavigationService.ContentFrame.Navigate(typeof(HomePage));
+                    NavigationService.ClearStack();
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    IsLoading = false;
+                });
+            }
 
-          });
+        });
 
         }
         public void InitData2(object obj = null)
@@ -99,38 +100,38 @@ namespace Sodu.ViewModel
                 string html = await GetHtmlData();
                 return html;
 
-            }).ContinueWith(async (result) =>
-            {
-                string html = result.Result;
-                await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            }).ContinueWith((result) =>
+          {
+              string html = result.Result;
+              DispatcherHelper.CheckBeginInvokeOnUI(() =>
+           {
+               try
                {
-                   try
+                   if (html != null && html.Contains("to delete public domains' cookies"))
                    {
-                       if (html != null && html.Contains("to delete public domains' cookies"))
-                       {
-                           ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
-                           ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
-                           ToastHeplper.ShowMessage("注销成功");
-                       }
-                       else
-                       {
-                           ToastHeplper.ShowMessage("注销失败请重新尝试");
-                           NavigationService.GoBack();
-                       }
+                       ViewModelInstance.Instance.MainPageViewModelInstance.ChangeLoginState(false);
+                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Clear();
+                       ToastHeplper.ShowMessage("注销成功");
                    }
-                   catch (Exception ex)
+                   else
                    {
-                       Debug.WriteLine(ex.Message);
+                       ToastHeplper.ShowMessage("注销失败请重新尝试");
+                       NavigationService.GoBack();
                    }
-                   finally
+               }
+               catch (Exception ex)
+               {
+                   Debug.WriteLine(ex.Message);
+               }
+               finally
+               {
+                   DispatcherHelper.CheckBeginInvokeOnUI(() =>
                    {
-                       await NavigationService.ContentFrame.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                       {
-                           IsLoading = false;
-                       });
-                   }
-               });
-            });
+                       IsLoading = false;
+                   });
+               }
+           });
+          });
         }
 
         private async Task<string> GetHtmlData()

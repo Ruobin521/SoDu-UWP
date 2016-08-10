@@ -26,7 +26,7 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <uc:UC_PageHeader   Title="历史纪录"></uc:UC_PageHeader>
-        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}" ScrollViewer.VerticalScrollBarVisibility="Hidden"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}" ScrollViewer.VerticalScrollBarVisibility="Hidden"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding BookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>

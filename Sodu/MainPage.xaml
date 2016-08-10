@@ -22,7 +22,7 @@
     </Page.Resources>
 
     <Grid x:Name="HeaderGrid"  Background="{ThemeResource PageBackground}">
-        <SplitView x:Name="Splitter"  Background="Transparent"   IsPaneOpen="{Binding IsLeftPanelOpen,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" OpenPaneLength="200" DisplayMode="Overlay" CompactPaneLength="70">
+        <SplitView x:Name="Splitter"  Background="Transparent"   IsPaneOpen="{Binding IsLeftPanelOpen,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" OpenPaneLength="220" DisplayMode="Overlay" CompactPaneLength="70">
             <SplitView.Pane >
                 <RelativePanel Margin="0,0,0,0"  >
                     <ScrollViewer VerticalAlignment="Stretch"  Background="{ThemeResource LeftPanelBackground}"   Margin="0,0,0,0" RelativePanel.AlignTopWithPanel="True"  RelativePanel.AlignBottomWithPanel="True"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -73,7 +73,7 @@
                             </StackPanel>
 
                             <Grid  HorizontalAlignment="Stretch" RelativePanel.AlignBottomWithPanel="True" Grid.Row="2"   >
-                                <StackPanel Margin="0,0,0,15" x:Name="FooterPanel"  Orientation="Vertical"  >
+                                <StackPanel Margin="0,0,0,0" x:Name="FooterPanel"  Orientation="Vertical"  >
 
                                     <AppBarButton   Label="登录"  Visibility="{Binding Path=Instance.IsLogin,  Source={StaticResource Locator},Converter={StaticResource RevertBooleanToVisibilityConverter}}" 
                                             Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
@@ -137,13 +137,12 @@
 
             <SplitView.Content>
                 <Grid Margin="0,0,0,0"  x:Name="rootGrid"  Visibility="Visible"   Background="Transparent"  >
-                    <Frame  x:Name="contentFrame"  SourcePageType="page:HomePage"  HorizontalAlignment="Stretch"  Grid.Row="0" Canvas.ZIndex="0" />
-                    <Border  x:Name="HightListBack" Visibility="Visible"  Canvas.ZIndex="999" IsHitTestVisible="False"  IsTapEnabled="False"   Background="Black" Opacity="{Binding  Instance.SettingPageViewModelInstance.LightValue, Source={StaticResource Locator},Converter={StaticResource DoubleToPercentConverter}}"
-                 Grid.Row="0"></Border>
+                    <Frame  x:Name="contentFrame" SourcePageType="page:HomePage"  HorizontalAlignment="Stretch"  Grid.Row="0" Canvas.ZIndex="0" />
+
                 </Grid>
             </SplitView.Content>
         </SplitView>
-
-
+        <Border  x:Name="HightListBack" Visibility="Visible"  Canvas.ZIndex="999" IsHitTestVisible="False"  IsTapEnabled="False"   Background="#FF000000" Opacity="{Binding  Instance.SettingPageViewModelInstance.LightValue, Source={StaticResource Locator},Converter={StaticResource DoubleToPercentConverter}}"
+                 Grid.Row="0"></Border>
     </Grid>
 </Page>

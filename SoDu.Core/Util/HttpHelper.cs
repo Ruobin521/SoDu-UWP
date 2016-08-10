@@ -48,7 +48,7 @@ namespace SoDu.Core.Util
                 {
                     url = url + "?time=" + GetTimeStamp();
                 }
-                Request = HttpWebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
+                Request = WebRequest.CreateHttp(new Uri(url)); //创建WebRequest对象              
                 Request.Method = "GET";    //设置请求方式为GET : 
                 Request.Headers["Timeout"] = "15000";
                 Request.Headers[HttpRequestHeader.Accept] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";

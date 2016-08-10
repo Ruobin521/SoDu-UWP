@@ -35,7 +35,8 @@
                 <Run x:Name="txtUnreadData"  Text="{Binding  UnReadCountData}" ></Run>
             </TextBlock>
         </Grid>
+        <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
 
-        <Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0" VerticalAlignment="Bottom" />
+        <!--<Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0" VerticalAlignment="Bottom" />-->
     </Grid>
 </Button>

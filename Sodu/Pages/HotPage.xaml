@@ -29,7 +29,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView  Grid.Row="0" ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
+        <ListView  Grid.Row="0"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"   x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent"   
             >
             <!--<ListView.ItemsPanel>
                 <ItemsPanelTemplate>
