@@ -30,23 +30,41 @@
         <uc:UC_PageHeader   Title="{Binding ContentTitle}"></uc:UC_PageHeader>
         <Pivot Grid.Row="1"  ItemContainerStyle="{StaticResource CustomPivotItemStyle}">
             <PivotItem  Header="图书简介">
-                <Grid   Margin="10" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="200"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid Background="AliceBlue" >
-                            <Image   Source="../Images/noimage.jpg"></Image>
-                            <Image x:Name="cover"   Source="{Binding CurrentBookEntity.Cover}"></Image>
+                <ScrollViewer  VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Disabled">
+                    <Grid   Margin="10" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Background="AliceBlue" >
+                                <Image  Stretch="Fill" Source="../Images/noimage.jpg"></Image>
+                                <Image x:Name="cover" Stretch="Fill"  Source="{Binding CurrentBookEntity.Cover}"></Image>
+                            </Grid>
+
+                            <StackPanel Grid.Column="1"  Margin="5,0,0,0">
+                                <TextBlock   Style="{StaticResource   TitleTextBlockStyle}"  LineHeight="40"   >
+                                <Run Text="书名："></Run>
+                                <Run Text="{Binding  CurrentBookEntity.BookName}"></Run>
+                                </TextBlock>
+
+                                <TextBlock   Style="{StaticResource   TitleTextBlockStyle}"  LineHeight="40"  >
+                                  <Run Text="来源："></Run>
+                                <Run Text="{Binding  CurrentBookEntity.LyWeb}"></Run>
+                                </TextBlock>
+                            </StackPanel>
                         </Grid>
+                        <TextBlock Grid.Row="1" Style="{StaticResource TitleTextBlockStyle }" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,10,10,0">
+                     <Run Text="简介：" FontSize="22"></Run>
+                        <LineBreak/>
+                     <Run Text="{Binding CurrentBookEntity.Description}" ></Run>
+                        </TextBlock>
                     </Grid>
-                    <TextBlock Text="{Binding CurrentBookEntity.Description}" Grid.Row="1" Style="{StaticResource TitleTextBlockStyle }" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,10,10,0"/>
-                </Grid>
+                </ScrollViewer>
             </PivotItem>
             <PivotItem  Header="目录">
                 <Grid>

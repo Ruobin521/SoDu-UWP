@@ -520,13 +520,14 @@ namespace Sodu.ViewModel
             if (ContentListt != null)
             {
                 this.ContentListt.Clear();
-                await Task.Delay(1);
+               
             }
             var strList = SplitString(html);
 
             foreach (string str in strList)
             {
                 this.ContentListt.Add(str);
+                await Task.Delay(1);
             }
         }
 

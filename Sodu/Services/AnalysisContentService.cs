@@ -1167,12 +1167,12 @@ namespace Sodu.Services
 
                 //Vivi
                 case WebSet.vivi:
-                    result = AnalysisVivi(html, web);
+                    result = AnalysisVivi(html, web, url).Result;
                     break;
 
                 //轻语
                 case WebSet.qyxs:
-                    result = AnalysisQysx(html, web);
+                    result = AnalysisQysx(html, web, url).Result;
                     break;
 
                 //笔铺阁
@@ -1190,15 +1190,9 @@ namespace Sodu.Services
                     result = AnalysisLww(html, web);
                     break;
 
-                case "少年文学":
-                    result = AnalysisSlsxsw(html, url);
-                    break;
-
                 case "书旗小说":
                     result = AnalysisSq(html);
                     break;
-
-
 
                 case "无弹窗小说网":
                     result = AnalysisWtc(html);
@@ -1641,6 +1635,27 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div id=\"xsintro\">.*?相关的关键词：.*?<p>(.*?)<p class=\"introtxt\"");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
 
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
@@ -1683,12 +1698,34 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "div class=\"reBook borderF\">(.*?)</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
+            try
+            {
+                //<div style="width:600px; padding:5px"><div style="float:left; margin-right:10px"><img src="" width="120" height="150" alt="硅谷大帝"></div>
+
+                //封面
+                Match coverStr = Regex.Match(html, "<div style=\"width:600px; padding:5px\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static Tuple<List<BookCatalog>, string, string> AnalysisVivi(string html, string baseUrl)
+        private async static Task<Tuple<List<BookCatalog>, string, string>> AnalysisVivi(string html, string baseUrl, string url)
         {
             List<BookCatalog> list = null;
             string despriction = null;
@@ -1726,12 +1763,37 @@ namespace Sodu.Services
                     }
                 }
             }
+            var strs = url.Split('/');
+            string bookId = strs[strs.Length - 2];
+
+            string tempUrl = string.Format("http://www.zkvivi.com/modules/article/articleinfo.php?id={0}", bookId);
+            string iro = await (new HttpHelper()).WebRequestGet(tempUrl, false);
+            iro = iro.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(iro, "<span class=\"hottext\">内容简介：(.*?)<span class=\"hottext\">");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                cover = null;
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
 
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
 
-        private static Tuple<List<BookCatalog>, string, string> AnalysisQysx(string html, string baseUrl)
+        private async static Task<Tuple<List<BookCatalog>, string, string>> AnalysisQysx(string html, string baseUrl, string url)
         {
             List<BookCatalog> list = null;
             string despriction = null;
@@ -1769,7 +1831,39 @@ namespace Sodu.Services
                 }
             }
 
+
+
+            var strs = url.Split('/');
+            string bookId = strs[strs.Length - 2];
+
+            string tempUrl = string.Format("http://www.qingyuxiaoshuo.com/book/{0}.html", bookId);
+            string iro = await (new HttpHelper()).WebRequestGet(tempUrl, false);
+            iro = iro.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(iro, "<div id=\"bookintro\">(.*?)</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //<div id="bookimg"><img alt="硅谷大帝" src="http://www.qingyuxiaoshuo.com/files/article/image/0/129/129s.jpg" width="152" height="195" />
+                //封面
+                Match coverStr = Regex.Match(iro, "<div id=\"bookimg\"><img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+          
 
         }
 
@@ -2018,7 +2112,31 @@ namespace Sodu.Services
                     }
                 }
             }
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, " <h3 class=\"bookinfo_intro\">.*?</strong>(.*?)您要是觉得.*?</h3>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.Groups[1].ToString());
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
 
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\'pic\'>.*?<img.*?src=\"(.*?)\".*?>");
+
+                Uri tempUrl = new Uri(baseUrl);
+                string web = tempUrl.Authority;
+                cover = coverStr.Groups[1].ToString();
+
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
         }
@@ -2076,7 +2194,7 @@ namespace Sodu.Services
             try
             {
                 //封面
-                Match coverStr = Regex.Match(html, "<div id=\"fmimg\">.*?<img.*?src=\"(.*?)\".*?>");
+                Match coverStr = Regex.Match(html, "<meta property=\"og:image\" content=\"(.*?)\"/>");
                 cover = coverStr.Groups[1].ToString();
             }
             catch (Exception)

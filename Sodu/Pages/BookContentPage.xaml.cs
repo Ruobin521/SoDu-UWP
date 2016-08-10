@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using GalaSoft.MvvmLight.Threading;
 using Sodu.Services;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
@@ -53,6 +54,7 @@ namespace Sodu.Pages
                 BattaryStatus.Visibility = Visibility.Visible;
                 _battery = Battery.GetDefault();
                 _battery.RemainingChargePercentChanged += _battery_RemainingChargePercentChanged;
+                this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
             }
             else
             {
@@ -84,7 +86,15 @@ namespace Sodu.Pages
 
         private void _battery_RemainingChargePercentChanged(object sender, object e)
         {
-            this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
+            if (NavigationService.ContentFrame.Content is BookContentPage)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+
+                    this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
+                }
+           );
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
