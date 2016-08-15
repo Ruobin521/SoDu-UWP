@@ -104,6 +104,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Compile Include="Controls\PullToRefreshListView.cs" />
+    <Compile Include="Controls\RefreshProgressEventArgs.cs" />
     <Compile Include="Controls\SwipeableSplitView.cs" />
     <None Include="project.json" />
   </ItemGroup>
