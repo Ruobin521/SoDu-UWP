@@ -105,7 +105,6 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Compile Include="Controls\PullToRefreshListView.cs" />
-    <Compile Include="Controls\RefreshProgressEventArgs.cs" />
     <Compile Include="Controls\SwipeableSplitView.cs" />
     <None Include="project.json" />
   </ItemGroup>
@@ -154,8 +153,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

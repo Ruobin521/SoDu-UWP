@@ -125,20 +125,23 @@ namespace Sodu.ViewModel
         }
         public void InitData(object obj = null)
         {
-            if (IsLoading) return;
-
-            CancleHttpRequest();
-
-            if (this.RecommendBookList.Count > 0 && this.HotBookList.Count > 0)
+            if (IsLoading)
             {
-                return;
+                CancleHttpRequest();
             }
+
             SetData();
         }
 
 
         public void SetData()
         {
+            if (IsLoading) return;
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                IsLoading = true;
+            });
+
             Task.Run(async () =>
            {
                string html = await GetHtmlData();
@@ -169,6 +172,13 @@ namespace Sodu.ViewModel
                {
                    ToastHeplper.ShowMessage("未能获取数据 ");
                }
+               finally
+               {
+                   DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                   {
+                       IsLoading = false;
+                   });
+               }
            });
           });
         }
@@ -178,10 +188,6 @@ namespace Sodu.ViewModel
         {
             string html = null;
 
-             DispatcherHelper.CheckBeginInvokeOnUI( () =>
-           {
-               IsLoading = true;
-           });
             try
             {
                 http = new HttpHelper();
@@ -190,13 +196,6 @@ namespace Sodu.ViewModel
             catch (Exception)
             {
                 html = null;
-            }
-            finally
-            {
-                 DispatcherHelper.CheckBeginInvokeOnUI( () =>
-                {
-                    IsLoading = false;
-                });
             }
             return html;
         }

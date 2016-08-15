@@ -9,15 +9,16 @@ using Windows.UI.Xaml.Media;
 namespace SoDu.Core.Controls
 {
     /// <summary>
-    /// Extension of ListView that allows "Pull To Refresh" on touch devices
+    /// Event args for Refresh Progress changed event
     /// </summary>
-    [TemplatePart(Name = PART_ROOT, Type = typeof(Border))]
-    [TemplatePart(Name = PART_SCROLLER, Type = typeof(ScrollViewer))]
-    [TemplatePart(Name = PART_CONTENT_TRANSFORM, Type = typeof(CompositeTransform))]
-    [TemplatePart(Name = PART_SCROLLER_CONTENT, Type = typeof(Grid))]
-    [TemplatePart(Name = PART_REFRESH_INDICATOR_BORDER, Type = typeof(Border))]
-    [TemplatePart(Name = PART_INDICATOR_TRANSFORM, Type = typeof(CompositeTransform))]
-    [TemplatePart(Name = PART_DEFAULT_INDICATOR_CONTENT, Type = typeof(TextBlock))]
+    public class RefreshProgressEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Value from 0.0 to 1.0 where 1.0 is active
+        /// </summary>
+        public double PullProgress { get; set; }
+    }
+
     public class PullToRefreshListView : ListView
     {
         #region Private Variables
@@ -108,13 +109,13 @@ namespace SoDu.Core.Controls
 		/// </summary>
         protected override void OnApplyTemplate()
         {
-            Root = GetTemplateChild(PART_ROOT) as Border;
-            Scroller = this.GetTemplateChild(PART_SCROLLER) as ScrollViewer;
-            ContentTransform = GetTemplateChild(PART_CONTENT_TRANSFORM) as CompositeTransform;
-            ScrollerContent = GetTemplateChild(PART_SCROLLER_CONTENT) as Grid;
-            RefreshIndicatorBorder = GetTemplateChild(PART_REFRESH_INDICATOR_BORDER) as Border;
-            RefreshIndicatorTransform = GetTemplateChild(PART_INDICATOR_TRANSFORM) as CompositeTransform;
-            DefaultIndicatorContent = GetTemplateChild(PART_DEFAULT_INDICATOR_CONTENT) as TextBlock;
+            Root = GetTemplateChild<Border>(PART_ROOT);
+            Scroller = this.GetTemplateChild<ScrollViewer>(PART_SCROLLER);
+            ContentTransform = GetTemplateChild<CompositeTransform>(PART_CONTENT_TRANSFORM);
+            ScrollerContent = GetTemplateChild<Grid>(PART_SCROLLER_CONTENT);
+            RefreshIndicatorBorder = GetTemplateChild<Border>(PART_REFRESH_INDICATOR_BORDER);
+            RefreshIndicatorTransform = GetTemplateChild<CompositeTransform>(PART_INDICATOR_TRANSFORM);
+            DefaultIndicatorContent = GetTemplateChild<TextBlock>(PART_DEFAULT_INDICATOR_CONTENT);
 
             Scroller.DirectManipulationCompleted += Scroller_DirectManipulationCompleted;
             Scroller.DirectManipulationStarted += Scroller_DirectManipulationStarted;
@@ -139,6 +140,25 @@ namespace SoDu.Core.Controls
 
             base.OnApplyTemplate();
         }
+
+        T GetTemplateChild<T>(string name, string message = null) where T : DependencyObject
+        {
+            var child = GetTemplateChild(name) as T;
+
+            if (child == null)
+            {
+                if (message == null)
+                {
+                    message = $"{name} should not be null! Check the default Generic.xaml.";
+                }
+
+                throw new NullReferenceException(message);
+            }
+
+            return child;
+        }
+
+
 
         void RegisterRequestEvent()
         {
@@ -358,7 +378,7 @@ namespace SoDu.Core.Controls
         /// Identifies the <see cref="PullThreshold"/> property.
         /// </summary>
         public static readonly DependencyProperty PullThresholdProperty =
-            DependencyProperty.Register("PullThreshold", typeof(double), typeof(PullToRefreshListView), new PropertyMetadata(100.0));
+            DependencyProperty.Register("PullThreshold", typeof(double), typeof(PullToRefreshListView), new PropertyMetadata(85.00));
 
         /// <summary>
         /// Gets or sets the Command that will be invoked when Refresh is requested
@@ -410,6 +430,5 @@ namespace SoDu.Core.Controls
         #endregion
 
     }
-
 
 }

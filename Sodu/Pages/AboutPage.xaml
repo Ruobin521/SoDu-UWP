@@ -30,7 +30,7 @@
                 <StackPanel Grid.Row="1" Padding="10,0,0,0">
                     <Grid Height="50">
                         <Button Grid.Row="2"  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="VersionButton_Click" >
-                            <TextBlock   Text="版本号：1.4.1" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"  ></TextBlock>
+                            <TextBlock   Text="版本号：1.5.0" Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"  ></TextBlock>
                         </Button>
                         <TextBlock  x:Name="txtDir" IsTapEnabled="False"  IsHitTestVisible="False" Grid.Row="2"  Text=">" Height="30" Style="{StaticResource ListItemTextBlockStyle}"  HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"   RenderTransformOrigin="0.5,0.5" >
                             <TextBlock.RenderTransform>
@@ -42,15 +42,13 @@
                         <TextBlock Style="{StaticResource TitleTextBlockStyle}"  LineHeight="32" Margin="0,2,0,0">
                           <Run Text="本次更新："></Run>
                            <LineBreak/>
-                          <Run Text="1.全新的阅读设置"></Run>
+                          <Run Text="1.首页下拉刷新"></Run>
                            <LineBreak/>
-                          <Run Text="2.全局细节微调"></Run>
+                          <Run Text="2.左侧滑动打开汉堡菜单"></Run>
                            <LineBreak/>
-                          <Run Text="3.添加新的网站数据"></Run>
+                          <Run Text="3.目录页添加封面简介"></Run>
                            <LineBreak/>
-                          <Run Text="4.为输入框添加回车快捷键"></Run>
-                           <LineBreak/>
-                          <Run Text="5.其他bug"></Run>
+                          <Run Text="4.其他bug"></Run>
                         </TextBlock>
                     </Grid>
 
@@ -61,15 +59,6 @@
                             <TextBlock   Text="给个好评"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18"   ></TextBlock>
                         </Button>
                         <TextBlock   Text=">"  IsTapEnabled="False"  IsHitTestVisible="False" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
-                    </Grid>
-
-                    <Border     BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>
-
-                    <Grid Height="50">
-                        <Button  Style="{StaticResource ContentButtonStyle}" Padding="0" Click="HelpButton_Click" >
-                            <TextBlock   Text="使用说明"  Style="{StaticResource ListItemTextBlockStyle}" VerticalAlignment="Center" FontSize="18" ></TextBlock>
-                        </Button>
-                        <TextBlock     IsTapEnabled="False"  IsHitTestVisible="False"  Text=">" Style="{StaticResource ListItemTextBlockStyle}" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontSize="20"  ></TextBlock>
                     </Grid>
 
                     <Border   BorderBrush="Gray" BorderThickness="1" Height="1" VerticalAlignment="Center" Opacity="0.3"  ></Border>

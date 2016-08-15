@@ -35,28 +35,16 @@
             </ListView.ItemTemplate>
 
         </ListView>-->
-        <controls:PullToRefreshListView x:Name="updateListBox"  Grid.Row="0" PullThreshold="50"    ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"    Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent" 
+        <controls:PullToRefreshListView  Grid.Row="0"    ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"    Margin="0,0,0,0"   ItemsSource="{Binding HotBookList}"        HorizontalAlignment="Stretch" Background="Transparent" 
            RefreshCommand="{Binding RefreshCommand}">
             <controls:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>
                     <uc:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.RecommendAndHotPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
                 </DataTemplate>
             </controls:PullToRefreshListView.ItemTemplate>
-            <controls:PullToRefreshListView.RefreshIndicatorContent>
-                <Grid  Height="20" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,10">
-                    <TextBlock FontSize="16" x:Name="upText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↑</Run>
-                        <Run>释放刷新</Run>
-                    </TextBlock>
-                    <TextBlock FontSize="16" x:Name="downText"  Visibility="Collapsed">
-                        <Run FontWeight="Black">↓</Run>
-                        <Run>下拉刷新</Run>
-                    </TextBlock>
-                </Grid>
-            </controls:PullToRefreshListView.RefreshIndicatorContent>
         </controls:PullToRefreshListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False"   Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True" >
+        <CommandBar  Grid.Row="1"    ClosedDisplayMode="Compact"  IsOpen="False"   Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True" >
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"    Command="{Binding RefreshCommand}"/>
         </CommandBar>
         <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></uc:UC_ProgressRing>

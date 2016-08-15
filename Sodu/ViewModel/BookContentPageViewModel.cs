@@ -31,7 +31,7 @@ namespace Sodu.ViewModel
         private HttpHelper htmlHttp = new HttpHelper();
         private HttpHelper preHtmlHttp = new HttpHelper();
         private HttpHelper catalogsHttp = new HttpHelper();
-        private DispatcherTimer timer;
+      
 
         private bool isClickCtalog = false;
 
@@ -73,19 +73,6 @@ namespace Sodu.ViewModel
             set
             {
                 SetProperty(ref m_ContentTitle, value);
-            }
-        }
-
-        private string m_CurrentTime;
-        public string CurrentTime
-        {
-            get
-            {
-                return m_CurrentTime;
-            }
-            set
-            {
-                SetProperty(ref m_CurrentTime, value);
             }
         }
 
@@ -187,20 +174,10 @@ namespace Sodu.ViewModel
 
         public BookContentPageViewModel()
         {
-            InitTimer();
+          
         }
 
-        private void InitTimer()
-        {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
-            timer.Start();
-        }
-        private void Timer_Tick(object sender, object e)
-        {
-            CurrentTime = DateTime.Now.ToString("HH:mm");
-        }
+      
 
         public void InitData(object obj)
         {
@@ -520,14 +497,13 @@ namespace Sodu.ViewModel
             if (ContentListt != null)
             {
                 this.ContentListt.Clear();
-               
+
             }
             var strList = SplitString(html);
 
             foreach (string str in strList)
             {
                 this.ContentListt.Add(str);
-                await Task.Delay(1);
             }
         }
 

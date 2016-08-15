@@ -100,7 +100,7 @@ namespace Sodu.ViewModel
             this.CurrentBookEntity = temp;
 
 
-            this.ContentTitle = CurrentBookEntity.BookName + "  目录";
+            this.ContentTitle = CurrentBookEntity.BookName;
 
             if (CheckIfLoacalExist())
             {

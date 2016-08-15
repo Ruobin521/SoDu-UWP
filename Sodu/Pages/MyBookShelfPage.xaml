@@ -2,15 +2,12 @@
     x:Class="Sodu.Pages.MyBookShelfPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:UC="using:Sodu.UC"  
+    xmlns:uc="using:Sodu.UC"  
     xmlns:ex="using:SoDu.Core.Extension"
     xmlns:converter="using:Sodu.Converter"
-    xmlns:vm="using:Sodu.ViewModel"  
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:controls="using:SoDu.Core.Controls"
     mc:Ignorable="d"
     DataContext="{Binding Instance.MyBookShelfViewModelInstance,Source={ StaticResource  Locator}}"
     x:Name="root">
@@ -32,28 +29,23 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Visibility="{Binding  IsShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Text="您的永久书架空空如也,，去排行榜看看吧~"  FontSize="18" HorizontalAlignment="Center" Margin="0,20,0,0" TextAlignment="Center"></TextBlock>
-        <ListView    ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"   x:Name="listview"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList}"      HorizontalAlignment="Stretch" Background="Transparent">
-            <!--<ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>-->
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}" Background="Transparent">
-                    </UC:UC_BookListItem>
-                    <!--<TextBlock Text="测试测试测试测试测试测试测试测试测试测试"></TextBlock>-->
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <controls:PullToRefreshListView   RefreshCommand="{Binding RefreshCommand}"     ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"   Grid.Row="0"   Margin="0,0,0,0"   ItemsSource="{Binding  ShelfBookList}"      HorizontalAlignment="Stretch" Background="Transparent">
 
-        <CommandBar   Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False"   Background="{ThemeResource LeftPanelBackground}"  ex:CommandBarExtensions.HideMoreButton="True">
+            <controls:PullToRefreshListView.ItemTemplate>
+                <DataTemplate>
+                    <uc:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.MyBookShelfViewModelInstance.BookItemSelectedCommand,Source={ StaticResource  Locator}}" CommandParameter="{Binding}" Background="Transparent">
+                    </uc:UC_BookListItem>
+                </DataTemplate>
+            </controls:PullToRefreshListView.ItemTemplate>
+        </controls:PullToRefreshListView >
+
+        <CommandBar   Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"   Background="{ThemeResource LeftPanelBackground}"  ex:CommandBarExtensions.HideMoreButton="True">
             <AppBarButton x:Name="btnSelectAll" Icon="SelectAll" Width="65"    Command="{Binding  SelectAllCommand }"  Label="{Binding IsAllSelected,Converter={StaticResource AppBarLabelConverter},Mode=OneWay}" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}" CommandParameter="0"/>
             <AppBarButton Icon="Delete" Label="下架"  Width="65" Visibility="{Binding  IsEditing,Converter={StaticResource  BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookFromShelfCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Width="65"  Command="{Binding EditCommand}"/>
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  Width="65"  Command="{Binding RefreshCommand}"/>
         </CommandBar>
-        <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
+        <uc:UC_ProgressRing  IsActive="{Binding IsLoading}" Grid.Row="0" Grid.RowSpan="2" ></uc:UC_ProgressRing>
 
     </Grid>
 

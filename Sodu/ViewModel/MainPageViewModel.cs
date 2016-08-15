@@ -5,6 +5,7 @@ using Sodu.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -221,18 +222,6 @@ namespace Sodu.ViewModel
             }
         }
 
-
-        public void SetCurrentMenu(Type type)
-        {
-            try
-            {
-                this.CurrentMenu = this.CurrentMenuList.ToList().FirstOrDefault(p => p.MenuType == type);
-            }
-            catch (Exception)
-            {
-                ToastHeplper.ShowMessage("导航出现异常");
-            }
-        }
         public void InitData(object obj = null)
         {
             return;
@@ -252,7 +241,7 @@ namespace Sodu.ViewModel
                 return m_IsLeftPanelOpenCommand ??
              (m_IsLeftPanelOpenCommand = new RelayCommand<bool>((str) =>
         {
-            IsLeftPanelOpen = !IsLeftPanelOpen;
+            IsLeftPanelOpen = !m_IsLeftPanelOpen;
         }));
             }
         }
@@ -389,7 +378,25 @@ namespace Sodu.ViewModel
         }
 
         /// <summary>
-        /// 使用帮助
+        /// 关于
+        /// </summary>
+        private ICommand m_AboutCommand;
+        public ICommand AboutCommand
+        {
+            get
+            {
+                return m_AboutCommand ??
+                    (
+               m_AboutCommand = new RelayCommand<bool>(
+                      (str) =>
+                      {
+                          NavigateToPage(typeof(AboutPage));
+                      }));
+            }
+        }
+
+        /// <summary>
+        /// 使用说明
         /// </summary>
         private ICommand m_HelpCommand;
         public ICommand HelpCommand
@@ -401,7 +408,7 @@ namespace Sodu.ViewModel
                m_HelpCommand = new RelayCommand<bool>(
                       (str) =>
                       {
-                          NavigateToPage(typeof(AboutPage));
+                          NavigateToPage(typeof(HelpPage));
                       }));
             }
         }

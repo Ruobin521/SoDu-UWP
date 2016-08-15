@@ -273,6 +273,7 @@ namespace Sodu.ViewModel
                 }
 
                 this.InitData();
+                SetBookEditStatus(false);
 
             }));
             msgDialog.Commands.Add(new Windows.UI.Popups.UICommand("取消", uiCommand =>

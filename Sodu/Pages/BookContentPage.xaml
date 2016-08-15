@@ -40,13 +40,15 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource CustomContentTextBlockStyle}"   TextTrimming="WordEllipsis"  HorizontalAlignment="Left"     FontSize="16"/>
+                    <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource TitleTextBlockStyle}"        FontSize="16"/>
+                    <TextBlock x:Name="TextTime" Grid.Column="2" Margin="5,0,10,0" FontFamily="颜体"   Text="" Style="{StaticResource CustomContentTextBlockStyle}"    VerticalAlignment="Center" HorizontalAlignment="Right" Height="16"      FontSize="14"/>
 
                     <StackPanel  x:Name="BattaryStatus"  Grid.Column="1" Orientation="Horizontal">
                         <Grid VerticalAlignment="Center">
                             <Grid Name="backgroundGrid" Width="38" Height="0" Visibility="Collapsed" />
-                            <Path Opacity="0.9" Data="M15,4L17,4 17,10 15,10z M10,4L12,4 12,10 10,10z M5,4L7,4 7,10 5,10z M2,2L2,12 28,12 28,2z M0,0L30,0 30,4 32,4 32,10 30,10 30,14 0,14z" Stretch="Uniform" Fill="{ThemeResource TextContentForeground}" Width="26" Height="26" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Path Opacity="1" Data="M2,2L2,12 28,12 28,2z M0,0L30,0 30,4 32,4 32,10 30,10 30,14 0,14z"  StrokeThickness="0.5" Stretch="Uniform" Fill="{ThemeResource TitleTextFroeground}" Width="28" Height="22" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
                                 <Path.RenderTransform>
                                     <TransformGroup>
                                         <TransformGroup.Children>
@@ -56,9 +58,10 @@
                                     </TransformGroup>
                                 </Path.RenderTransform>
                             </Path>
+                            <Border>
+                                <TextBlock x:Name="TextBattery"   FontFamily="颜体"  Text=" "    Foreground="{ThemeResource TitleTextFroeground}"  VerticalAlignment="Center"   HorizontalAlignment="Center" FontSize="10" Margin="0,1,3,0"/>
+                            </Border>
                         </Grid>
-                        <TextBlock x:Name="TextBattary"   FontFamily="颜体"  Text="100%"   Style="{StaticResource CustomContentTextBlockStyle}"  VerticalAlignment="Center"   HorizontalAlignment="Right"   Height="16"  FontSize="14"/>
-                        <TextBlock x:Name="TextTime"  Margin="5,0,10,0" FontFamily="颜体"     Text="{Binding CurrentTime}" Style="{StaticResource CustomContentTextBlockStyle}"    VerticalAlignment="Center" HorizontalAlignment="Right" Height="16"      FontSize="14"/>
                     </StackPanel>
 
                     <!--<SymbolIcon  Symbol="Back" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,0,0"/>-->
@@ -66,7 +69,7 @@
             </Border>
             <Grid  x:Name="ContentGrid"  Grid.Row="1"  IsTapEnabled="False" >
                 <ListView x:Name="listview" FontFamily="颜体"   ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"    ItemsSource="{Binding ContentListt}"   HorizontalAlignment="Stretch"   
-         VerticalAlignment="Top"   Padding="8,0,20,0" >
+         VerticalAlignment="Top"   Padding="8,0,10,0" >
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border ManipulationMode="System,TranslateX" >
@@ -85,7 +88,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
-            <Grid   x:Name="commandbar" Background="Transparent"  Visibility="Visible"   Grid.ColumnSpan="2">
+            <Grid   x:Name="commandbar" Background="Transparent"  Visibility="Collapsed"   Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>

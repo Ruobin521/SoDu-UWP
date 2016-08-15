@@ -9,7 +9,8 @@
     xmlns:UC="using:Sodu.UC"
     xmlns:ex="using:SoDu.Core.Extension"
      xmlns:selector="using:Sodu.Selector"
-    DataContext="{Binding Instance.RankListPageViewModelInstance,Source={ StaticResource  Locator}}"
+     xmlns:controls="using:SoDu.Core.Controls"
+     DataContext="{Binding Instance.RankListPageViewModelInstance,Source={ StaticResource  Locator}}"
     >
     <Page.Transitions>
         <TransitionCollection>
@@ -21,18 +22,18 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <ListView  Grid.Row="0"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"  ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
+        <controls:PullToRefreshListView  Grid.Row="0" RefreshCommand="{Binding RefreshCommand}"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"  ItemsSource="{Binding BookList}"     HorizontalAlignment="Stretch" Background="Transparent" >
             <!--<ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel Orientation="Vertical"></VirtualizingStackPanel>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>-->
-            <ListView.ItemTemplate>
+            <controls:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </controls:PullToRefreshListView.ItemTemplate>
+        </controls:PullToRefreshListView>
 
         <CommandBar x:Name="Menu"  Grid.Row="1"  ClosedDisplayMode="Compact"  IsOpen="False"  Background="{ThemeResource LeftPanelBackground}" ex:CommandBarExtensions.HideMoreButton="False">
             <CommandBar.Resources>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -172,27 +173,36 @@ namespace SoDu.Core.Controls
         static void OnIsSwipeablePaneOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var splitView = (SwipeableSplitView)d;
-
-            switch (splitView.DisplayMode)
+            try
             {
-                case SplitViewDisplayMode.Inline:
-                case SplitViewDisplayMode.CompactOverlay:
-                case SplitViewDisplayMode.CompactInline:
-                    splitView.IsPaneOpen = (bool)e.NewValue;
-                    break;
+                switch (splitView.DisplayMode)
+                {
+                    case SplitViewDisplayMode.Inline:
+                    case SplitViewDisplayMode.CompactOverlay:
+                    case SplitViewDisplayMode.CompactInline:
+                        splitView.IsPaneOpen = (bool)e.NewValue;
+                        break;
 
-                case SplitViewDisplayMode.Overlay:
-                    if (splitView.OpenSwipeablePaneAnimation == null || splitView.CloseSwipeablePaneAnimation == null) return;
-                    if ((bool)e.NewValue)
-                    {
-                        splitView.OpenSwipeablePane();
-                    }
-                    else
-                    {
-                        splitView.CloseSwipeablePane();
-                    }
-                    break;
+                    case SplitViewDisplayMode.Overlay:
+                        if (splitView.OpenSwipeablePaneAnimation == null || splitView.CloseSwipeablePaneAnimation == null) return;
+                        if (splitView.IsSwipeablePaneOpen)
+                        {
+                            Debug.WriteLine("执行打开操作");
+                            splitView.OpenSwipeablePane();
+                        }
+                        else
+                        {
+                            Debug.WriteLine("执行关闭操作");
+                            splitView.CloseSwipeablePane();
+                        }
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
         }
 
         public double PanAreaInitialTranslateX
@@ -297,6 +307,8 @@ namespace SoDu.Core.Controls
 
             // while we are panning the PanArea on X axis, let's sync the PaneRoot's position X too
             _paneRootTransform.TranslateX = _panAreaTransform.TranslateX = x;
+
+            // DismissLayer.Opacity = 0.2 * -(x / PanAreaInitialTranslateX);
         }
 
         async void OnManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -366,6 +378,7 @@ namespace SoDu.Core.Controls
         {
             if (IsSwipeablePaneOpen)
             {
+
                 OpenSwipeablePaneAnimation.Begin();
             }
             else
@@ -378,6 +391,7 @@ namespace SoDu.Core.Controls
         {
             if (!IsSwipeablePaneOpen)
             {
+
                 CloseSwipeablePaneAnimation.Begin();
             }
             else

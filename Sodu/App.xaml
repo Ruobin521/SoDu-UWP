@@ -13,6 +13,7 @@
             <vm:ViewModelInstance  x:Key="Locator"/>
             <converter:RefreshCancleIconConverter x:Key="RefreshCancleIconConverter"></converter:RefreshCancleIconConverter>
             <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <converter:CommandBarBooleanToVisibilityConverter x:Key="CommandBarBooleanToVisibilityConverter"/>
             <converter:RefreshCancleIconLabelConverter x:Key="RefreshCancleIconLabelConverter"></converter:RefreshCancleIconLabelConverter>
             <converter:DoubleToPercentConverter x:Key="DoubleToPercentConverter"></converter:DoubleToPercentConverter>
             <selector:CustomListViewItemContainerStyleSelector x:Key="CustomListViewItemContainerStyleSelector"></selector:CustomListViewItemContainerStyleSelector>

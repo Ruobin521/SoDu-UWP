@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Phone.UI.Input;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace Sodu.Services
@@ -19,37 +20,32 @@ namespace Sodu.Services
         private static DateTime FirstTime { get; set; }
         private static DateTime SecondTime { get; set; }
 
-        private static Frame _ContentFrame;
+        private static Frame _contentFrame;
         public static Frame ContentFrame
         {
             get
             {
-                return _ContentFrame;
+                return _contentFrame;
             }
 
             set
             {
-                if (_ContentFrame == null)
+                if (_contentFrame == null)
                 {
-                    _ContentFrame = value;
-                    _ContentFrame.Navigated -= _ContentFrame_Navigated;
-                    _ContentFrame.Navigated += _ContentFrame_Navigated;
+                    _contentFrame = value;
+                    _contentFrame.Navigated -= _ContentFrame_Navigated;
+                    _contentFrame.Navigated += _ContentFrame_Navigated;
                 }
             }
         }
         public static void CancleHttpRequest()
         {
-            Page page = ContentFrame.Content as Page;
-            if (page != null)
+            var page = ContentFrame.Content as Page;
+            var viewModel = page?.DataContext as IViewModel;
+            if (viewModel == null) return;
+            if (viewModel.IsLoading)
             {
-                IViewModel viewModel = page.DataContext as IViewModel;
-                if (viewModel != null)
-                {
-                    if (viewModel.IsLoading)
-                    {
-                        viewModel.CancleHttpRequest();
-                    }
-                }
+                viewModel.CancleHttpRequest();
             }
         }
 
@@ -63,7 +59,7 @@ namespace Sodu.Services
         }
         public static void NavigateTo(Type type, object para = null)
         {
-            if (ContentFrame.Content != null && ContentFrame.Content.GetType().Equals(type))
+            if (ContentFrame.Content != null && ContentFrame.Content.GetType() == type)
             {
                 return;
             }
@@ -92,7 +88,7 @@ namespace Sodu.Services
                 {
                     if (CheckIfShutDown())
                     {
-                        App.Current.Exit();
+                        Application.Current.Exit();
                     }
                     else
                     {
@@ -130,12 +126,6 @@ namespace Sodu.Services
 
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            if (ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen)
-            {
-                ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen = false;
-                return;
-            }
-
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {
                 if (ContentFrame.CanGoBack)

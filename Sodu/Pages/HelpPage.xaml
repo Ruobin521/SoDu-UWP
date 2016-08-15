@@ -5,6 +5,7 @@
     xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="using:Sodu.UC"
     mc:Ignorable="d"
      >
     <Page.Transitions>
@@ -15,13 +16,17 @@
 
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="38"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TextTitle" Style="{StaticResource TitleTextBlockStyle}"  Grid.ColumnSpan="3" Grid.Column="0"  Text="使用说明" TextTrimming="WordEllipsis"    HorizontalAlignment="Left"  VerticalAlignment="Center" Margin="15,0,0,0" ></TextBlock>
+        <uc:UC_PageHeader Title="使用说明" ></uc:UC_PageHeader>
 
         <ScrollViewer Grid.Row="1" Padding="10,0"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel>
+                <TextBlock Text="汉堡菜单" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>
+                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"  Grid.Column="0"  Text="1.点击左上方按钮，或从屏幕左侧边缘滑动，即可打开菜单" LineHeight="35"   TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
+                <TextBlock Text="首页" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>
+                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"  Grid.Column="0"  Text="1.下拉或者点击下方刷新按钮即可刷新当前页面数据" LineHeight="35"   TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
                 <TextBlock Text="更新列表页" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>
                 <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"  Grid.Column="0"  Text="1.点击下方菜单中加号，添加当前小说到个人书架（如果设置中已经设置为自动添加或已经收藏过本书，该按钮将不显示）" LineHeight="35"   TextWrapping="Wrap"   HorizontalAlignment="Left"  VerticalAlignment="Center"   FontSize="18"></TextBlock>
                 <TextBlock Text="阅读界面" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>

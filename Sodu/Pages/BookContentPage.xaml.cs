@@ -35,6 +35,9 @@ namespace Sodu.Pages
 
         //电池信息
         private Battery _battery = null;
+        private DispatcherTimer timer;
+
+        private ScrollViewer _scrollviewer;
 
         public BookContentPage()
         {
@@ -50,11 +53,7 @@ namespace Sodu.Pages
             {
                 this.ColorPanel.Closed -= ColorPanel_Closed;
                 this.ColorPanel.Closed += ColorPanel_Closed;
-
-                BattaryStatus.Visibility = Visibility.Visible;
-                _battery = Battery.GetDefault();
-                _battery.RemainingChargePercentChanged += _battery_RemainingChargePercentChanged;
-                this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
+                InitBattery();
             }
             else
             {
@@ -65,6 +64,28 @@ namespace Sodu.Pages
             this.Loaded += BookContentPage_Loaded;
 
 
+            InitTimer();
+        }
+
+        private void InitBattery()
+        {
+            BattaryStatus.Visibility = Visibility.Visible;
+            _battery = Battery.GetDefault();
+            _battery.RemainingChargePercentChanged += _battery_RemainingChargePercentChanged;
+            this.TextBattery.Text = string.Format("{0}", _battery.RemainingChargePercent);
+        }
+
+        private void InitTimer()
+        {
+            this.TextTime.Text = DateTime.Now.ToString("HH:mm");
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+        private void Timer_Tick(object sender, object e)
+        {
+            this.TextTime.Text = DateTime.Now.ToString("HH:mm");
         }
 
         private void ColorPanel_Closed()
@@ -78,9 +99,9 @@ namespace Sodu.Pages
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
-                var scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
-                scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
-                scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+                _scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
+                _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
+                _scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
             }
         }
 
@@ -89,7 +110,7 @@ namespace Sodu.Pages
 
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
             {
-                this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
+                this.TextBattery.Text = string.Format("{0}", _battery.RemainingChargePercent);
             }
                 );
 
@@ -229,17 +250,28 @@ namespace Sodu.Pages
         {
             if (!value)
             {
+                if (this.ColorPanel.Visibility != Visibility.Visible) return;
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
                     SetCommandBarMode(false);
+                    if (_scrollviewer != null)
+                    {
+                        _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
+                        _scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+                    }
                 }
                 this.ColorPanel.Close();
             }
             else
             {
+                if (this.ColorPanel.Visibility != Visibility.Collapsed) return;
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
                     SetCommandBarMode(true);
+                    if (_scrollviewer != null)
+                    {
+                        _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
+                    }
                 }
                 this.ColorPanel.Show();
             }
