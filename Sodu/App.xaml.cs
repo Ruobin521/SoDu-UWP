@@ -279,10 +279,7 @@ namespace Sodu
                 e.Handled = true;
             }
 
-            if (NavigationService.ContentFrame != null)
-            {
-                NavigationService.GoBack(sender);
-            }
+            OnBackPressed();
         }
 
         /// <summary>
@@ -296,9 +293,20 @@ namespace Sodu
             {
                 e.Handled = true;
             }
+            OnBackPressed();
+        }
+
+        private static void OnBackPressed()
+        {
             if (NavigationService.ContentFrame != null)
             {
-                NavigationService.GoBack(sender);
+                if (ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen)
+                {
+                    ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen = false;
+                    return;
+                }
+
+                NavigationService.GoBack();
             }
         }
 

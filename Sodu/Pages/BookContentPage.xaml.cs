@@ -86,15 +86,13 @@ namespace Sodu.Pages
 
         private void _battery_RemainingChargePercentChanged(object sender, object e)
         {
-            if (NavigationService.ContentFrame.Content is BookContentPage)
-            {
-                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
 
-                    this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
-                }
-           );
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                this.TextBattary.Text = string.Format("{0} %", _battery.RemainingChargePercent);
             }
+                );
+
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

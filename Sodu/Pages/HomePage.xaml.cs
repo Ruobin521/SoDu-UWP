@@ -33,31 +33,10 @@ namespace Sodu.Pages
             this.Unloaded += HomePage_Unloaded;
         }
 
-
-
-        private void HomePage_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (this.pivot.ItemsSource != (this.DataContext as MainPageViewModel).CurrentMenuList)
-            {
-                this.pivot.ItemsSource = (this.DataContext as MainPageViewModel).CurrentMenuList;
-                this.pivot.SelectedItem = (this.DataContext as MainPageViewModel).CurrentMenu;
-            }
-        }
-
-        //protected override void OnNavigatedTo(NavigationEventArgs e)
-        //{
-        //if (this.pivot.ItemsSource != (this.DataContext as MainPageViewModel).CurrentMenuList)
-        //   {
-        //       this.pivot.ItemsSource = (this.DataContext as MainPageViewModel).CurrentMenuList;
-        //       this.pivot.SelectedItem = (this.DataContext as MainPageViewModel).CurrentMenu;
-        //   }
-        //}
-
         private void HomePage_Unloaded(object sender, RoutedEventArgs e)
         {
             SetBookShelfUnEditing();
         }
-
 
         private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

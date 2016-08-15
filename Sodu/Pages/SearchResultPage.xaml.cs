@@ -31,10 +31,19 @@ namespace Sodu.Pages
             this.Loaded += SearchResultPage_Loaded;
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.New)
+            {
+                (this.DataContext as SearchResultPageViewModel)?.InitData();
+            }
+        }
+
         private void SearchResultPage_Loaded(object sender, RoutedEventArgs e)
         {
             this.txtSearch.Focus(FocusState.Pointer);
-            (this.DataContext as SearchResultPageViewModel)?.InitData();
+
         }
 
         private void TxtSearch_OnKeyUp(object sender, KeyRoutedEventArgs e)

@@ -205,25 +205,6 @@ namespace Sodu.ViewModel
 
         }
 
-        /// <summary>
-        /// 导航到选择的页面
-        /// </summary>
-        /// <param name="menu"></param>
-        public void NavigateToPage(MenuModel menu, object para = null)
-        {
-            try
-            {
-                if (menu != null)
-                {
-                    this.IsLeftPanelOpen = false;
-                    NavigationService.NavigateTo(menu.MenuType, para);
-                }
-            }
-            catch (Exception)
-            {
-                ToastHeplper.ShowMessage("导航出现异常");
-            }
-        }
         public void NavigateToPage(Type pageType, object para = null)
         {
             try
@@ -301,43 +282,9 @@ namespace Sodu.ViewModel
                 //判断是否自动添加书到收藏
                 if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
                 {
-                    Task.Run(async () =>
-                   {
-                       if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
-                       {
-                           string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), entity.BookID));
-                           if (html.Contains("{\"success\":true}"))
-                           {
-                                DispatcherHelper.CheckBeginInvokeOnUI( () =>
-                               {
-                                   if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
-                                   {
-                                       ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0, new BookEntity()
-                                       {
-                                           AuthorName = entity.AuthorName,
-                                           BookID = entity.BookID,
-                                           BookName = entity.BookName,
-                                           CatalogListUrl = entity.CatalogListUrl,
-                                           LastReadChapterName = entity.LastReadChapterName,
-                                           LastReadChapterUrl = entity.LastReadChapterUrl,
-                                           NewestChapterName = entity.NewestChapterName,
-                                           NewestChapterUrl = entity.NewestChapterUrl,
-                                           UnReadCountData = entity.UnReadCountData,
-                                           UpdateTime = entity.UpdateTime,
-                                           UpdateCatalogUrl = entity.UpdateCatalogUrl,
-                                           LyWeb = entity.LyWeb
-                                       });
-                                   }
-                               });
-                           }
-                           else
-                           {
-
-                           }
-                       }
-                   });
+                    ViewModelInstance.Instance.MyBookShelfViewModelInstance.AddEntityToList(entity);
                 }
-                NavigationService.NavigateTo(typeof(UpdateChapterPage), entity);
+                NavigateToPage(typeof(UpdateChapterPage), entity);
             }
             else
             {

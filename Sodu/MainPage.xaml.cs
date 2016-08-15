@@ -27,7 +27,8 @@ namespace Sodu
         public MainPage()
         {
             this.InitializeComponent();
-            NavigationService.ContentFrame = NavigationService.ContentFrame ?? this.contentFrame;
+            NavigationService.ContentFrame = NavigationService.ContentFrame ?? this.ContentFrame;
+            this.HightListBack.Visibility = Visibility.Visible;
         }
     }
 }

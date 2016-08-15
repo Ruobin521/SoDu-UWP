@@ -29,14 +29,8 @@
                 <ColumnDefinition Width="55"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" Grid.Column="0"  Command="{Binding Instance.MainPageViewModelInstance.IsLeftPanelOpenCommand,Source={StaticResource Locator}}"  VerticalAlignment="Stretch"  Background="Transparent">
-                <ToggleButton.Content>
-                    <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,0,0,0"/>
-                </ToggleButton.Content>
-            </ToggleButton>
-
-            <Grid Grid.Column="1" Margin="5,2">
+            <UC:UC_PageHeader></UC:UC_PageHeader>
+            <Grid Grid.Column="1" Margin="5,2"  MaxWidth="1200">
                 <RelativePanel Height="40" Margin="0,0,0,0"  >
                     <Button  x:Name="btnSearch"    RelativePanel.AlignRightWithPanel="True" HorizontalAlignment="Right" RelativePanel.AlignVerticalCenterWithPanel="True"   Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=txtSearch,Path=Text}" Style="{StaticResource ButtonStyle1}" Height="38" Width="90" FontSize="16" VerticalAlignment="Center" Content="搜索" />
                     <TextBox   x:Name="txtSearch"   KeyUp="TxtSearch_OnKeyUp" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"  RelativePanel.LeftOf="btnSearch"  VerticalAlignment="Center"  Text="{Binding SearchPara,Mode=TwoWay}"   Style="{StaticResource  CusotmSearchTextBoxStyle}"  BorderThickness="1,1,0,1"    FontSize="22"  HorizontalAlignment="Stretch" Height="38" ></TextBox>

@@ -15,12 +15,29 @@
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
+
+
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="wideView">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="StackPanel.HorizontalAlignment" Value="Left"/>
+                        <Setter Target="StackPanel.Width" Value="500"></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="55"/>
@@ -36,7 +53,6 @@
         </Grid>
         <ScrollViewer  Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,5,0,10">
-
                 <StackPanel x:Name="StackPanel" Padding="15,0,0,0">
                     <Border Height="40">
                         <TextBlock   Text="自动登录(保存用户信息，直接登陆)" VerticalAlignment="Center" FontSize="18"></TextBlock>

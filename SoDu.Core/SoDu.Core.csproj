@@ -104,6 +104,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Compile Include="Controls\SwipeableSplitView.cs" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +119,7 @@
     <Compile Include="Database\DBHistory.cs" />
     <Compile Include="Database\DBLocalBook.cs" />
     <Compile Include="Extension\CommandBarExtensions.cs" />
+    <Compile Include="Extension\SplitViewExtension.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisCatalogList.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisCatalogService.cs" />
     <Compile Include="HtmlAnalysisService\IAnalysisHtmlContentService.cs" />
@@ -146,6 +148,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\PopupWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

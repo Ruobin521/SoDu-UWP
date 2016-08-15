@@ -263,12 +263,12 @@ namespace Sodu.ViewModel
 
         public void RemoveBookList(List<BookEntity> removeBookList)
         {
+
+            if (IsLoading) return;
+            IsLoading = true;
+
             Task.Run(async () =>
         {
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-          {
-              IsLoading = true;
-          });
             bool result = true;
             foreach (var item in removeBookList)
             {
@@ -302,7 +302,8 @@ namespace Sodu.ViewModel
              {
                  //   ToastHeplper.ShowMessage("操作完毕");
                  removeBookList.Clear();
-                 OnRefreshCommand(null);
+                 OnEditCommand(false);
+                 RefreshList();
              }
              else
              {
@@ -311,6 +312,41 @@ namespace Sodu.ViewModel
          }
           );
      });
+        }
+
+
+        public void AddEntityToList(BookEntity entity)
+        {
+            Task.Run(async () =>
+            {
+                if (ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                {
+                    string html = await (new HttpHelper()).WebRequestGet(string.Format(ViewModelInstance.Instance.UrlService.GetAddToShelfPage(), entity.BookID));
+                    if (html.Contains("{\"success\":true}"))
+                    {
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
+                            {
+                                ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0,
+                                    entity.Clone());
+                                RefreshList();
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        }
+
+        public void RefreshList()
+        {
+            List<BookEntity> list = new List<BookEntity>();
+            this.ShelfBookList.ToList().ForEach(p => list.Add(p));
+            this.ShelfBookList.Clear();
+            list = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
+            list.ForEach(p => ShelfBookList.Add(p));
         }
 
 

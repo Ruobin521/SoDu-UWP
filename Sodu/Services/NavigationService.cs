@@ -130,20 +130,11 @@ namespace Sodu.Services
 
         private static void _ContentFrame_Navigated(object sender, Windows.UI.Xaml.Navigation.NavigationEventArgs e)
         {
-            //Page page = ContentFrame.Content as Page;
-            //if (e.NavigationMode == Windows.UI.Xaml.Navigation.NavigationMode.New)
-            //{
-            //    if (page != null)
-            //    {
-            //        IViewModel viewModel = page.DataContext as IViewModel;
-            //        if (viewModel != null)
-            //        {
-            //            viewModel.InitData(e.Parameter);
-            //        }
-            //    }
-            //}
-
-            //ViewModelInstance.Instance.MainPageViewModelInstance.SetCurrentMenu(page.GetType());
+            if (ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen)
+            {
+                ViewModelInstance.Instance.MainPageViewModelInstance.IsLeftPanelOpen = false;
+                return;
+            }
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {
