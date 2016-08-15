@@ -114,15 +114,7 @@ namespace Sodu.ViewModel
         {
             Task.Run(async () =>
             {
-                string url = null;
-                if (pageindex == 1)
-                {
-                    url = ViewModelInstance.Instance.UrlService.GetRankListPage();
-                }
-                else
-                {
-                    url = string.Format(ViewModelInstance.Instance.UrlService.GetRankListPage(pageindex.ToString()), pageindex);
-                }
+                string url = ViewModelInstance.Instance.UrlService.GetRankListPage(pageindex.ToString());
                 string html = await GetHtmlData(url);
                 return html;
             }).ContinueWith((result) =>

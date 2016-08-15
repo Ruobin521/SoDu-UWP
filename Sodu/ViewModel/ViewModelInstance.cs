@@ -323,6 +323,19 @@ namespace Sodu.ViewModel
             }
         }
 
+        private UpdateBookPageViewModel m_UpdateBookPage;
+        public UpdateBookPageViewModel UpdateBookPage
+        {
+            get
+            {
+                if (m_UpdateBookPage == null)
+                {
+                    m_UpdateBookPage = new UpdateBookPageViewModel();
+                }
+                return m_UpdateBookPage;
+            }
+        }
+
         private bool m_IsLogin;
         public bool IsLogin
         {

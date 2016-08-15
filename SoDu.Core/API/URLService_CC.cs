@@ -43,6 +43,12 @@ namespace SoDu.Core.API
         private const string BookRankListPage = "http://www.sodu.cc/top.html";
         private const string BookRankListPage2 = "http://www.sodu.cc/top_{0}.html";
 
+        /// <summary>
+        /// 最新更新
+        /// </summary>
+        private const string LatUpdateBookkListPage = "http://www.sodu.cc/map.html";
+        private const string LatUpdateBookkListPage2 = "http://www.sodu.cc/map_{0}.html";
+
 
         ///添加至书架
         public const string AddToShelfPage = "http://www.sodu.cc/handler/home.html?bid={0}";
@@ -81,13 +87,25 @@ namespace SoDu.Core.API
 
         public string GetRankListPage(string pageIndex = null)
         {
-            if (pageIndex == null)
+            if (pageIndex == null || pageIndex.Equals("1"))
             {
                 return BookRankListPage;
             }
             else
             {
-                return BookRankListPage2;
+                return string.Format(BookRankListPage2, pageIndex);
+            }
+        }
+
+        public string GetLastUpdateBookListPage(string pageIndex = null)
+        {
+            if (pageIndex == null || pageIndex.Equals("1"))
+            {
+                return LatUpdateBookkListPage;
+            }
+            else
+            {
+                return string.Format(LatUpdateBookkListPage2, pageIndex);
             }
         }
 

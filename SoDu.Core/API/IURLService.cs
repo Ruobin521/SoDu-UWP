@@ -23,6 +23,7 @@ namespace SoDu.Core.API
         string GetSearchPage();
 
         string GetAddToShelfPage();
+        string GetLastUpdateBookListPage(string pageIndex);
 
     }
 }

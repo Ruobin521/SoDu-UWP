@@ -256,6 +256,7 @@
     <Compile Include="ViewModel\RegiserPageViewModel.cs" />
     <Compile Include="ViewModel\SearchResultPageViewModel.cs" />
     <Compile Include="ViewModel\SettingPageViewModel.cs" />
+    <Compile Include="ViewModel\UpdateBookPageViewModel.cs" />
     <Compile Include="ViewModel\UpdateChapterViewModel.cs" />
     <Compile Include="ViewModel\ViewModelInstance.cs" />
   </ItemGroup>

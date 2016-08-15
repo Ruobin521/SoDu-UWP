@@ -26,9 +26,8 @@
         </Grid.RowDefinitions>
         <Border  x:Name="bakBorder"   Grid.RowSpan="2"  Background="{Binding  Instance.SettingPageViewModelInstance.ContentBackColor, Source={StaticResource Locator}}" 
                     Visibility="{Binding Instance.SettingPageViewModelInstance.Theme, Source={StaticResource Locator},Converter={StaticResource BackColorVisiablityConverter}}"></Border>
-        <!--正文内容-->
-        <!--<Grid  x:Name="grid"    Tapped="grid_Tapped"    Background="Transparent" Grid.Row="0"  >-->
-        <Grid  x:Name="grid"   ManipulationMode="System,TranslateX"    Tapped="grid_Tapped"    Background="Transparent" Grid.Row="0"  >
+
+        <Grid  x:Name="grid"   ManipulationMode="System,TranslateX"    Tapped="grid_Tapped"     Background="Transparent" Grid.Row="0"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
@@ -59,7 +58,7 @@
                                 </Path.RenderTransform>
                             </Path>
                             <Border>
-                                <TextBlock x:Name="TextBattery"   FontFamily="颜体"  Text=" "    Foreground="{ThemeResource TitleTextFroeground}"  VerticalAlignment="Center"   HorizontalAlignment="Center" FontSize="10" Margin="0,1,3,0"/>
+                                <TextBlock x:Name="TextBattery"   FontFamily="颜体"  Text="99"    Foreground="{ThemeResource TitleTextFroeground}"  VerticalAlignment="Center"   HorizontalAlignment="Center" FontSize="10" Margin="0,1,3,0"/>
                             </Border>
                         </Grid>
                     </StackPanel>
@@ -88,7 +87,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
-            <Grid   x:Name="commandbar" Background="Transparent"  Visibility="Collapsed"   Grid.ColumnSpan="2">
+            <Grid   x:Name="commandbar" Background="Transparent"  Visibility="Visible"   Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>

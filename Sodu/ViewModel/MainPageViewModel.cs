@@ -206,7 +206,7 @@ namespace Sodu.ViewModel
 
         }
 
-        public void NavigateToPage(Type pageType, object para = null)
+        public async void NavigateToPage(Type pageType, object para = null)
         {
             try
             {
@@ -214,6 +214,9 @@ namespace Sodu.ViewModel
                 {
                     this.IsLeftPanelOpen = false;
                     NavigationService.NavigateTo(pageType, para);
+
+                    await Task.Delay(50);
+                    this.IsLeftPanelOpen = false;
                 }
             }
             catch (Exception)

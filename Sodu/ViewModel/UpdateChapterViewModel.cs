@@ -22,9 +22,6 @@ namespace Sodu.ViewModel
 {
     public class UpdateChapterViewModel : BaseViewModel, IViewModel
     {
-
-
-
         private int m_PageIndex = 1;
         public int PageIndex
         {

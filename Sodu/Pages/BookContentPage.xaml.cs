@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Phone.Devices.Power;
 using Windows.UI.Core;
+using Windows.UI.Input;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -51,18 +52,23 @@ namespace Sodu.Pages
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
+                commandbar.Visibility = Visibility.Collapsed;
                 this.ColorPanel.Closed -= ColorPanel_Closed;
                 this.ColorPanel.Closed += ColorPanel_Closed;
                 InitBattery();
+                this.grid.Holding -= this.Grid_OnHolding;
+                this.grid.Holding += this.Grid_OnHolding;
             }
             else
             {
                 BattaryStatus.Visibility = Visibility.Collapsed;
+                commandbar.Visibility = Visibility.Visible;
+                this.grid.RightTapped -= this.Grid_OnRightTapped;
+                this.grid.RightTapped += this.Grid_OnRightTapped;
             }
 
             this.Loaded -= BookContentPage_Loaded;
             this.Loaded += BookContentPage_Loaded;
-
 
             InitTimer();
         }
@@ -218,31 +224,22 @@ namespace Sodu.Pages
             e.Handled = true;
 
             var point = e.GetPosition(this.ContentGrid);
-            if (point.X > this.ContentGrid.ActualWidth / 3 && point.X < this.ContentGrid.ActualWidth / 3 * 2)
-            {
-                MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
-            }
 
-            //上一章
-            else if (point.X <= this.ContentGrid.ActualWidth / 3)
+            if (this.ColorPanel.Visibility == Visibility.Visible)
             {
-                if (this.ColorPanel.Visibility == Visibility.Visible)
-                {
-                    MenuOpiton(false);
-                    return;
-                }
+                MenuOpiton(false);
+                return;
+            }
+            //上一章
+            if (point.X < this.ContentGrid.ActualWidth / 3)
+            {
                 (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
             }
+            //上一章
             else if (point.X >= this.ContentGrid.ActualWidth / 3 * 2)
             {
-                if (this.ColorPanel.Visibility == Visibility.Visible)
-                {
-                    MenuOpiton(false);
-                    return;
-                }
-               (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
+                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
             }
-
 
         }
 
@@ -291,6 +288,21 @@ namespace Sodu.Pages
         private void AppBar_Click(object sender, RoutedEventArgs e)
         {
             MenuOpiton(false);
+        }
+
+        private void Grid_OnHolding(object sender, HoldingRoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (e.HoldingState == HoldingState.Started)
+            {
+                MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+            }
+        }
+
+        private void Grid_OnRightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
         }
     }
 }
