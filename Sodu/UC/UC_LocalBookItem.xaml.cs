@@ -47,5 +47,10 @@ namespace Sodu.UC
         {
             this.InitializeComponent();
         }
+
+        private void UIElement_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            Command?.Execute(CommandParameter);
+        }
     }
 }

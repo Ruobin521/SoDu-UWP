@@ -1,4 +1,4 @@
-﻿<Button
+﻿<UserControl
     x:Class="Sodu.UC.UC_ChapterItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,17 +8,13 @@
     xmlns:converter ="using:Sodu.Converter"
     mc:Ignorable="d" 
     d:DesignWidth="400"
-    Style="{StaticResource  ContentButtonStyle}"
-     Height="75">
-    <Button.Resources>
-        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </Button.Resources>
-    <Grid HorizontalAlignment="Stretch" Background="Transparent" Padding="8,0,10,0">
+     Height="75" >
+    <Grid HorizontalAlignment="Stretch"   Padding="8,0,10,0"  Background="Transparent" Tapped="UIElement_OnTapped">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="grid">
+        <Grid x:Name="grid"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -35,4 +31,4 @@
         <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
 
     </Grid>
-</Button>
+</UserControl>

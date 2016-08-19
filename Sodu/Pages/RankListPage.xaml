@@ -30,7 +30,7 @@
             </ListView.ItemsPanel>-->
             <controls:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>
-                    <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
+                    <UC:UC_BookListItem x:Name="item"  DataContext="{Binding}"    Command="{Binding  Instance.RankListPageViewModelInstance.BookItemSelectedChangedCommand,Source={StaticResource Locator}}"  CommandParameter="{Binding}"/>
                 </DataTemplate>
             </controls:PullToRefreshListView.ItemTemplate>
         </controls:PullToRefreshListView>

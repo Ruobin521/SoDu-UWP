@@ -23,7 +23,11 @@ namespace Sodu.Selector
                 var index = listView.IndexFromContainer(container);
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
                 {
-                    st = index % 2 == 0 ? Application.Current.Resources["CustomListViewItemStyleWithDifferentBackColor"] as Style : Application.Current.Resources["CustomListViewItemStyle"] as Style;
+                    st = index % 2 != 0 ? Application.Current.Resources["CustomListViewItemStyleWithDifferentBackColor"] as Style : Application.Current.Resources["CustomListViewItemStyle"] as Style;
+
+                    var rs = (Application.Current.Resources.ThemeDictionaries["Light"] as ResourceDictionary)["HigntLightlBackColor"];
+
+                    var theme = Application.Current.RequestedTheme;
                 }
                 else
                 {

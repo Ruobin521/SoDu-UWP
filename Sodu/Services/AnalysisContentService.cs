@@ -135,7 +135,7 @@ namespace Sodu.Services
         public const string qyxs = "www.qingyuxiaoshuo.com";
 
         /// <summary>
-        /// 乐文(目录暂时没有解析)
+        /// 乐文
         /// </summary>
         public const string lww = "www.lwtxt.net";
 
@@ -144,6 +144,10 @@ namespace Sodu.Services
         /// </summary>
         public const string bpg = "www.bipuge.com";
 
+        /// <summary>
+        /// 秋水轩
+        /// </summary>
+        public const string qsx = "www.qiushuixuan.cc";
 
 
         public static List<string> UrlList = new List<string>()
@@ -153,7 +157,7 @@ namespace Sodu.Services
             snwx, kkks,  dhzw,    aszw520, fyxs,
             xs55, wwxsw, qfxs,    bxwx5,   dijiuzww,
             qdsw, myg,   dqzw,    vivi,    qyxs,
-            lww , bpg
+            lww , bpg,   qsx
         };
 
         public static bool CheckUrl(string url)
@@ -360,15 +364,12 @@ namespace Sodu.Services
                     break;
 
 
-                case "书旗小说":
-                    result = AnalysisSq(html);
+                //秋水轩
+                case WebSet.qsx:
+                    result = AnalysisQsx(html);
                     break;
 
 
-
-                case "无弹窗小说网":
-                    result = AnalysisWtc(html);
-                    break;
                 default:
                     result = ReplaceSymbol(html);
                     break;
@@ -732,6 +733,29 @@ namespace Sodu.Services
             return result;
         }
 
+
+        /// <summary>
+        /// 解析秋水轩
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisQsx(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"BookText\">.*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
+                result = Regex.Replace(result, "一秒记住秋水轩：qiushuixuan.cc", "");
+                result = Regex.Replace(result, "如果觉得.*?请把本站网址推荐给您的朋友吧！", "");
+                result = result.Replace("秋水轩", "");
+                result = result.Replace("www.qiushuixuan.cc", "");
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+        /// 
         public static string ReplaceSymbol(string html)
         {
             string result = string.Empty;
@@ -880,16 +904,12 @@ namespace Sodu.Services
                     break;
 
 
-                case "书旗小说":
-                    result = AnalysisSq(url);
-                    break;
-
                 case WebSet.myg:
                     result = AnalysisMyg(url);
                     break;
 
-                case "无弹窗小说网":
-                    result = AnalysisWtc(url);
+                case WebSet.qsx:
+                    result = AnalysisCommonUrl(url);
                     break;
                 default:
                     result = null;
@@ -1189,9 +1209,9 @@ namespace Sodu.Services
                 case WebSet.lww:
                     result = AnalysisLww(html, web);
                     break;
-
-                case "书旗小说":
-                    result = AnalysisSq(html);
+                //秋水轩
+                case WebSet.qsx:
+                    result = AnalysisQsx(html, url, web);
                     break;
 
                 case "无弹窗小说网":
@@ -1863,7 +1883,7 @@ namespace Sodu.Services
             }
 
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
-          
+
 
         }
 
@@ -2584,6 +2604,70 @@ namespace Sodu.Services
                 //封面
                 Match coverStr = Regex.Match(html, "<div class=\"book_info_top_l\">.*?<img.*?src=\"(.*?)\".*?>");
                 cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
+
+        }
+
+        private static Tuple<List<BookCatalog>, string, string> AnalysisQsx(string html, string url, string web)
+        {
+            List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div class=\"chapter\">.*?</div>");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "<dd><a href=\"(.*?)\".*?>(.*?)</a></dd>");
+            //<dd><a href="3326485.html">风帆战列舰分级：一级战列舰</a></dd>
+            if (matches != null && matches.Count < 1)
+            {
+                list = null;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                int i = 0;
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = url + url_Mathch;
+                            catalog.CatalogName = title_Mathch;
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            var temp = Regex.Match(html, "<div class=\"list\">.*?<div class=\"clear\"></div>").ToString();
+            try
+            {
+                despriction = AnalysisContentService.ReplaceSymbol(temp);
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(temp, "<img.*?src=\"(.*?)\".*?/>");
+                cover = "http://" + web + coverStr.Groups[1].ToString();
             }
             catch (Exception)
             {

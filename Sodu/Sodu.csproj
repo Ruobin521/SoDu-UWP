@@ -185,6 +185,9 @@
     <Compile Include="UC\UC_ ContentSettingPanel.xaml.cs">
       <DependentUpon>UC_ ContentSettingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UC\UC_BookShelfListItem.xaml.cs">
+      <DependentUpon>UC_BookShelfListItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UC\UC_ChapterItem.xaml.cs">
       <DependentUpon>UC_ChapterItem.xaml</DependentUpon>
     </Compile>
@@ -210,8 +213,8 @@
       <DependentUpon>UC_ProgressRing.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AnalysisSoduService.cs" />
-    <Compile Include="Pages\MyBookShelfPage.xaml.cs">
-      <DependentUpon>MyBookShelfPage.xaml</DependentUpon>
+    <Compile Include="Pages\BookShelfPage.xaml.cs">
+      <DependentUpon>BookShelfPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SearchResultPage.xaml.cs">
       <DependentUpon>SearchResultPage.xaml</DependentUpon>
@@ -323,7 +326,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MyBookShelfPage.xaml">
+    <Page Include="Pages\BookShelfPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -385,6 +388,10 @@
     <Page Include="UC\UC_ ContentSettingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UC_BookShelfListItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UC\UC_BookListItem.xaml">
       <SubType>Designer</SubType>

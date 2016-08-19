@@ -20,12 +20,37 @@ using Sodu.Core.Util;
 
 namespace Sodu.UC
 {
-    public sealed partial class UC_BookListItem : Button
+    public sealed partial class UC_BookListItem : UserControl
     {
+
+        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
+        "Command", typeof(ICommand), typeof(UC_BookListItem), new PropertyMetadata(default(ICommand)));
+
+        public ICommand Command
+        {
+            get { return (ICommand)GetValue(CommandProperty); }
+            set { SetValue(CommandProperty, value); }
+        }
+
+
+        public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(
+            "CommandParameter", typeof(object), typeof(UC_BookListItem), new PropertyMetadata(default(object)));
+
+        public object CommandParameter
+        {
+            get { return (object)GetValue(CommandParameterProperty); }
+            set { SetValue(CommandParameterProperty, value); }
+        }
+
         public UC_BookListItem()
         {
             this.InitializeComponent();
             //  this.Loaded += UC_BookListItem_Loaded;
+        }
+
+        private void UIElement_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            Command?.Execute(CommandParameter);
         }
     }
 }

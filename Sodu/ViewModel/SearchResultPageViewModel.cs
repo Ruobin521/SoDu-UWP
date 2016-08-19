@@ -298,17 +298,15 @@ namespace Sodu.ViewModel
         {
             if (IsLoading)
             {
-                CancleHttpRequest();
+                return;
             }
-            else
+
+            if (string.IsNullOrEmpty(SearchPara))
             {
-                if (obj == null || string.IsNullOrEmpty(obj.ToString()))
-                {
-                    ToastHeplper.ShowMessage("请输入搜索条件");
-                    return;
-                }
-                SetData(obj.ToString());
+                ToastHeplper.ShowMessage("请输入搜索条件");
+                return;
             }
+            SetData(SearchPara);
         }
 
         /// <summary>

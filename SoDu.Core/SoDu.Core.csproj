@@ -117,6 +117,7 @@
     </Compile>
     <Compile Include="Database\DBBookCatalog.cs" />
     <Compile Include="Database\DBBookCatalogContent.cs" />
+    <Compile Include="Database\DBBookShelf.cs" />
     <Compile Include="Database\DBHistory.cs" />
     <Compile Include="Database\DBLocalBook.cs" />
     <Compile Include="Extension\CommandBarExtensions.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Util\ChineseGBKConverter.cs" />
     <Compile Include="Util\ColorHelper.cs" />
     <Compile Include="Util\HttpHelper.cs" />
+    <Compile Include="Util\LevenshteinDistance.cs" />
     <Compile Include="Util\NetworkHelper.cs" />
     <Compile Include="Util\PlatformHelper.cs" />
     <Compile Include="Util\SerializeHelper.cs" />

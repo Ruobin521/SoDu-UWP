@@ -16,10 +16,6 @@
             <NavigationThemeTransition />
         </TransitionCollection>
     </Page.Transitions>
-    <Page.Resources>
-        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </Page.Resources>
-
     <Grid  >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -39,7 +35,7 @@
            RefreshCommand="{Binding RefreshCommand}">
             <controls:PullToRefreshListView.ItemTemplate>
                 <DataTemplate>
-                    <uc:UC_BookListItem x:Name="item" DataContext="{Binding}"    Command="{Binding Instance.RecommendAndHotPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
+                    <uc:UC_BookListItem   DataContext="{Binding}"    Command="{Binding Instance.RecommendAndHotPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}" />
                 </DataTemplate>
             </controls:PullToRefreshListView.ItemTemplate>
         </controls:PullToRefreshListView>

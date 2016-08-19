@@ -79,6 +79,7 @@ namespace SoDu.Core.Controls
         public PullToRefreshListView()
         {
             DefaultStyleKey = typeof(PullToRefreshListView);
+            this.SelectionMode = SelectionMode;
             SizeChanged += RefreshableListView_SizeChanged;
             this.Loaded += PullToRefreshListView_Loaded;
         }

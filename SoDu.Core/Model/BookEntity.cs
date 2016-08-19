@@ -137,11 +137,34 @@ namespace Sodu.Core.Model
                 this.SetProperty(ref this.m_UnReadCountData, value);
             }
         }
+
         /// <summary>   
         ///更新时间
         /// </summary>
-        public string UpdateTime { get; set; }
+        private string m_UpdateTime;
 
+        public string UpdateTime
+        {
+
+            get
+            {
+                return m_UpdateTime;
+            }
+
+            set
+            {
+                try
+                {
+                    m_UpdateTime = !string.IsNullOrEmpty(value)
+                   ? DateTime.Parse(value).ToString("yyyy-MM-dd HH:mm")
+                   : DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                }
+                catch (Exception)
+                {
+                    m_UpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+                }
+            }
+        }
 
         /// <summary>
         ///更新目录地址

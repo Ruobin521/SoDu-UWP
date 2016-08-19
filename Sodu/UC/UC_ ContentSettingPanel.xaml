@@ -71,7 +71,7 @@
                 <StackPanel >
                     <Grid Height="50">
                         <TextBlock Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="背景色"  Margin="15,0,0,0"></TextBlock>
-                        <Button x:Name="btnColose" Style="{StaticResource  ContentButtonStyle2}"  HorizontalAlignment="Right"   Click="BtnColose_OnClick"  Foreground="White"  Width="100" Padding="40,0,0,0" >
+                        <Button x:Name="btnColose" Style="{StaticResource  ContentButtonStyle}"  HorizontalAlignment="Right"   Click="BtnColose_OnClick"  Foreground="White"  Width="100" Padding="40,0,0,0" >
                             <Button.Content>
                                 <SymbolIcon  Symbol="Cancel" HorizontalAlignment="Center" VerticalAlignment="Center"  ></SymbolIcon>
                             </Button.Content>

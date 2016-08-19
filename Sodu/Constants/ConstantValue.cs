@@ -29,7 +29,7 @@ namespace Sodu.Constants
 
         public static ObservableCollection<MenuModel> LoadMenuList = new ObservableCollection<MenuModel>()
         {
-            new MenuModel() { MenuName= "个人书架",MenuIcon="",MenuType=typeof(MyBookShelfPage)},
+            new MenuModel() { MenuName= "个人书架",MenuIcon="",MenuType=typeof(BookShelfPage)},
             new MenuModel() { MenuName= "排行榜",MenuIcon="",MenuType=typeof(RankListPage)},
             new MenuModel() { MenuName= "热门小说",MenuIcon="",MenuType=typeof(HotPage) },
             new MenuModel() { MenuName= "推荐阅读",MenuIcon="",MenuType=typeof(RecommendPage) },

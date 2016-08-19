@@ -53,7 +53,7 @@ namespace SoDu.Core.Controls
 
             if (vertical == VerticalAlignment.Top)
             {
-                top = 20;
+                top = 45;
             }
 
             else if (vertical == VerticalAlignment.Bottom)

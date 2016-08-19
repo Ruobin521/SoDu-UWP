@@ -1,23 +1,23 @@
 ﻿<UserControl
-    x:Class="Sodu.UC.UC_BookListItem"
+    x:Class="Sodu.UC.UC_BookShelfListItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.UC"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Height="75"
+    Height="100"
     x:Name="root"
-    xmlns:converter ="using:Sodu.Converter"
     d:DesignWidth="500"
    >
-    <Grid HorizontalAlignment="Stretch"  Padding="8,0,10,0" Background="Transparent" Tapped="UIElement_OnTapped" >
+    <Grid HorizontalAlignment="Stretch"  Padding="8,0,10,0"  Tapped="UIElement_OnTapped"  Background="Transparent" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="1"/>
         </Grid.RowDefinitions>
-        <Grid x:Name="grid">
+        <Grid x:Name="grid" IsTapEnabled="False">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -26,13 +26,21 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="2" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
-            <TextBlock x:Name="txtBookName"  Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding  BookName}"></TextBlock>
+            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="3" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+            <TextBlock x:Name="txtBookName"  Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" >
+                <Run Text="{Binding  BookName}"></Run>
+                <Run Text="{Binding  UnReadCountData}"  Foreground="{ThemeResource HigntLightlBackColor}"></Run>
+            </TextBlock>
             <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}"   Text="{Binding  UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
             <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
-                <Run x:Name="txtChapterName" Text="{Binding NewestChapterName}" ></Run>
-                <Run x:Name="txtUnreadData"  Text="{Binding  UnReadCountData}" ></Run>
+                <Run x:Name="txtChapterName" Text="最后阅读："  ></Run>
+                <Run x:Name="txtUnreadData"  Text="{Binding  LastReadChapterName}" ></Run>
             </TextBlock>
+            <TextBlock   Grid.Row="2"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
+                <Run   Text="最新章节：" ></Run>
+                <Run   Text="{Binding  NewestChapterName}" ></Run>
+            </TextBlock>
+
         </Grid>
         <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
 

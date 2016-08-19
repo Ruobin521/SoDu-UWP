@@ -231,12 +231,12 @@ namespace Sodu.Pages
                 return;
             }
             //上一章
-            if (point.X < this.ContentGrid.ActualWidth / 3)
+            if (point.X < this.ContentGrid.ActualWidth / 3.5)
             {
                 (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
             }
             //上一章
-            else if (point.X >= this.ContentGrid.ActualWidth / 3 * 2)
+            else if (point.X >= this.ContentGrid.ActualWidth / 3.5 * 2.5)
             {
                 (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
             }

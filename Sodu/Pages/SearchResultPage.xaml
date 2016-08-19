@@ -18,8 +18,7 @@
     </Page.Transitions>
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="44"/>
-            <RowDefinition Height="1"/>
+            <RowDefinition Height="45"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -29,7 +28,7 @@
                 <ColumnDefinition Width="55"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <UC:UC_PageHeader></UC:UC_PageHeader>
+            <UC:UC_PageHeader Grid.ColumnSpan="2" Height="45"></UC:UC_PageHeader>
             <Grid Grid.Column="1" Margin="5,2"  MaxWidth="1200">
                 <RelativePanel Height="40" Margin="0,0,0,0"  >
                     <Button  x:Name="btnSearch"    RelativePanel.AlignRightWithPanel="True" HorizontalAlignment="Right" RelativePanel.AlignVerticalCenterWithPanel="True"   Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=txtSearch,Path=Text}" Style="{StaticResource ButtonStyle1}" Height="38" Width="90" FontSize="16" VerticalAlignment="Center" Content="搜索" />
@@ -37,10 +36,7 @@
                 </RelativePanel>
             </Grid>
         </Grid>
-
-        <Border Grid.Row="1" Background="Gray" Opacity="0.2" Height="1" VerticalAlignment="Top"></Border>
-
-        <ListView  Grid.Row="2"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"   x:Name="updateListBox" Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}" HorizontalAlignment="Stretch" Background="Transparent">
+        <ListView  Grid.Row="1"  ItemContainerStyleSelector="{ThemeResource CustomListViewItemContainerStyleSelector}"  SelectionMode="None"  Margin="0,0,0,0"   ItemsSource="{Binding  SearchResultList}" HorizontalAlignment="Stretch" Background="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <UC:UC_BookListItem x:Name="item" DataContext="{Binding}"   Command="{Binding Instance.SearchResultPageViewModelInstance.BookItemSelectedChangedCommand,Source={ StaticResource  Locator}}"  CommandParameter="{Binding}"/>
@@ -48,8 +44,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  Grid.Row="3"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"   Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True">
-            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60"  Command="{Binding RefreshCommand}" CommandParameter="{Binding ElementName=txtSearchPara,Path=Text}" />
+        <CommandBar  Grid.Row="2"  ClosedDisplayMode="Compact"  IsOpen="False" x:Name="menu"   Background="{ThemeResource LeftPanelBackground}"  extension:CommandBarExtensions.HideMoreButton="True">
+            <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60"  Command="{Binding RefreshCommand}"/>
         </CommandBar>
         <UC:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></UC:UC_ProgressRing>
     </Grid>

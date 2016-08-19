@@ -9,8 +9,8 @@
     x:Name="root"
     d:DesignHeight="130"
     d:DesignWidth="500">
-    <Button   HorizontalAlignment="Stretch" Style="{StaticResource  ContentButtonStyle}"  Command="{Binding ElementName=root,Path=Command}" CommandParameter="{Binding ElementName=root,Path=CommandParameter}">
-        <Grid Background="Transparent"  Padding="8,0,10,0">
+    
+        <Grid Background="Transparent"  Padding="8,0,10,0"  Tapped="UIElement_OnTapped">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -40,5 +40,4 @@
           <!--<Line VerticalAlignment="Bottom" Grid.ColumnSpan="3" Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   />-->
             <Border Height="2" Background="Gray"   Grid.ColumnSpan="2" Grid.Column="0" Opacity="0.2" VerticalAlignment="Bottom"></Border>
         </Grid>
-    </Button>
 </UserControl>

@@ -19,8 +19,11 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Practices.Unity;
+using Microsoft.VisualBasic.CompilerServices;
+using Sodu.Core.Config;
 using SoDu.Core.API;
 using Sodu.Core.Util;
+using SoDu.Core.Database;
 
 namespace Sodu.ViewModel
 {
@@ -111,6 +114,21 @@ namespace Sodu.ViewModel
         }
 
 
+        private ObservableCollection<BookEntity> m_HistoryBookList;
+        //上次记录的数据
+        public ObservableCollection<BookEntity> HistoryBookList
+        {
+            get
+            {
+                return m_HistoryBookList ?? (m_HistoryBookList = new ObservableCollection<BookEntity>());
+            }
+            set
+            {
+                this.SetProperty(ref this.m_HistoryBookList, value);
+            }
+        }
+
+
         HttpHelper http = new HttpHelper();
 
         #endregion
@@ -187,7 +205,7 @@ namespace Sodu.ViewModel
                   string html = result.Result;
                   DispatcherHelper.CheckBeginInvokeOnUI(() =>
                   {
-                      if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架") && !html.Contains("注册"))
+                      if (html.Contains("退出") && html.Contains("站长留言") && html.Contains("我的书架"))
                       {
                           SetBookList(html);
                       }
@@ -240,7 +258,6 @@ namespace Sodu.ViewModel
                 if (list == null)
                 {
                     this.IsShow = true;
-                    return;
                 }
                 else
                 {
@@ -252,12 +269,27 @@ namespace Sodu.ViewModel
                         var temp = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
                         foreach (var item in temp)
                         {
-                            this.ShelfBookList.Add(item);
+                            var entity = DBBookShelf.GetBook(AppDataPath.GetBookShelfDBPath(), item);
+                            if (entity != null && !string.IsNullOrEmpty(entity.LastReadChapterName))
+                            {
+                                item.LastReadChapterName = entity.LastReadChapterName;
+                                var sim = LevenshteinDistance.LevenshteinDistancePercent(item.LastReadChapterName, item.NewestChapterName);
+                                if (!item.LastReadChapterName.Equals(item.NewestChapterName) && sim < (decimal)0.85)
+                                {
+                                    item.UnReadCountData = "(有更新)";
+                                }
+                            }
+                            else
+                            {
+                                item.LastReadChapterName = item.NewestChapterName;
+                            }
+                            ShelfBookList.Add(item);
                         }
+                        DBBookShelf.ClearBooks(AppDataPath.GetBookShelfDBPath());
+                        DBBookShelf.InsertOrUpdateBooks(AppDataPath.GetBookShelfDBPath(), ShelfBookList.ToList());
                     }
-                    ToastHeplper.ShowMessage("个人书架已更新");
                 }
-
+                ToastHeplper.ShowMessage("个人书架已更新");
             }
         }
 
@@ -326,14 +358,32 @@ namespace Sodu.ViewModel
                     {
                         DispatcherHelper.CheckBeginInvokeOnUI(() =>
                         {
-                            if (ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.ToList().Find(p => p.BookID == entity.BookID) == null)
-                            {
-                                ViewModelInstance.Instance.MyBookShelfViewModelInstance.ShelfBookList.Insert(0,
-                                    entity.Clone());
-                                RefreshList();
-                            }
+                            var temp = entity.Clone();
+                            temp.LastReadChapterName = temp.NewestChapterName;
+                            temp.UnReadCountData = null;
+                            var result = DBBookShelf.InsertOrUpdateBook(AppDataPath.GetBookShelfDBPath(), temp);
+                            ShelfBookList.Insert(0, temp);
+                            RefreshList();
                         });
                     }
+                    else
+                    {
+                        ToastHeplper.ShowMessage(entity.BookName + " 添加至个人书架失败");
+                    }
+                }
+                else
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var temp = ShelfBookList.ToList().Find(p => p.BookID == entity.BookID);
+                        var sim = LevenshteinDistance.LevenshteinDistancePercent(temp.LastReadChapterName, entity.NewestChapterName);
+                        if (!temp.LastReadChapterName.Equals(entity.NewestChapterName) && sim < 80)
+                        {
+                            temp.LastReadChapterName = temp.NewestChapterName;
+                            temp.UnReadCountData = null;
+                            var result = DBBookShelf.InsertOrUpdateBook(AppDataPath.GetBookShelfDBPath(), temp);
+                        }
+                    });
                 }
             });
 
@@ -342,11 +392,19 @@ namespace Sodu.ViewModel
 
         public void RefreshList()
         {
-            List<BookEntity> list = new List<BookEntity>();
-            this.ShelfBookList.ToList().ForEach(p => list.Add(p));
-            this.ShelfBookList.Clear();
-            list = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
-            list.ForEach(p => ShelfBookList.Add(p));
+            if (this.ShelfBookList.Count > 0)
+            {
+                List<BookEntity> list = new List<BookEntity>();
+                this.ShelfBookList.ToList().ForEach(p => list.Add(p));
+                this.ShelfBookList.Clear();
+                list = list.OrderByDescending(p => DateTime.Parse(p.UpdateTime)).ToList();
+                list.ForEach(p => ShelfBookList.Add(p));
+            }
+            else
+            {
+                IsShow = true;
+            }
+
         }
 
 
@@ -540,10 +598,13 @@ namespace Sodu.ViewModel
                 {
                     ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
 
-                    if (entity.UnReadCountData != null)
+                    if (!string.IsNullOrEmpty(entity.UnReadCountData))
                     {
                         entity.UnReadCountData = string.Empty;
+                        entity.LastReadChapterName = entity.NewestChapterName;
+                        var result = DBBookShelf.InsertOrUpdateBook(AppDataPath.GetBookShelfDBPath(), entity);
                     }
+
                 }
             }
         }

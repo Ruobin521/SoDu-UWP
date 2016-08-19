@@ -215,7 +215,7 @@ namespace Sodu.ViewModel
                     this.IsLeftPanelOpen = false;
                     NavigationService.NavigateTo(pageType, para);
 
-                    await Task.Delay(50);
+                    await Task.Delay(30);
                     this.IsLeftPanelOpen = false;
                 }
             }

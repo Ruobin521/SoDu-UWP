@@ -24,9 +24,9 @@ namespace Sodu.Pages
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class MyBookShelfPage : Page
+    public sealed partial class BookShelfPage : Page
     {
-        public MyBookShelfPage()
+        public BookShelfPage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;

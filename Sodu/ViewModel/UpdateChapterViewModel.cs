@@ -133,7 +133,7 @@ namespace Sodu.ViewModel
         {
             CancleHttpRequest();
 
-            if (CurrentEntity == obj as BookEntity)
+            if (CurrentEntity == obj as BookEntity && ChapterList.Count != 0)
             {
                 return;
             }
@@ -180,13 +180,17 @@ namespace Sodu.ViewModel
          {
              DispatcherHelper.CheckBeginInvokeOnUI(() =>
          {
-             if (result.Result != null && SetBookList(result.Result.ToString(), pageIndex))
+             if (NavigationService.ContentFrame.Content is UpdateChapterPage)
              {
-                 ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
-             }
-             else
-             {
-                 ToastHeplper.ShowMessage("未能获取最新章节数据");
+                 if (result.Result != null && SetBookList(result.Result.ToString(), pageIndex))
+                 {
+
+                     ToastHeplper.ShowMessage("已加载第" + PageIndex + "页，共" + PageCount + "页");
+                 }
+                 else
+                 {
+                     ToastHeplper.ShowMessage("未能获取最新章节数据");
+                 }
              }
          });
          });
