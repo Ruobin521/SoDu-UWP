@@ -270,7 +270,7 @@ namespace Sodu.ViewModel
                         foreach (var item in temp)
                         {
                             var entity = DBBookShelf.GetBook(AppDataPath.GetBookShelfDBPath(), item);
-                            if (entity != null && !string.IsNullOrEmpty(entity.LastReadChapterName))
+                            if (!string.IsNullOrEmpty(entity?.LastReadChapterName))
                             {
                                 item.LastReadChapterName = entity.LastReadChapterName;
                                 var sim = LevenshteinDistance.LevenshteinDistancePercent(item.LastReadChapterName, item.NewestChapterName);

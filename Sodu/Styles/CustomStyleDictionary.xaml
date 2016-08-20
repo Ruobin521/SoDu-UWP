@@ -66,12 +66,12 @@
     </Style>
 
     <Style x:Key="CustomContentTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value=""></Setter>
+        <Setter Property="Foreground" Value="{ThemeResource TextContentForeground}"></Setter>
         <Setter Property="TextWrapping" Value="Wrap"></Setter>
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
         <Setter Property="VerticalAlignment" Value="Top"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
-        <Setter Property="LineHeight" Value="36"></Setter>
+        <!--<Setter Property="LineHeight" Value="36"></Setter>-->
     </Style>
 
 

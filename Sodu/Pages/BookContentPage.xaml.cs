@@ -40,21 +40,34 @@ namespace Sodu.Pages
 
         private ScrollViewer _scrollviewer;
 
+        private object para = null;
+        private NavigationMode mode;
+
+
         public BookContentPage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
+            this.Loaded -= BookContentPage_Loaded;
+            this.Loaded += BookContentPage_Loaded;
+
+            this.SizeChanged -= BookContentPage_SizeChanged;
+            this.SizeChanged += BookContentPage_SizeChanged;
 
             ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
             ManipulationDelta += The_ManipulationDelta;//订阅手势滑动事件
 
+            commandbar.Visibility = Visibility.Collapsed;
+            this.ColorPanel.Closed -= ColorPanel_Closed;
+            this.ColorPanel.Closed += ColorPanel_Closed;
+
+            this.ColorPanel.FontSizeChanged -= ColorPanel_FontSizeChanged;
+            this.ColorPanel.FontSizeChanged += ColorPanel_FontSizeChanged;
+
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
-                commandbar.Visibility = Visibility.Collapsed;
-                this.ColorPanel.Closed -= ColorPanel_Closed;
-                this.ColorPanel.Closed += ColorPanel_Closed;
                 InitBattery();
                 this.grid.Holding -= this.Grid_OnHolding;
                 this.grid.Holding += this.Grid_OnHolding;
@@ -62,17 +75,31 @@ namespace Sodu.Pages
             else
             {
                 BattaryStatus.Visibility = Visibility.Collapsed;
-                commandbar.Visibility = Visibility.Visible;
                 this.grid.RightTapped -= this.Grid_OnRightTapped;
                 this.grid.RightTapped += this.Grid_OnRightTapped;
             }
 
-            this.Loaded -= BookContentPage_Loaded;
-            this.Loaded += BookContentPage_Loaded;
-
             InitTimer();
         }
 
+
+        private void BookContentPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var size = ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
+            var hasChnaged = size != null && (bool)size;
+            if (hasChnaged)
+            {
+                ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetContentPage();
+            }
+
+        }
+
+        private async void ColorPanel_FontSizeChanged(double value)
+        {
+            this.txtTest.FontSize = value;
+            await Task.Delay(10);
+            BookContentPage_SizeChanged(null, null);
+        }
         private void InitBattery()
         {
             BattaryStatus.Visibility = Visibility.Visible;
@@ -103,12 +130,12 @@ namespace Sodu.Pages
         {
             MenuOpiton(false);
 
-            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            if (mode == NavigationMode.New)
             {
-                _scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview)[0];
-                _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
-                _scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
+                (this.DataContext as IViewModel)?.InitData(para);
             }
+
+            ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
         }
 
         private void _battery_RemainingChargePercentChanged(object sender, object e)
@@ -124,24 +151,26 @@ namespace Sodu.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (e.NavigationMode == NavigationMode.Back)
-            {
-                return;
-            }
-            (this.DataContext as IViewModel)?.InitData(e.Parameter);
+            //if (e.NavigationMode == NavigationMode.Back)
+            //{
+
+            //    return;
+            //}
+            //(this.DataContext as IViewModel)?.InitData(e.Parameter);
+
+            this.mode = e.NavigationMode;
+            this.para = e.Parameter;
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
             base.OnNavigatingFrom(e);
             MenuOpiton(false);
+            (this.DataContext as BookContentPageViewModel)?.CancleHttpRequest();
         }
 
 
-        private void Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
-        {
-            MenuOpiton(false);
-        }
+
 
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
@@ -163,40 +192,41 @@ namespace Sodu.Pages
             //上一章
             if (x > 85)
             {
-                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
+                (this.DataContext as BookContentPageViewModel)?.SwithContent("0");
             }
             // 下一章
             else if (x < -85)
             {
-                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
+                (this.DataContext as BookContentPageViewModel)?.SwithContent("1");
             }
         }
-
-        //public int GetPerLineCount()
-        //{
-        //    var width = this.txtTest.ActualWidth;
-        //    int count1 = (int)(this.ContentGrid.ActualWidth / width);
-        //    return count1;
-        //}
-
-        //public int GetTotalLineCount()
-        //{
-        //    int height = 36;
-        //    int count2 = (int)(this.ContentGrid.ActualHeight / height);
-        //    return count2;
-        //}
-
-
-        //public double GetTxtTestActualHeight()
-        //{
-        //    return this.txtTest.ActualHeight;
-        //}
-
 
         public double GetContentAreatActualHeight()
         {
             return this.ContentGrid.ActualHeight;
         }
+        public int GetPerLineCount()
+        {
+            var width = this.txtTest.ActualWidth;
+            int count1 = (int)(this.ContentGrid.ActualWidth / width);
+            return count1;
+        }
+
+        public int GetTotalLineCount()
+        {
+            int height = 36;
+            int count2 = (int)(this.ContentGrid.ActualHeight / height);
+            return count2;
+        }
+
+
+        public double GetTxtTestActualHeight()
+        {
+            return this.txtTest.ActualHeight;
+        }
+
+
+
 
         public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
         {
@@ -219,57 +249,21 @@ namespace Sodu.Pages
         }
 
 
-        private void grid_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            e.Handled = true;
-
-            var point = e.GetPosition(this.ContentGrid);
-
-            if (this.ColorPanel.Visibility == Visibility.Visible)
-            {
-                MenuOpiton(false);
-                return;
-            }
-            //上一章
-            if (point.X < this.ContentGrid.ActualWidth / 3.5)
-            {
-                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("0");
-            }
-            //上一章
-            else if (point.X >= this.ContentGrid.ActualWidth / 3.5 * 2.5)
-            {
-                (this.DataContext as BookContentPageViewModel)?.OnSwtichCommand("1");
-            }
-
-        }
 
         private void MenuOpiton(bool value)
         {
             if (!value)
             {
                 if (this.ColorPanel.Visibility != Visibility.Visible) return;
-                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
-                {
-                    SetCommandBarMode(false);
-                    if (_scrollviewer != null)
-                    {
-                        _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
-                        _scrollviewer.ViewChanging += Scrollviewer_ViewChanging;
-                    }
-                }
+
+                SetCommandBarMode(false);
                 this.ColorPanel.Close();
             }
             else
             {
                 if (this.ColorPanel.Visibility != Visibility.Collapsed) return;
-                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
-                {
-                    SetCommandBarMode(true);
-                    if (_scrollviewer != null)
-                    {
-                        _scrollviewer.ViewChanging -= Scrollviewer_ViewChanging;
-                    }
-                }
+
+                SetCommandBarMode(true);
                 this.ColorPanel.Show();
             }
         }
@@ -303,6 +297,47 @@ namespace Sodu.Pages
         {
             e.Handled = true;
             MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+        }
+
+
+        private void Grid_OnDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            var point = e.GetPosition(this.ContentGrid);
+            if (this.ColorPanel.Visibility == Visibility.Visible)
+            {
+                MenuOpiton(false);
+                return;
+            }
+            OnTapped(point);
+        }
+
+        private void grid_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            var point = e.GetPosition(this.ContentGrid);
+
+            if (this.ColorPanel.Visibility == Visibility.Visible)
+            {
+                MenuOpiton(false);
+                return;
+            }
+
+            OnTapped(point);
+        }
+
+        private void OnTapped(Point point)
+        {
+            //上一章
+            if (point.X < this.ContentGrid.ActualWidth / 3.5)
+            {
+                (this.DataContext as BookContentPageViewModel)?.SwithContent("0");
+            }
+            //上一章
+            else if (point.X >= this.ContentGrid.ActualWidth / 3.5 * 2.5)
+            {
+                (this.DataContext as BookContentPageViewModel)?.SwithContent("1");
+            }
         }
     }
 }

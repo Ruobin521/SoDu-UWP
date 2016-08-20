@@ -135,12 +135,19 @@ namespace SoDu.Core.Util
 
         public Encoding GetEncoding(byte[] bytes, string charSet)
         {
-            var html = Encoding.UTF8.GetString(bytes);
-            string strCharSet =
-           Regex.Match(html, @"<meta.*?charset=""?([a-z0-9-]+)\b", RegexOptions.IgnoreCase)
-           .Groups[1].Value;
+            try
+            {
+                var html = Encoding.UTF8.GetString(bytes);
+                string strCharSet =
+               Regex.Match(html, @"<meta.*?charset=""?([a-z0-9-]+)\b", RegexOptions.IgnoreCase)
+               .Groups[1].Value;
+                return !string.IsNullOrEmpty(strCharSet) ? Encoding.GetEncoding(strCharSet) : Encoding.UTF8;
+            }
+            catch (Exception)
+            {
 
-            return !string.IsNullOrEmpty(strCharSet) ? Encoding.GetEncoding(strCharSet) : Encoding.UTF8;
+            }
+            return Encoding.UTF8;
         }
         /// <summary>
         /// Http Get Request

@@ -19,10 +19,12 @@ namespace Sodu.UC
 {
 
     public delegate void CloseHanlder();
+    public delegate void FontSizeChanged(double value);
     public sealed partial class UC_ContentSettingPanel : UserControl
     {
 
         public event CloseHanlder Closed;
+        public event FontSizeChanged FontSizeChanged;
         public UC_ContentSettingPanel()
         {
             this.InitializeComponent();
@@ -43,6 +45,12 @@ namespace Sodu.UC
         private void BtnColose_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void RangeBase_OnValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            double value = (sender as Slider).Value;
+            FontSizeChanged?.Invoke(value);
         }
     }
 }

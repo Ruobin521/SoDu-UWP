@@ -143,6 +143,7 @@ namespace Sodu.ViewModel
         public void GetLocalBook()
         {
             IsLoading = true;
+            IsChecking = false;
             this.LocalBookList.Clear();
             Task.Run(() =>
       {
@@ -189,9 +190,9 @@ namespace Sodu.ViewModel
                   }
               }
           }
-          catch (Exception)
+          catch (Exception ex)
           {
-
+              Debug.WriteLine(ex.Message);
           }
           finally
           {
@@ -224,6 +225,8 @@ namespace Sodu.ViewModel
                         if (!string.IsNullOrEmpty(item.CatalogListUrl))
                         {
                             var result = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
+                            if (!IsChecking) return;
+
                             if (result.Item1 != null)
                             {
                                 var list = result.Item1;

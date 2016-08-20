@@ -36,6 +36,7 @@ namespace Sodu.ViewModel
         public static string n_IsPreLoad = "IsPreLoad";
         public static string n_ContentBackColor = "ContentBackColor";
         public static string n_LightValue = "LightValue";
+        public static string n_IsReadByPageMode = "ReadByPageMode";
 
 
 
@@ -58,6 +59,25 @@ namespace Sodu.ViewModel
                 }
                 SetProperty(ref m_TextFontSzie, value);
                 SetTextSize(value, true);
+            }
+        }
+        private int m_LineHeight = 32;
+        /// <summary>
+        /// 阅读显示字体大小  14-26
+        /// </summary>
+        public int LineHeight
+        {
+            get
+            {
+                return m_LineHeight;
+            }
+            set
+            {
+                if (value == m_LineHeight)
+                {
+                    return;
+                }
+                SetProperty(ref m_LineHeight, value);
             }
         }
 
@@ -174,6 +194,31 @@ namespace Sodu.ViewModel
                 SetNightMode(value);
             }
         }
+
+
+        private bool m_IsReadByPageMode = true;
+        /// <summary>
+        /// 是否开启分页阅读模式
+        /// </summary>
+        public bool IsReadByPageMode
+        {
+
+            get
+            {
+                return m_IsReadByPageMode;
+            }
+            set
+            {
+
+                if (value == m_IsReadByPageMode)
+                {
+                    return;
+                }
+                SetProperty(ref m_IsReadByPageMode, value);
+                SetIsReadByPageMode(value);
+            }
+        }
+
 
         private ElementTheme m_Theme = ElementTheme.Default;
         public ElementTheme Theme
@@ -460,6 +505,29 @@ namespace Sodu.ViewModel
                     m_LightValue = 100;
                 }
                 #endregion
+
+                #region  //是否分页阅读
+                try
+                {
+                    if (!SettingHelper.CheckKeyExist(n_IsReadByPageMode))
+                    {
+                        SettingHelper.SetValue(n_IsReadByPageMode, true);
+                        m_IsReadByPageMode = true;
+                    }
+                    else
+                    {
+                        var value = (bool)SettingHelper.GetValue(n_IsReadByPageMode);
+                        m_IsReadByPageMode = value;
+                    }
+                }
+                catch (Exception)
+                {
+                    SettingHelper.SetValue(n_IsReadByPageMode, true);
+                    m_IsReadByPageMode = true;
+                }
+
+                #endregion
+
             }
             catch (Exception ex)
             {
@@ -480,6 +548,7 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_IsPreLoad, true);
             SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
             SettingHelper.SetValue(n_LightValue, 1);
+            SettingHelper.SetValue(n_IsReadByPageMode, true);
         }
 
 
@@ -513,6 +582,12 @@ namespace Sodu.ViewModel
         {
             SettingHelper.SetValue(n_IfDownloadInWAAN, value);
             IfDownloadInWAAN = value;
+        }
+
+        public void SetIsReadByPageMode(bool value)
+        {
+            SettingHelper.SetValue(n_IsReadByPageMode, value);
+            IsReadByPageMode = value;
         }
 
         public void SetNightMode(bool value)

@@ -221,8 +221,17 @@ namespace Sodu.Core.Model
             }
         }
 
+        private ObservableCollection<BookCatalog> m_CatalogList;
         [Ignore]
-        public ObservableCollection<BookCatalog> CatalogList { get; set; }
+        public ObservableCollection<BookCatalog> CatalogList
+        {
+            get { return m_CatalogList; }
+
+            set
+            {
+                this.SetProperty(ref this.m_CatalogList, value);
+            }
+        }
 
         [Ignore]
         public ObservableCollection<BookCatalog> UnDownloadCatalogList { get; set; }

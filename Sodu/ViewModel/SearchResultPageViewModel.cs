@@ -157,7 +157,7 @@ namespace Sodu.ViewModel
         public void SetData(string para)
         {
 
-            SearchResultList.Clear();
+
             this.SearchPara = para;
             Task.Run(async () =>
             {
@@ -184,7 +184,7 @@ namespace Sodu.ViewModel
         public bool SetBookList(string html)
         {
             bool result = false;
-
+            this.SearchResultList.Clear();
             try
             {
                 if (!string.IsNullOrEmpty(html))
@@ -196,7 +196,7 @@ namespace Sodu.ViewModel
                     }
                     else
                     {
-                        this.SearchResultList.Clear();
+
                         if (arraryList.Count > 0)
                         {
                             foreach (var item in arraryList)

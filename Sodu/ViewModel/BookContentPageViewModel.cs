@@ -31,7 +31,7 @@ namespace Sodu.ViewModel
         private HttpHelper htmlHttp = new HttpHelper();
         private HttpHelper preHtmlHttp = new HttpHelper();
         private HttpHelper catalogsHttp = new HttpHelper();
-      
+
 
         private bool isClickCtalog = false;
 
@@ -78,18 +78,97 @@ namespace Sodu.ViewModel
 
 
 
-        public string m_TextContent;
-        public string TextContent
+        public string m_CurrentPageContent;
+        public string CurrentPageContent
         {
             get
             {
-                return m_TextContent;
+                return m_CurrentPageContent;
             }
             set
             {
-                SetProperty(ref m_TextContent, value);
+                SetProperty(ref m_CurrentPageContent, value);
             }
         }
+
+        public string m_PrePageContent;
+        public string PrePageContent
+        {
+            get
+            {
+                return m_PrePageContent;
+            }
+            set
+            {
+                SetProperty(ref m_PrePageContent, value);
+            }
+        }
+
+        public string m_NextPageContent;
+        public string NextPageContent
+        {
+            get
+            {
+                return m_NextPageContent;
+            }
+            set
+            {
+                SetProperty(ref m_NextPageContent, value);
+            }
+        }
+
+        public int m_CurrentPagIndex;
+        public int CurrentPagIndex
+        {
+            get
+            {
+                return m_CurrentPagIndex;
+            }
+            set
+            {
+                SetProperty(ref m_CurrentPagIndex, value);
+            }
+        }
+
+        public int m_TotalPagCount;
+        public int TotalPagCount
+        {
+            get
+            {
+                return m_TotalPagCount;
+            }
+            set
+            {
+                SetProperty(ref m_TotalPagCount, value);
+            }
+        }
+
+        public int m_CurrentCatalogIndex;
+        public int CurrentCatalogIndex
+        {
+            get
+            {
+                return m_CurrentCatalogIndex;
+            }
+            set
+            {
+                SetProperty(ref m_CurrentCatalogIndex, value);
+            }
+        }
+
+        public int m_CatalogCount;
+        public int CatalogCount
+        {
+            get
+            {
+                return m_CatalogCount;
+            }
+            set
+            {
+                SetProperty(ref m_CatalogCount, value);
+            }
+        }
+
 
         public string m_PreTextContent;
         public string PreTextContent
@@ -105,20 +184,40 @@ namespace Sodu.ViewModel
         }
 
 
-        public ObservableCollection<string> m_ContentListt;
-        public ObservableCollection<string> ContentListt
+        public ObservableCollection<string> m_ContentList;
+        public ObservableCollection<string> ContentList
         {
             get
             {
-                if (m_ContentListt == null)
+                if (m_ContentList == null)
                 {
-                    m_ContentListt = new ObservableCollection<string>();
+                    m_ContentList = new ObservableCollection<string>();
                 }
-                return m_ContentListt;
+                return m_ContentList;
             }
             set
             {
-                SetProperty(ref m_ContentListt, value);
+                SetProperty(ref m_ContentList, value);
+            }
+        }
+
+        public ObservableCollection<string> m_ContentPages;
+        /// <summary>
+        /// 内容分页
+        /// </summary>
+        public ObservableCollection<string> ContentPages
+        {
+            get
+            {
+                if (m_ContentPages == null)
+                {
+                    m_ContentPages = new ObservableCollection<string>();
+                }
+                return m_ContentPages;
+            }
+            set
+            {
+                SetProperty(ref m_ContentPages, value);
             }
         }
 
@@ -167,6 +266,12 @@ namespace Sodu.ViewModel
             }
         }
 
+        private double ContentContainerWith { get; set; }
+        private double ContentContainerHeitht { get; set; }
+
+        private double PerTextHeight { get; set; }
+        private double PerTextWidth { get; set; }
+
         #endregion
 
 
@@ -174,15 +279,32 @@ namespace Sodu.ViewModel
 
         public BookContentPageViewModel()
         {
-          
+
         }
 
-      
+        public bool SetSize(double containerWith, double containerHtght, double txtWidth, double txtHeight)
+        {
+            if (containerWith != ContentContainerWith || containerHtght != ContentContainerHeitht ||
+                PerTextWidth != txtWidth || PerTextHeight != txtHeight)
+            {
+                ContentContainerWith = containerWith;
+                ContentContainerHeitht = containerHtght;
+                PerTextWidth = txtWidth;
+                PerTextHeight = txtHeight;
+
+                return true;
+            }
+            return false;
+        }
+
 
         public void InitData(object obj)
         {
             CancleHttpRequest();
             isClickCtalog = false;
+
+            TotalPagCount = 1;
+            CurrentPagIndex = 1;
 
             BookEntity entity = obj as BookEntity;
             if (entity == null)
@@ -190,7 +312,10 @@ namespace Sodu.ViewModel
                 return;
             }
 
-            this.TextContent = null;
+            this.CurrentPageContent = "";
+            this.NextPageContent = "";
+            this.PrePageContent = "";
+
 
             if (!entity.IsLocal)
             {
@@ -202,9 +327,9 @@ namespace Sodu.ViewModel
 
             }
 
-            if (this.ContentListt != null)
+            if (this.ContentList != null)
             {
-                this.ContentListt.Clear();
+                this.ContentList.Clear();
             }
 
             this.BookEntity = entity;
@@ -247,6 +372,10 @@ namespace Sodu.ViewModel
             IsLoading = true;
             preHtmlHttp.HttpClientCancleRequest();
             PreTextContent = null;
+
+            this.CurrentCatalogIndex = catalog.Index + 1;
+            this.NextPageContent = "";
+            this.PrePageContent = "";
 
             Task.Run(async () =>
            {
@@ -487,24 +616,113 @@ namespace Sodu.ViewModel
             return catalogListUrl;
         }
 
-        private async void SetTextContent(string html)
+        private void SetTextContent(string html)
         {
             this.ContentTitle = this.BookEntity.BookName + "_" + this.CurrentCatalog.CatalogName;
 
             double width = Window.Current.Bounds.Width;
             double height = Window.Current.Bounds.Height;
 
-            if (ContentListt != null)
+            if (ContentList != null)
             {
-                this.ContentListt.Clear();
+                this.ContentList.Clear();
 
             }
             var strList = SplitString(html);
 
             foreach (string str in strList)
             {
-                this.ContentListt.Add(str);
+                ContentList.Add(str);
             }
+
+            SetContentPage();
+
+        }
+
+        public void SetContentPage()
+        {
+            if (this.ContentList == null || ContentList.Count == 0)
+            {
+                return; ;
+            }
+            var paragraphs = this.ContentList;
+            int linesCount = (int)(ContentContainerHeitht / PerTextHeight);
+            int perLineCount = (int)(ContentContainerWith / PerTextWidth);
+
+
+            if ((ContentContainerHeitht % PerTextHeight) / PerTextHeight > 0.8)
+            {
+                linesCount = linesCount + 1;
+            }
+            List<string> pages = new List<string>();
+
+            try
+            {
+                int i = 0;
+                string tempPageContent = string.Empty;
+                foreach (var str in paragraphs)
+                {
+                    string lineStr = string.Empty;
+                    var chars = str.ToArray();
+                    var tempList = chars.ToList();
+                    foreach (var word in tempList)
+                    {
+                        lineStr += word;
+                        if (lineStr.Length == perLineCount)
+                        {
+                            tempPageContent += lineStr + "\r";
+                            lineStr = string.Empty;
+                            i++;
+                            if (i == linesCount)
+                            {
+                                pages.Add(tempPageContent);
+                                tempPageContent = string.Empty;
+                                i = 0;
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(lineStr))
+                    {
+                        tempPageContent += lineStr + "\r";
+                        lineStr = string.Empty;
+                        i++;
+                        if (i == linesCount)
+                        {
+                            pages.Add(tempPageContent);
+                            tempPageContent = string.Empty;
+                            i = 0;
+                        }
+                    }
+                    if (paragraphs.IndexOf(str) == paragraphs.Count - 1 && !string.IsNullOrEmpty(tempPageContent))
+                    {
+                        pages.Add(tempPageContent);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+
+            ContentPages.Clear();
+            foreach (string str in pages)
+            {
+                ContentPages.Add(str);
+            }
+
+            if (ContentPages != null && ContentPages.Count > 0)
+            {
+                this.CurrentPageContent = ContentPages[0];
+                this.CurrentPagIndex = 1;
+                TotalPagCount = ContentPages.Count;
+            }
+            else
+            {
+                this.CurrentPagIndex = 1;
+                TotalPagCount = 1;
+            }
+
         }
 
         private List<string> SplitString(string str)
@@ -562,6 +780,46 @@ namespace Sodu.ViewModel
 
           });
             return html;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"> 0 上一页  1 下一页</param>
+        public void SwithContent(string type)
+        {
+            if (type == "0")
+            {
+                if (CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                {
+                    OnSwtichCommand("0");
+                }
+                else
+                {
+                    CurrentPagIndex = CurrentPagIndex - 1;
+                    this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
+
+                    this.PrePageContent = CurrentPagIndex == 1 ? "" : ContentPages[CurrentPagIndex - 2];
+                    this.NextPageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex] : "";
+                }
+            }
+            else
+            {
+                if (CurrentPagIndex == this.ContentPages.Count || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                {
+                    OnSwtichCommand("1");
+                }
+                else
+                {
+                    CurrentPagIndex = CurrentPagIndex + 1;
+                    this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
+
+                    this.NextPageContent = this.CurrentPagIndex == this.ContentPages.Count ? "" : ContentPages[CurrentPagIndex];
+                    this.PrePageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex - 2] : "";
+
+                }
+            }
         }
 
         /// <summary>
@@ -685,6 +943,10 @@ namespace Sodu.ViewModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"> 0  上一章  1 下一章</param>
         public void OnSwtichCommand(object str)
         {
             if (IsLoading) return;
@@ -696,6 +958,8 @@ namespace Sodu.ViewModel
                     return;
                 }
                 var tempcatalog = this.BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == this.CurrentCatalog.CatalogUrl);
+
+                var last = this.BookEntity.CatalogList.LastOrDefault();
                 int index = this.BookEntity.CatalogList.IndexOf(tempcatalog);
                 //上一章
                 if (str.ToString().Equals("0"))
@@ -712,6 +976,10 @@ namespace Sodu.ViewModel
                     if (tempcatalog != null)
                     {
                         tempcatalog = this.BookEntity.CatalogList[this.BookEntity.CatalogList.IndexOf(tempcatalog) - 1];
+                    }
+                    else
+                    {
+                        tempcatalog = this.BookEntity.CatalogList.LastOrDefault();
                     }
                 }
                 //下一章

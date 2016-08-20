@@ -2,11 +2,11 @@
     x:Class="Sodu.Pages.LocalBookPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Sodu.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     DataContext="{Binding Instance.LocalBookPage,Source={ StaticResource  Locator}}"
     xmlns:uc="using:Sodu.UC"
+    xmlns:extension="using:SoDu.Core.Extension"
     mc:Ignorable="d">
     <Page.Transitions>
         <TransitionCollection>
@@ -21,7 +21,7 @@
         </Grid.RowDefinitions>
         <uc:UC_PageHeader Title="本地小说"  SearchButtonVisibility="Visible"></uc:UC_PageHeader>
 
-        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  x:Name="updateListBox"    ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -30,7 +30,7 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}">
+        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}" extension:CommandBarExtensions.HideMoreButton="True">
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding CancleUpdateCommand}"  />
             <AppBarButton Icon="Delete" Label="删除"  Visibility="{Binding IsEditing,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>
@@ -39,6 +39,6 @@
 
         </CommandBar>
 
-        <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.RowSpan="5" ></uc:UC_ProgressRing>
+        <uc:UC_ProgressRing Grid.ColumnSpan="5" IsActive="{Binding IsLoading}" Grid.Row="0" Grid.RowSpan="2" ></uc:UC_ProgressRing>
     </Grid>
 </Page>

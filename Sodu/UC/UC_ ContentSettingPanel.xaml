@@ -97,7 +97,7 @@
                             <ColumnDefinition Width="55"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="字体大小" HorizontalAlignment="Left" Margin="15,0,0,0"></TextBlock>
-                        <Slider Style="{StaticResource CustomSliderStyle}"   Foreground="{ThemeResource HigntLightlBackColor}"   Margin="10,0,0,0" Grid.Column="1"  Minimum="16" Maximum="40" Value="{Binding TextFontSzie,Mode=TwoWay}" Background="White"   IsThumbToolTipEnabled="False"></Slider>
+                        <Slider Style="{StaticResource CustomSliderStyle}"   ValueChanged="RangeBase_OnValueChanged" Foreground="{ThemeResource HigntLightlBackColor}"   Margin="10,0,0,0" Grid.Column="1"  Minimum="16" Maximum="40" Value="{Binding TextFontSzie,Mode=TwoWay}" Background="White"   IsThumbToolTipEnabled="False"></Slider>
                         <TextBlock Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="{Binding TextFontSzie,Mode=OneWay}" HorizontalAlignment="Center"  Grid.Column="2"></TextBlock>
                     </Grid>
 
@@ -113,6 +113,14 @@
                         <Run Text="{Binding LightValue,Mode=OneWay}"></Run>
                         <Run Text="%"></Run>
                         </TextBlock>
+                    </Grid>
+                    <Grid  Height="60">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="分页阅读"   Margin="15,0,0,0"></TextBlock>
+                        <ToggleSwitch  Grid.Column="1" Style="{StaticResource CustomToggleSwitchStyle}"  BorderBrush="White"  IsOn="{Binding IsReadByPageMode,Mode=TwoWay}"  Margin="15,0,0,0"  Foreground="White"/>
                     </Grid>
 
                     <Grid  Height="60">
