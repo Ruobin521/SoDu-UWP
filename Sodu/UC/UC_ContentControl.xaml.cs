@@ -17,6 +17,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Sodu.UC
 {
+
+    public delegate void StoryBoardCompleted();
+
     public sealed partial class UC_ContentControl : UserControl
     {
         public static readonly DependencyProperty TextFontSizeProperty = DependencyProperty.Register(
@@ -37,10 +40,58 @@ namespace Sodu.UC
             set { SetValue(TextPropertyProperty, value); }
         }
 
+
+        public static readonly DependencyProperty LefSwitchValueProperty = DependencyProperty.Register(
+            "LefSwitchValue", typeof(double), typeof(UC_ContentControl), new PropertyMetadata(default(double)));
+
+        public double LefSwitchValue
+        {
+            get { return (double)GetValue(LefSwitchValueProperty); }
+            set { SetValue(LefSwitchValueProperty, value); }
+        }
+
+        public static readonly DependencyProperty RightSwitchValueProperty = DependencyProperty.Register(
+            "RightSwitchValue", typeof(double), typeof(UC_ContentControl), new PropertyMetadata(default(double)));
+
+        public double RightSwitchValue
+        {
+            get { return (double)GetValue(RightSwitchValueProperty); }
+            set { SetValue(RightSwitchValueProperty, value); }
+        }
+
+
+        public TextBlock Textblock
+        {
+            get { return this.txt; }
+        }
+
         public UC_ContentControl()
         {
             this.InitializeComponent();
-            this.DataContext = this;
+
+            this.Loaded += UC_ContentControl_Loaded;
         }
+
+        private void UC_ContentControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LefSwitchValue = -this.ActualWidth;
+            RightSwitchValue = this.ActualWidth;
+        }
+
+        public void StartToLeft()
+        {
+            this.leftStartValue.Value = (this.RenderTransform as CompositeTransform).TranslateX;
+            this.leftEndValue.Value = LefSwitchValue;
+            StoryboardToLeft.Begin();
+        }
+
+
+        public void StartToRight()
+        {
+            this.rightStartValue.Value = (this.RenderTransform as CompositeTransform).TranslateX;
+            this.rightEndValue.Value = RightSwitchValue;
+            StoryboardToRight.Begin();
+        }
+
     }
 }

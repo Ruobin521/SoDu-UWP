@@ -37,7 +37,7 @@ namespace Sodu.ViewModel
         public static string n_ContentBackColor = "ContentBackColor";
         public static string n_LightValue = "LightValue";
         public static string n_IsReadByPageMode = "ReadByPageMode";
-
+        public static string n_SwitchAnimation = "SwitchAnimation";
 
 
 
@@ -216,6 +216,29 @@ namespace Sodu.ViewModel
                 }
                 SetProperty(ref m_IsReadByPageMode, value);
                 SetIsReadByPageMode(value);
+            }
+        }
+
+        private bool m_SwitchAnimation = true;
+        /// <summary>
+        /// 是否开启切换动画
+        /// </summary>
+        public bool SwitchAnimation
+        {
+
+            get
+            {
+                return m_SwitchAnimation;
+            }
+            set
+            {
+
+                if (value == m_SwitchAnimation)
+                {
+                    return;
+                }
+                SetProperty(ref m_SwitchAnimation, value);
+                SetSwitchAnimatione(value);
             }
         }
 
@@ -528,6 +551,28 @@ namespace Sodu.ViewModel
 
                 #endregion
 
+                #region  //是否开启切换动画
+                try
+                {
+                    if (!SettingHelper.CheckKeyExist(n_SwitchAnimation))
+                    {
+                        SettingHelper.SetValue(n_SwitchAnimation, true);
+                        m_SwitchAnimation = true;
+                    }
+                    else
+                    {
+                        var value = (bool)SettingHelper.GetValue(n_SwitchAnimation);
+                        m_SwitchAnimation = value;
+                    }
+                }
+                catch (Exception)
+                {
+                    SettingHelper.SetValue(n_SwitchAnimation, true);
+                    m_SwitchAnimation = true;
+                }
+
+                #endregion
+
             }
             catch (Exception ex)
             {
@@ -549,6 +594,7 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_ContentBackColor, this.ColorList[0].Color.ToString());
             SettingHelper.SetValue(n_LightValue, 1);
             SettingHelper.SetValue(n_IsReadByPageMode, true);
+            SettingHelper.SetValue(n_SwitchAnimation, true);
         }
 
 
@@ -582,6 +628,12 @@ namespace Sodu.ViewModel
         {
             SettingHelper.SetValue(n_IfDownloadInWAAN, value);
             IfDownloadInWAAN = value;
+        }
+
+        public void SetSwitchAnimatione(bool value)
+        {
+            SettingHelper.SetValue(n_SwitchAnimation, value);
+            SwitchAnimation = value;
         }
 
         public void SetIsReadByPageMode(bool value)

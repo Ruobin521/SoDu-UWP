@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Phone.Devices.Power;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.ViewManagement;
@@ -22,6 +23,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using GalaSoft.MvvmLight.Threading;
 using Sodu.Services;
+using Sodu.UC;
+using SoDu.Core.Extension;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上提供
 
@@ -38,12 +41,11 @@ namespace Sodu.Pages
         private Battery _battery = null;
         private DispatcherTimer timer;
 
-        private ScrollViewer _scrollviewer;
 
         private object para = null;
         private NavigationMode mode;
 
-
+        private CompositeTransform _currentContentPageTransform;
         public BookContentPage()
         {
             this.InitializeComponent();
@@ -54,6 +56,9 @@ namespace Sodu.Pages
 
             this.SizeChanged -= BookContentPage_SizeChanged;
             this.SizeChanged += BookContentPage_SizeChanged;
+
+            //this.ContentGrid.KeyUp -= BookContentPage_KeyUp;
+            //this.ContentGrid.KeyUp += BookContentPage_KeyUp;
 
             ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
@@ -81,7 +86,6 @@ namespace Sodu.Pages
 
             InitTimer();
         }
-
 
         private void BookContentPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -128,6 +132,8 @@ namespace Sodu.Pages
 
         private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
         {
+
+            // this.ContentGrid.Focus(FocusState.Pointer);
             MenuOpiton(false);
 
             if (mode == NavigationMode.New)
@@ -136,6 +142,8 @@ namespace Sodu.Pages
             }
 
             ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
+
+
         }
 
         private void _battery_RemainingChargePercentChanged(object sender, object e)
@@ -151,13 +159,6 @@ namespace Sodu.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //if (e.NavigationMode == NavigationMode.Back)
-            //{
-
-            //    return;
-            //}
-            //(this.DataContext as IViewModel)?.InitData(e.Parameter);
-
             this.mode = e.NavigationMode;
             this.para = e.Parameter;
         }
@@ -170,21 +171,55 @@ namespace Sodu.Pages
         }
 
 
-
-
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
+            var vm = this.DataContext as BookContentPageViewModel;
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
                 MenuOpiton(false);
             }
-
             x = 0;
+
+
         }
+
+        private bool CanNextSwithcPage()
+        {
+            var vm = this.DataContext as BookContentPageViewModel;
+            if (vm.CurrentPagIndex == vm.TotalPagCount)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        private bool CanPreSwithcPage()
+        {
+            var vm = this.DataContext as BookContentPageViewModel;
+            if (vm.CurrentPagIndex == 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
 
         private void The_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
         {
-            x += e.Delta.Translation.X;//将滑动的值赋给x
+            var vm = this.DataContext as BookContentPageViewModel;
+
+            if (vm.IsLoading)
+            {
+                return;
+            }
+
+            x += e.Delta.Translation.X;
         }
 
         private void The_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -192,40 +227,15 @@ namespace Sodu.Pages
             //上一章
             if (x > 85)
             {
-                (this.DataContext as BookContentPageViewModel)?.SwithContent("0");
+                OnSwitch("0");
+
             }
             // 下一章
             else if (x < -85)
             {
-                (this.DataContext as BookContentPageViewModel)?.SwithContent("1");
+                OnSwitch("1");
             }
         }
-
-        public double GetContentAreatActualHeight()
-        {
-            return this.ContentGrid.ActualHeight;
-        }
-        public int GetPerLineCount()
-        {
-            var width = this.txtTest.ActualWidth;
-            int count1 = (int)(this.ContentGrid.ActualWidth / width);
-            return count1;
-        }
-
-        public int GetTotalLineCount()
-        {
-            int height = 36;
-            int count2 = (int)(this.ContentGrid.ActualHeight / height);
-            return count2;
-        }
-
-
-        public double GetTxtTestActualHeight()
-        {
-            return this.txtTest.ActualHeight;
-        }
-
-
 
 
         public static List<T> GetVisualChildCollection<T>(object parent) where T : UIElement
@@ -309,7 +319,15 @@ namespace Sodu.Pages
                 MenuOpiton(false);
                 return;
             }
-            OnTapped(point);
+            //上一章
+            if (point.X > this.ContentGrid.ActualWidth / 3 && point.X < this.ContentGrid.ActualWidth / 3 * 2)
+            {
+                MenuOpiton(true);
+            }
+            else
+            {
+                OnTapped(point);
+            }
         }
 
         private void grid_Tapped(object sender, TappedRoutedEventArgs e)
@@ -329,15 +347,81 @@ namespace Sodu.Pages
         private void OnTapped(Point point)
         {
             //上一章
-            if (point.X < this.ContentGrid.ActualWidth / 3.5)
+            if (point.X < this.ContentGrid.ActualWidth / 3)
             {
-                (this.DataContext as BookContentPageViewModel)?.SwithContent("0");
+                OnSwitch("0");
+
             }
-            //上一章
-            else if (point.X >= this.ContentGrid.ActualWidth / 3.5 * 2.5)
+            //下一章
+            else if (point.X >= this.ContentGrid.ActualWidth / 3 * 2)
             {
-                (this.DataContext as BookContentPageViewModel)?.SwithContent("1");
+                OnSwitch("1");
             }
         }
+
+
+        private void OnSwitch(string option, bool animation = false)
+        {
+            var vm = this.DataContext as BookContentPageViewModel;
+
+            if (vm.IsLoading) return;
+
+            if (option.Equals("0"))
+            {
+                if (vm.CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                {
+                    vm.OnSwtichCommand("0");
+                }
+                else if (vm.CurrentPagIndex > 1)
+                {
+                    vm.CurrentPagIndex = vm.CurrentPagIndex - 1;
+
+                    vm.NextPageContent = vm.CurrentPageContent;
+
+                    vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
+
+                    vm.PrePageContent = vm.CurrentPagIndex >= 2 ? vm.ContentPages[vm.CurrentPagIndex - 2] : null;
+
+                    if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
+                    {
+                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).NextPageContent;
+                        this.NextPage.StartToRight();
+                    }
+                }
+            }
+            else if (option.Equals("1"))
+            {
+                if (vm.CurrentPagIndex == vm.ContentPages.Count ||
+                  !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                {
+                    vm.OnSwtichCommand("1");
+                }
+
+                else if (vm.CurrentPagIndex < vm.ContentPages.Count)
+                {
+
+                    vm.CurrentPagIndex = vm.CurrentPagIndex + 1;
+
+                    vm.PrePageContent = vm.CurrentPageContent;
+
+                    vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
+
+                    vm.NextPageContent = vm.CurrentPagIndex < vm.ContentPages.Count
+                        ? vm.ContentPages[vm.CurrentPagIndex]
+                        : null;
+
+
+                    if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
+                    {
+                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
+                        this.NextPage.StartToLeft();
+                    }
+
+                }
+            }
+
+        }
+
+
     }
 }

@@ -62,15 +62,13 @@
                         </Grid>
                     </StackPanel>
 
-                    <!--<SymbolIcon  Symbol="Back" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,0,0"/>-->
                 </Grid>
             </Border>
             <Grid   Grid.Row="1"  IsTapEnabled="False"  >
-                <Grid  x:Name="ContentGrid"   IsTapEnabled="False" Margin="8,0,8,0">
-                    <TextBlock  x:Name="txtTest" Text="国国国国" Opacity="0" Style="{StaticResource CustomContentTextBlockStyle}"  LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator},Mode=OneWay}"></TextBlock>
-                    <TextBlock  Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}" Text="{Binding CurrentPageContent}" Style="{StaticResource CustomContentTextBlockStyle}" LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"
-                                            FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
-                    </TextBlock>
+                <TextBlock  x:Name="txtTest" Text="国国国国" Opacity="0" Style="{StaticResource CustomContentTextBlockStyle}"  LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator},Mode=OneWay}"></TextBlock>
+                <Grid  x:Name="ContentGrid"   IsTapEnabled="False" Margin="8,0,8,0" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  BooleanToVisibilityConverter}}" >
+                    <uc:UC_ContentControl x:Name="CurrentPage"  Text="{Binding CurrentPageContent,Mode=OneWay}"/>
+                    <uc:UC_ContentControl x:Name="NextPage"     Text="{Binding CurrentPageContent,Mode=OneWay}" />
                 </Grid>
 
                 <ListView x:Name="listview"   ScrollViewer.VerticalScrollBarVisibility="Hidden"  ItemsSource="{Binding   ContentList}" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
@@ -95,16 +93,16 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
-            <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <TextBlock Foreground="{ThemeResource TextContentForeground}" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}" >
                       <Run Text="{Binding CurrentPagIndex}"></Run>
                       <Run Text="/"></Run>
                       <Run Text="{Binding TotalPagCount}"></Run>
             </TextBlock>
 
-            <TextBlock Grid.Column="0" HorizontalAlignment="Center" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding  BookEntity.IsLocal,Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <TextBlock Foreground="{ThemeResource TextContentForeground}" Grid.Column="0" HorizontalAlignment="Center" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding  BookEntity.IsLocal,Converter={StaticResource BooleanToVisibilityConverter}}" >
                       <Run Text="{Binding CurrentCatalogIndex}"></Run>
                       <Run Text="/"></Run>
-                      <Run Text="{Binding BookEntity.CatalogList.Count}"></Run>
+                      <Run Text="{Binding TotalCatalogCount}"></Run>
             </TextBlock>
 
             <Button   Grid.Column="1" Style="{StaticResource  ContentButtonStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">

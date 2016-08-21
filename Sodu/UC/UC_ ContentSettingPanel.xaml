@@ -116,16 +116,27 @@
                     </Grid>
                     <Grid  Height="60">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="100"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="分页阅读"   Margin="15,0,0,0"></TextBlock>
                         <ToggleSwitch  Grid.Column="1" Style="{StaticResource CustomToggleSwitchStyle}"  BorderBrush="White"  IsOn="{Binding IsReadByPageMode,Mode=TwoWay}"  Margin="15,0,0,0"  Foreground="White"/>
+
+                        <Grid  Height="60" Grid.Column="2"  Visibility="{Binding IsReadByPageMode,Converter={StaticResource BooleanToVisibilityConverter},Mode=OneWay}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="切花动画"   Margin="15,0,0,0"></TextBlock>
+                            <ToggleSwitch  Grid.Column="1" Style="{StaticResource CustomToggleSwitchStyle}"  BorderBrush="White"  IsOn="{Binding SwitchAnimation,Mode=TwoWay}"  Margin="15,0,0,0"  Foreground="White"/>
+                        </Grid>
                     </Grid>
 
                     <Grid  Height="60">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="夜间模式" HorizontalAlignment="Left" Margin="15,0,0,0"></TextBlock>
@@ -134,7 +145,7 @@
 
                     <Grid Height="60" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="90"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="横屏模式" HorizontalAlignment="Left" Margin="15,0,0,0"></TextBlock>

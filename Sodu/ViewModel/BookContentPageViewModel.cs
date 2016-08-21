@@ -156,16 +156,16 @@ namespace Sodu.ViewModel
             }
         }
 
-        public int m_CatalogCount;
-        public int CatalogCount
+        public int m_TotalCatalogCount;
+        public int TotalCatalogCount
         {
             get
             {
-                return m_CatalogCount;
+                return m_TotalCatalogCount;
             }
             set
             {
-                SetProperty(ref m_CatalogCount, value);
+                SetProperty(ref m_TotalCatalogCount, value);
             }
         }
 
@@ -220,8 +220,6 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_ContentPages, value);
             }
         }
-
-
 
 
         public bool m_IsSwitchButtonShow;
@@ -369,6 +367,11 @@ namespace Sodu.ViewModel
 
         public void SetData(BookCatalog catalog)
         {
+            if (IsLoading)
+            {
+                return;
+            }
+
             IsLoading = true;
             preHtmlHttp.HttpClientCancleRequest();
             PreTextContent = null;
@@ -376,6 +379,9 @@ namespace Sodu.ViewModel
             this.CurrentCatalogIndex = catalog.Index + 1;
             this.NextPageContent = "";
             this.PrePageContent = "";
+
+            TotalPagCount = 1;
+            CurrentPagIndex = 1;
 
             Task.Run(async () =>
            {
@@ -570,9 +576,10 @@ namespace Sodu.ViewModel
                                this.BookEntity.CatalogList.Add(item);
                            }
                            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                         {
-                             IsSwitchButtonShow = true;
-                         });
+                           {
+                               this.TotalCatalogCount = this.BookEntity.CatalogList.Count;
+                               IsSwitchButtonShow = true;
+                           });
                        }
                    }
                }
@@ -713,7 +720,10 @@ namespace Sodu.ViewModel
 
             if (ContentPages != null && ContentPages.Count > 0)
             {
+                this.CurrentPagIndex = 1;
                 this.CurrentPageContent = ContentPages[0];
+                this.PrePageContent = null;
+                this.NextPageContent = ContentPages.Count > 1 ? ContentPages[CurrentPagIndex] : null;
                 this.CurrentPagIndex = 1;
                 TotalPagCount = ContentPages.Count;
             }
@@ -721,6 +731,10 @@ namespace Sodu.ViewModel
             {
                 this.CurrentPagIndex = 1;
                 TotalPagCount = 1;
+
+                this.CurrentPageContent = null;
+                this.PrePageContent = null;
+                this.NextPageContent = null;
             }
 
         }
@@ -783,44 +797,53 @@ namespace Sodu.ViewModel
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="type"> 0 上一页  1 下一页</param>
-        public void SwithContent(string type)
-        {
-            if (type == "0")
-            {
-                if (CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
-                {
-                    OnSwtichCommand("0");
-                }
-                else
-                {
-                    CurrentPagIndex = CurrentPagIndex - 1;
-                    this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="type"> 0 上一页  1 下一页</param>
+        //public void SwithContent(string type)
+        //{
+        //    if (IsLoading)
+        //    {
+        //        return;
+        //    }
 
-                    this.PrePageContent = CurrentPagIndex == 1 ? "" : ContentPages[CurrentPagIndex - 2];
-                    this.NextPageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex] : "";
-                }
-            }
-            else
-            {
-                if (CurrentPagIndex == this.ContentPages.Count || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
-                {
-                    OnSwtichCommand("1");
-                }
-                else
-                {
-                    CurrentPagIndex = CurrentPagIndex + 1;
-                    this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
+        //    if (type == "0")
+        //    {
+        //        if (CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+        //        {
+        //            OnSwtichCommand("0");
+        //        }
+        //        else if (CurrentPagIndex > 1)
+        //        {
+        //            CurrentPagIndex = CurrentPagIndex - 1;
 
-                    this.NextPageContent = this.CurrentPagIndex == this.ContentPages.Count ? "" : ContentPages[CurrentPagIndex];
-                    this.PrePageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex - 2] : "";
+        //            this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
 
-                }
-            }
-        }
+        //            this.PrePageContent = CurrentPagIndex >= 2 ? ContentPages[CurrentPagIndex - 2] : null;
+
+        //            this.NextPageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex] : "";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (CurrentPagIndex == this.ContentPages.Count || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+        //        {
+        //            OnSwtichCommand("1");
+        //        }
+        //        else if (CurrentPagIndex < this.ContentPages.Count)
+        //        {
+        //            CurrentPagIndex = CurrentPagIndex + 1;
+
+        //            this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
+
+        //            this.NextPageContent = this.CurrentPagIndex == this.ContentPages.Count ? null : ContentPages[CurrentPagIndex];
+
+        //            this.PrePageContent = CurrentPagIndex >= 2 ? ContentPages[CurrentPagIndex - 2] : null;
+
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// 取消请求

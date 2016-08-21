@@ -208,52 +208,78 @@ namespace Sodu.ViewModel
       });
         }
 
-        private void CheckUpdate()
+        private async void CheckUpdate()
         {
             if (IsChecking)
             {
                 return;
             }
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                IsChecking = true;
+
+            });
             if (this.LocalBookList.Count < 1) return;
 
+            Task[] tasks = new Task[this.LocalBookList.Count];
+
+            int i = 0;
             foreach (var item in LocalBookList)
             {
-                Task.Run(async () =>
-                {
-                    try
-                    {
-                        if (!string.IsNullOrEmpty(item.CatalogListUrl))
-                        {
-                            var result = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
-                            if (!IsChecking) return;
+                tasks[i] = Task.Run(async () =>
+                 {
+                     try
+                     {
+                         if (!string.IsNullOrEmpty(item.CatalogListUrl))
+                         {
+                             var result = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
+                             if (!IsChecking) return;
 
-                            if (result.Item1 != null)
-                            {
-                                var list = result.Item1;
-                                var last = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                             if (result.Item1 != null)
+                             {
+                                 var list = result.Item1;
+                                 var last = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
 
 
-                                var undownLoad = list.FindAll(p => last?.FirstOrDefault(m => m.CatalogUrl == p.CatalogUrl) == null);
+                                 var undownLoad = list.FindAll(p => last?.FirstOrDefault(m => m.CatalogUrl == p.CatalogUrl) == null);
 
-                                if (undownLoad != null && undownLoad.Count > 0)
-                                {
-                                    item.UnDownloadCatalogList = new ObservableCollection<BookCatalog>();
-                                    undownLoad.ForEach(p => item.UnDownloadCatalogList.Add(p));
-                                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                  {
-                                      item.UnReadCountData = "  " + undownLoad.Count.ToString();
-                                  });
-                                }
+                                 if (undownLoad != null && undownLoad.Count > 0)
+                                 {
+                                     item.UnDownloadCatalogList = new ObservableCollection<BookCatalog>();
+                                     undownLoad.ForEach(p => item.UnDownloadCatalogList.Add(p));
+                                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                   {
+                                       item.UnReadCountData = "  " + undownLoad.Count.ToString();
+                                   });
+                                 }
+                                 else
+                                 {
+                                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                     {
+                                         item.UnReadCountData = "";
+                                     });
+                                 }
 
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
+                             }
+                         }
+                     }
+                     catch (Exception)
+                     {
 
-                    }
-                });
+                     }
+                 });
+
+                i++;
             }
+
+            await Task.Factory.ContinueWhenAll(tasks, (obj) =>
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    IsChecking = false;
+
+                });
+            });
         }
 
         public LocalBookPageViewModel()
