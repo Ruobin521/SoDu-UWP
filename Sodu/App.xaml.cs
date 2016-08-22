@@ -33,6 +33,7 @@ using Microsoft.Practices.Unity;
 using SoDu.Core.API;
 using UmengSDK;
 using Windows.Graphics.Display;
+using Windows.System;
 using GalaSoft.MvvmLight.Threading;
 
 namespace Sodu
@@ -65,6 +66,7 @@ namespace Sodu
             EncodingProvider provider = CodePagesEncodingProvider.Instance;
             Encoding.RegisterProvider(provider);
             UnhandledException += App_UnhandledException;
+
         }
 
 
@@ -112,6 +114,8 @@ namespace Sodu
 
             Frame rootFrame = Window.Current.Content as Frame;
 
+
+
             // 不要在窗口已包含内容时重复应用程序初始化，
             // 只需确保窗口处于活动状态
             if (rootFrame == null)
@@ -120,7 +124,14 @@ namespace Sodu
                 // 创建要充当导航上下文的框架，并导航到第一页
                 rootFrame = new Frame();
 
+                rootFrame.NavigationFailed -= OnNavigationFailed;
                 rootFrame.NavigationFailed += OnNavigationFailed;
+
+                rootFrame.KeyUp -= RootFrame_KeyUp;
+                rootFrame.KeyUp += RootFrame_KeyUp;
+
+                rootFrame.KeyDown -= RootFrame_KeyDown;
+                rootFrame.KeyDown += RootFrame_KeyDown;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -164,6 +175,30 @@ namespace Sodu
 #endif
 
 
+        }
+
+        private static bool isCtrlPressed;
+        private void RootFrame_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Control)
+            {
+                isCtrlPressed = true;
+            }
+        }
+
+        private void RootFrame_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Control)
+            {
+                isCtrlPressed = false;
+            }
+            else if (e.Key == VirtualKey.Back)
+            {
+                if (isCtrlPressed)
+                {
+                    OnBackPressed();
+                }
+            }
         }
 
         /// <summary>

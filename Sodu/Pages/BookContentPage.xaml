@@ -66,17 +66,19 @@
             </Border>
             <Grid   Grid.Row="1"  IsTapEnabled="False"  >
                 <TextBlock  x:Name="txtTest" Text="国国国国" Opacity="0" Style="{StaticResource CustomContentTextBlockStyle}"  LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator},Mode=OneWay}"></TextBlock>
-                <Grid  x:Name="ContentGrid"   IsTapEnabled="False" Margin="8,0,8,0" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  BooleanToVisibilityConverter}}" >
+                <Grid  x:Name="ContentGrid" Margin="8,0,8,0"/>
+
+                <Grid  IsTapEnabled="False" Margin="8,0,8,0" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  BooleanToVisibilityConverter}}" >
                     <uc:UC_ContentControl x:Name="CurrentPage"  Text="{Binding CurrentPageContent,Mode=OneWay}"/>
                     <uc:UC_ContentControl x:Name="NextPage"     Text="{Binding CurrentPageContent,Mode=OneWay}" />
                 </Grid>
 
-                <ListView x:Name="listview"   ScrollViewer.VerticalScrollBarVisibility="Hidden"  ItemsSource="{Binding   ContentList}" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
+                <ListView x:Name="listview" SelectionMode="None"  ScrollViewer.VerticalScrollBarVisibility="Auto"  ItemsSource="{Binding   ContentList}" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
          VerticalAlignment="Top"   Padding="8,0,8,0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border ManipulationMode="System,TranslateX" >
-                                <TextBlock Text="{Binding}" Style="{StaticResource CustomContentTextBlockStyle}" LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"
+                                <TextBlock  Text="{Binding}" Style="{StaticResource CustomContentTextBlockStyle}" LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"
                                             FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}">
                                 </TextBlock>
                             </Border>

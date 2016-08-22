@@ -70,6 +70,13 @@ namespace Sodu.UC
             this.InitializeComponent();
 
             this.Loaded += UC_ContentControl_Loaded;
+            this.SizeChanged += UC_ContentControl_SizeChanged;
+        }
+
+        private void UC_ContentControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            LefSwitchValue = -this.ActualWidth;
+            RightSwitchValue = this.ActualWidth;
         }
 
         private void UC_ContentControl_Loaded(object sender, RoutedEventArgs e)

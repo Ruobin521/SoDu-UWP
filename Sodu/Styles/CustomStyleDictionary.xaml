@@ -71,7 +71,6 @@
         <Setter Property="HorizontalAlignment" Value="Left"></Setter>
         <Setter Property="VerticalAlignment" Value="Top"></Setter>
         <Setter Property="TextAlignment" Value="Left"></Setter>
-        <!--<Setter Property="LineHeight" Value="36"></Setter>-->
     </Style>
 
 

@@ -44,6 +44,9 @@ namespace Sodu.Pages
 
         private object para = null;
         private NavigationMode mode;
+        private ScrollViewer _scrollviewer;
+
+
 
         private CompositeTransform _currentContentPageTransform;
         public BookContentPage()
@@ -85,7 +88,104 @@ namespace Sodu.Pages
             }
 
             InitTimer();
+
+
         }
+
+
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            this.mode = e.NavigationMode;
+            this.para = e.Parameter;
+
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
+            {
+                var frame = Window.Current.Content as Frame;
+                if (frame != null)
+                {
+                    frame.KeyUp -= ContentFrame_KeyUp;
+                    frame.KeyUp += ContentFrame_KeyUp;
+                    frame.KeyDown -= Frame_KeyDown;
+                    frame.KeyDown += Frame_KeyDown;
+                }
+            }
+        }
+
+        private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (mode == NavigationMode.New)
+            {
+                (this.DataContext as IViewModel)?.InitData(para);
+            }
+
+          ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
+
+            _scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview).FirstOrDefault();
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            MenuOpiton(false);
+            (this.DataContext as BookContentPageViewModel)?.CancleHttpRequest();
+
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
+            {
+                var frame = Window.Current.Content as Frame;
+                if (frame != null)
+                {
+                    frame.KeyUp -= ContentFrame_KeyUp;
+                }
+            }
+        }
+
+        private void Frame_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Up)
+            {
+                if (this.listview.Visibility == Visibility.Visible)
+                {
+                    if (_scrollviewer != null && _scrollviewer.VerticalOffset > 0)
+                    {
+                        _scrollviewer.ChangeView(0, _scrollviewer.VerticalOffset - 100, null, true);
+                    }
+                }
+            }
+
+            if (e.Key == VirtualKey.Down)
+            {
+                if (_scrollviewer != null && _scrollviewer.VerticalOffset < _scrollviewer.ExtentHeight)
+                {
+                    _scrollviewer.ChangeView(0, _scrollviewer.VerticalOffset + 100, null, false);
+                }
+            }
+        }
+
+        private void ContentFrame_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            e.Handled = true;
+            if (!(NavigationService.ContentFrame.Content is BookContentPage))
+            {
+                return;
+            }
+
+            if (e.Key == VirtualKey.Right)
+            {
+                OnSwitch("1");
+            }
+            else if (e.Key == VirtualKey.Left)
+            {
+                OnSwitch("0");
+            }
+
+            else if (e.Key == VirtualKey.Escape)
+            {
+                MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
+            }
+        }
+
+
 
         private void BookContentPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -130,21 +230,7 @@ namespace Sodu.Pages
             SetCommandBarMode(false);
         }
 
-        private void BookContentPage_Loaded(object sender, RoutedEventArgs e)
-        {
 
-            // this.ContentGrid.Focus(FocusState.Pointer);
-            MenuOpiton(false);
-
-            if (mode == NavigationMode.New)
-            {
-                (this.DataContext as IViewModel)?.InitData(para);
-            }
-
-            ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
-
-
-        }
 
         private void _battery_RemainingChargePercentChanged(object sender, object e)
         {
@@ -157,18 +243,6 @@ namespace Sodu.Pages
 
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            this.mode = e.NavigationMode;
-            this.para = e.Parameter;
-        }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-            MenuOpiton(false);
-            (this.DataContext as BookContentPageViewModel)?.CancleHttpRequest();
-        }
 
 
         private void BookContentPage_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
@@ -183,31 +257,7 @@ namespace Sodu.Pages
 
         }
 
-        private bool CanNextSwithcPage()
-        {
-            var vm = this.DataContext as BookContentPageViewModel;
-            if (vm.CurrentPagIndex == vm.TotalPagCount)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
 
-        private bool CanPreSwithcPage()
-        {
-            var vm = this.DataContext as BookContentPageViewModel;
-            if (vm.CurrentPagIndex == 1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
 
 
         private void The_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
