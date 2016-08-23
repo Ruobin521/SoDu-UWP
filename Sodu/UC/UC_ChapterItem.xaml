@@ -9,26 +9,28 @@
     mc:Ignorable="d" 
     d:DesignWidth="400"
      Height="75" >
-    <Grid HorizontalAlignment="Stretch"   Padding="8,0,10,0"  Background="Transparent" Tapped="UIElement_OnTapped">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <Grid x:Name="grid"  >
+    <Button Style="{StaticResource ContentButtonStyle}">
+        <Grid HorizontalAlignment="Stretch"   Padding="8,0,10,0"  Background="Transparent" Tapped="UIElement_OnTapped">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="txtBookName"    Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding   NewestChapterName}"  ></TextBlock>
-            <TextBlock x:Name="txtUpdateTime" Grid.Row="1" Grid.Column="1"  Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding UpdateTime}" HorizontalAlignment="Right" FontSize="16"    ></TextBlock>
-            <TextBlock x:Name="txtLy"    Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" ></TextBlock>
-        </Grid>
-        <!--<Line x:Name="line"  Grid.Row="1" Style="{StaticResource LineStyle}" StrokeDashArray="3" X1="0" X2="2000"  />-->
-        <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
+            <Grid x:Name="grid"  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="txtBookName"    Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" Text="{Binding   NewestChapterName}"  ></TextBlock>
+                <TextBlock x:Name="txtUpdateTime" Grid.Row="1" Grid.Column="1"  Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding UpdateTime}" HorizontalAlignment="Right" FontSize="16"    ></TextBlock>
+                <TextBlock x:Name="txtLy"    Grid.Column="0" Grid.Row="1" Style="{StaticResource ListItemTextBlockStyle}" Text="{Binding  LyWeb}" FontSize="16" ></TextBlock>
+            </Grid>
+            <!--<Line x:Name="line"  Grid.Row="1" Style="{StaticResource LineStyle}" StrokeDashArray="3" X1="0" X2="2000"  />-->
+            <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
 
-    </Grid>
+        </Grid>
+    </Button>
 </UserControl>

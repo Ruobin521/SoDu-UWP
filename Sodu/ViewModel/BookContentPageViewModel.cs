@@ -325,12 +325,8 @@ namespace Sodu.ViewModel
 
             }
 
-            if (this.ContentList != null)
-            {
-                this.ContentList.Clear();
-            }
-
-            this.BookEntity = entity;
+            this.ContentList?.Clear();
+            this.BookEntity = entity.Clone();
 
             try
             {
@@ -357,6 +353,10 @@ namespace Sodu.ViewModel
                 if (this.BookEntity.CatalogList == null || BookEntity.CatalogList.Count == 0)
                 {
                     SetBookCatalogList();
+                }
+                else
+                {
+                    this.TotalCatalogCount = this.BookEntity.CatalogList.Count;
                 }
             }
             catch (Exception)
@@ -796,54 +796,6 @@ namespace Sodu.ViewModel
             return html;
         }
 
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        ///// <param name="type"> 0 上一页  1 下一页</param>
-        //public void SwithContent(string type)
-        //{
-        //    if (IsLoading)
-        //    {
-        //        return;
-        //    }
-
-        //    if (type == "0")
-        //    {
-        //        if (CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
-        //        {
-        //            OnSwtichCommand("0");
-        //        }
-        //        else if (CurrentPagIndex > 1)
-        //        {
-        //            CurrentPagIndex = CurrentPagIndex - 1;
-
-        //            this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
-
-        //            this.PrePageContent = CurrentPagIndex >= 2 ? ContentPages[CurrentPagIndex - 2] : null;
-
-        //            this.NextPageContent = ContentPages.Count >= CurrentPagIndex ? ContentPages[CurrentPagIndex] : "";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (CurrentPagIndex == this.ContentPages.Count || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
-        //        {
-        //            OnSwtichCommand("1");
-        //        }
-        //        else if (CurrentPagIndex < this.ContentPages.Count)
-        //        {
-        //            CurrentPagIndex = CurrentPagIndex + 1;
-
-        //            this.CurrentPageContent = ContentPages[CurrentPagIndex - 1];
-
-        //            this.NextPageContent = this.CurrentPagIndex == this.ContentPages.Count ? null : ContentPages[CurrentPagIndex];
-
-        //            this.PrePageContent = CurrentPagIndex >= 2 ? ContentPages[CurrentPagIndex - 2] : null;
-
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// 取消请求

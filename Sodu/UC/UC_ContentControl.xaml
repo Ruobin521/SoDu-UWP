@@ -18,36 +18,36 @@
         <Storyboard x:Name="StoryboardToLeft">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="root">
                 <EasingDoubleKeyFrame KeyTime="0"  x:Name="leftStartValue"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" x:Name="leftEndValue"  >
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" x:Name="leftEndValue"  >
                     <EasingDoubleKeyFrame.EasingFunction>
                         <ExponentialEase EasingMode="EaseOut"></ExponentialEase>
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.31" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.41" Value="0" />
             </DoubleAnimationUsingKeyFrames>
 
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity " Storyboard.TargetName="root">
                 <EasingDoubleKeyFrame KeyTime="0:0:0" Value ="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value ="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.31" Value ="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value ="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.41" Value ="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
         <Storyboard x:Name="StoryboardToRight">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="root">
                 <EasingDoubleKeyFrame KeyTime="0"  x:Name="rightStartValue"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3"  x:Name="rightEndValue">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4"  x:Name="rightEndValue">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <ExponentialEase EasingMode="EaseOut"></ExponentialEase>
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.31" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.41" Value="0" />
             </DoubleAnimationUsingKeyFrames>
 
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity " Storyboard.TargetName="root">
                 <EasingDoubleKeyFrame KeyTime="0:0:0" Value ="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value ="1"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.31" Value ="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value ="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.41" Value ="0"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
 
@@ -64,7 +64,7 @@
 
             <TextBlock   x:Name="txt"  Text="{Binding Text,ElementName=root}" 
                     Style="{StaticResource CustomContentTextBlockStyle}" LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"
-                          FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"></TextBlock>
+                          FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator}}"  HorizontalAlignment="Stretch"></TextBlock>
         </Border>
     </Grid>
 </UserControl>

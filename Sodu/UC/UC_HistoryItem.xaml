@@ -9,6 +9,7 @@
     d:DesignHeight="81"
     d:DesignWidth="500"
     x:Name="root">
+    <Button Style="{StaticResource ContentButtonStyle}">
         <Grid Background="Transparent" Padding="8,0,10,0" Tapped="UIElement_OnTapped">
             <Grid  HorizontalAlignment="Stretch"  >
                 <Grid.ColumnDefinitions>
@@ -42,4 +43,6 @@
                 <Border Height="2" Background="Gray" Grid.Row="2"  Grid.ColumnSpan="2" Grid.Column="0" Opacity="0.2" VerticalAlignment="Bottom"></Border>
             </Grid>
         </Grid>
+
+    </Button>
 </UserControl>

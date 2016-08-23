@@ -10,40 +10,42 @@
     x:Name="root"
     d:DesignWidth="500"
    >
-    <Grid HorizontalAlignment="Stretch"  Padding="8,0,10,0"  Tapped="UIElement_OnTapped"  Background="Transparent" >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="1"/>
-        </Grid.RowDefinitions>
-        <Grid x:Name="grid" IsTapEnabled="False">
+    <Button Style="{StaticResource ContentButtonStyle}">
+        <Grid HorizontalAlignment="Stretch"  Padding="8,0,10,0"  Tapped="UIElement_OnTapped"  Background="Transparent" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"  x:Name="gridOfCheckBox" />
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="3" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
-            <TextBlock x:Name="txtBookName"  Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" >
+            <Grid x:Name="grid" IsTapEnabled="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"  x:Name="gridOfCheckBox" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <CheckBox  x:Name="checkbox" Grid.Column="0" Grid.RowSpan="3" VerticalAlignment="Center" Style="{StaticResource CustomCheckBoxStyle}"  Margin="0,0,5,0" Height="20" IsChecked="{Binding IsSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Width="20" Visibility="{Binding  IsInEdit,Converter={StaticResource  BooleanToVisibilityConverter}}" />
+                <TextBlock x:Name="txtBookName"  Grid.Column="1" Style="{StaticResource ListItemTextBlockStyle}"   FontSize="18" >
                 <Run Text="{Binding  BookName}"></Run>
                 <Run Text="{Binding  UnReadCountData}"  Foreground="{ThemeResource HigntLightlBackColor}"></Run>
-            </TextBlock>
-            <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}"   Text="{Binding  UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
-            <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
+                </TextBlock>
+                <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}"   Text="{Binding  UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
+                <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
                 <Run x:Name="txtChapterName" Text="最后阅读："  ></Run>
                 <Run x:Name="txtUnreadData"  Text="{Binding  LastReadChapterName}" ></Run>
-            </TextBlock>
-            <TextBlock   Grid.Row="2"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
+                </TextBlock>
+                <TextBlock   Grid.Row="2"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
                 <Run   Text="最新章节：" ></Run>
                 <Run   Text="{Binding  NewestChapterName}" ></Run>
-            </TextBlock>
+                </TextBlock>
 
+            </Grid>
+            <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
+
+            <!--<Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0" VerticalAlignment="Bottom" />-->
         </Grid>
-        <Border Height="1" Background="Gray" Grid.Row="1"  Opacity="0.2"></Border>
-
-        <!--<Line x:Name="line"  Grid.Row="1"  Style="{StaticResource LineStyle}" X1="0" X2="2000" StrokeDashArray="3"   Margin="0" VerticalAlignment="Bottom" />-->
-    </Grid>
+    </Button>
 </UserControl>

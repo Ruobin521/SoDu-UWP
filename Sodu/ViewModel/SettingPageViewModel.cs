@@ -38,6 +38,7 @@ namespace Sodu.ViewModel
         public static string n_LightValue = "LightValue";
         public static string n_IsReadByPageMode = "ReadByPageMode";
         public static string n_SwitchAnimation = "SwitchAnimation";
+        public static string n_AppVersion = "AppVersion";
 
 
 
@@ -61,6 +62,8 @@ namespace Sodu.ViewModel
                 SetTextSize(value, true);
             }
         }
+
+
         private int m_LineHeight = 32;
         /// <summary>
         /// 阅读显示字体大小  14-26
@@ -168,7 +171,6 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_IfDownloadInWAAN, value);
                 SetDownLoadInWAAN(value, true);
             }
-
         }
 
 
@@ -597,6 +599,24 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_SwitchAnimation, true);
         }
 
+
+        public string GetAppVersion()
+        {
+            if (!SettingHelper.CheckKeyExist(n_AppVersion))
+            {
+                return null;
+            }
+            else
+            {
+                var value = SettingHelper.GetValue(n_AppVersion).ToString();
+                return value;
+            }
+        }
+
+        public void SetAppVersion(string value)
+        {
+            SettingHelper.SetValue(n_AppVersion, value);
+        }
 
         public void SetAutoLogin(bool value)
         {

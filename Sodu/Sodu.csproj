@@ -243,6 +243,7 @@
     <Compile Include="UC\UC_ProgressBar.xaml.cs">
       <DependentUpon>UC_ProgressBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\AboutPageViewModel.cs" />
     <Compile Include="ViewModel\BookCatalogPageViewModel.cs" />
     <Compile Include="ViewModel\BookContentPageViewModel.cs" />
     <Compile Include="ViewModel\DownLoadCenterViewModel.cs" />

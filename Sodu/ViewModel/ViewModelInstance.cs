@@ -336,6 +336,19 @@ namespace Sodu.ViewModel
             }
         }
 
+        private AboutPageViewModel m_AboutPage;
+        public AboutPageViewModel AboutPage
+        {
+            get
+            {
+                if (m_AboutPage == null)
+                {
+                    m_AboutPage = new AboutPageViewModel();
+                }
+                return m_AboutPage;
+            }
+        }
+
         private bool m_IsLogin;
         public bool IsLogin
         {

@@ -126,10 +126,7 @@ namespace Sodu.Pages
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            base.OnNavigatingFrom(e);
             MenuOpiton(false);
-            (this.DataContext as BookContentPageViewModel)?.CancleHttpRequest();
-
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsPC)
             {
                 var frame = Window.Current.Content as Frame;
