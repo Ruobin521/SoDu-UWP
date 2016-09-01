@@ -41,25 +41,6 @@ namespace Sodu.UC
         }
 
 
-        public static readonly DependencyProperty LefSwitchValueProperty = DependencyProperty.Register(
-            "LefSwitchValue", typeof(double), typeof(UC_ContentControl), new PropertyMetadata(default(double)));
-
-        public double LefSwitchValue
-        {
-            get { return (double)GetValue(LefSwitchValueProperty); }
-            set { SetValue(LefSwitchValueProperty, value); }
-        }
-
-        public static readonly DependencyProperty RightSwitchValueProperty = DependencyProperty.Register(
-            "RightSwitchValue", typeof(double), typeof(UC_ContentControl), new PropertyMetadata(default(double)));
-
-        public double RightSwitchValue
-        {
-            get { return (double)GetValue(RightSwitchValueProperty); }
-            set { SetValue(RightSwitchValueProperty, value); }
-        }
-
-
         public TextBlock Textblock
         {
             get { return this.txt; }
@@ -68,27 +49,14 @@ namespace Sodu.UC
         public UC_ContentControl()
         {
             this.InitializeComponent();
-
-            this.Loaded += UC_ContentControl_Loaded;
-            this.SizeChanged += UC_ContentControl_SizeChanged;
         }
 
-        private void UC_ContentControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            LefSwitchValue = -this.ActualWidth;
-            RightSwitchValue = this.ActualWidth;
-        }
 
-        private void UC_ContentControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            LefSwitchValue = -this.ActualWidth;
-            RightSwitchValue = this.ActualWidth;
-        }
 
         public void StartToLeft()
         {
             this.leftStartValue.Value = (this.RenderTransform as CompositeTransform).TranslateX;
-            this.leftEndValue.Value = LefSwitchValue;
+            this.leftEndValue.Value = -this.ActualWidth;
             StoryboardToLeft.Begin();
         }
 
@@ -96,7 +64,7 @@ namespace Sodu.UC
         public void StartToRight()
         {
             this.rightStartValue.Value = (this.RenderTransform as CompositeTransform).TranslateX;
-            this.rightEndValue.Value = RightSwitchValue;
+            this.rightEndValue.Value = this.ActualWidth;
             StoryboardToRight.Begin();
         }
 

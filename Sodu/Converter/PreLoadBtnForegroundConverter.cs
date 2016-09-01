@@ -14,14 +14,14 @@ namespace Sodu.Converter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value == null)
+            var str = value as string;
+            if (value == null || string.IsNullOrEmpty(str.ToString()))
             {
-                return App.Current.Resources["CustomPreLoadedBtnCommonAppBarButtonStyle"] as Style;
-
+                return null;
             }
             else
             {
-                return App.Current.Resources["CustomPreLoadedAppBarButtonStyle"] as Style;
+                return new SolidColorBrush(Colors.Green);
             }
         }
 

@@ -67,7 +67,7 @@ namespace Sodu.Pages
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
             ManipulationDelta += The_ManipulationDelta;//订阅手势滑动事件
 
-            commandbar.Visibility = Visibility.Collapsed;
+
             this.ColorPanel.Closed -= ColorPanel_Closed;
             this.ColorPanel.Closed += ColorPanel_Closed;
 
@@ -76,23 +76,25 @@ namespace Sodu.Pages
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
+                commandbar.Visibility = Visibility.Collapsed;
+                bottomBar.Visibility = Visibility.Visible;
+
                 InitBattery();
                 this.grid.Holding -= this.Grid_OnHolding;
                 this.grid.Holding += this.Grid_OnHolding;
             }
             else
             {
+                commandbar.Visibility = Visibility.Visible;
+                bottomBar.Visibility = Visibility.Collapsed;
+
                 BattaryStatus.Visibility = Visibility.Collapsed;
                 this.grid.RightTapped -= this.Grid_OnRightTapped;
                 this.grid.RightTapped += this.Grid_OnRightTapped;
             }
 
             InitTimer();
-
-
         }
-
-
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -118,7 +120,6 @@ namespace Sodu.Pages
             {
                 (this.DataContext as IViewModel)?.InitData(para);
             }
-
           ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
 
             _scrollviewer = GetVisualChildCollection<ScrollViewer>(this.listview).FirstOrDefault();
@@ -186,13 +187,16 @@ namespace Sodu.Pages
 
         private void BookContentPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            var vm = this.DataContext as BookContentPageViewModel;
             var size = ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetSize(ContentGrid.ActualWidth, ContentGrid.ActualHeight, txtTest.ActualWidth / 4, txtTest.ActualHeight);
             var hasChnaged = size != null && (bool)size;
             if (hasChnaged)
             {
-                ((this.DataContext as IViewModel) as BookContentPageViewModel)?.SetContentPage();
+                int pageIdex = vm.CurrentPagIndex;
+                int totalPage = vm.TotalPagCount;
+                vm.ContentPages = vm.GetContentPage(vm.ContentList);
+                vm.SetContentPage(pageIdex, totalPage);
             }
-
         }
 
         private async void ColorPanel_FontSizeChanged(double value)
@@ -312,15 +316,20 @@ namespace Sodu.Pages
             if (!value)
             {
                 if (this.ColorPanel.Visibility != Visibility.Visible) return;
-
-                SetCommandBarMode(false);
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    SetCommandBarMode(false);
+                }
                 this.ColorPanel.Close();
             }
             else
             {
                 if (this.ColorPanel.Visibility != Visibility.Collapsed) return;
 
-                SetCommandBarMode(true);
+                if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+                {
+                    SetCommandBarMode(true);
+                }
                 this.ColorPanel.Show();
             }
         }
@@ -328,7 +337,16 @@ namespace Sodu.Pages
 
         private void SetCommandBarMode(bool value)
         {
-            this.commandbar.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            {
+                this.commandbar.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                this.bottomBar.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+            }
+            else
+            {
+                this.commandbar.Visibility = Visibility.Visible;
+                this.bottomBar.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -407,12 +425,18 @@ namespace Sodu.Pages
         }
 
 
+        /// <summary>
+        /// 点击切换内容
+        /// </summary>
+        /// <param name="option"></param>
+        /// <param name="animation"></param>
         private void OnSwitch(string option, bool animation = false)
         {
             var vm = this.DataContext as BookContentPageViewModel;
 
             if (vm.IsLoading) return;
 
+            //上一章（页）
             if (option.Equals("0"))
             {
                 if (vm.CurrentPagIndex == 1 || !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
@@ -436,39 +460,57 @@ namespace Sodu.Pages
                     }
                 }
             }
+            //下一章（页）
             else if (option.Equals("1"))
             {
-                if (vm.CurrentPagIndex == vm.ContentPages.Count ||
-                  !ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                if (ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
+                {
+                    if (vm.CurrentPagIndex == vm.ContentPages.Count)
+                    {
+                        if (!string.IsNullOrEmpty(vm.NextCatalogContent))
+                        {
+                            this.NextPage.Text = vm.CurrentPageContent;
+                            vm.SetCurrentContent(vm.NextCatalog, vm.NextCatalogContent);
+                            if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
+                            {
+                                this.NextPage.StartToLeft();
+                            }
+                        }
+                        else
+                        {
+                            vm.OnSwtichCommand("1");
+                        }
+                    }
+                    else if (vm.CurrentPagIndex < vm.ContentPages.Count)
+                    {
+
+                        vm.CurrentPagIndex = vm.CurrentPagIndex + 1;
+
+                        vm.PrePageContent = vm.CurrentPageContent;
+
+                        vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
+
+                        vm.NextPageContent = vm.CurrentPagIndex < vm.ContentPages.Count
+                            ? vm.ContentPages[vm.CurrentPagIndex]
+                            : null;
+
+                        if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
+                        {
+                            this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
+                            this.NextPage.StartToLeft();
+                        }
+                    }
+                    else
+                    {
+                        vm.OnSwtichCommand("1");
+                    }
+                }
+                else
                 {
                     vm.OnSwtichCommand("1");
                 }
-
-                else if (vm.CurrentPagIndex < vm.ContentPages.Count)
-                {
-
-                    vm.CurrentPagIndex = vm.CurrentPagIndex + 1;
-
-                    vm.PrePageContent = vm.CurrentPageContent;
-
-                    vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
-
-                    vm.NextPageContent = vm.CurrentPagIndex < vm.ContentPages.Count
-                        ? vm.ContentPages[vm.CurrentPagIndex]
-                        : null;
-
-
-                    if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
-                    {
-                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
-                        this.NextPage.StartToLeft();
-                    }
-
-                }
             }
-
         }
-
 
     }
 }
