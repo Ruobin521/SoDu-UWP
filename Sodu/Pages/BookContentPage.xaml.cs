@@ -57,8 +57,8 @@ namespace Sodu.Pages
             this.Loaded -= BookContentPage_Loaded;
             this.Loaded += BookContentPage_Loaded;
 
-            this.SizeChanged -= BookContentPage_SizeChanged;
-            this.SizeChanged += BookContentPage_SizeChanged;
+            this.grid.SizeChanged -= BookContentPage_SizeChanged;
+            grid.SizeChanged += BookContentPage_SizeChanged;
 
             //this.ContentGrid.KeyUp -= BookContentPage_KeyUp;
             //this.ContentGrid.KeyUp += BookContentPage_KeyUp;
@@ -182,8 +182,6 @@ namespace Sodu.Pages
                 MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
             }
         }
-
-
 
         private void BookContentPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {

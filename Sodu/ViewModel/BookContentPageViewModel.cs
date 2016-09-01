@@ -491,7 +491,7 @@ namespace Sodu.ViewModel
                 DBLocalBook.InsertOrUpdateBookEntity(AppDataPath.GetLocalBookDBPath(), BookEntity);
             }
 
-            if (!BookEntity.IsLocal && ViewModelInstance.Instance.SettingPageViewModelInstance.IsPreLoad)
+            if (string.IsNullOrEmpty(NextCatalogContent) && ViewModelInstance.Instance.SettingPageViewModelInstance.IsPreLoad)
             {
                 Task.Run(async () =>
                 {
@@ -636,31 +636,44 @@ namespace Sodu.ViewModel
                {
                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
                  {
-                     this.TotalCatalogCount = this.BookEntity.CatalogList.Count;
-                     this.CurrentCatalogIndex = BookEntity.CatalogList.IndexOf(BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == CurrentCatalog.CatalogUrl)) + 1;
-
-                     IsSwitchButtonShow = true;
-                     IsLoadingCatalogList = false;
-
-                     if (isClickCtalog && IsSwitchButtonShow)
+                     try
                      {
-                         IsLoading = false;
-                         NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
-                         isClickCtalog = false;
+                         if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+                         {
+                             this.TotalCatalogCount = this.BookEntity.CatalogList.Count;
+                             this.CurrentCatalogIndex = BookEntity.CatalogList.IndexOf(BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == CurrentCatalog.CatalogUrl)) + 1;
+
+                             IsSwitchButtonShow = true;
+                             IsLoadingCatalogList = false;
+
+                             if (isClickCtalog && IsSwitchButtonShow)
+                             {
+                                 IsLoading = false;
+                                 NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
+                                 isClickCtalog = false;
+                             }
+                         }
+                     }
+                     catch (Exception ex)
+                     {
+
                      }
                  });
                }
            }).ContinueWith(async (obj) =>
            {
-               if (string.IsNullOrEmpty(NextCatalogContent) && !BookEntity.IsLocal && ViewModelInstance.Instance.SettingPageViewModelInstance.IsPreLoad)
+               if (string.IsNullOrEmpty(NextCatalogContent) && ViewModelInstance.Instance.SettingPageViewModelInstance.IsPreLoad)
                {
-                   NextCatalog = GetNextCatalog();
-                   NextCatalogContent = null;
-                   var html = await GetPreHtmlData();
-                   DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                 {
-                     NextCatalogContent = html;
-                 });
+                   if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+                   {
+                       NextCatalog = GetNextCatalog();
+                       NextCatalogContent = null;
+                       var html = await GetPreHtmlData();
+                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                     {
+                         NextCatalogContent = html;
+                     });
+                   }
                }
            });
 
@@ -749,11 +762,13 @@ namespace Sodu.ViewModel
                 if (index != 0 && count != 0)
                 {
                     this.CurrentPagIndex = (int)((double)index / (double)count * ContentPages.Count);
-                    this.CurrentPagIndex = this.CurrentPagIndex < 1 ? 1 : CurrentPagIndex;
-                    this.CurrentPagIndex = this.CurrentPagIndex > ContentPages.Count ? ContentPages.Count : CurrentPagIndex;
-                }
 
+                }
                 else
+                {
+                    this.CurrentPagIndex = 1;
+                }
+                if (this.CurrentPagIndex < 1 || this.CurrentPagIndex > ContentPages.Count)
                 {
                     this.CurrentPagIndex = 1;
                 }
@@ -767,7 +782,6 @@ namespace Sodu.ViewModel
             {
                 this.CurrentPagIndex = 1;
                 TotalPagCount = 1;
-
                 this.CurrentPageContent = null;
                 this.PrePageContent = null;
                 this.NextPageContent = null;

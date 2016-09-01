@@ -22,16 +22,15 @@
     <Grid  Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Border  x:Name="bakBorder"   Grid.RowSpan="2"  Background="{Binding  Instance.SettingPageViewModelInstance.ContentBackColor, Source={StaticResource Locator}}" 
                     Visibility="{Binding Instance.SettingPageViewModelInstance.Theme, Source={StaticResource Locator},Converter={StaticResource BackColorVisiablityConverter}}"></Border>
 
-        <Grid  x:Name="grid"   ManipulationMode="System,TranslateX"  DoubleTapped="Grid_OnDoubleTapped"   Tapped="grid_Tapped"     Background="Transparent" Grid.Row="0"  >
+        <Grid  x:Name="grid"  Grid.RowSpan="2"  ManipulationMode="System,TranslateX"  DoubleTapped="Grid_OnDoubleTapped"   Tapped="grid_Tapped"     Background="Transparent" Grid.Row="0"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Border x:Name="border" Height="25">
@@ -41,12 +40,12 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource TitleTextBlockStyle}"        FontSize="16"/>
+                    <TextBlock x:Name="TextTitle"  Margin="15,5,0,0"   FontFamily="颜体"  VerticalAlignment="Top" Text="{Binding ContentTitle}"    Style="{StaticResource CustomContentTextBlockStyle}"        FontSize="16"/>
                     <TextBlock x:Name="TextTime" Grid.Column="2" Margin="5,0,10,0" FontFamily="颜体"   Text="" Style="{StaticResource CustomContentTextBlockStyle}"    VerticalAlignment="Center" HorizontalAlignment="Right" Height="16"      FontSize="14"/>
 
                     <StackPanel  x:Name="BattaryStatus"  Grid.Column="1" Orientation="Horizontal">
                         <Grid VerticalAlignment="Center">
-                            <Path Opacity="1" Data="M2,2L2,12 28,12 28,2z M0,0L30,0 30,4 32,4 32,10 30,10 30,14 0,14z"  StrokeThickness="0.5" Stretch="Uniform" Fill="{ThemeResource TitleTextFroeground}" Width="28" Height="22" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Path Opacity="1" Data="M2,2L2,12 28,12 28,2z M0,0L30,0 30,4 32,4 32,10 30,10 30,14 0,14z"  StrokeThickness="0.5" Stretch="Uniform" Fill="{ThemeResource TextContentForeground}" Width="28" Height="22" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
                                 <Path.RenderTransform>
                                     <TransformGroup>
                                         <TransformGroup.Children>
@@ -57,14 +56,15 @@
                                 </Path.RenderTransform>
                             </Path>
                             <Border>
-                                <TextBlock x:Name="TextBattery"   FontFamily="颜体"  Text="46"    Foreground="{ThemeResource TitleTextFroeground}"  VerticalAlignment="Center"   HorizontalAlignment="Center" FontSize="10" Margin="0,1,3,0"/>
+                                <TextBlock x:Name="TextBattery"   FontFamily="颜体"  Text="46"    Foreground="{ThemeResource TextContentForeground}"  VerticalAlignment="Center"   HorizontalAlignment="Center" FontSize="10" Margin="0,1,3,0"/>
                             </Border>
                         </Grid>
                     </StackPanel>
 
                 </Grid>
             </Border>
-            <Grid   Grid.Row="1"  IsTapEnabled="False"  >
+
+            <Grid x:Name="gridContent" Grid.Row="1"  IsTapEnabled="False"   Margin="0,0,0,25" >
                 <TextBlock  x:Name="txtTest" Text="国国国国" Opacity="0" Style="{StaticResource CustomContentTextBlockStyle}"  LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator},Mode=OneWay}"></TextBlock>
                 <Grid  x:Name="ContentGrid" Margin="8,0,8,0"/>
 
@@ -87,8 +87,6 @@
                 </ListView>
             </Grid>
         </Grid>
-
-
 
         <!--菜单-->
         <Grid  Background="Transparent"   VerticalAlignment="Bottom" Grid.Row="1">
@@ -124,52 +122,49 @@
                 <StackPanel  Grid.Column="2"     Margin="0,3,0,3"    VerticalAlignment="Bottom"  Orientation="Horizontal"  HorizontalAlignment="Right">
                     <AppBarButton  Click="AppBar_Click" Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="50"    Command="{Binding  RefreshCommand}" Style="{StaticResource CustomAppBarButtonStyle2}"  />
                     <AppBarButton   Click="AppBar_Click" Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Style="{StaticResource CustomAppBarButtonStyle2}"  />
-                    <AppBarButton Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{StaticResource CustomAppBarButtonStyle2}" Foreground="{Binding NextPageContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>
+                    <AppBarButton Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{StaticResource CustomAppBarButtonStyle2}" Foreground="{Binding  NextCatalogContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>
                     <!--<AppBarButton Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{Binding PreTextContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>-->
                     <AppBarButton  Click="AppBar_Click" Icon="Bullets" Label="目录"      Command="{Binding CatalogCommand}"  Style="{StaticResource CustomAppBarButtonStyle2}" />
                 </StackPanel>
 
-                <Button  x:Name="btnMenu" Grid.Column="3" Style="{StaticResource  ContentButtonStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">
+                <Button  x:Name="btnMenu" Grid.Column="3" Style="{StaticResource  ContentButtonWithNoAnimationStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">
                     <Button.Content>
                         <SymbolIcon  Symbol="More" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,10,5"/>
                     </Button.Content>
                 </Button>
 
             </Grid>
+        </Grid>
 
-            <!--菜单-->
-            <Grid  Background="Transparent"  x:Name="bottomBar"  VerticalAlignment="Bottom" Grid.Row="1" >
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="40"/>
-                </Grid.ColumnDefinitions>
+        <!--菜单-->
+        <Grid  Background="Transparent"  x:Name="bottomBar" VerticalAlignment="Bottom" Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
 
-                <Border >
-                    <TextBlock Foreground="{ThemeResource TextContentForeground}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Border >
+                <TextBlock Foreground="{ThemeResource TextContentForeground}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}" >
                       <Run Text="{Binding CurrentPagIndex}"></Run>
                       <Run Text="/"></Run>
                       <Run Text="{Binding TotalPagCount}"></Run>
-                    </TextBlock>
-                </Border>
+                </TextBlock>
+            </Border>
 
-                <Border Grid.Column="0" >
-                    <TextBlock Foreground="{ThemeResource TextContentForeground}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding    IsSwitchButtonShow,Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Border Grid.Column="0" >
+                <TextBlock Foreground="{ThemeResource TextContentForeground}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,0,0,0" FontSize="12"  Visibility="{Binding    IsSwitchButtonShow,Converter={StaticResource BooleanToVisibilityConverter}}" >
                       <Run Text="{Binding CurrentCatalogIndex}"></Run>
                       <Run Text="/"></Run>
                       <Run Text="{Binding TotalCatalogCount}"></Run>
-                    </TextBlock>
-                </Border>
+                </TextBlock>
+            </Border>
 
-                <Button   Grid.Column="1" Style="{StaticResource  ContentButtonStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">
-                    <Button.Content>
-                        <SymbolIcon  Symbol="More" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,10,5"/>
-                    </Button.Content>
-                </Button>
-            </Grid>
-
+            <Button   Grid.Column="1" Style="{StaticResource  ContentButtonWithNoAnimationStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">
+                <Button.Content>
+                    <SymbolIcon  Symbol="More" HorizontalAlignment="Right" VerticalAlignment="Center"  Margin="0,0,10,0"/>
+                </Button.Content>
+            </Button>
         </Grid>
-
-
 
 
 
