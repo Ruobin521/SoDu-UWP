@@ -57,7 +57,7 @@ namespace Sodu.Pages
             this.Loaded -= BookContentPage_Loaded;
             this.Loaded += BookContentPage_Loaded;
 
-            this.grid.SizeChanged -= BookContentPage_SizeChanged;
+            grid.SizeChanged -= BookContentPage_SizeChanged;
             grid.SizeChanged += BookContentPage_SizeChanged;
 
             //this.ContentGrid.KeyUp -= BookContentPage_KeyUp;
@@ -73,6 +73,9 @@ namespace Sodu.Pages
 
             this.ColorPanel.FontSizeChanged -= ColorPanel_FontSizeChanged;
             this.ColorPanel.FontSizeChanged += ColorPanel_FontSizeChanged;
+
+            this.ColorPanel.LineHeightChanged -= ColorPanel_LineHeightChanged;
+            this.ColorPanel.LineHeightChanged += ColorPanel_LineHeightChanged;
 
             if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
             {
@@ -95,6 +98,8 @@ namespace Sodu.Pages
 
             InitTimer();
         }
+
+
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -200,6 +205,13 @@ namespace Sodu.Pages
         private async void ColorPanel_FontSizeChanged(double value)
         {
             this.txtTest.FontSize = value;
+            await Task.Delay(10);
+            BookContentPage_SizeChanged(null, null);
+        }
+
+        private async void ColorPanel_LineHeightChanged(double value)
+        {
+            this.txtTest.LineHeight = value;
             await Task.Delay(10);
             BookContentPage_SizeChanged(null, null);
         }
@@ -468,11 +480,14 @@ namespace Sodu.Pages
                         if (!string.IsNullOrEmpty(vm.NextCatalogContent))
                         {
                             this.NextPage.Text = vm.CurrentPageContent;
-                            vm.SetCurrentContent(vm.NextCatalog, vm.NextCatalogContent);
+                            string tempStr = vm.NextCatalogContent;
+                            vm.NextCatalogContent = null;
+                            vm.SetCurrentContent(vm.NextCatalog, tempStr);
                             if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                             {
                                 this.NextPage.StartToLeft();
                             }
+                            vm.GetNextCatalogHtmlData();
                         }
                         else
                         {
@@ -492,9 +507,10 @@ namespace Sodu.Pages
                             ? vm.ContentPages[vm.CurrentPagIndex]
                             : null;
 
+                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
+
                         if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                         {
-                            this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
                             this.NextPage.StartToLeft();
                         }
                     }

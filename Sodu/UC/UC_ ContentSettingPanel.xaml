@@ -107,6 +107,18 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="55"/>
                         </Grid.ColumnDefinitions>
+                        <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="行间距" HorizontalAlignment="Left" Margin="15,0,0,0"></TextBlock>
+                        <Slider Style="{StaticResource CustomSliderStyle}"   ValueChanged="Slider_ValueChanged" Foreground="{ThemeResource HigntLightlBackColor}"   Margin="10,0,0,0" Grid.Column="1"  Minimum="{Binding TextFontSzie,Mode=OneWay}" Maximum="80" Value="{Binding LineHeight,Mode=TwoWay}" Background="White"   IsThumbToolTipEnabled="False"></Slider>
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="{Binding LineHeight,Mode=OneWay}" HorizontalAlignment="Center"  Grid.Column="2"></TextBlock>
+                    </Grid>
+
+
+                    <Grid  Height="60">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="55"/>
+                        </Grid.ColumnDefinitions>
                         <TextBlock   Style="{StaticResource TitleTextBlockStyle}" Foreground="White" Text="亮度" HorizontalAlignment="Left" Margin="15,0,0,0"></TextBlock>
                         <Slider  Style="{StaticResource CustomSliderStyle}"   Foreground="{ThemeResource HigntLightlBackColor}"   Margin="10,0,0,0" Grid.Column="1"  Minimum="20" Maximum="100" Value="{Binding LightValue,Mode=TwoWay}" Background="White"   IsThumbToolTipEnabled="False"   SmallChange="0.01"></Slider>
                         <TextBlock Style="{StaticResource TitleTextBlockStyle}" Foreground="White"  HorizontalAlignment="Center"  Grid.Column="2">

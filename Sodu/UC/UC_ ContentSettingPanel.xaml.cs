@@ -20,11 +20,14 @@ namespace Sodu.UC
 
     public delegate void CloseHanlder();
     public delegate void FontSizeChanged(double value);
+    public delegate void LineHeightChanged(double value);
+
     public sealed partial class UC_ContentSettingPanel : UserControl
     {
 
         public event CloseHanlder Closed;
         public event FontSizeChanged FontSizeChanged;
+        public event LineHeightChanged LineHeightChanged;
         public UC_ContentSettingPanel()
         {
             this.InitializeComponent();
@@ -51,6 +54,12 @@ namespace Sodu.UC
         {
             double value = (sender as Slider).Value;
             FontSizeChanged?.Invoke(value);
+        }
+
+        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            double value = (sender as Slider).Value;
+            LineHeightChanged?.Invoke(value);
         }
     }
 }

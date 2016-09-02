@@ -30,6 +30,7 @@ namespace Sodu.ViewModel
         public static string n_IfDownloadInWAAN = "IfDownloadInWAAN";
         public static string n_IsFullScreen = "IsFullScreen";
         public static string n_TextFontSzie = "TextFontSzie";
+        public static string n_LineHeight = "LineHeight";
         public static string n_Cookie = "Cookie";
         public static string n_IsNightModel = "IsNightModel";
         public static string n_IsLandscape = "IsLandscape";
@@ -59,7 +60,7 @@ namespace Sodu.ViewModel
                     return;
                 }
                 SetProperty(ref m_TextFontSzie, value);
-                SetTextSize(value, true);
+                SetTextSize(value);
             }
         }
 
@@ -81,8 +82,10 @@ namespace Sodu.ViewModel
                     return;
                 }
                 SetProperty(ref m_LineHeight, value);
+                SetLineHeight(value, true);
             }
         }
+
 
         private double m_LightValue = 0;
         /// <summary>
@@ -410,6 +413,28 @@ namespace Sodu.ViewModel
 
                 #endregion
 
+                #region  //正文行间距
+                try
+                {
+                    if (!SettingHelper.CheckKeyExist(n_LineHeight))
+                    {
+                        SettingHelper.SetValue(n_LineHeight, 35);
+                        m_LineHeight = 35;
+                    }
+                    else
+                    {
+                        string value = SettingHelper.GetValue(n_LineHeight).ToString();
+                        m_LineHeight = Convert.ToInt32(value);
+                    }
+                }
+                catch (Exception)
+                {
+                    SettingHelper.SetValue(n_LineHeight, 35);
+                    m_LineHeight = 35;
+                }
+
+                #endregion
+
                 #region //设置夜间模式
 
                 try
@@ -597,6 +622,7 @@ namespace Sodu.ViewModel
             SettingHelper.SetValue(n_LightValue, 1);
             SettingHelper.SetValue(n_IsReadByPageMode, true);
             SettingHelper.SetValue(n_SwitchAnimation, true);
+            SettingHelper.SetValue(n_LineHeight, 35);
         }
 
 
@@ -690,14 +716,16 @@ namespace Sodu.ViewModel
         }
 
 
-        public void SetTextSize(int value, bool isShowMessage = false)
+        public void SetTextSize(int value)
         {
-            if (value > 28 || value < 16)
-            {
-                return;
-            }
             SettingHelper.SetValue(n_TextFontSzie, value.ToString());
             TextFontSzie = value;
+        }
+
+        private void SetLineHeight(int value, bool v)
+        {
+            SettingHelper.SetValue(n_LineHeight, value.ToString());
+            LineHeight = value;
         }
 
 
