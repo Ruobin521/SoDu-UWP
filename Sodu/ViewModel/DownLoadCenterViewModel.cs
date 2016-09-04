@@ -363,7 +363,10 @@ namespace Sodu.ViewModel
                {
                    if (DownLoadList.Contains(temp))
                    {
-                       this.DownLoadList.Remove(temp);
+                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                        {
+                            this.DownLoadList.Remove(temp);
+                        });
                    }
                    return;
                }
