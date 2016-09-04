@@ -273,15 +273,20 @@ namespace Sodu.ViewModel
                             if (!string.IsNullOrEmpty(entity?.LastReadChapterName))
                             {
                                 item.LastReadChapterName = entity.LastReadChapterName;
-                                var sim = LevenshteinDistance.LevenshteinDistancePercent(item.LastReadChapterName, item.NewestChapterName);
-                                if (!item.LastReadChapterName.Equals(item.NewestChapterName) && sim < (decimal)0.85)
+                                var sim = LevenshteinDistancePercent(item.LastReadChapterName, item.NewestChapterName);
+                                if (sim)
+                                {
+                                    item.UnReadCountData = "";
+                                }
+                                else
                                 {
                                     item.UnReadCountData = "(有更新)";
                                 }
                             }
                             else
                             {
-                                item.LastReadChapterName = item.NewestChapterName;
+                                item.UnReadCountData = "(有更新)";
+                                item.LastReadChapterName = "无";
                             }
                             ShelfBookList.Add(item);
                         }
@@ -293,6 +298,25 @@ namespace Sodu.ViewModel
             }
         }
 
+        /// <summary>
+        /// 计算字符串相似度
+        /// </summary>
+        /// <param name=”str1″></param>
+        /// <param name=”str2″></param>
+        /// <returns></returns>
+        public bool LevenshteinDistancePercent(string str1, string str2)
+        {
+
+            str1 = str1.ToLower().Replace(" ", "").Replace("　", "");
+            str2 = str2.ToLower().Replace(" ", "").Replace("　", "");
+
+            if (str1.Equals(str2) || str1.Contains(str2) || str2.Contains(str1))
+            {
+                return true;
+            }
+
+            return false;
+        }
         public void RemoveBookList(List<BookEntity> removeBookList)
         {
 
@@ -376,8 +400,8 @@ namespace Sodu.ViewModel
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
                         var temp = ShelfBookList.ToList().Find(p => p.BookID == entity.BookID);
-                        var sim = LevenshteinDistance.LevenshteinDistancePercent(temp.LastReadChapterName, entity.NewestChapterName);
-                        if (!temp.LastReadChapterName.Equals(entity.NewestChapterName) && sim < 80)
+                        var sim = LevenshteinDistancePercent(temp.LastReadChapterName, entity.NewestChapterName);
+                        if (sim)
                         {
                             temp.LastReadChapterName = temp.NewestChapterName;
                             temp.UnReadCountData = null;
@@ -598,7 +622,7 @@ namespace Sodu.ViewModel
                 {
                     ViewModelInstance.Instance.MainPageViewModelInstance.OnBookItemSelectedChangedCommand(obj);
 
-                    if (!string.IsNullOrEmpty(entity.UnReadCountData))
+                    if (!string.IsNullOrEmpty(entity.UnReadCountData) || !entity.LastReadChapterName.Equals(entity.NewestChapterName))
                     {
                         entity.UnReadCountData = string.Empty;
                         entity.LastReadChapterName = entity.NewestChapterName;

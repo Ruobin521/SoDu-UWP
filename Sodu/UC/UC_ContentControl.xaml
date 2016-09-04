@@ -49,6 +49,7 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value ="1"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value ="0"/>
             </DoubleAnimationUsingKeyFrames>
+
         </Storyboard>
 
 
@@ -60,7 +61,7 @@
         <Border Background="{Binding  Instance.SettingPageViewModelInstance.ContentBackColor, Source={StaticResource Locator}}" 
                     Visibility="{Binding Instance.SettingPageViewModelInstance.Theme, Source={StaticResource Locator},Converter={StaticResource BackColorVisiablityConverter}}"></Border>
 
-        <Border x:Name="border" RenderTransformOrigin="0.5,0.5">
+        <Border x:Name="border" RenderTransformOrigin="0.5,0.5" Visibility="Visible">
 
             <TextBlock   x:Name="txt"  Text="{Binding Text,ElementName=root}" 
                     Style="{StaticResource CustomContentTextBlockStyle}" LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"

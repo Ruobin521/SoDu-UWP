@@ -64,13 +64,13 @@
                 </Grid>
             </Border>
 
-            <Grid x:Name="gridContent" Grid.Row="1"  IsTapEnabled="False"   Margin="0,0,0,25" >
+            <Grid x:Name="gridContent" Grid.Row="1"  IsTapEnabled="False"   Margin="0,0,0,25">
                 <TextBlock  x:Name="txtTest" Text="国国国国" Opacity="0" Style="{StaticResource CustomContentTextBlockStyle}"  LineHeight="{Binding Instance.SettingPageViewModelInstance.LineHeight,Source={StaticResource  Locator}}"   FontSize="{Binding Instance.SettingPageViewModelInstance.TextFontSzie,Source={StaticResource  Locator},Mode=OneWay}"></TextBlock>
                 <Grid  x:Name="ContentGrid" Margin="8,0,8,0"/>
 
                 <Grid  IsTapEnabled="False" Margin="8,0,8,0" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  BooleanToVisibilityConverter}}" >
                     <uc:UC_ContentControl x:Name="CurrentPage"  Text="{Binding CurrentPageContent,Mode=OneWay}"/>
-                    <uc:UC_ContentControl x:Name="NextPage"     Text="{Binding CurrentPageContent,Mode=OneWay}" />
+                    <uc:UC_ContentControl x:Name="NextPage"     Text="{Binding CurrentPageContent,Mode=OneWay}"  Visibility="{Binding  Instance.SettingPageViewModelInstance.SwitchAnimation,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
 
                 <ListView x:Name="listview" SelectionMode="None"  ScrollViewer.VerticalScrollBarVisibility="Auto"  ItemsSource="{Binding   ContentList}" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
@@ -95,11 +95,11 @@
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
 
-            <Grid   x:Name="commandbar" Background="Transparent"  Height="50"  Visibility="Visible"  Grid.ColumnSpan="2" VerticalAlignment="Bottom">
+            <Grid   HorizontalAlignment="Stretch"  x:Name="commandbar" Background="Transparent"  Height="50"  Visibility="Visible"  Grid.ColumnSpan="3" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <Border Background="{ThemeResource LeftPanelBackground}"  Grid.ColumnSpan="4"></Border>
@@ -120,11 +120,11 @@
                 </Border>
 
                 <StackPanel  Grid.Column="2"     Margin="0,3,0,3"    VerticalAlignment="Bottom"  Orientation="Horizontal"  HorizontalAlignment="Right">
-                    <AppBarButton  Click="AppBar_Click" Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="50"    Command="{Binding  RefreshCommand}" Style="{StaticResource CustomAppBarButtonStyle2}"  />
-                    <AppBarButton   Click="AppBar_Click" Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Style="{StaticResource CustomAppBarButtonStyle2}"  />
-                    <AppBarButton Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{StaticResource CustomAppBarButtonStyle2}" Foreground="{Binding  NextCatalogContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>
-                    <!--<AppBarButton Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{Binding PreTextContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>-->
-                    <AppBarButton  Click="AppBar_Click" Icon="Bullets" Label="目录"      Command="{Binding CatalogCommand}"  Style="{StaticResource CustomAppBarButtonStyle2}" />
+                    <AppBarButton  Click="AppBar_Click" Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"  x:Name="refreshBtn"  Width="42"    Command="{Binding  RefreshCommand}" Style="{StaticResource CustomAppBarButtonStyle2}"  />
+                    <AppBarButton  Click="AppBar_Click" Icon="Previous" Label="上一章" Command="{Binding SwitchCatalogCommand}" CommandParameter="0" Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}" Style="{StaticResource CustomAppBarButtonStyle2}"  Width="42" />
+                    <AppBarButton  Click="AppBar_Click"  Icon="Next" Label="下一章" Command="{Binding SwitchCatalogCommand}"   CommandParameter="1"  Visibility="{Binding IsSwitchButtonShow,Converter={StaticResource  BooleanToVisibilityConverter}}"   Style="{StaticResource CustomAppBarButtonStyle2}"   Width="42"  Foreground="{Binding  NextCatalogContent,Converter={StaticResource PreLoadBtnForegroundConverter},Mode=OneWay}"/>
+                    <AppBarButton Icon="Download" Label="下载"   Visibility="{Binding CanDownLoad,Converter={StaticResource  BooleanToVisibilityConverter}}"   Command="{Binding DwonLoadhCommand}"  Style="{StaticResource CustomAppBarButtonStyle2}" Width="42" />
+                    <AppBarButton  Click="AppBar_Click" Icon="Bullets" Label="目录"      Command="{Binding CatalogCommand}"  Style="{StaticResource CustomAppBarButtonStyle2}"  Width="42" />
                 </StackPanel>
 
                 <Button  x:Name="btnMenu" Grid.Column="3" Style="{StaticResource  ContentButtonWithNoAnimationStyle}" Foreground="{ThemeResource TitleTextFroeground}"  Click="ButtonBase_OnClick">

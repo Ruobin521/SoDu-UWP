@@ -9,7 +9,9 @@ namespace Sodu.ViewModel
     public interface IViewModel
     {
         void InitData(object obj = null);
+
         bool IsLoading { get; set; }
+
         string ContentTitle { get; set; }
 
         void CancleHttpRequest();

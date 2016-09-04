@@ -61,12 +61,12 @@ namespace Sodu.UC
         }
 
 
+
         public void StartToRight()
         {
             this.rightStartValue.Value = (this.RenderTransform as CompositeTransform).TranslateX;
             this.rightEndValue.Value = this.ActualWidth;
             StoryboardToRight.Begin();
         }
-
     }
 }

@@ -188,6 +188,15 @@ namespace Sodu
 
         private void RootFrame_KeyUp(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == VirtualKey.F5)
+            {
+                var contentxt = (NavigationService.ContentFrame.Content as Page).DataContext;
+                if (contentxt != null && contentxt is ViewModel.IViewModel)
+                {
+                 //   (contentxt as ViewModel.IViewModel).InitData();
+                }
+            }
+
             if (e.Key == VirtualKey.Control)
             {
                 isCtrlPressed = false;

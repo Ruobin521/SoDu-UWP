@@ -54,6 +54,25 @@ namespace Sodu.Pages
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
+            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
+            {
+                commandbar.Visibility = Visibility.Collapsed;
+                bottomBar.Visibility = Visibility.Visible;
+
+                InitBattery();
+                this.grid.Holding -= this.Grid_OnHolding;
+                this.grid.Holding += this.Grid_OnHolding;
+            }
+            else
+            {
+                commandbar.Visibility = Visibility.Visible;
+                bottomBar.Visibility = Visibility.Collapsed;
+                gridContent.Margin = new Thickness(0, 0, 0, 50);
+                BattaryStatus.Visibility = Visibility.Collapsed;
+                this.grid.RightTapped -= this.Grid_OnRightTapped;
+                this.grid.RightTapped += this.Grid_OnRightTapped;
+            }
+
             this.Loaded -= BookContentPage_Loaded;
             this.Loaded += BookContentPage_Loaded;
 
@@ -77,24 +96,7 @@ namespace Sodu.Pages
             this.ColorPanel.LineHeightChanged -= ColorPanel_LineHeightChanged;
             this.ColorPanel.LineHeightChanged += ColorPanel_LineHeightChanged;
 
-            if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
-            {
-                commandbar.Visibility = Visibility.Collapsed;
-                bottomBar.Visibility = Visibility.Visible;
 
-                InitBattery();
-                this.grid.Holding -= this.Grid_OnHolding;
-                this.grid.Holding += this.Grid_OnHolding;
-            }
-            else
-            {
-                commandbar.Visibility = Visibility.Visible;
-                bottomBar.Visibility = Visibility.Collapsed;
-
-                BattaryStatus.Visibility = Visibility.Collapsed;
-                this.grid.RightTapped -= this.Grid_OnRightTapped;
-                this.grid.RightTapped += this.Grid_OnRightTapped;
-            }
 
             InitTimer();
         }
@@ -455,17 +457,15 @@ namespace Sodu.Pages
                 }
                 else if (vm.CurrentPagIndex > 1)
                 {
+                    string temp = vm.CurrentPageContent;
                     vm.CurrentPagIndex = vm.CurrentPagIndex - 1;
-
                     vm.NextPageContent = vm.CurrentPageContent;
-
                     vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
-
                     vm.PrePageContent = vm.CurrentPagIndex >= 2 ? vm.ContentPages[vm.CurrentPagIndex - 2] : null;
 
                     if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                     {
-                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).NextPageContent;
+                        this.NextPage.Text = temp;
                         this.NextPage.StartToRight();
                     }
                 }
@@ -479,12 +479,13 @@ namespace Sodu.Pages
                     {
                         if (!string.IsNullOrEmpty(vm.NextCatalogContent))
                         {
-                            this.NextPage.Text = vm.CurrentPageContent;
+                            string temp = vm.CurrentPageContent;
                             string tempStr = vm.NextCatalogContent;
                             vm.NextCatalogContent = null;
                             vm.SetCurrentContent(vm.NextCatalog, tempStr);
                             if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                             {
+                                this.NextPage.Text = temp;
                                 this.NextPage.StartToLeft();
                             }
                             vm.GetNextCatalogHtmlData();
@@ -507,10 +508,9 @@ namespace Sodu.Pages
                             ? vm.ContentPages[vm.CurrentPagIndex]
                             : null;
 
-                        this.NextPage.Text = (this.DataContext as BookContentPageViewModel).PrePageContent;
-
                         if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                         {
+                            this.NextPage.Text = vm.PrePageContent;
                             this.NextPage.StartToLeft();
                         }
                     }

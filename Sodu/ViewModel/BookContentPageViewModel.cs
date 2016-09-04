@@ -50,6 +50,21 @@ namespace Sodu.ViewModel
                 SetProperty(ref m_IsLoading, value);
             }
         }
+
+        private bool m_CanDownLoad;
+        public bool CanDownLoad
+        {
+            get
+            {
+                return m_CanDownLoad;
+            }
+            set
+            {
+                SetProperty(ref m_CanDownLoad, value);
+            }
+        }
+
+
         private bool m_IsLoadingCatalogList;
         public bool IsLoadingCatalogList
         {
@@ -385,7 +400,6 @@ namespace Sodu.ViewModel
             this.NextPageContent = "";
             this.PrePageContent = "";
 
-
             if (!entity.IsLocal)
             {
                 this.IsSwitchButtonShow = false;
@@ -393,11 +407,19 @@ namespace Sodu.ViewModel
             else
             {
                 this.IsSwitchButtonShow = true;
-
             }
 
             this.ContentList?.Clear();
             this.BookEntity = entity.Clone();
+
+            if (CheckIfLoacalExist())
+            {
+                CanDownLoad = false;
+            }
+            else
+            {
+                CanDownLoad = true;
+            }
 
             try
             {
@@ -428,6 +450,20 @@ namespace Sodu.ViewModel
             {
                 ToastHeplper.ShowMessage("正文加载失败");
             }
+        }
+
+
+        private bool CheckIfLoacalExist()
+        {
+            bool rs = false;
+            var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
+
+            if (result != null && result.FirstOrDefault(p => p.BookID == this.BookEntity.BookID) != null)
+            {
+                rs = true;
+            }
+
+            return rs;
         }
 
 
@@ -787,32 +823,43 @@ namespace Sodu.ViewModel
 
         public void SetContentPage(int index = 0, int count = 0)
         {
-            if (ContentPages != null && ContentPages.Count > 0)
+            try
             {
-                if (index != 0 && count != 0)
+                if (ContentPages != null && ContentPages.Count > 0)
                 {
-                    this.CurrentPagIndex = (int)((double)index / (double)count * ContentPages.Count);
+                    if (index != 0 && count != 0)
+                    {
+                        this.CurrentPagIndex = (int)((double)index / (double)count * ContentPages.Count);
 
+                    }
+                    else
+                    {
+                        this.CurrentPagIndex = 1;
+                    }
+                    if (this.CurrentPagIndex < 1 || this.CurrentPagIndex > ContentPages.Count)
+                    {
+                        this.CurrentPagIndex = 1;
+                    }
+
+                    this.CurrentPageContent = ContentPages[this.CurrentPagIndex - 1];
+                    this.PrePageContent = null;
+                    this.NextPageContent = ContentPages.Count >= CurrentPagIndex + 1 ? ContentPages[CurrentPagIndex] : null;
+                    TotalPagCount = ContentPages.Count;
                 }
                 else
                 {
                     this.CurrentPagIndex = 1;
+                    TotalPagCount = 1;
+                    this.CurrentPageContent = null;
+                    this.PrePageContent = null;
+                    this.NextPageContent = null;
                 }
-                if (this.CurrentPagIndex < 1 || this.CurrentPagIndex > ContentPages.Count)
-                {
-                    this.CurrentPagIndex = 1;
-                }
-
-                this.CurrentPageContent = ContentPages[this.CurrentPagIndex - 1];
-                this.PrePageContent = null;
-                this.NextPageContent = ContentPages.Count > 1 ? ContentPages[CurrentPagIndex] : null;
-                TotalPagCount = ContentPages.Count;
             }
-            else
+            catch (Exception ex)
             {
                 this.CurrentPagIndex = 1;
-                TotalPagCount = 1;
-                this.CurrentPageContent = null;
+                TotalPagCount = ContentPages.Count;
+                this.CurrentPageContent = ContentPages[this.CurrentPagIndex - 1];
                 this.PrePageContent = null;
                 this.NextPageContent = null;
             }
@@ -1054,6 +1101,37 @@ namespace Sodu.ViewModel
             catch (Exception)
             {
                 NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
+            }
+        }
+
+
+
+        /// </summary>
+        private RelayCommand<object> m_DwonLoadhCommand;
+        public RelayCommand<object> DwonLoadhCommand
+        {
+            get
+            {
+                return m_DwonLoadhCommand ?? (m_DwonLoadhCommand = new RelayCommand<object>(OnDwonLoadhCommand));
+            }
+        }
+
+        private void OnDwonLoadhCommand(object obj)
+        {
+            if (IsLoading) return;
+            if (this.BookEntity != null && this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
+            {
+                var result = DBLocalBook.GetAllLocalBookList(AppDataPath.GetLocalBookDBPath());
+                if (result != null && result.FirstOrDefault(p => p.BookID == this.BookEntity.BookID) != null)
+                {
+                    ToastHeplper.ShowMessage("该图书已经下载过");
+                }
+
+                ViewModelInstance.Instance.DownLoadCenterViewModelInstance.AddNewDownloadItem(this.BookEntity);
+            }
+            else
+            {
+                ToastHeplper.ShowMessage("该图书暂时无法下载");
             }
         }
         #endregion

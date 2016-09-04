@@ -21,8 +21,8 @@ namespace Sodu.ViewModel
             }
         }
 
-        private string m_UpdateLog;
-        public string UpdateLog
+        private StringBuilder m_UpdateLog;
+        public StringBuilder UpdateLog
         {
             get
             {
@@ -37,14 +37,9 @@ namespace Sodu.ViewModel
 
         public AboutPageViewModel()
         {
-            m_AppVersion = "1.6.0";
-
-            m_UpdateLog = "1.列表项隔行换色，跟PC版保持一致，不喜欢可以反馈给我，下个版本去掉。" + "\n"
-                          + "2.个人书架添加更新提醒。" + "\n"
-                          + "3.正文页面添加分页阅读(可关闭)。" + "\n"
-                          + "4.PC版添加快捷键（左右键切换页面（章节），上下滚动页面，Esc打开菜单。全局使用Ctrl+Back 返回上个页面。）" + "\n"
-                          + "5.正文页面打开添加双击打开菜单。";
-
+            m_AppVersion = "1.6.2";
+            m_UpdateLog = new StringBuilder();
+            m_UpdateLog.Append("1.优化章节切换逻辑，在线阅读显示章节索引。\n");
         }
 
     }
