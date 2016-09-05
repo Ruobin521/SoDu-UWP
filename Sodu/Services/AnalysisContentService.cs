@@ -29,7 +29,7 @@ namespace Sodu.Services
         /// <summary>
         /// 第九中文网
         /// </summary>
-        public const string dijiuzww = "www.dijiuzww.com";
+        public const string dijiuzww = "dijiuzww.com";
 
         /// <summary>
         /// 清风小说
@@ -1262,8 +1262,9 @@ namespace Sodu.Services
                     result = AnalysisQsx(html, url, web);
                     break;
 
-                case "无弹窗小说网":
-                    result = AnalysisWtc(html);
+                //卓雅居
+                case WebSet.zyj:
+                    result = AnalysisZyj(html, web);
                     break;
 
                 default:
@@ -1329,6 +1330,69 @@ namespace Sodu.Services
 
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
 
+        }
+
+        private static Tuple<List<BookCatalog>, string, string> AnalysisZyj(string html, string baseUrl)
+        {
+            List<BookCatalog> list = null;
+            string despriction = null;
+            string cover = null;
+
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"readerlist\">.*?<div class=\"bottoma\">");
+            if (match == null) return null;
+            MatchCollection matches = Regex.Matches(match.ToString(), "<li><a href=\"(.*?)\".*?>(.*?)</a></li>");
+            //<dd><a href="3326485.html">风帆战列舰分级：一级战列舰</a></dd>
+            if (matches != null && matches.Count < 1)
+            {
+                list = null;
+            }
+            else
+            {
+                list = new List<BookCatalog>();
+                int i = 0;
+                foreach (Match item in matches)
+                {
+                    var groups = item.Groups;
+                    if (groups != null && groups.Count > 2)
+                    {
+                        var url_Mathch = groups[1].ToString();
+                        var title_Mathch = groups[2].ToString();
+                        if (url_Mathch != null && title_Mathch != null)
+                        {
+                            BookCatalog catalog = new BookCatalog();
+                            catalog.Index = i;
+                            i++;
+                            catalog.CatalogUrl = "http://" + baseUrl + url_Mathch;
+                            catalog.CatalogName = title_Mathch;
+                            list.Add(catalog);
+                        }
+                    }
+                }
+            }
+
+            var temp = Regex.Match(html, " <div id=\"bookintro\">.*?</div>").ToString();
+            try
+            {
+                despriction = AnalysisContentService.ReplaceSymbol(temp);
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div id=\"bookimg\"><img.*?src=\"(.*?)\".*?/>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
+            }
+
+            return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
         }
         private static Tuple<List<BookCatalog>, string, string> AnalysisSqsxsw(string html, string baseUrl)
         {
@@ -1585,6 +1649,28 @@ namespace Sodu.Services
                         }
                     }
                 }
+            }
+
+            try
+            {
+                //简介
+                Match desprictionStr = Regex.Match(html, "<div class=\"xinxi_content\">.*?</div>");
+                despriction = AnalysisContentService.ReplaceSymbol(desprictionStr.ToString()).Trim();
+            }
+            catch (Exception)
+            {
+                despriction = null;
+            }
+
+            try
+            {
+                //封面
+                Match coverStr = Regex.Match(html, "<div class=\"book_info_top_l\">.*?<img.*?src=\"(.*?)\".*?>");
+                cover = coverStr.Groups[1].ToString();
+            }
+            catch (Exception)
+            {
+                cover = null;
             }
 
             return new Tuple<List<BookCatalog>, string, string>(list, despriction, cover);
@@ -2010,7 +2096,7 @@ namespace Sodu.Services
             else
             {
                 list = new List<BookCatalog>();
-                for (int i = 0; i < matches.Count - 4; i++)
+                for (int i = 0; i < matches.Count; i++)
                 {
                     Match item = matches[i];
                     var groups = item.Groups;
@@ -2025,6 +2111,10 @@ namespace Sodu.Services
                             catalog.CatalogUrl = "http://" + baseUrl + url_Mathch.ToString();
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
+                        }
+                        else
+                        {
+
                         }
                     }
                 }

@@ -23,6 +23,8 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using GalaSoft.MvvmLight.Threading;
+using System.Net.Http;
+using Windows.Storage;
 
 namespace Sodu.ViewModel
 {
@@ -91,23 +93,8 @@ namespace Sodu.ViewModel
             }
 
             DowmLoadEntity temp = new DowmLoadEntity();
-            temp.Entity = new BookEntity()
-            {
-                AuthorName = entity.AuthorName,
-                BookName = entity.BookName,
-                BookID = entity.BookID,
-                CatalogList = entity.CatalogList,
-                CatalogListUrl = entity.CatalogListUrl,
-                IsLocal = false,
-                LastReadChapterName = entity.LastReadChapterName,
-                LastReadChapterUrl = entity.LastReadChapterUrl,
-                LyWeb = entity.LyWeb,
-                NewestChapterName = entity.NewestChapterName,
-                NewestChapterUrl = entity.NewestChapterUrl,
-                UnReadCountData = entity.UnReadCountData,
-                UpdateCatalogUrl = entity.UpdateCatalogUrl,
-                UpdateTime = entity.UpdateTime,
-            };
+            temp.Entity = entity.Clone();
+
             //无网络
             if (NetworkHelper.Current.Network == 4)
             {
@@ -294,6 +281,36 @@ namespace Sodu.ViewModel
             var groups = Split<BookCatalog>(temp.Entity.CatalogList, count);
             int index = 0;
 
+            if (!string.IsNullOrEmpty(temp.Entity.Cover))
+            {
+                try
+                {
+                    StorageFolder storageFolder = await StorageFolder.GetFolderFromPathAsync(AppDataPath.GetLocalBookCoverFolderPath());
+                    StorageFile file = null;
+                    string filename = temp.Entity.BookID + ".jpg";
+                    if (!File.Exists(filename))
+                    {
+                        file = await storageFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                    }
+                    file = await storageFolder.GetFileAsync(filename);
+                    using (var stream = await file.OpenReadAsync())
+                    {
+                        if (stream.Size <= 0)
+                        {
+                            var tmpfile = await storageFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                            var http = new HttpClient();
+                            var data = await http.GetByteArrayAsync(temp.Entity.Cover);
+                            await FileIO.WriteBytesAsync(tmpfile, data);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(temp.Entity.BookName + "  下载封面失败");
+                }
+            }
+
             try
             {
                 foreach (var list in groups)
@@ -314,11 +331,18 @@ namespace Sodu.ViewModel
                            try
                            {
                                string html = await GetHtmlData(catalog.CatalogUrl, http);
-                               Debug.WriteLine("下载完成 :" + temp.Entity.BookName + "  " + catalog.CatalogName + "   " + catalog.CatalogUrl);
 
                                if (string.IsNullOrEmpty(html))
                                {
                                    html = GetHtmlData(catalog.CatalogUrl, http).Result;
+                               }
+                               if (string.IsNullOrEmpty(html))
+                               {
+                                   Debug.WriteLine("*******下载失败****** :" + temp.Entity.BookName + "  " + catalog.CatalogName + "   " + catalog.CatalogUrl);
+                               }
+                               else
+                               {
+                                   Debug.WriteLine("下载完成 :" + temp.Entity.BookName + "  " + catalog.CatalogName + "   " + catalog.CatalogUrl);
                                }
 
                                BookCatalogContent content = new BookCatalogContent()
@@ -353,7 +377,7 @@ namespace Sodu.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                temp.IsPause = false;
+                temp.IsPause = true;
             }
 
 
@@ -363,27 +387,32 @@ namespace Sodu.ViewModel
                {
                    if (DownLoadList.Contains(temp))
                    {
-                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                        {
-                            this.DownLoadList.Remove(temp);
-                        });
+                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                       {
+                           this.DownLoadList.Remove(temp);
+                       });
+                   }
+
+                   if (File.Exists(AppDataPath.GetLocalBookCoverPath(temp.Entity.BookID)))
+                   {
+                       File.Delete(AppDataPath.GetLocalBookCoverPath(temp.Entity.BookID));
                    }
                    return;
                }
                DispatcherHelper.CheckBeginInvokeOnUI(() =>
-               {
-                   temp.SetProcessValue();
-                   temp.Entity.LastReadChapterName = null;
-                   temp.Entity.LastReadChapterUrl = null;
-                   temp.Entity.IsLocal = true;
+                          {
+                              temp.SetProcessValue();
+                              temp.Entity.LastReadChapterName = null;
+                              temp.Entity.LastReadChapterUrl = null;
+                              temp.Entity.IsLocal = true;
 
-                   var catalog = temp.Entity.CatalogList.OrderBy(p => p.Index).ToList().LastOrDefault();
-                   if (catalog != null)
-                   {
-                       temp.Entity.NewestChapterName = catalog.CatalogName;
-                       temp.Entity.NewestChapterUrl = catalog.CatalogUrl;
-                   }
-               });
+                              var catalog = temp.Entity.CatalogList.OrderBy(p => p.Index).ToList().LastOrDefault();
+                              if (catalog != null)
+                              {
+                                  temp.Entity.NewestChapterName = catalog.CatalogName;
+                                  temp.Entity.NewestChapterUrl = catalog.CatalogUrl;
+                              }
+                          });
 
                DBBookCatalogContent.InsertOrUpdateBookCatalogContents(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.ContentList);
                DBBookCatalog.InsertOrUpdateBookCatalogs(AppDataPath.GetBookDBPath(temp.Entity.BookID), temp.Entity.CatalogList.ToList());

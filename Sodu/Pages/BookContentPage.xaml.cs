@@ -46,9 +46,7 @@ namespace Sodu.Pages
         private NavigationMode mode;
         private ScrollViewer _scrollviewer;
 
-
-
-        private CompositeTransform _currentContentPageTransform;
+        //   private CompositeTransform _currentContentPageTransform;
         public BookContentPage()
         {
             this.InitializeComponent();
@@ -59,6 +57,8 @@ namespace Sodu.Pages
                 commandbar.Visibility = Visibility.Collapsed;
                 bottomBar.Visibility = Visibility.Visible;
 
+                txtIndex.Visibility = Visibility.Collapsed;
+
                 InitBattery();
                 this.grid.Holding -= this.Grid_OnHolding;
                 this.grid.Holding += this.Grid_OnHolding;
@@ -67,6 +67,9 @@ namespace Sodu.Pages
             {
                 commandbar.Visibility = Visibility.Visible;
                 bottomBar.Visibility = Visibility.Collapsed;
+                txtIndex.Visibility = Visibility.Visible;
+
+
                 gridContent.Margin = new Thickness(0, 0, 0, 50);
                 BattaryStatus.Visibility = Visibility.Collapsed;
                 this.grid.RightTapped -= this.Grid_OnRightTapped;

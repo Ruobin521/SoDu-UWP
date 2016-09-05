@@ -112,6 +112,7 @@
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\StoreLogo.scale-125.png" />
     <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Images\cover.png" />
     <Content Include="Images\coding.jpg" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="project.json" />
@@ -125,6 +126,7 @@
     <Compile Include="Converter\BackColorVisiablityConverter.cs" />
     <Compile Include="Converter\CommandBarBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\DoubleToPercentConverter.cs" />
+    <Compile Include="Converter\LocalBookCoverConverter.cs" />
     <Compile Include="Converter\RevertBooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\DownItemIconConverter.cs" />
     <Compile Include="Converter\DownLoadPagePauseIconConverter.cs" />
@@ -204,6 +206,9 @@
     </Compile>
     <Compile Include="UC\UC_LocalBookItem.xaml.cs">
       <DependentUpon>UC_LocalBookItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UC_LocalItemWihtCover.xaml.cs">
+      <DependentUpon>UC_LocalItemWihtCover.xaml</DependentUpon>
     </Compile>
     <Compile Include="UC\UC_PageHeader.xaml.cs">
       <DependentUpon>UC_PageHeader.xaml</DependentUpon>
@@ -418,6 +423,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UC\UC_LocalBookItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UC\UC_LocalItemWihtCover.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

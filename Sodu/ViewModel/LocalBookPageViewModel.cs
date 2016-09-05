@@ -143,7 +143,7 @@ namespace Sodu.ViewModel
         public void GetLocalBook()
         {
             IsLoading = true;
-            IsChecking = false;
+            IsChecking = true;
             this.LocalBookList.Clear();
             Task.Run(() =>
       {
@@ -543,6 +543,12 @@ namespace Sodu.ViewModel
                          DBLocalBook.DeleteLocalBookByBookID(AppDataPath.GetLocalBookDBPath(), item.BookID);
                          this.LocalBookList.Remove(item);
                      });
+
+                       string coverPath = AppDataPath.GetLocalBookCoverPath(item.BookID);
+                       if (File.Exists(coverPath))
+                       {
+                           File.Delete(AppDataPath.GetLocalBookCoverPath(item.BookID));
+                       }
                    }
                    catch (Exception)
                    {
@@ -624,6 +630,20 @@ namespace Sodu.ViewModel
 
         private void OnRefreshCommand(object obj)
         {
+            if (IsLoading || IsChecking)
+            {
+                if (IsLoading)
+                {
+                    ToastHeplper.ShowMessage("正在刷新数据，请稍后");
+                    return;
+                }
+
+                if (IsChecking)
+                {
+                    ToastHeplper.ShowMessage("正在检测更新，请稍后");
+                    return;
+                }
+            }
             GetLocalBook();
         }
     }

@@ -299,6 +299,8 @@ namespace Sodu.Core.Model
             entity.UnReadCountData = this.UnReadCountData;
             entity.UpdateCatalogUrl = this.UpdateCatalogUrl;
             entity.UpdateTime = this.UpdateTime;
+            entity.Cover = this.Cover;
+            entity.Description = this.Description;
 
             return entity;
 

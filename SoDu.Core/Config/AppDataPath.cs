@@ -32,6 +32,8 @@ namespace Sodu.Core.Config
 
         public const string LocalBookFolderName = "LocalBooks";
 
+        public const string LocalBookCoverFolderName = "Images";
+
 
         public static string GetHistoryDBPath()
         {
@@ -62,6 +64,28 @@ namespace Sodu.Core.Config
                 File.Create(path).Dispose();
             }
             return path;
+        }
+
+
+        public static string GetLocalBookCoverFolderPath()
+        {
+            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.LocalBookCoverFolderName);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return path;
+        }
+
+
+        public static string GetLocalBookCoverPath(string bookid)
+        {
+            string path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, AppDataPath.LocalBookCoverFolderName);
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return Path.Combine(path, bookid + ".jpg");
         }
 
 

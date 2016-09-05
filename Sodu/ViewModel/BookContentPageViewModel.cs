@@ -768,6 +768,7 @@ namespace Sodu.ViewModel
                          if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
                          {
                              this.TotalCatalogCount = this.BookEntity.CatalogList.Count;
+                             var last = BookEntity.CatalogList.LastOrDefault();
                              this.CurrentCatalogIndex = BookEntity.CatalogList.IndexOf(BookEntity.CatalogList.FirstOrDefault(p => p.CatalogUrl == CurrentCatalog.CatalogUrl)) + 1;
 
                              IsSwitchButtonShow = true;
@@ -930,7 +931,7 @@ namespace Sodu.ViewModel
             string[] lists = str.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < lists.Count(); i++)
             {
-                if (!string.IsNullOrEmpty(lists[i]))
+                if (!string.IsNullOrEmpty(lists[i]) && !string.IsNullOrEmpty(lists[i].Trim()))
                 {
                     strList.Add("　　" + lists[i].Trim());
                 }

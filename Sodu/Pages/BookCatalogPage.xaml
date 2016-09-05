@@ -41,8 +41,8 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Background="AliceBlue" >
-                                <Image  Stretch="Fill" Source="../Images/noimage.jpg"></Image>
+                            <Grid Background="Transparent" >
+                                <Image  Stretch="Fill" Source="../Images/cover.png"></Image>
                                 <Image x:Name="cover" Stretch="Fill"  Source="{Binding CurrentBookEntity.Cover}"></Image>
                             </Grid>
 
