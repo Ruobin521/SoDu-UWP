@@ -199,7 +199,7 @@ namespace Sodu.Pages
             {
                 int pageIdex = vm.CurrentPagIndex;
                 int totalPage = vm.TotalPagCount;
-                vm.ContentPages = vm.GetContentPage(vm.ContentList);
+                vm.CurrentCatalogPages = vm.GetContentPages(vm.CurrentCatalogParagraphs);
                 vm.SetContentPage(pageIdex, totalPage);
             }
         }
@@ -460,8 +460,8 @@ namespace Sodu.Pages
                     string temp = vm.CurrentPageContent;
                     vm.CurrentPagIndex = vm.CurrentPagIndex - 1;
                     vm.NextPageContent = vm.CurrentPageContent;
-                    vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
-                    vm.PrePageContent = vm.CurrentPagIndex >= 2 ? vm.ContentPages[vm.CurrentPagIndex - 2] : null;
+                    vm.CurrentPageContent = vm.CurrentCatalogPages[vm.CurrentPagIndex - 1];
+                    vm.PrePageContent = vm.CurrentPagIndex >= 2 ? vm.CurrentCatalogPages[vm.CurrentPagIndex - 2] : null;
 
                     if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)
                     {
@@ -475,7 +475,7 @@ namespace Sodu.Pages
             {
                 if (ViewModelInstance.Instance.SettingPageViewModelInstance.IsReadByPageMode)
                 {
-                    if (vm.CurrentPagIndex == vm.ContentPages.Count)
+                    if (vm.CurrentPagIndex == vm.CurrentCatalogPages.Count)
                     {
                         if (!string.IsNullOrEmpty(vm.NextCatalogContent))
                         {
@@ -495,17 +495,17 @@ namespace Sodu.Pages
                             vm.OnSwtichCommand("1");
                         }
                     }
-                    else if (vm.CurrentPagIndex < vm.ContentPages.Count)
+                    else if (vm.CurrentPagIndex < vm.CurrentCatalogPages.Count)
                     {
 
                         vm.CurrentPagIndex = vm.CurrentPagIndex + 1;
 
                         vm.PrePageContent = vm.CurrentPageContent;
 
-                        vm.CurrentPageContent = vm.ContentPages[vm.CurrentPagIndex - 1];
+                        vm.CurrentPageContent = vm.CurrentCatalogPages[vm.CurrentPagIndex - 1];
 
-                        vm.NextPageContent = vm.CurrentPagIndex < vm.ContentPages.Count
-                            ? vm.ContentPages[vm.CurrentPagIndex]
+                        vm.NextPageContent = vm.CurrentPagIndex < vm.CurrentCatalogPages.Count
+                            ? vm.CurrentCatalogPages[vm.CurrentPagIndex]
                             : null;
 
                         if (ViewModelInstance.Instance.SettingPageViewModelInstance.SwitchAnimation)

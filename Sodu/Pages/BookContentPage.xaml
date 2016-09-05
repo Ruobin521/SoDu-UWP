@@ -73,7 +73,9 @@
                     <uc:UC_ContentControl x:Name="NextPage"     Text="{Binding CurrentPageContent,Mode=OneWay}"  Visibility="{Binding  Instance.SettingPageViewModelInstance.SwitchAnimation,Source={StaticResource  Locator},Converter={StaticResource BooleanToVisibilityConverter}}"/>
                 </Grid>
 
-                <ListView x:Name="listview" SelectionMode="None"  ScrollViewer.VerticalScrollBarVisibility="Auto"  ItemsSource="{Binding   ContentList}" Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
+                <ListView x:Name="listview" SelectionMode="None"  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ItemsSource="{Binding    CurrentCatalogParagraphs}"
+                          Visibility="{Binding Instance.SettingPageViewModelInstance.IsReadByPageMode,Source={StaticResource  Locator},Converter={StaticResource  RevertBooleanToVisibilityConverter}}"  ItemContainerStyle="{StaticResource    CustomListViewItemStyle1}"    Margin="0,0,0,0"  Height="auto"     HorizontalAlignment="Stretch"   
          VerticalAlignment="Top"   Padding="8,0,8,0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -98,8 +100,8 @@
             <Grid   HorizontalAlignment="Stretch"  x:Name="commandbar" Background="Transparent"  Height="50"  Visibility="Visible"  Grid.ColumnSpan="3" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <Border Background="{ThemeResource LeftPanelBackground}"  Grid.ColumnSpan="4"></Border>

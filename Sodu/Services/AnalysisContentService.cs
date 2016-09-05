@@ -149,6 +149,12 @@ namespace Sodu.Services
         /// </summary>
         public const string qsx = "www.qiushuixuan.cc";
 
+        /// <summary>
+        /// 卓雅居
+        /// </summary>
+        public const string zyj = "www.zhuoyaju.com";
+
+
 
         public static List<string> UrlList = new List<string>()
         {
@@ -157,7 +163,7 @@ namespace Sodu.Services
             snwx, kkks,  dhzw,    aszw520, fyxs,
             xs55, wwxsw, qfxs,    bxwx5,   dijiuzww,
             qdsw, myg,   dqzw,    vivi,    qyxs,
-            lww , bpg,   qsx
+            lww , bpg,   qsx,     zyj
         };
 
         public static bool CheckUrl(string url)
@@ -369,6 +375,11 @@ namespace Sodu.Services
                     result = AnalysisQsx(html);
                     break;
 
+                //卓雅居
+                case WebSet.zyj:
+                    result = AnalysisZyj(html);
+                    break;
+
 
                 default:
                     result = ReplaceSymbol(html);
@@ -411,6 +422,24 @@ namespace Sodu.Services
             {
                 result = match.ToString();
                 result = Regex.Replace(result, "阅读本书最新章节请到.*?敬请记住我们最新网址.*?m", "");
+                result = ReplaceSymbol(result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 解析卓雅居
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static string AnalysisZyj(string html)
+        {
+            string result = string.Empty;
+            html = html.Replace("\r", "").Replace("\t", "").Replace("\n", "");
+            Match match = Regex.Match(html, "<div id=\"content\".*?</div>", RegexOptions.IgnoreCase);
+            if (match != null)
+            {
+                result = match.ToString();
                 result = ReplaceSymbol(result);
             }
             return result;
@@ -911,6 +940,10 @@ namespace Sodu.Services
                 case WebSet.qsx:
                     result = AnalysisCommonUrl(url);
                     break;
+
+                case WebSet.zyj:
+                    result = AnalysisZyj(url);
+                    break;
                 default:
                     result = null;
                     break;
@@ -927,6 +960,21 @@ namespace Sodu.Services
         private static string AnalysisCommonUrl(string url)
         {
             string result = url.Substring(0, url.LastIndexOf('/') + 1);
+
+            return result;
+        }
+
+        /// <summary>
+        /// 卓雅居
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private static string AnalysisZyj(string url)
+        {
+
+            Uri uri = new Uri(url);
+
+            string result = "http://" + uri.Authority + "/book/" + uri.Segments[2].Replace("/", ".html");
 
             return result;
         }

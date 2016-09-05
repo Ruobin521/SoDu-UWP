@@ -33,8 +33,14 @@ namespace Sodu.ViewModel
         private HttpHelper catalogsHttp = new HttpHelper();
 
 
+        /// <summary>
+        /// 是否点击了目录按钮
+        /// </summary>
         private bool isClickCtalog = false;
 
+        /// <summary>
+        /// 是否正在预加载
+        /// </summary>
         private bool isPreLoading = false;
 
 
@@ -94,6 +100,9 @@ namespace Sodu.ViewModel
 
 
         public string m_CurrentPageContent;
+        /// <summary>
+        /// 当前分页内容
+        /// </summary>
         public string CurrentPageContent
         {
             get
@@ -107,6 +116,9 @@ namespace Sodu.ViewModel
         }
 
         public string m_PrePageContent;
+        /// <summary>
+        ///  上一页内容
+        /// </summary>
         public string PrePageContent
         {
             get
@@ -120,6 +132,9 @@ namespace Sodu.ViewModel
         }
 
         public string m_NextPageContent;
+        /// <summary>
+        /// 下一页内容
+        /// </summary>
         public string NextPageContent
         {
             get
@@ -146,6 +161,9 @@ namespace Sodu.ViewModel
         }
 
         public int m_TotalPagCount;
+        /// <summary>
+        /// 当前章节总页数
+        /// </summary>
         public int TotalPagCount
         {
             get
@@ -159,6 +177,9 @@ namespace Sodu.ViewModel
         }
 
         public int m_CurrentCatalogIndex;
+        /// <summary>
+        /// 当前章节索引
+        /// </summary>
         public int CurrentCatalogIndex
         {
             get
@@ -172,6 +193,9 @@ namespace Sodu.ViewModel
         }
 
         public int m_TotalCatalogCount;
+        /// <summary>
+        /// 总章数
+        /// </summary>
         public int TotalCatalogCount
         {
             get
@@ -185,6 +209,9 @@ namespace Sodu.ViewModel
         }
 
         public string m_CurrentCatalogContent;
+        /// <summary>
+        /// 当前章节html
+        /// </summary>
         public string CurrentCatalogContent
         {
             get
@@ -199,6 +226,9 @@ namespace Sodu.ViewModel
 
 
         public string m_NextCatalogContent;
+        /// <summary>
+        /// 下一章html
+        /// </summary>
         public string NextCatalogContent
         {
             get
@@ -212,40 +242,40 @@ namespace Sodu.ViewModel
         }
 
 
-        public ObservableCollection<string> m_ContentList;
-        public ObservableCollection<string> ContentList
+        public ObservableCollection<string> m_CurrentCatalogParagraphs;
+        public ObservableCollection<string> CurrentCatalogParagraphs
         {
             get
             {
-                if (m_ContentList == null)
+                if (m_CurrentCatalogParagraphs == null)
                 {
-                    m_ContentList = new ObservableCollection<string>();
+                    m_CurrentCatalogParagraphs = new ObservableCollection<string>();
                 }
-                return m_ContentList;
+                return m_CurrentCatalogParagraphs;
             }
             set
             {
-                SetProperty(ref m_ContentList, value);
+                SetProperty(ref m_CurrentCatalogParagraphs, value);
             }
         }
 
-        public ObservableCollection<string> m_ContentPages;
+        public ObservableCollection<string> m_CurrentCatalogPages;
         /// <summary>
         /// 内容分页
         /// </summary>
-        public ObservableCollection<string> ContentPages
+        public ObservableCollection<string> CurrentCatalogPages
         {
             get
             {
-                if (m_ContentPages == null)
+                if (m_CurrentCatalogPages == null)
                 {
-                    m_ContentPages = new ObservableCollection<string>();
+                    m_CurrentCatalogPages = new ObservableCollection<string>();
                 }
-                return m_ContentPages;
+                return m_CurrentCatalogPages;
             }
             set
             {
-                SetProperty(ref m_ContentPages, value);
+                SetProperty(ref m_CurrentCatalogPages, value);
             }
         }
 
@@ -338,6 +368,9 @@ namespace Sodu.ViewModel
         }
 
         private BookEntity m_BookEntity;
+        /// <summary>
+        /// 当前小说
+        /// </summary>
         public BookEntity BookEntity
         {
             get
@@ -358,13 +391,15 @@ namespace Sodu.ViewModel
 
         #endregion
 
-
-        #region 方法
-
+        #region 构造函数
         public BookContentPageViewModel()
         {
 
         }
+
+        #endregion
+
+        #region 方法
 
         public bool SetSize(double containerWith, double containerHtght, double txtWidth, double txtHeight)
         {
@@ -381,24 +416,17 @@ namespace Sodu.ViewModel
             return false;
         }
 
-
         public void InitData(object obj)
         {
             CancleHttpRequest();
-            isClickCtalog = false;
-
-            TotalPagCount = 1;
-            CurrentPagIndex = 1;
+            ResetData();
 
             BookEntity entity = obj as BookEntity;
             if (entity == null)
             {
                 return;
             }
-
-            this.CurrentPageContent = "";
-            this.NextPageContent = "";
-            this.PrePageContent = "";
+            this.BookEntity = entity.Clone();
 
             if (!entity.IsLocal)
             {
@@ -409,8 +437,6 @@ namespace Sodu.ViewModel
                 this.IsSwitchButtonShow = true;
             }
 
-            this.ContentList?.Clear();
-            this.BookEntity = entity.Clone();
 
             if (CheckIfLoacalExist())
             {
@@ -452,6 +478,36 @@ namespace Sodu.ViewModel
             }
         }
 
+        public void ResetData()
+        {
+            isClickCtalog = false;
+            isPreLoading = false;
+            IsSwitchButtonShow = false;
+
+            BookEntity = null;
+            NextCatalog = null;
+
+
+            CurrentCatalogIndex = 1;
+            TotalPagCount = 1;
+
+            CurrentPagIndex = 1;
+            CurrentPageContent = "";
+
+            NextPageContent = "";
+            PrePageContent = "";
+            CurrentPageContent = "";
+
+            NextCatalogContent = "";
+            CurrentCatalogContent = "";
+
+
+
+            PreContentPages.Clear();
+            NextContentPages.Clear();
+            CurrentCatalogParagraphs.Clear();
+            CurrentCatalogPages.Clear();
+        }
 
         private bool CheckIfLoacalExist()
         {
@@ -539,12 +595,12 @@ namespace Sodu.ViewModel
             {
                 GetNextCatalogHtmlData();
             }
-            if (ContentList != null)
+            if (CurrentCatalogParagraphs != null)
             {
-                this.ContentList.Clear();
+                this.CurrentCatalogParagraphs.Clear();
             }
-            this.ContentList = SplitString(html);
-            this.ContentPages = GetContentPage(this.ContentList);
+            this.CurrentCatalogParagraphs = SplitString(html);
+            this.CurrentCatalogPages = GetContentPages(this.CurrentCatalogParagraphs);
             SetContentPage();
         }
 
@@ -753,13 +809,14 @@ namespace Sodu.ViewModel
         }
 
 
-        public ObservableCollection<string> GetContentPage(ObservableCollection<string> list)
+        public ObservableCollection<string> GetContentPages(ObservableCollection<string> list)
         {
             if (list == null || list.Count == 0)
             {
                 return null;
             }
-            var paragraphs = this.ContentList;
+            var paragraphs = list;
+
             int linesCount = (int)(ContentContainerHeitht / PerTextHeight);
             int perLineCount = (int)(ContentContainerWith / PerTextWidth);
 
@@ -825,26 +882,25 @@ namespace Sodu.ViewModel
         {
             try
             {
-                if (ContentPages != null && ContentPages.Count > 0)
+                if (CurrentCatalogPages != null && CurrentCatalogPages.Count > 0)
                 {
                     if (index != 0 && count != 0)
                     {
-                        this.CurrentPagIndex = (int)((double)index / (double)count * ContentPages.Count);
-
+                        this.CurrentPagIndex = (int)((double)index / (double)count * CurrentCatalogPages.Count);
                     }
                     else
                     {
                         this.CurrentPagIndex = 1;
                     }
-                    if (this.CurrentPagIndex < 1 || this.CurrentPagIndex > ContentPages.Count)
+                    if (this.CurrentPagIndex < 1 || this.CurrentPagIndex > CurrentCatalogPages.Count)
                     {
                         this.CurrentPagIndex = 1;
                     }
 
-                    this.CurrentPageContent = ContentPages[this.CurrentPagIndex - 1];
+                    this.CurrentPageContent = CurrentCatalogPages[this.CurrentPagIndex - 1];
                     this.PrePageContent = null;
-                    this.NextPageContent = ContentPages.Count >= CurrentPagIndex + 1 ? ContentPages[CurrentPagIndex] : null;
-                    TotalPagCount = ContentPages.Count;
+                    this.NextPageContent = CurrentCatalogPages.Count >= CurrentPagIndex + 1 ? CurrentCatalogPages[CurrentPagIndex] : null;
+                    TotalPagCount = CurrentCatalogPages.Count;
                 }
                 else
                 {
@@ -857,9 +913,11 @@ namespace Sodu.ViewModel
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
+
                 this.CurrentPagIndex = 1;
-                TotalPagCount = ContentPages.Count;
-                this.CurrentPageContent = ContentPages[this.CurrentPagIndex - 1];
+                TotalPagCount = CurrentCatalogPages.Count;
+                this.CurrentPageContent = CurrentCatalogPages[this.CurrentPagIndex - 1];
                 this.PrePageContent = null;
                 this.NextPageContent = null;
             }
@@ -947,8 +1005,6 @@ namespace Sodu.ViewModel
         #endregion
 
         #region 命令
-
-
 
         /// <summary>
         /// 刷新
@@ -1103,8 +1159,6 @@ namespace Sodu.ViewModel
                 NavigationService.NavigateTo(typeof(BookCatalogPage), this.BookEntity);
             }
         }
-
-
 
         /// </summary>
         private RelayCommand<object> m_DwonLoadhCommand;
