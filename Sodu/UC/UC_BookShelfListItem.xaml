@@ -34,11 +34,11 @@
                 </TextBlock>
                 <TextBlock x:Name="txtUpdateTime" Grid.Row="0" Grid.Column="2"  Style="{StaticResource ListItemTextBlockStyle}"   Text="{Binding  UpdateTime}" HorizontalAlignment="Right"  ></TextBlock>
                 <TextBlock   Grid.Row="1"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
-                <Run x:Name="txtChapterName" Text="最后阅读："  ></Run>
+                <Run x:Name="txtChapterName" Text="读至："  ></Run>
                 <Run x:Name="txtUnreadData"  Text="{Binding  LastReadChapterName}" ></Run>
                 </TextBlock>
                 <TextBlock   Grid.Row="2"  Grid.Column="1"   TextTrimming="WordEllipsis" Style="{StaticResource ListItemTextBlockStyle}"  Grid.ColumnSpan="2"  >
-                <Run   Text="最新章节：" ></Run>
+                <Run   Text="最新：" ></Run>
                 <Run   Text="{Binding  NewestChapterName}" ></Run>
                 </TextBlock>
 

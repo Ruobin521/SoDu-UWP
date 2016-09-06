@@ -132,18 +132,33 @@ namespace Sodu.ViewModel
 
         public void InitData(object obj = null)
         {
-            if (IsLoading || IsChecking || IsUpdating)
-            {
-                return;
-            }
-
             GetLocalBook();
         }
 
         public void GetLocalBook()
         {
+            if (IsLoading || IsChecking || IsUpdating)
+            {
+                if (IsLoading)
+                {
+                    ToastHeplper.ShowMessage("正在刷新数据，请稍后");
+                    return;
+                }
+
+                if (IsChecking)
+                {
+                    ToastHeplper.ShowMessage("正在检测更新，请稍后");
+                    return;
+                }
+
+                if (IsUpdating)
+                {
+                    ToastHeplper.ShowMessage("正在更新本地数据，请稍后");
+                    return;
+                }
+            }
+
             IsLoading = true;
-            IsChecking = true;
             this.LocalBookList.Clear();
             Task.Run(() =>
       {
@@ -210,7 +225,7 @@ namespace Sodu.ViewModel
 
         private async void CheckUpdate()
         {
-            if (IsChecking)
+            if (IsChecking || IsLoading || IsUpdating)
             {
                 return;
             }
@@ -223,63 +238,76 @@ namespace Sodu.ViewModel
 
             Task[] tasks = new Task[this.LocalBookList.Count];
 
-            int i = 0;
-            foreach (var item in LocalBookList)
+            try
             {
-                tasks[i] = Task.Run(async () =>
-                 {
-                     try
-                     {
-                         if (!string.IsNullOrEmpty(item.CatalogListUrl))
-                         {
-                             var result = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
-                             if (!IsChecking) return;
+                int i = 0;
+                foreach (var item in LocalBookList)
+                {
+                    tasks[i] = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            if (!string.IsNullOrEmpty(item.CatalogListUrl))
+                            {
+                                var result = await AnalysisBookCatalogList.GetCatalogList(item.CatalogListUrl, item.BookID, new HttpHelper());
+                                if (!IsChecking) return;
 
-                             if (result.Item1 != null)
-                             {
-                                 var list = result.Item1;
-                                 var last = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
+                                if (result.Item1 != null)
+                                {
+                                    var list = result.Item1;
+                                    var last = DBBookCatalog.SelectBookCatalogs(AppDataPath.GetBookDBPath(item.BookID), item.BookID);
 
 
-                                 var undownLoad = list.FindAll(p => last?.FirstOrDefault(m => m.CatalogUrl == p.CatalogUrl) == null);
+                                    var undownLoad = list.FindAll(p => last?.FirstOrDefault(m => m.CatalogUrl == p.CatalogUrl) == null);
 
-                                 if (undownLoad != null && undownLoad.Count > 0)
-                                 {
-                                     item.UnDownloadCatalogList = new ObservableCollection<BookCatalog>();
-                                     undownLoad.ForEach(p => item.UnDownloadCatalogList.Add(p));
-                                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                   {
-                                       item.UnReadCountData = "  " + undownLoad.Count.ToString();
-                                   });
-                                 }
-                                 else
-                                 {
-                                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                     {
-                                         item.UnReadCountData = "";
-                                     });
-                                 }
+                                    if (undownLoad != null && undownLoad.Count > 0)
+                                    {
+                                        item.UnDownloadCatalogList = new ObservableCollection<BookCatalog>();
+                                        undownLoad.ForEach(p => item.UnDownloadCatalogList.Add(p));
+                                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                        {
+                                            item.UnReadCountData = "  " + undownLoad.Count.ToString();
+                                        });
+                                    }
+                                    else
+                                    {
+                                        DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                        {
+                                            item.UnReadCountData = "";
+                                        });
+                                    }
 
-                             }
-                         }
-                     }
-                     catch (Exception)
-                     {
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
 
-                     }
-                 });
+                        }
+                    });
 
-                i++;
+                    i++;
+                }
+
+                await Task.Factory.ContinueWhenAll(tasks, (obj) =>
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        IsChecking = false;
+                    });
+                });
             }
-
-            await Task.Factory.ContinueWhenAll(tasks, (obj) =>
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
+
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     IsChecking = false;
 
                 });
-            });
+            }
+
         }
 
         public LocalBookPageViewModel()
@@ -630,20 +658,7 @@ namespace Sodu.ViewModel
 
         private void OnRefreshCommand(object obj)
         {
-            if (IsLoading || IsChecking)
-            {
-                if (IsLoading)
-                {
-                    ToastHeplper.ShowMessage("正在刷新数据，请稍后");
-                    return;
-                }
 
-                if (IsChecking)
-                {
-                    ToastHeplper.ShowMessage("正在检测更新，请稍后");
-                    return;
-                }
-            }
             GetLocalBook();
         }
     }

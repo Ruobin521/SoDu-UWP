@@ -181,7 +181,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="ContentButtonWithNoAnimationStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="Transparent"/>
@@ -509,7 +509,7 @@
 
     <Style x:Key="CustomAppBarButtonStyle2" TargetType="AppBarButton">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+        <Setter Property="Foreground" Value="{ThemeResource  TitleTextFroeground}"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>

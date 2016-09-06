@@ -353,16 +353,17 @@ namespace Sodu.ViewModel
                                };
                                temp.ContentList.Add(content);
 
-                               DispatcherHelper.CheckBeginInvokeOnUI(temp.SetProcessValue);
 
-                               //if (IsFrameContent)
-                               //{
+                               if (IsFrameContent)
+                               {
 
-                               //    await Task.Factory.StartNew((obj) =>
-                               //    {
-                               //       temp.SetProcessValue();
-                               //    }, null, new CancellationTokenSource().Token, TaskCreationOptions.None, _syncContextTaskScheduler);
-                               //}
+                                   DispatcherHelper.CheckBeginInvokeOnUI(temp.SetProcessValue);
+
+                                   //await Task.Factory.StartNew((obj) =>
+                                   //{
+                                   //    temp.SetProcessValue();
+                                   //}, null, new CancellationTokenSource().Token, TaskCreationOptions.None, _syncContextTaskScheduler);
+                               }
                            }
                            catch (Exception ex)
                            {

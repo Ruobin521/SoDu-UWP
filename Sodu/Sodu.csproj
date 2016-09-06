@@ -112,6 +112,7 @@
     <Content Include="Assets\StoreLogo.scale-100.png" />
     <Content Include="Assets\StoreLogo.scale-125.png" />
     <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Images\Book.png" />
     <Content Include="Images\cover.png" />
     <Content Include="Images\coding.jpg" />
     <None Include="Package.StoreAssociation.xml" />

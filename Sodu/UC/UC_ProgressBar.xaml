@@ -306,7 +306,7 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid  Background="Red">
+    <Grid  Background="Transparent">
         <!--<ProgressBar Grid.Row="2" IsIndeterminate="True"  Name="progressBar1" VerticalAlignment="Center"  />-->
         <ProgressRing HorizontalAlignment="Center"   VerticalAlignment="Center" Height="100" Width="218"   IsActive="True" Foreground="#FF3388FF"  FontSize="1"  CharacterSpacing="0" />
 

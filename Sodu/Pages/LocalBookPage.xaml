@@ -17,11 +17,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <uc:UC_PageHeader Title="本地小说"  SearchButtonVisibility="Visible"></uc:UC_PageHeader>
 
-        <ListView Grid.Row="1"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
+        <ListView Grid.Row="1" Grid.RowSpan="2"  ItemContainerStyle="{StaticResource CustomListViewItemStyle}"  ItemsSource="{Binding LocalBookList}"  HorizontalAlignment="Stretch" Background="Transparent" 
             >
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -29,8 +30,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        <CommandBar  Grid.Row="2"   ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}" extension:CommandBarExtensions.HideMoreButton="True">
+        <ProgressBar Grid.Row="2" IsIndeterminate="{Binding IsChecking}" Visibility="{Binding IsChecking,Converter={StaticResource BooleanToVisibilityConverter}}"   Name="progressBar1" Foreground="#FF3388FF" VerticalAlignment="Center"  />
+        <CommandBar  Grid.Row="3"   ClosedDisplayMode="Compact"  IsOpen="False"  Style="{StaticResource CustomCommandBarStyle}" extension:CommandBarExtensions.HideMoreButton="True">
             <AppBarButton Icon="{Binding IsLoading,Converter={StaticResource  RefreshCancleIconConverter}}" Label="{Binding IsLoading,Converter={StaticResource RefreshCancleIconLabelConverter}}"   Width="60" Visibility="{Binding IsLoading,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding CancleUpdateCommand}"  />
             <AppBarButton Icon="Delete" Label="删除"  Visibility="{Binding IsEditing,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding RemoveBookCommand}"/>
             <AppBarButton Icon="Edit" Label="编辑"  Command="{Binding EditCommand}"/>

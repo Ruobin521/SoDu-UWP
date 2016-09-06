@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:convernter="using:Sodu.Converter"
-    Height="110"
+    Height="120"
     d:DesignWidth="400">
     <UserControl.Resources>
         <convernter:LocalBookCoverConverter x:Key="LocalBookCoverConverter"></convernter:LocalBookCoverConverter>
@@ -27,28 +27,27 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Height="100" Width="75">
-                    <Image  Stretch="Fill" Source="../Images/cover.png"></Image>
+                    <Image  Stretch="Fill" Source="../Images/Book.png"></Image>
                     <Image  Source="{Binding  Converter={StaticResource LocalBookCoverConverter}}" Stretch="Fill"/>
                 </Grid>
 
 
-                <Grid  HorizontalAlignment="Stretch" Grid.Column="1">
+                <Grid  HorizontalAlignment="Stretch" Grid.Column="1" Height="100">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="3"/>
                     </Grid.RowDefinitions>
                     <TextBlock   Grid.Row="0"   Style="{StaticResource TitleTextBlockStyle}" >
                     <Run Text="{Binding BookName}"/>
                     <Run Text="{Binding UnReadCountData}" Foreground="{ThemeResource HigntLightlBackColor}" FontSize="16"/>
                     </TextBlock>
                     <TextBlock  Grid.Row="1" FontSize="16"   Style="{StaticResource  TitleTextBlockStyle}" >
-            <Run Text="本地最新:  "></Run>
+            <Run Text="最新:  "></Run>
             <Run Text="{Binding NewestChapterName}"></Run>
                     </TextBlock>
                     <TextBlock   Grid.Row="2" FontSize="16"   Style="{StaticResource TitleTextBlockStyle}"  >
-            <Run Text="最后阅读:  "></Run>
+            <Run Text="读至:  "></Run>
             <Run Text="{Binding LastReadChapterName}" ></Run>
                     </TextBlock>
                 </Grid>
