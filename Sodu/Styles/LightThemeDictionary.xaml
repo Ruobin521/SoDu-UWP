@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sodu.Styles">
 
+
+    <Color  x:Key="color" >Black</Color>
+
     <!--页面背景颜色-->
     <SolidColorBrush x:Key="PageBackground" Color="#FFFAFAFA"/>
 
@@ -17,6 +20,7 @@
     <!--列表项字体颜色-->
 
     <SolidColorBrush x:Key="ListItemTextFroeground"  Color="#FF004D00"  />
+     
     <!--51,51,51-->
     <!--<SolidColorBrush x:Key="ListItemTextFroeground"  Color="#FF333333"  />-->
 
@@ -39,7 +43,7 @@
     <!--白色-->
     <SolidColorBrush x:Key="BaseColor"  Color="Black"  />
 
-     
+
     <SolidColorBrush x:Key="ListItemDifferentColor"  Color="#FFF5F5F7"  />
 
 </ResourceDictionary>

@@ -3,6 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      >
 
+    <Color  x:Key="color" >White</Color>
+
     <!--页面背景颜色-->
     <SolidColorBrush x:Key="PageBackground" Color="Black"/>
 

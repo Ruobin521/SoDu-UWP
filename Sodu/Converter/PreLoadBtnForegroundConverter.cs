@@ -17,14 +17,7 @@ namespace Sodu.Converter
             var str = value as string;
             if (value == null || string.IsNullOrEmpty(str.ToString()))
             {
-                if (ViewModel.ViewModelInstance.Instance.SettingPageViewModelInstance.IsNightModel)
-                {
-                    return new SolidColorBrush(Colors.White);
-                }
-                else
-                {
-                    return new SolidColorBrush(Colors.Black);
-                }
+                return App.Current.Resources["preLoadBtnForeground"] as SolidColorBrush;
             }
             else
             {

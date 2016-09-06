@@ -2112,10 +2112,6 @@ namespace Sodu.Services
                             catalog.CatalogName = title_Mathch.ToString();
                             list.Add(catalog);
                         }
-                        else
-                        {
-
-                        }
                     }
                 }
             }
