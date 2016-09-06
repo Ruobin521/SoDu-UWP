@@ -2758,7 +2758,6 @@ namespace Sodu.Services
             Match match = Regex.Match(html, "<div class=\"chapter\">.*?</div>");
             if (match == null) return null;
             MatchCollection matches = Regex.Matches(match.ToString(), "<dd><a href=\"(.*?)\".*?>(.*?)</a></dd>");
-            //<dd><a href="3326485.html">风帆战列舰分级：一级战列舰</a></dd>
             if (matches != null && matches.Count < 1)
             {
                 list = null;

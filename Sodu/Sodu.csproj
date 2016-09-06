@@ -17,10 +17,10 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Sodu_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>Sodu_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Never</AppxBundle>
-    <PackageCertificateThumbprint>A838F39DF670D6D57C69BF962DED1FDE6FFB196D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>26A569F6D5C712C6804DA608BC5960DB96A378E0</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -117,6 +117,7 @@
     <Content Include="Images\coding.jpg" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="project.json" />
+    <None Include="Sodu_StoreKey.pfx" />
     <None Include="Sodu_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
