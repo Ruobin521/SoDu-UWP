@@ -48,6 +48,13 @@
                                                 >
                                 </AppBarButton>
 
+
+                                <AppBarButton  Icon="Clock"   Label="搜索" 
+                                           Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
+                                           IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding SearchCommand}" Style="{StaticResource CustomAppBarButtonStyle}"
+                                                >
+                                </AppBarButton>
+
                                 <AppBarButton  Icon="Download"   Label="下载中心" 
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding DownLoadCenterCommand}" Style="{StaticResource CustomAppBarButtonStyle}"
@@ -60,6 +67,7 @@
                                            IsCompact="False"  HorizontalAlignment="Left"  Command="{Binding ReadHistoryCommand}" Style="{StaticResource CustomAppBarButtonStyle}"
                                                 >
                                 </AppBarButton>
+
 
                                 <AppBarButton  Icon="Like"   Label="关于"  Command="{Binding AboutCommand}"
                                            Width="{Binding ElementName=Splitter,Path= OpenPaneLength,UpdateSourceTrigger=PropertyChanged}"  

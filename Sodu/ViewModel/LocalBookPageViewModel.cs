@@ -125,6 +125,11 @@ namespace Sodu.ViewModel
         }
 
 
+        public LocalBookPageViewModel()
+        {
+
+        }
+
         public void CancleHttpRequest()
         {
 
@@ -310,11 +315,6 @@ namespace Sodu.ViewModel
 
         }
 
-        public LocalBookPageViewModel()
-        {
-
-        }
-
 
         /// <summary>
         /// 全选，全不选
@@ -382,7 +382,7 @@ namespace Sodu.ViewModel
             }
         }
 
-        private void OnUpdateCommand()
+        private async void OnUpdateCommand()
         {
             var reslut = LocalBookList.FirstOrDefault(p => !string.IsNullOrEmpty(p.UnReadCountData));
             if (reslut != null)
@@ -473,16 +473,16 @@ namespace Sodu.ViewModel
                    {
                        Debug.WriteLine(ex.Message);
                    }
-                   await Task.Factory.ContinueWhenAll(tasks, completedTasks =>
-                   {
-                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                       {
-                           IsUpdating = false;
-                       });
-                   });
                }));
-
             }
+
+            await Task.Factory.ContinueWhenAll(tasks, completedTasks =>
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    IsUpdating = false;
+                });
+            });
         }
 
         /// <summary>

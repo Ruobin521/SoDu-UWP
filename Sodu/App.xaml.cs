@@ -127,12 +127,6 @@ namespace Sodu
                 rootFrame.NavigationFailed -= OnNavigationFailed;
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                rootFrame.KeyUp -= RootFrame_KeyUp;
-                rootFrame.KeyUp += RootFrame_KeyUp;
-
-                rootFrame.KeyDown -= RootFrame_KeyDown;
-                rootFrame.KeyDown += RootFrame_KeyDown;
-
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: 从之前挂起的应用程序加载状态
@@ -153,6 +147,12 @@ namespace Sodu
                 {
                     SystemNavigationManager.GetForCurrentView().BackRequested -= App_BackRequested;
                     SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+
+                    rootFrame.KeyUp -= RootFrame_KeyUp;
+                    rootFrame.KeyUp += RootFrame_KeyUp;
+
+                    rootFrame.KeyDown -= RootFrame_KeyDown;
+                    rootFrame.KeyDown += RootFrame_KeyDown;
                 }
                 if (PlatformHelper.GetPlatform() == PlatformHelper.Platform.IsMobile)
                 {
@@ -193,20 +193,25 @@ namespace Sodu
                 var contentxt = (NavigationService.ContentFrame.Content as Page).DataContext;
                 if (contentxt != null && contentxt is ViewModel.IViewModel)
                 {
-                 //   (contentxt as ViewModel.IViewModel).InitData();
+                    //   (contentxt as ViewModel.IViewModel).InitData();
                 }
             }
 
-            if (e.Key == VirtualKey.Control)
+            //if (e.Key == VirtualKey.Control)
+            //{
+            //    isCtrlPressed = false;
+            //}
+            //else if (e.Key == VirtualKey.Back)
+            //{
+            //    if (isCtrlPressed)
+            //    {
+            //        OnBackPressed();
+            //    }
+            //}
+
+            if (e.Key == VirtualKey.Escape)
             {
-                isCtrlPressed = false;
-            }
-            else if (e.Key == VirtualKey.Back)
-            {
-                if (isCtrlPressed)
-                {
-                    OnBackPressed();
-                }
+                OnBackPressed();
             }
         }
 

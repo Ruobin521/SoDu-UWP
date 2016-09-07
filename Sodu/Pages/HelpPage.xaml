@@ -24,8 +24,8 @@
         <ScrollViewer Grid.Row="1" Padding="10,0"  HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel>
                 <TextBlock Text="快捷键" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>
-                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"    Text="1.正文界面使用↑↓ 上下滚动，使用← →切换章节或者分页。使用Esc打开设置菜单。" LineHeight="35"   TextWrapping="Wrap"   ></TextBlock>
-                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"    Text="1.全局使用Ctrl + Back 返回上一级。" LineHeight="35"   TextWrapping="Wrap"   ></TextBlock>
+                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"    Text="1.正文界面使用↑↓ 上下滚动，使用← →切换章节或者分页。使用Ctrl打开设置菜单。" LineHeight="35"   TextWrapping="Wrap"   ></TextBlock>
+                <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"    Text="2.全局使用Esc 返回上一级。" LineHeight="35"   TextWrapping="Wrap"   ></TextBlock>
                 <TextBlock Text="汉堡菜单" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>
                 <TextBlock  Style="{StaticResource ListItemTextBlockStyle}"    Text="1.点击左上方按钮，或从屏幕左侧边缘滑动，即可打开菜单" LineHeight="35"   TextWrapping="Wrap"   ></TextBlock>
                 <TextBlock Text="首页" Style="{StaticResource TitleTextBlockStyle}" FontSize="20" LineHeight="35"></TextBlock>

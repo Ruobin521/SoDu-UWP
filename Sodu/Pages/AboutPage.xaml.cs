@@ -34,6 +34,8 @@ namespace Sodu.Pages
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9nblggh4sk4v"));
+            
+            // await Launcher.LaunchUriAsync(new Uri("ms-windows-store://review/?ProductId=9nblggh51vh6"));
         }
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)

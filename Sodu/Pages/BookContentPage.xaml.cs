@@ -82,8 +82,6 @@ namespace Sodu.Pages
             grid.SizeChanged -= BookContentPage_SizeChanged;
             grid.SizeChanged += BookContentPage_SizeChanged;
 
-            //this.ContentGrid.KeyUp -= BookContentPage_KeyUp;
-            //this.ContentGrid.KeyUp += BookContentPage_KeyUp;
 
             ManipulationCompleted += The_ManipulationCompleted;//订阅手势滑动结束后的事件
             ManipulationStarted += BookContentPage_ManipulationStarted;   //订阅手势滑动结束后的事件
@@ -187,7 +185,7 @@ namespace Sodu.Pages
                 OnSwitch("0");
             }
 
-            else if (e.Key == VirtualKey.Escape)
+            else if (e.Key == VirtualKey.Control)
             {
                 MenuOpiton(this.ColorPanel.Visibility != Visibility.Visible);
             }
