@@ -286,7 +286,7 @@ namespace Sodu.ViewModel
                             else
                             {
                                 item.UnReadCountData = "(有更新)";
-                                item.LastReadChapterName = "无";
+                                item.LastReadChapterName = item.NewestChapterName;
                             }
                             ShelfBookList.Add(item);
                         }
@@ -401,7 +401,7 @@ namespace Sodu.ViewModel
                     {
                         var temp = ShelfBookList.ToList().Find(p => p.BookID == entity.BookID);
                         var sim = LevenshteinDistancePercent(temp.LastReadChapterName, entity.NewestChapterName);
-                        if (sim)
+                        if (!sim)
                         {
                             temp.LastReadChapterName = temp.NewestChapterName;
                             temp.UnReadCountData = null;

@@ -270,7 +270,6 @@ namespace Sodu.ViewModel
             {
                 MenuModel menu = new MenuModel() { MenuName = entity.BookName, MenuType = typeof(UpdateChapterPage) };
 
-
                 //判断是否自动添加书到收藏
                 if (ViewModelInstance.Instance.IsLogin && ViewModelInstance.Instance.SettingPageViewModelInstance.IfAutAddToShelf)
                 {

@@ -793,9 +793,12 @@ namespace Sodu.ViewModel
              if (string.IsNullOrEmpty(NextCatalogContent) && ViewModelInstance.Instance.SettingPageViewModelInstance.IsPreLoad)
              {
                  if (this.BookEntity.CatalogList != null && this.BookEntity.CatalogList.Count > 0)
-                 {
-                     NextCatalog = GetNextCatalog();
-                     NextCatalogContent = null;
+                 { 
+                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                   {   NextCatalog = GetNextCatalog();
+                       NextCatalogContent = null;
+                     });
+                  
                      GetNextCatalogHtmlData();
                  }
              }
@@ -832,19 +835,26 @@ namespace Sodu.ViewModel
             {
                 int i = 0;
                 string tempPageContent = string.Empty;
-                foreach (var str in paragraphs)
+                for (int j=0;j<paragraphs.Count;j++)
                 {
+                    string str = paragraphs[j];
                     string lineStr = string.Empty;
                     var chars = str.ToArray();
                     var tempList = chars.ToList();
-                    foreach (var word in tempList)
+              
+                    //将一段内容逐字符添加到内容中
+                    for (int m = 0;m<tempList.Count;m++) 
                     {
+                        var word = tempList[m];
                         lineStr += word;
-                        if (lineStr.Length == perLineCount)
+                        //换行
+                        if (lineStr.Length == perLineCount || m == tempList.Count-1)
                         {
+                            //将一行内容添加到当前分页中
                             tempPageContent += lineStr + "\r";
                             lineStr = string.Empty;
                             i++;
+                            //如果一页内容填满就添加下一页
                             if (i == linesCount)
                             {
                                 pages.Add(tempPageContent);
@@ -853,20 +863,8 @@ namespace Sodu.ViewModel
                             }
                         }
                     }
-
-                    if (!string.IsNullOrEmpty(lineStr))
-                    {
-                        tempPageContent += lineStr + "\r";
-                        lineStr = string.Empty;
-                        i++;
-                        if (i == linesCount)
-                        {
-                            pages.Add(tempPageContent);
-                            tempPageContent = string.Empty;
-                            i = 0;
-                        }
-                    }
-                    if (paragraphs.IndexOf(str) == paragraphs.Count - 1 && !string.IsNullOrEmpty(tempPageContent))
+                   
+                    if (j == paragraphs.Count - 1 && !string.IsNullOrEmpty(tempPageContent))
                     {
                         pages.Add(tempPageContent);
                     }
